@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}
+    o grupo PoliGNU
+{% endblock title %}
+
+{% block extrascripts %}
+{% endblock extrascripts %}
+
+{% block extrahead %}
+{% endblock extrahead %}
+
+{% block headerImgClass %}
+    about
+{% endblock headerImgClass %}
+
+{% block nomepagina %}
+    O Grupo
+{% endblock nomepagina %}
+
+{% block pagedesc %}
+    POLIGNU - grupo de estudos de software livre da Poli-USP
+{% endblock pagedesc %}
+
+{% block breadcrumbs %}
+    <li><a href="/index">Home</a> &raquo;</li>
+    <li><a href="/ogrupo">O Grupo</a></li>
+{% endblock breadcrumbs %}
+
+{% block content %}
+        <article class="aboutDesc">
+           <figure>
+                <a href="/static/assets/team.jpg">
+                <img src="/static/assets/team.jpg" class="border" height="220" width="350" alt="About Us" />
+                </a>
+                <figcaption>
+                    Time do Radar Parlamentar no Hackathon da Câmara dos Deputados (outubro de 2013).
+                </figcaption>
+           </figure>
+           <p><b>Radar Parlamentar</b> é software livre mantido pelo <a href="http://www.polignu.org/"><b>PoliGNU</b></a> - grupo de estudos de software livre da Poli-USP.</p> 
+            
+            <p>Além de alguns membros do PoliGNU, outros contribuidores se juntaram ao projeto com os mais diversos tipos de perfis e contribuições, inclusive mas não somente: desenvolvimento, design, documentação, algoritmos e ciência política.</p>
+            
+            <p>Uma das parcerias firmadas para o desenvolvimento do Radar foi realizada com o professor doutor Paulo Meirelles, professor do curso de Engenharia de Software da Universidade de Brasília (UnB).
+            Nos dois semestres de 2013 a disciplina de Manutenção e Evolução de Software, ministrada pelo prof. Paulo, contou com um grupo de alunos dedicados à manutenção e evolução do Radar Parlamentar.</p>
+            
+            <h5>Sobre o PoliGNU</h5>
+            <p>
+                Um grupo de estudantes da Escola Politécnica da USP (EPUSP) envolveu-se pela primeira vez com o debate sobre software livre em 2007, quando eram diretoria do Grêmio Politécnico – entidade representativa de estudantes da EPUSP. Esse grupo de estudantes manteve contato e, em 2009, fundaram o grupo PoliGNU.
+           </p>
+           <p>
+        O PoliGNU é um grupo formado por estudantes de diversos cursos da Escola Politécnica, bem como de outros cursos da USP, que se dedicam ao desenvolvimento e à divulgação de tecnologia, software e cultura livres, especialmente no que se relaciona à engenharia. Não é restrito à participação de universitários, visto que mantém como principal fórum de articulação sua lista aberta de e-mails (polignu@googlegroups.com), um espaço virtual que congrega por volta de 80 pessoas.
+        </p>
+            <p>
+        Ao longo de sua história, tem duas principais linhas de atuação: atividades de difusão (cursos e oficinas de SL) e desenvolvimento de projetos (LibreDWG, DemocraciaUSP, Radar Parlamentar). Além disso, o grupo conseguiu atingir certa maturidade e iniciar sua própria produção de materiais. Para que tudo seja possível, o PoliGNU coopera com outros grupos e entidades afins, como CCSL-USP, Transparência Hacker, Garoa Hacker Club, ITCP e Escritório Piloto, entre outros.
+           </p>
+           <p>Conheça mais sobre o PoliGNU em <a href="http://www.polignu.org/">http://www.polignu.org/</a></p>
+        </article><!-- end of .aboutDesc -->
+{% endblock content %}
+{% block extrascriptsend %}
+    menuActive("sobre_nos");
+{% endblock extrascriptsend %}

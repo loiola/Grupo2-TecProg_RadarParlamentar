@@ -1,0 +1,69 @@
+MANUAL DEPLOYMENT
+28/01
+
+Main source:
+https://uwsgi.readthedocs.org/en/latest/tutorials/Django_and_nginx.html
+
+sudo aptitude install python-pip python-dev git nginx python-virtualenv tmux
+sudo pip install uwsgi
+
+# mariadb: https://downloads.mariadb.org/mariadb/repositories/#
+sudo apt-get install python-software-properties
+sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db
+sudo add-apt-repository 'deb http://mirror.jmu.edu/pub/mariadb/repo/5.5/debian wheezy main'
+sudo apt-get update
+sudo apt-get install mariadb-server # como passar a senha nessa linha?
+sudo apt-get install libmariadbclient-dev
+
+mkdir ~/radar
+touch ~/radar/radar_nginx.conf
+touch ~/radar/uwsgi_params
+touch ~/radar/radar_uwsgi.ini 
+sudo ln -s ~/radar/radar_nginx.conf /etc/nginx/sites-enabled/
+sudo rm /etc/nginx/sites-enabled/default
+
+cd ~/radar
+virtualenv --no-site-packages venv_radar
+source venv_radar/bin/activate
+git clone https://github.com/leonardofl/radar_parlamentar.git repo
+cd repo
+easy_install -U distribute
+pip install -r requirements.txt
+pip install ipython
+mkdir /tmp/django_cache
+
+cd ~/radar/repo/radar_parlamentar/settings
+source is_prod.sh
+<create settings/production.py>
+mysql -u root -p
+CREATE DATABASE radar;
+cd ~/radar/repo/radar_parlamentar
+python manage.py syncdb
+
+#enables nginx to access the file socket that links it to uwsgi
+sudo usermod -a -G $USER www-data 
+
+# importing radar data
+cd ~/radar/repo/radar_parlamentar
+python manage.py shell
+from importadores import cmsp
+cmsp.main()
+from importadores import senado
+senado.main()
+from importadores import camara
+camara.main()
+
+# configuring uwsgi to start at boot
+wget -O init-deb.sh http://library.linode.com/assets/683-uwsgi-init-deb.sh
+sudo mv init-deb.sh /etc/init.d/uwsgi
+sudo chmod +x /etc/init.d/uwsgi
+sudo chown root:root /etc/init.d/uwsgi
+cd ~/radar
+sudo ln -s radar_uwsgi.ini /etc/default/uwsgi
+sudo /usr/sbin/update-rc.d -f uwsgi defaults
+sudo /etc/init.d/uwsgi start
+
+cd ~/radar
+uwsgi --ini radar_uwsgi.ini
+sudo /etc/init.d/nginx restart
+

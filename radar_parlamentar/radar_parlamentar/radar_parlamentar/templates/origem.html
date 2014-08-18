@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}
+    História do Radar Parlamentar
+{% endblock title %}
+
+{% block extrascripts %}
+{% endblock extrascripts %}
+
+{% block extrahead %}
+{% endblock extrahead %}
+
+{% block headerImgClass %}
+    about
+{% endblock headerImgClass %}
+
+{% block nomepagina %}
+    História do Projeto
+{% endblock nomepagina %}
+
+{% block pagedesc %}
+    Radar Parlamentar só é possível se existirem dados abertos
+{% endblock pagedesc %}
+
+
+{% block breadcrumbs %}
+    <li><a href="/index">Home</a> &raquo;</li>
+    <li><a href="/origem">História do Projeto</a></li>
+{% endblock breadcrumbs %}
+
+{% block content %}
+    <article class="aboutDesc">
+        <p>
+            A disponibilização pela Câmara dos Deputados de <a href="http://www2.camara.gov.br/transparencia/dados-abertos">dados abertos</a> na Internet sob a forma de webservices sobre as votações das proposições que ali tramitam inspirou Leonardo Leite a vasculhar e analisar esses dados, criando o projeto no início de 2012. Tratava-se de uma análise de similaridade dos partidos dois a dois, expressa como uma porcentagem.
+        </p>
+        <p>
+            <strong>DADOS ABERTOS</strong>
+        </p>
+        <p>
+            De acordo com a <a href="http://www.w3c.br/Home/WebHome">W3C</a>, dados abertos governamentais são a publicação e a disseminação de informações do setor público na internet, compartilhadas em formato bruto e aberto, de modo a permitir sua reutilização em aplicações digitais desenvolvidas pela sociedade. Uma vez que os dados abertos estão publicados, e podem ser processados por aplicações desenvolvidas por diversos interessados, proporciona-se a criação de múltiplos pontos de vista sobre aqueles dados publicados de forma bruta.
+        </p>
+        <p>
+        Com base nesses princípios, a Câmara liberou um conjunto de dados abertos acessíveis por web services que incluem os resultados das votações realizadas na câmara, sendo descrito o voto de cada parlamentar na votação.
+        </p>
+        <p>
+          Depois disso, outras casas legislativas disponibilizaram seus dados de votações, seguindo determinação da Lei de Acesso a Informação. Os dados do Senado e da Câmara Municipal de São Paulo já foram integrados ao <strong>Radar Parlamentar</strong>.
+        </p>
+        <p>
+            <strong>O GRÁFICO: ANÁLISE DE COMPONENTES PRINCIPAIS</strong>
+        </p>
+        <p>
+            Como as análises haviam sido feitas em forma de tabela, comparando partidos dois a dois, o desafio era representar todas as semelhanças em um mesmo gráfico. Saulo Trento passou a colaborar bastante com o projeto, introduzindo uma método baseado em análise de componentes principais (PCA).
+            </p>
+        <p>
+          A PCA é uma técnica de análise exploratória de dados utilizada, por exemplo, em data minning para a extração de significado de grandes quantidade de dados, em cuja situação a análise manual seria inviável. Através dessa técnica é possível gerar os gráficos em duas dimensões característicos do <strong>Radar Parlamentar</strong>.
+        </p>
+        <p>
+          De forma simplificada, os eixos x e y são as combinações lineares ortogonais das votações que melhor explicam a variância entre as votações dos parlamentares. Para uma explicação formal, a <a href="https://github.com/leonardofl/radar_parlamentar/raw/8d54db1df3830144892b93e799f86b5c46c00576/doc/radar_parlamentar.pdf">documentação (pdf)</a>.
+          </p>
+        <p>
+            <strong>DADOS PÚBLICOS E CÓDIGO ABERTO</strong>
+        </p>
+        <p>
+            Além das análises mostradas, aqueles que quiserem realizar suas próprias análises dos dados podem fazer isso facilmente usando <a href="http://polignu.org/projeto/camaraws/">outras ferramentas do projeto que foram desenvolvidas</a>. Entendemos ser de fundamental importância que o código fonte das análises seja aberto, tanto quanto os dados utilizados são públicos. Dessa forma, qualquer um pode verificar os resultados e compreender plenamente o método utilizado para obter os gráficos.
+        </p>
+    </article>
+{% endblock content %}
+
+{% block extrascriptsend %}
+    menuActive('origem');
+{% endblock extrascriptsend %}
+
+{% block extrajsend %}
+{% endblock extrajsend %}
