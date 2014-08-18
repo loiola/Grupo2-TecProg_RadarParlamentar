@@ -19,6 +19,7 @@
 """Módulo proposicoes -- funções para processamento de proposições
 Possui script que lista proposições com votações
 
+---linha para commit de teste (yuri)----
 Funcões:
 parse_html -- parse do arquivo recusrsos/proposicoes.html
 com_votacao -- verifica pelo web service lista de proposições que possuem votações
