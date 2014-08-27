@@ -26,7 +26,7 @@ from __future__ import unicode_literals
 import camaraws
 import sys
 
-# código florestal
+# Código florestal
 # http://www.camara.gov.br/proposicoesWeb/fichadetramitacao?idProposicao=17338
 tipo = 'pl'
 num = '1876'
@@ -35,7 +35,8 @@ prop = camaraws.obter_votacao(tipo, num, ano)
 
 txt = str(prop)
 print type(txt)
-#print prop
+
+# Print propositions
 for votacao in prop.votacoes:
   print('************')
   print(votacao)
