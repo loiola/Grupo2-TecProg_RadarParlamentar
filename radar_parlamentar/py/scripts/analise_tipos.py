@@ -21,7 +21,9 @@
 import proposicoes
 
 proposicoes = proposicoes.parse_html()
-pl = plp = pdc = mpv = pec = 0 
+pl = plp = pdc = mpv = pec = 0
+
+# Performs proposition count for each type
 for prop in proposicoes:
   if (prop['tipo'] == 'PL'):
     pl += 1
@@ -34,6 +36,7 @@ for prop in proposicoes:
   elif (prop['tipo'] == 'PEC'):
     pec += 1
 
+# Performs total count of propositions and shows the result for each type
 total = len(proposicoes)
 print('Votações na câmara em 2011')
 print('%d proposições' % total)
