@@ -55,7 +55,9 @@ def obter_votacao(tipo, num, ano):
     if not isinstance(prop, Proposicao): 
         return None
 
-    xml = obter_proposicao(tipo, num, ano) #aqui é o xml com mais detalhes sobre a proposição
+    # Here is the xml with more details about the proposition:
+    xml = obter_proposicao(tipo, num, ano) 
+
     tree = etree.fromstring(xml)
     prop.id = tree.find('idProposicao').text
     prop.ementa = tree.find('Ementa').text
