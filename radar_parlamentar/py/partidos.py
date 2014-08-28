@@ -15,15 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Módulo partidos -- funções para caracterização e comparação dos partidos
+"""Module parties - functions for characterization and comparison of parties
 
-Funcões:
-vetor_votacoes -- calcula o vetor de votações de um partido 
-semelhanca -- calcula a semelhança entre dois partidos
-semelhanca_pca -- calcula as semelhanças partidárias gerando um gráfico bidimensional 
+functions:
+vetor_votacoes - calculates the vector of voting for a party
+similarity - calculates the similarity between two parties
+semelhanca_pca - calculates similarities party generating a two-dimensional graph
 
-Contantes:
-PARTIDOS: lista com os nomes dos partidos
+constants:
+PARTIES: List the names of the parties
 """
 
 import algebra
@@ -33,13 +33,13 @@ import pca
 PARTIDOS = ['PT', 'PSDB', 'PV', 'PSOL', 'PCdoB', 'PP', 'PR', 'DEM', 'PMDB', 'PSC', 'PTB', 'PDT', 'PSB', 'PPS', 'PRB']
 
 def vetor_votacoes(partido, proposicoes):
-    """Calcula o vetor de votações de um partido 
-    Argumentos:
-    partido  -- nome do partido (string)
-    proposicoes -- lista de proposições contendo votações
+    """Calculates the vector of voting for a party
+     arguments:
+     party - party name (string)
+     propositions - propositions containing list of polls
 
-    Retorna:
-    Uma lista representando o vetor de votações do partido
+     returns:
+     A list representing the vector of party polls
     """    
     vetor = []
     for prop in proposicoes:
@@ -57,14 +57,14 @@ def semelhanca_vetores(vetor1, vetor2):
     return algebra.prod_escalar(nv1, nv2)
 
 def semelhanca(partido1, partido2, proposicoes):
-    """Calcula a semelhança entre dois partidos 
-    A semelhança é implementada como o produto escalar dos vetores de votações normalizados
-    Argumentos:
-    partido1, partido2  -- nomes do partidos (string)
-    proposicoes -- lista de proposições contendo votações
+    """Computes the similarity between two parties
+     The similarity is implemented as the scalar product of vectors normalized polls
+     arguments:
+     partido1, partido2 - names of parties (string)
+     propositions - propositions containing list of polls
 
-    Retorna:
-    Um valor real \in [0,1] representando a semelhança entre os partidos
+     returns:
+     A real value \ in [0,1] representing the similarity between the parties
     """    
     v1 = vetor_votacoes(partido1, proposicoes)
     v2 = vetor_votacoes(partido2, proposicoes)
@@ -72,13 +72,13 @@ def semelhanca(partido1, partido2, proposicoes):
     return (sem+1)/2.0
 
 def semelhanca_pca(vetores):
-    """Calcula as semelhanças partidárias gerando um gráfico bidimensional 
-    Isto é feito com a Análise de Componentes Principais (PCA)
-    Argumentos:
-    vetores -- uma lista de listas, em que cada lista é um vetor de votações de um partido
-    Retorna:
-    Uma lista em que a i-ésima posição representa a coordenada bidimensional do partido 
-    cujo vetor de votações era a i-ésima lista do argumento vetores
+    """Calculates similarities party generating a two-dimensional graph
+     This is done with the Principal Component Analysis (PCA)
+     arguments:
+     vectors - a list of lists, where each list is a vector of voting for a party
+     returns:
+     A list where the ith position represents the two-dimensional coordinate of the party
+     whose vector voting was the i-th argument list of vectors
     """
     #PCA: linhas são amostras e colunas variáveis
     # vamos fazer linhas = partidos e colunas = votações
