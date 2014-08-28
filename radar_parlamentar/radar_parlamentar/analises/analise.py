@@ -223,7 +223,7 @@ class AnalisadorPeriodo:
                     # If you only have one vote, one only has CP. Playing all zero in the 
                     # second CP
                     self.coordenadas_legislaturas[partido] = (
-                        self.coordenadas_legislaturas[partido])[0:2])
+                        self.coordenadas_legislaturas[partido])[0:2]
             elif self.num_votacoes == 1:
                 for partido in self.coordenadas_legislaturas.keys():
                     self.coordenadas_legislaturas[partido] = numpy.array(
