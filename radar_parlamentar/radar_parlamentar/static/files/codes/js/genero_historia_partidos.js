@@ -1,12 +1,16 @@
+//Function responsible for plot the graph referent the number of men and women in each legislature in each year
 function desenhar(partido){
 	
 
 	d3.json("/static/files/codes/js/genero_historia_partidos.json", function(error, data) {
 
+		//Setting graph parameters
 		var margin = {top: 20, right: 100, bottom: 50, left: 50},
 		    width = 960 - margin.left - margin.right,
 		    height = 500 - margin.top - margin.bottom;
 
+		
+		//Assigning legislature data in each year for each political party
 		legislaturas = data[partido];
 		anos = [];
 		for (key in legislaturas) {
@@ -75,6 +79,7 @@ function desenhar(partido){
 	      .attr("class", "y axis")
 	      .call(yAxis);
 
+	//Showing the porcentage of the men and women in each legislature of each year
 	var tip = d3.tip()
 	  .attr('class', 'd3-tip')
 	  .offset([-10, 0])
@@ -133,6 +138,7 @@ function desenhar(partido){
 	});
 }
 
+//Setting the politcal parties
 desenhar("PT");
 
 partidos = ['PCB', 'PSD', 'UDN', 'PP', 'PR', 'PTB', 'PRE', 'PRF', 'PST', 'UPF', 'AL', 'FUG', 'PSN', 'PSP', 'PRP', 'PTN', 'PDC', 'PNI', 'PL', 'PPR', 'ARENA', 'PTR', 'PSB', 'PRR', 'PSC', 'PRD', 'LASP', 'PRM', 'PRT', 'PPS', 'PSR', 'PS', 'PDS', 'MTR', 'MDB', 'PMDB', 'PSDB', 'PFL', 'PT', 'PTdoB', 'PDT', 'PJ', 'PCdoB', 'PC', 'PV', 'PRN', 'PPB', 'PSDC', 'PRONA', 'DEM', 'PSOL', 'PMN', 'PSL', 'PRS', 'PRB', 'PE', 'PRC', 'PRL', 'UDB', 'PLC', 'LEC', 'PD', 'ED', 'PRPa', 'PED', 'PNS', 'PPA', 'PNA', 'PSTU', 'PTC', 'PAN', 'PHS', 'PRTB'];
