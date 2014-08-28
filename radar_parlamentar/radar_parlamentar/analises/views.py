@@ -36,7 +36,8 @@ def analises(request):
 
 
 def analise(request, nome_curto_casa_legislativa):
-    ''' Retorna a lista de partidos para montar a legenda do gráfico'''
+    """Returns the party list to assemble the chart legends"""
+
     partidos = models.Partido.objects.order_by('numero').all()
     casa_legislativa = get_object_or_404(
         models.CasaLegislativa, nome_curto=nome_curto_casa_legislativa)
@@ -64,7 +65,8 @@ def analise(request, nome_curto_casa_legislativa):
 
 def json_analise(request, nome_curto_casa_legislativa,
                  periodicidade, palavras_chave=""):
-    """Retorna o JSON com as coordenadas do gráfico PCA"""
+    """Returns the JSON with the coordinates of chart PCA"""
+
     casa_legislativa = get_object_or_404(
         models.CasaLegislativa, nome_curto=nome_curto_casa_legislativa)
     lista_de_palavras_chave = utils.StringUtils.transforma_texto_em_lista_de_string(
@@ -79,7 +81,8 @@ def json_analise(request, nome_curto_casa_legislativa,
 
 def lista_de_votacoes_filtradas(request, nome_curto_casa_legislativa,
                 periodicidade=models.BIENIO, palavras_chave=""):
-    ''' Retorna a lista de votações filtradas'''
+    """Returns the filtered voting list"""
+
     casa_legislativa = get_object_or_404(
         models.CasaLegislativa,nome_curto=nome_curto_casa_legislativa)
     lista_de_palavras_chave = utils.StringUtils.transforma_texto_em_lista_de_string(palavras_chave)
