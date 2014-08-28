@@ -35,7 +35,9 @@ import sqlite3 as lite
 SIM = 'Sim'
 NAO = 'Não'
 ABSTENCAO = 'Abstenção'
-OBSTRUCAO = 'Obstrução' # interpretada como Abstenção
+
+# Interpreted as Abstenção:
+OBSTRUCAO = 'Obstrução' 
 
 class Partido:
     """Modela um partido político
@@ -43,11 +45,12 @@ class Partido:
     nome -- ex: 'PT' [string] 
     numero -- ex: '13' [string]
     """
-#    Atributos a serem implementados no futuro:
-#    tamanho [int], partido do governo (executivo)?[booleano], 
-#    cargos_indicados (quantidade de cargos de indicação do executivo que esse partido possui - ministros/secretários)
-#    Obs: como tamanho, partido do governo etc são características variáveis do partido, 
-#    talvez seja melhor elas pertencerem a uma classe SituacaoPartido, que teria como atributos partido, periodo e as citadas
+# Attributes to be implemented in the future:
+# tamanho [int], partido do governo (executivo)?[booleano], 
+# cargos_indicados (amount of executive positions indication that this political party has)
+# as size, ruling party and other variables are characteristics of the party, perhaps best
+# SituacaoPartido they belong to a class, which would have attributes like: party, period
+# and cited.
 
     def __init__(self, nome='', numero=''):
         self.nome = nome
@@ -191,7 +194,10 @@ class Deputado:
     idDep(nome,partido,uf) -- Retorna inteiro chamado idDep que identifica univocamente a tupla (nome,partido,uf) de acordo com a tabela PARLAMENTARES do bd.
     """
     listauf = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO']
-    dicpartidos = dict() # chave é a sigla, valor é o idPartido, número que ele ganhou (que não é o número eleitoral, que não estamos usando porque está sujeito a mudar com o tempo)
+
+    # Chave stands, the value is idPartido, number he won (which is not the electoral number, we are not using because it is subject to change over time	      
+    dicpartidos = dict() 
+
     dicpartidos_inicializado = False
     diclistadeps = {}
     diclistadeps_inicializado = False
@@ -240,7 +246,8 @@ class Deputado:
         con = lite.connect(bd)
         if len(con.execute("select * from sqlite_master where type='table' and name='PARTIDOS'").fetchall()) != 0: # se tabela existe
             partsdb = con.execute('SELECT * FROM PARTIDOS').fetchall()
-#            print partsdb
+             
+	    # Print partsdb:
             for p in partsdb:
                 Deputado.dicpartidos[p[1]] = p[0]
         file_listapartidos = 'listapartidos.txt'
@@ -248,15 +255,17 @@ class Deputado:
             prop_file = open(file_listapartidos,'r')
         except IOError:
             return 1
-        # ex: "PV 88"
+        
         regexp = '([A-z_-]*)\s*(\d*)'
         for line in prop_file:
-#            print line
+
+	    # Print line:
             res = re.search(regexp,line)
             if res:
                 siglawannabe = res.group(1)
                 idwannabe = res.group(2)
-                # verificar se ja tem, se sim warning, se nao acrescenta no bd e no dicpartidos
+
+                # Check if already have: if yes, warning. If not, it adds to the database and dicpartidos:
                 if idwannabe in Deputado.dicpartidos.values():
                     if not Deputado.dicpartidos[siglawannabe] == idwannabe:
                         print "WARNING: listapartidos.txt associa o %s ao idPartido %s" % (siglawannabe,idwannabe)
@@ -301,11 +310,13 @@ class Deputado:
                 Deputado.dicpartidos_inicializado = True
                 if siglapartido in Deputado.dicpartidos:
                     return Deputado.dicpartidos[siglapartido]
-            # se chegou aqui, encontrou partido novo.
+
+            # If it is here, found new political party.
             idpartido = max(Deputado.dicpartidos.values()+[0]) + 1
             Deputado.dicpartidos[siglapartido] = idpartido
             print "Novo partido '%s' encontrado. Atribuido idPartido %d" % (siglapartido,idpartido)
-            # colocar no banco de dados
+
+            # Put on database:
             con = lite.connect(bd)
             con.execute('INSERT INTO PARTIDOS VALUES(?,?)',(idpartido,siglapartido))
             con.commit()
@@ -330,12 +341,14 @@ class Deputado:
         O idDep é construido de forma a ser suficiente para determinar partido e uf apenas olhando o número, pois tem a sintaxe: PPPEENNN, onde PPP é o idPartido, EE é o idUF e NNN é um número único para cada nome de deputado dentro de um partido-uf.
         Se o deputado não estiver ainda na tabela PARLAMENTARES do bd, ele ganha uma nova idDep, é inserido na tabela, e retorna-se o idDep recém atribuído.
         """
-#        print Deputado.dicpartidos_inicializado
+
+	# Print Deputado.dicpartidos_inicializado:
         if not Deputado.diclistadeps_inicializado:
             Deputado.inicializar_diclistadeps()
             Deputado.diclistadeps_inicializado = True
 
-        iduf = '99' # usado quando UF não faz sentido (ex: câmara municipal)
+	# This is used when UF makes no sense (ex: câmara municipal):
+        iduf = '99'
         if uf:
             iduf = Deputado.idUF(uf)
         idPartUF = '%s%s' % (Deputado.idPartido(partido, bd), iduf)
