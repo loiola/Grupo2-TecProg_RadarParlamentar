@@ -1,7 +1,8 @@
 
 d3.csv("/static/files/codes/js/genero_historia_base.csv", function(error, data) {
 
-	var margin = {top: 20, right: 30, bottom: 50, left: 50},
+	//Chart Dimensions 
+  var margin = {top: 20, right: 30, bottom: 50, left: 50},
 	    width = 900 - margin.left - margin.right,
 	    height = 500 - margin.top - margin.bottom;
 
@@ -73,6 +74,7 @@ d3.csv("/static/files/codes/js/genero_historia_base.csv", function(error, data) 
       .attr("class", "y axis")
       .call(yAxis);
 
+//Showing percentage of men and women in each Legislature
 var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
