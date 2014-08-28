@@ -33,19 +33,23 @@ class AnalisePeriodo:
 
     def __init__(self):
         self.casa_legislativa = None
-        self.periodo = None  # PeriodoCasaLegislativa
+        # PeriodoCasaLegislativa
+        self.periodo = None 
         self.partidos = []
         self.votacoes = []
         self.num_votacoes = 0
-
         self.pca = None
+        # partido => int
+        self.tamanhos_partidos = {} 
+        # partido => [x,y]
+        self.coordenadas_partidos = {} 
 
-        self.tamanhos_partidos = {}  # partido => int
-        self.coordenadas_partidos = {}  # partdo => [x,y]
         # TODO coordenadas_partidos should be partido.nome => [x,y]
 
-        self.presencas_parlamentares = {}  # legislatura.id => boolean
-        self.coordenadas_legislaturas = {}  # legislatura.id => [x,y]
+        # legislatura.id => boolean
+        self.presencas_parlamentares = {} 
+        # legislatura.id => [x,y]
+        self.coordenadas_legislaturas = {}
+        # partido.nome => list of party legislatures (independent of period). 
         self.legislaturas_por_partido = {}
-            # partido.nome => lista das legislaturas do partido (independente
-            # de periodo).
+            
