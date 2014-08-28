@@ -60,8 +60,8 @@ for a in anuais:
 
 # Funções auxiliares:
 def quantidade_movimento(i,graus=0,espelho=0):
-    """Calcula quantidade de movimento entre o instante i (corresponde ao ano anos[i]) e o instante i+1.
-    No cálculo o instante i tem os eixos rotacionados (valor graus, entre 0 e 360), e o primeiro eixo multiplicado por -1 se espelho=0.
+    """Calculates the amount of movement between the instant i (corresponding to the year years [i]) and the time i + 1.
+     When calculating the time i has the rotated axes (degree value between 0 and 360) and the first axis multiplied by -1 if the mirror = 0.
     """
     qm = 0
     antes = dados[i]
@@ -75,7 +75,7 @@ def quantidade_movimento(i,graus=0,espelho=0):
     return qm
 
 def matrot(graus):
-   """ Retorna matriz de rotação 2x2 que roda os eixos em graus (0 a 360) no sentido anti-horário (como se os pontos girassem no sentido horário em torno de eixos fixos).
+   """ Returns 2x2 rotation that rotates the axes in degrees (0-360) in counterclockwise array (as if the points spun clockwise around fixed axes).
    """ 
    graus = float(graus)
    rad = numpy.pi * graus/180.
