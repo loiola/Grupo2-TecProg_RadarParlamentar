@@ -12,7 +12,7 @@ import unittest
 class CamaraWS_Test(unittest.TestCase):
 
   def test_vetor_votacoes(self): 
-    '''testa a geração de um vetor de votações'''
+    '''tests the generation of an array of polls'''
 
     # Tested polls (s,n,a):
     # (9,0,0) 
@@ -84,7 +84,7 @@ class CamaraWS_Test(unittest.TestCase):
       self.assertAlmostEqual(e, v, 5)
 
   def test_norma(self):
-    '''testa a função que retorna a norma do vetor'''
+    '''tests the function that returns the norm of the vector'''
     
     # Input:
 
@@ -166,7 +166,7 @@ class CamaraWS_Test(unittest.TestCase):
     self.assertAlmostEqual(s23, s32, 5)
 
   def test_semelhanca_partidos(self):
-    '''Testa a função de semelhança para partidos'''
+    '''Tests the function of similarity for parties'''
 
     partido1 = 'girondinos'
     partido2 = 'jacobinos'
