@@ -42,7 +42,10 @@ def parse_html():
     Cada posição da lista é um dicionário com chaves \in {id, tipo, num, ano}
     As chaves e valores desses dicionários são strings
     """
-    file_name = 'recursos/proposicoes2011.html'  # arquivo contem proposições votadas pela câmara em 2011
+
+    # File contains propositions voted on by the chamber in 2011:
+
+    file_name = 'recursos/proposicoes2011.html'  
     prop_file = codecs.open(file_name, encoding='ISO-8859-15', mode='r')
     regexp = '<A HREF=http://.*?id=([0-9]*?)>([A-Z]*?) ([0-9]*?)/([0-9]{4})</A>'
     proposicoes = []
@@ -59,9 +62,14 @@ def parse():
      Each position on the list is a dictionary with keys \ in {id, type in a year}
      The keys and values ​​are strings of these dictionaries
     """
-    file_name = 'resultados/votadas.txt'  # arquivo contem proposições votadas pela câmara em 2011 para as quais obtivemos o xml da votação
+
+    # File contains propositions voted on by the chamber in 2011 for which we obtained the vote xml:
+
+    file_name = 'resultados/votadas.txt'  
     prop_file = open(file_name, 'r')
-    # ex: "485262: MPV 501/2010"
+
+    # Example: "485262: MPV 501/2010"
+    
     regexp = '^([0-9]*?): ([A-Z]*?) ([0-9]*?)/([0-9]{4})'
     proposicoes = []
     for line in prop_file:

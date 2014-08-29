@@ -14,11 +14,11 @@ class CamaraWS_Test(unittest.TestCase):
   def test_vetor_votacoes(self): 
     '''testa a geração de um vetor de votações'''
 
-    # votações testadas (s,n,a):
-    #(9,0,0) 
-    #(0,8,1) 
-    #(7,1,1) 
-    #(3,3,3) 
+    # Tested polls (s,n,a):
+    # (9,0,0) 
+    # (0,8,1) 
+    # (7,1,1) 
+    # (3,3,3) 
 
     partido = 'arena'
     votacoes = []
@@ -33,20 +33,23 @@ class CamaraWS_Test(unittest.TestCase):
     depAbs.partido = partido
     depAbs.voto = model.ABSTENCAO 
 
-    # 1a votação
+    # First grade:
+
     vot = Votacao()
     for i in range(0,9):
       vot.deputados.append(depSim)
     votacoes.append(vot)
 
-    # 2a votação
+    # Second grade::
+
     vot = Votacao()
     for i in range(0,8):
       vot.deputados.append(depNao)
     vot.deputados.append(depAbs)
     votacoes.append(vot)
 
-    # 3a votação
+    # Third grade:
+
     vot = Votacao()
     for i in range(0,7):
       vot.deputados.append(depSim)
@@ -54,7 +57,8 @@ class CamaraWS_Test(unittest.TestCase):
     vot.deputados.append(depAbs)
     votacoes.append(vot)
 
-    # 4a votação
+    # Fourth voting:
+
     vot = Votacao()
     for i in range(0,3):
       vot.deputados.append(depSim)
@@ -68,10 +72,12 @@ class CamaraWS_Test(unittest.TestCase):
     proposicao.votacoes = votacoes
     proposicoes = [proposicao]
   
-    # invocando a função testada
+    # Tested by invoking the function:
+
     vetor = partidos.vetor_votacoes(partido, proposicoes)
 
-    # testando se tá certo
+    # If testing is right:
+
     expected = [1, -0.88889, 0.66667, 0]
     self.assertEqual(len(expected), len(vetor))
     for e, v in zip(expected, vetor):
@@ -80,7 +86,8 @@ class CamaraWS_Test(unittest.TestCase):
   def test_norma(self):
     '''testa a função que retorna a norma do vetor'''
     
-    # dados de entrada
+    # Input:
+
     v1 = [1, 0.8, 0.2, 0.5]
     v2 = [1, 0.7, 0.1, 0.6]
     v3 = [0, 0.2, 0.8, 0.2]
@@ -91,12 +98,14 @@ class CamaraWS_Test(unittest.TestCase):
 
   def test_normalizacao(self):
 
-    # dados de entrada
+    # Input:
+
     v1 = [1, 0.8, 0.2, 0.5]
     v2 = [1, 0.7, 0.1, 0.6]
     v3 = [0, 0.2, 0.8, 0.2]
 
-    # resultados esperados
+    # Expected results:
+
     nv1 = [0.719815751, 0.575852601, 0.14396315, 0.359907875]
     nv2 = [0.733235575, 0.513264902, 0.073323557, 0.439941345]
     nv3 = [0, 0.235702261, 0.942809042, 0.235702261]
@@ -110,7 +119,8 @@ class CamaraWS_Test(unittest.TestCase):
 
   def test_prod_escalar(self):
 
-    # dados de entrada
+    # Input:
+
     nv1 = [0.719815751, 0.575852601, 0.14396315, 0.359907875]
     nv2 = [0.733235575, 0.513264902, 0.073323557, 0.439941345]
     nv3 = [0, 0.235702261, 0.942809042, 0.235702261]
@@ -122,27 +132,32 @@ class CamaraWS_Test(unittest.TestCase):
   def test_semelhanca_vetores(self):
     '''testa a função de semelhança entre vetores'''
 
-    # dados de entrada
+    # Input:
+
     v1 = [1, 0.8, 0.2, 0.5]
     v2 = [1, 0.7, 0.1, 0.6]
     v3 = [0, 0.2, 0.8, 0.2]
 
-    # resultados obtidos
+    # Results obtained:
+
     s12 = partidos.semelhanca_vetores(v1,v2)
     s13 = partidos.semelhanca_vetores(v1,v3)
     s23 = partidos.semelhanca_vetores(v2,v3)
 
-    # resultados esperados
+    # Expected results:
+
     e12 = 0.99225369
     e13 = 0.356290619
     e23 = 0.29380298
 
-    # comparando
+    # Comparing:
+
     self.assertAlmostEqual(e12, s12, 5)
     self.assertAlmostEqual(e13, s13, 5)
     self.assertAlmostEqual(e23, s23, 5)
 
-    # semelhança é comutativa
+    # The resemblance is commutative:
+
     s21 = partidos.semelhanca_vetores(v2,v1)
     s31 = partidos.semelhanca_vetores(v3,v1)
     s32 = partidos.semelhanca_vetores(v3,v2)
@@ -157,7 +172,7 @@ class CamaraWS_Test(unittest.TestCase):
     partido2 = 'jacobinos'
     votacoes = []
 
-    # votações do test
+    # Votations of the test:
     # v1: p1(3,0,0) p2(0,3,0)
     # v2: p1(0,2,1) p2(2,0,1)
     # v3: p1(3,0,0) p2(0,2,1)
@@ -181,7 +196,8 @@ class CamaraWS_Test(unittest.TestCase):
     dep2Abs.partido = partido2
     dep2Abs.voto = model.ABSTENCAO 
 
-    # votação 1
+    # First grade:
+
     vot = Votacao()
     vot.deputados.append(dep1Sim)
     vot.deputados.append(dep1Sim)
@@ -191,7 +207,8 @@ class CamaraWS_Test(unittest.TestCase):
     vot.deputados.append(dep2Nao)
     votacoes.append(vot)
 
-    # votação 2
+    # Second grade:
+
     vot = Votacao()
     vot.deputados.append(dep1Nao)
     vot.deputados.append(dep1Nao)
@@ -201,7 +218,8 @@ class CamaraWS_Test(unittest.TestCase):
     vot.deputados.append(dep2Abs)
     votacoes.append(vot)
 
-    # votação 3
+    # Third grade:
+
     vot = Votacao()
     vot.deputados.append(dep1Sim)
     vot.deputados.append(dep1Sim)
@@ -216,11 +234,14 @@ class CamaraWS_Test(unittest.TestCase):
 
     proposicoes = [proposicao]
 
-    # invocando a função testada
+    # Tested by invoking the function:
+
     s = partidos.semelhanca(partido1, partido2, proposicoes)
 
-    # testando se tá certo
-    expected = 0.008766487 # calculado na mão
+    # If testing is right;
+    # Calculating on hand:
+
+    expected = 0.008766487 
     self.assertAlmostEqual(expected, s, 5)
 
 if __name__ == '__main__':
