@@ -1,3 +1,4 @@
+//Chart dimensions
 var margin = {top: 20, right: 0, bottom: 0, left: 0},
     width = 960,
     height = 500 - margin.top - margin.bottom,
@@ -182,3 +183,4 @@ d3.json("/static/files/codes/js/genero_treemap.json", function(root) {
         : d.name;
   }
 });
+  

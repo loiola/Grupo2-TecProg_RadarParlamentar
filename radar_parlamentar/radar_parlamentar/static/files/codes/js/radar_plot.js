@@ -145,7 +145,7 @@ Plot = (function ($) {
     // Function that draws the chart
     function plot_data(dados) {
 
-        // Inicialmente remove o spinner de loading
+        // Initially removes the loading spinner 
         $("#loading").remove();
 
         plot_total_votacoes_filtradas(dados["geral"]);
@@ -215,7 +215,7 @@ Plot = (function ($) {
             .attr("width", 113)
             .attr("height", 113);
         
-        // setando variáveis já declaradas
+        // Setting declared variables
         partidos = dados.partidos;
         periodos = dados.periodos;
         periodo_min = 0;
@@ -284,9 +284,9 @@ Plot = (function ($) {
             .text("Recolher Todos")
             .on("click", implode_todos);
 
-        // ############## Funções de controle de mudanças de estado ###########
+        // ############## State change controle function ###########
         
-        // Função que controla mudança de estado para o estado seguinte
+        // Function that controls change state for next state
         function configure_go_to_next() {
             go_to_next
                 .on("mouseover", mouseover_next)
@@ -294,7 +294,7 @@ Plot = (function ($) {
                 .on("click", change_to_next_period);
         }
 
-        // Função que controla a mudança de estado para o estado anterior
+        // Function that controls change state for previous state
         function configure_go_to_previous() {
             go_to_previous
                 .on("mouseover", mouseover_previous)
@@ -324,9 +324,9 @@ Plot = (function ($) {
             atualiza_grafico(false);
         }
 
-        // atualiza partidos e deputados no gráfico de acordo com o período atual
-        // explodindo: true quando estamos atualizando o gráfico por causa de uma explosão de partido
-        // (explosão de partido é quando se clica no partido para ver seus parlamentares)
+        // Updates parties and parliamentarian in chart according to current period
+        // exploding: true when are updating chart because of a political party explosion
+        // (party explode happens when you click on party for see your parliamentarian)
         function atualiza_grafico(explodindo) {
             label_nvotacoes.text("Não há votações relacionadas com as palavras chave informadas");
 
@@ -394,8 +394,8 @@ Plot = (function ($) {
                 .attr("dy",3)
                 .text(function(d) { return d.nome; });
 
-            // o circulo abaixo é totalmente transparente mas serve para os eventos de mouse,
-            // pois ele fica em cima do circulo do partido e em cima do texto.
+            /* The circle below is completely transparent but serves for the mouse events, 
+            because it's stays on circle of the party and above the text */
             new_parties.append("circle")
                 .attr("r", function(d) {return d.r[periodo_atual]; })
                 .attr("opacity",0.0)
