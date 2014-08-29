@@ -80,12 +80,15 @@ def semelhanca_pca(vetores):
      A list where the ith position represents the two-dimensional coordinate of the party
      whose vector voting was the i-th argument list of vectors
     """
-    #PCA: linhas são amostras e colunas variáveis
-    # vamos fazer linhas = partidos e colunas = votações
-    # devemos também centralizar os valores
-    # como todos os valores \in [0,1], não precisamos ajustar a escala
+    # PCA: lines are samples. Columns are variable 
+    # We do: linhas = partidos and colunas = votações
+    # Should centralize values.
+    # As all values ​​\ in [0,1], we need not to scale.
     matriz =  numpy.array(vetores)
-    matriz -= matriz.mean(axis=0) # centralização 
+
+    # Centralization:
+    
+    matriz -= matriz.mean(axis=0)  
     p = pca.PCA(matriz)
     return p
 
