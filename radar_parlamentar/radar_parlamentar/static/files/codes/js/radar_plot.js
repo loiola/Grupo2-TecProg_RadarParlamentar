@@ -410,7 +410,7 @@ Plot = (function ($) {
             new_circles.transition().duration(TEMPO_ANIMACAO)
                 .attr("r", function(d) { return d.r[periodo_atual]; });
             
-            // tirar os parlamentares eventualmente explodidos que pertencam a partidos que estejam saindo de cena:
+            // remove the parliamentarians that eventually exploded that belong the parties that stay out the scene:
             partidos_ou_parlamentares_no_periodo = get_partidos_no_periodo(periodo_atual);
             var parties2 = grupo_grafico.selectAll('.party').data(partidos_ou_parlamentares_no_periodo, function(d) { return d.nome });
             var parties_vao_sair2 = parties2.exit();
@@ -435,14 +435,14 @@ Plot = (function ($) {
 
             svg_base.call(parlamentar_tip);
 
-            // Parlamentares (represented by dots), treating one party at a time in this loop:
+            // Parliamentarians (represented by dots), treating one party at a time in this loop:
             partidos_legenda.forEach(function(partido) {
                 if (jQuery.inArray(partido,partidos_explodidos) == -1)
-                    var parlamentares_no_periodo = []; // não é para ter dados de parlamentares se o partido não estiver explodido.
+                    var parlamentares_no_periodo = []; // Must not have parliamentarians data ifthe political party no exploded.
                 else
                     var parlamentares_no_periodo = get_parlamentares_no_periodo(partido, periodo_atual);
 
-                // DATA-JOIN dos parlamentares deste partido:
+                // Parliamentarians DATA-JOIN this party::
                 var parlamentares = grupo_grafico.selectAll('.parlamentar_circle.partido_' + nome(partido))
                     .data(parlamentares_no_periodo, function(d) { return d.id });
 
@@ -598,7 +598,7 @@ Plot = (function ($) {
             atualiza_grafico(true);
         }
 
-        // remove o elemento de valor el da array lista, e retorna a lista modificada
+        //  removes the element of value equals el of the list array and return the modified list
         function remove_from_array(lista,el) {
             for(var i = lista.length - 1; i >= 0; i--) {
                 if(lista[i] === el) {
@@ -639,12 +639,12 @@ Plot = (function ($) {
             return partidos.filter(function(d){ return d.t[period] == 0;});
         }
 
-        // Retorna partidos excluindo partidos ausentes no período e partidos explodidos
+        // Returns parties excluding absent parties in period and exploded parties.
         function get_partidos_nao_explodidos_no_periodo(period) {
             return partidos.filter(function(d){ return d.t[period] > 0 && jQuery.inArray(d,partidos_explodidos) == -1;});
         }
         
-        // Retorna o json de parlamentares do partido, do qual foram excluídos parlamentares ausentes no dado period.
+        // Returns the parliamentarians json of the party, which were excluded absent parliamentarians in certain period.
         function get_parlamentares_no_periodo(partido, period) {
             return partido.parlamentares.filter(function (d) {return d.x[periodo_atual] !== null; })
         }
