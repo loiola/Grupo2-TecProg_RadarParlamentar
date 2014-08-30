@@ -65,8 +65,8 @@ d3.csv("/static/files/codes/js/genero_historia_base.csv", function(error, data) 
       .call(xAxis)
       	.selectAll("text")
 	.style("text-anchor", "end")
-	//.attr("dx", "-1.8em")
-	//.attr("dy", ".5em")
+	/* .attr("dx", "-1.8em")
+	.attr("dy", ".5em") */
 	.attr("transform", function(d){ return "rotate(-45)"})
       ;
 
@@ -110,18 +110,18 @@ svg.call(tip);
       //.style("fill", function(d) { return color(d.name); });
 
 
-//  var legend = svg.select(".state:last-child").selectAll(".legend")
-//      .data(function(d) { return d.ages; })
-//    .enter().append("g")
-//      .attr("class", "legend")
-//      .attr("transform", function(d) { return "translate(" + x.range() / 2 + "," + y((d.y0 + d.y1) / 2) + ")"; });
-//
-//  legend.append("line")
-//      .attr("x2", 10);
-//
-//  legend.append("text")
-//      .attr("x", 13)
-//      .attr("dy", ".35em")
-//      .text(function(d) { return d.name; });
+/*  var legend = svg.select(".state:last-child").selectAll(".legend")
+      .data(function(d) { return d.ages; })
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d) { return "translate(" + x.range() / 2 + "," + y((d.y0 + d.y1) / 2) + ")"; });
+
+  legend.append("line")
+      .attr("x2", 10);
+
+  legend.append("text")
+      .attr("x", 13)
+      .attr("dy", ".35em")
+      .text(function(d) { return d.name; }); */
 
 });
