@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Módulo model -- modelagem do domínio, baseado nos XMLs dos web services da câmara
+""" Model module -- domain modeling, based on web services XMLs of the chamber.
 
 Classes:
 Partido -- modela um partido
@@ -23,8 +23,8 @@ Proposicao -- modela uma proposição parlamentar
 Votacao -- modela uma votação pertencente à uma proposição parlamentar
 Deputado -- modela o voto de um deputado numa votação
 VotoPartido -- representa um conjunto de votos de um partido
-VotoUF -- representa um conjunto de votos de uma UF (estado ou distrito federal)
-""" 
+VotoUF -- representa um conjunto de votos de uma UF (estado ou distrito federal)."""
+
 
 from __future__ import unicode_literals
 import xml.etree.ElementTree as etree
@@ -40,11 +40,11 @@ ABSTENCAO = 'Abstenção'
 OBSTRUCAO = 'Obstrução' 
 
 class Partido:
-    """Models a political party
+    """ Models a political party
      attributes: 
     nome -- ex: 'PT' [string] 
-    numero -- ex: '13' [string]
-    """
+    numero -- ex: '13' [string]."""
+
 # Attributes to be implemented in the future:
 # tamanho [int], partido do governo (executivo)?[booleano], 
 # cargos_indicados (amount of executive positions indication that this political party has)
@@ -57,11 +57,11 @@ class Partido:
         self.numero = numero
 
 class Proposicao:
-    """Models a parliamentary proposition
+    """ Models a parliamentary proposition
      attributes:
      id, symbol, number, year, menu, explanation, situation - strings
-     votacaoes - list of objects of type Voting
-    """
+     votacaoes - list of objects of type Voting."""
+
 
     def __init__(self):
         self.id = ''
@@ -80,8 +80,8 @@ class Proposicao:
          xml - the string containing XML returned from web service that returns a proposition polls
 
          returns:
-         An object of type Proposition
-         """  
+         An object of type Proposition."""
+
         tree = etree.fromstring(xml)
         prop = Proposicao()
         prop.sigla = tree.find('Sigla').text
@@ -94,13 +94,14 @@ class Proposicao:
 
     @staticmethod
     def fromxmlid(xml):
-        """Transforms an XML ObterProposicaoPorID text in a string like "acronym number / year"
+        """ Transforms an XML ObterProposicaoPorID text in a string like "acronym number / year"
          arguments:
          xml - the string containing XML returned from web service that returns proposition by id
 
          returns:
          string like "acronym number / year", eg fromxmlid (513 512) returns "540/2011 MPV"
-        """  
+        """
+
         tree = etree.fromstring(xml)
         nome = tree.find('nomeProposicao').text
         return nome
@@ -116,11 +117,11 @@ class Proposicao:
         return "%s %s/%s" % (self.sigla, self.numero, self.ano)
 
 class Votacao:
-    """Models belonging to a vote a parliamentary proposition
+    """ Models belonging to a vote a parliamentary proposition
      attributes:
      summary, date, time - strings
-     Members - list of objects of type Member
-    """
+     Members - list of objects of type Member."""
+
     def __init__(self): 
         self.resumo = ''
         self.data = ''
@@ -129,13 +130,13 @@ class Votacao:
 
     @staticmethod
     def fromtree(tree):
-        """Transforms an XML in a vote
+        """ Transforms an XML in a vote
          arguments:
          tree - xml.etree.ElementTree type object representing the XML that describes a vote
 
          returns:
-         An object of type Voting
-        """
+         An object of type Voting."""
+
         vot = Votacao() 
         vot.resumo = tree.attrib['Resumo']
         vot.data = tree.attrib['Data']
@@ -146,10 +147,10 @@ class Votacao:
         return vot
 
     def por_partido(self):
-        """eturns aggregate votes by party
+        """ Returns aggregate votes by party
          returns:
-         A dictionary whose key is the party name (string) and the value is a VotoPartido
-        """
+         A dictionary whose key is the party name (string) and the value is a VotoPartido."""
+
         dic = {}
         for dep in self.deputados:
           part = dep.partido
@@ -160,10 +161,10 @@ class Votacao:
         return dic  
   
     def por_uf(self):
-        """Returns votes aggregated by UF
+        """ Returns votes aggregated by UF
          returns:
-         A dictionary whose key is the name of the UF (string) and the value is a VotoUF
-        """
+         A dictionary whose key is the name of the UF (string) and the value is a VotoUF."""
+
         dic = {}
         for dep in self.deputados:
           uf = dep.uf
@@ -180,7 +181,7 @@ class Votacao:
         return unicode(self).encode('utf-8')
 
 class Deputado:
-    """Models the vote of a member in a vote
+    """ Models the vote of a member in a vote
      attributes:
      name, party, uf - strings that characterize the deputy
      vote - vote cast by Congressman \ in {YES, NO, ABSTAIN, OBSTRUCTION}
@@ -191,8 +192,8 @@ class Deputado:
      inicializar_diclistadeps () - Copies PARLIAMENTARY db table in Deputado.diclistadeps variable.
      idPartido (siglapartido) - Returns integer that identifies the party according to the table PARTIES bd.
      idUF (siglauf) - Returns integer that identifies a UF. Use uppercase. Play StandardError if UF does not exist.
-     idDep (name, party, uf) - Returns integer called idDep that uniquely identifies the tuple (name, party, uf) according to the MPS table bd.
-    """
+     idDep (name, party, uf) - Returns integer called idDep that uniquely identifies the tuple (name, party, uf) according to the MPS table bd."""
+
     listauf = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO']
 
     # Chave stands, the value is idPartido, number he won (which is not the electoral number, we are not using because it is subject to change over time	      
@@ -210,13 +211,13 @@ class Deputado:
 
     @staticmethod
     def fromtree(tree):
-        """Transforms an XML in the vote of a deputy
+        """ Transforms an XML in the vote of a deputy
          arguments:
          tree - xml.etree.ElementTree type object representing the XML that describes the vote of a member
 
          returns:
-         An object of type deputy
-        """
+         An object of type deputy."""
+
         dep = Deputado()
         dep.nome = tree.attrib['Nome']
         dep.partido = tree.attrib['Partido']
@@ -235,14 +236,14 @@ class Deputado:
 
     @staticmethod
     def inicializar_dicpartidos(bd='resultados/camara.db'):
-        """Reads the database 'results / camaraws.db' PARTIES the table, if present, to initialize the variable with Deputado.dicpartidos parties that appear there. Deputado.dicpartidos is a dictionary whose key acronyms of parties and how the value idPartido (internal unique identifier, not necessarily equal to the electoral number).
+        """ Reads the database 'results / camaraws.db' PARTIES the table, if present, to initialize the variable with Deputado.dicpartidos parties that appear there. Deputado.dicpartidos is a dictionary whose key acronyms of parties and how the value idPartido (internal unique identifier, not necessarily equal to the electoral number).
 
          Then reads the listapartidos.txt file that contains lines like 'PV 88' where the acronym stands for a party and is the number one preferred idPartido that can be chosen by the user by editing the file manually. If a party 'listapartidos.txt' has already been found in the database with a different idPartido, prevails the database, the file is ignored, issuing a warning message.
 
          This allows the user to choose the idPartido you want to give to each party, for example making it coincide with the electoral number. Also allows databases created at different times end up atribuindos different idPartidos, which should not be a problem if the programs are consistent, but it could make finding a bug.
 
-         Returns 0 if the reading is successfully executed, 1 if the listapartidos.txt file does not exist (or do not have permission to read).
-        """
+         Returns 0 if the reading is successfully executed, 1 if the listapartidos.txt file does not exist (or do not have permission to read)."""
+
         con = lite.connect(bd)
         if len(con.execute("select * from sqlite_master where type='table' and name='PARTIDOS'").fetchall()) != 0: # se tabela existe
             partsdb = con.execute('SELECT * FROM PARTIDOS').fetchall()
@@ -285,8 +286,9 @@ class Deputado:
     
     @staticmethod
     def inicializar_diclistadeps():
-        """Reads the database 'results / camara.db' PARLIAMENTARY the table, if present, to initialize the variable with Deputado.diclistadeps deputies who appear there. Deputado.diclistadeps is a dictionary whose key an integer of up to five digits called idPartUF that identifies a couple party-UF, and value as a list of members who belong to this party-UF.
-        """
+        """ Reads the database 'results / camara.db' PARLIAMENTARY the table, if present, to initialize the variable with Deputado.diclistadeps deputies who appear there. Deputado.diclistadeps is a dictionary whose key an integer of up to five digits called idPartUF that identifies a couple party-UF, 
+            and value as a list of members who belong to this party-UF."""
+
         con = lite.connect('resultados/camara.db')
         if len(con.execute("select * from sqlite_master where type='table' and name='PARLAMENTARES'").fetchall()) != 0: # Se a tabela existe
             depsdb = con.execute('SELECT * FROM PARLAMENTARES').fetchall()
@@ -299,9 +301,9 @@ class Deputado:
 
     @staticmethod
     def idPartido(siglapartido, bd='resultados/camara.db'):
-        """Returns an integer that identifies the party according to the PARTIES table bd.
-         If the party is not on the table, gets a new identifier, and is inserted into the table.
-        """
+        """ Returns an integer that identifies the party according to the PARTIES table bd.
+         If the party is not on the table, gets a new identifier, and is inserted into the table."""
+
         if siglapartido in Deputado.dicpartidos:
             return Deputado.dicpartidos[siglapartido]
         else:
@@ -325,8 +327,8 @@ class Deputado:
 
     @staticmethod
     def idUF(siglauf):
-        """Given the abbreviation of a unit of the federation (two capital) returns an integer between 1 and 27 that uniquely identifies, or None if the symbol is not valid
-        """
+        """ Given the abbreviation of a unit of the federation (two capital) returns an integer between 1 and 27 that uniquely identifies, or None if the symbol is not valid."""
+
         try:
             iduf = Deputado.listauf.index(siglauf) + 1
             return iduf
@@ -335,12 +337,11 @@ class Deputado:
 
     @staticmethod
     def idDep(nome,partido,uf,bd='resultados/camara.db'):
-        """Given name, party and uf a deputy, returns an integer, called idDep, that uniquely identifies, according to MPS table bd.
+        """ Given name, party and uf a deputy, returns an integer, called idDep, that uniquely identifies, according to MPS table bd.
 
          Deputies with the same name but different membership are treated as separate members (might happen in the event of change of party).
          The idDep is constructed so as to be sufficient to determine uf party and just looking at the numbers, it has the syntax: PPPEENNN where PPP is the idPartido, EE is the idUF and NNN is a unique number for each name deputy within a party-uf.
-         If the Member is not in MPS table bd, he gains a new idDep, is inserted into the table, and returns the newly assigned idDep.
-        """
+         If the Member is not in MPS table bd, he gains a new idDep, is inserted into the table, and returns the newly assigned idDep."""
 
 	# Print Deputado.dicpartidos_inicializado:
         if not Deputado.diclistadeps_inicializado:
@@ -372,17 +373,17 @@ class Deputado:
 
 
 class VotosAgregados:
-    """Represents a number of votes
+    """ Represents a number of votes
      attributes:
-     yes, no, abstention - integers representing the number of votes in the set
-    """
+     yes, no, abstention - integers representing the number of votes in the set."""
+
 
     def add(self, voto):
-        """Adiciona um voto ao conjunto de votos
-        Argumentos:
+        """ Adds a set of votes to vote
+        Arguments:
         voto -- string \in {SIM, NAO, ABSTENCAO, OBSTRUCAO}
-        OBSTRUCAO conta como um voto NAO
-        """
+        OBSTRUCAO conta como um voto NAO."""
+
         if (voto == SIM):
           self.sim += 1
         if (voto == NAO):
@@ -404,21 +405,21 @@ class VotosAgregados:
         return unicode(self).encode('utf-8')
 
 class VotoPartido(VotosAgregados):
-    """Represents a set of votes a party
+    """ Represents a set of votes a party
      attributes:
      yes, no, abstention - integers representing the number of votes in the set
-     party - string
-    """
+     party - string."""
+
     def __init__(self, partido):
         VotosAgregados.__init__(self)
         self.partido = partido
 
 class VotoUF(VotosAgregados):
-    """Represents a set of votes of a UF (state or federal district)
+    """ Represents a set of votes of a UF (state or federal district)
      attributes:
      yes, no, abstention - integers representing the number of votes in the set
-     uf - string
-    """
+     uf - string."""
+     
     def __init__(self, uf):
         VotosAgregados.__init__(self)
         self.uf = uf
