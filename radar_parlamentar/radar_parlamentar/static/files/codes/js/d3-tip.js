@@ -1,11 +1,9 @@
-// d3.tip
-// Copyright (c) 2013 Justin Palmer
-//
-// Tooltips for d3.js SVG visualizations
+/* d3.tip
+Copyright (c) 2013 Justin Palmer
+Tooltips for d3.js SVG visualizations */
 
-// Public - contructs a new tooltip
-//
-// Returns a tip
+/* Public - contructs a new tooltip
+Returns a tip */
 d3.tip = function() {
   var direction = d3_tip_direction,
       offset    = d3_tip_offset,
@@ -20,9 +18,8 @@ d3.tip = function() {
     document.body.appendChild(node)
   }
 
-  // Public - show the tooltip on the screen
-  //
-  // Returns a tip
+  /* Public - show the tooltip on the screen
+  Returns a tip */
   tip.show = function() {
     var content = html.apply(this, arguments),
         poffset = offset.apply(this, arguments),
@@ -43,21 +40,18 @@ d3.tip = function() {
     return tip
   }
 
-  // Public - hide the tooltip
-  //
-  // Returns a tip
+  /* Public - hide the tooltip
+  Returns a tip */
   tip.hide = function() {
     nodel = d3.select(node)
     nodel.style({ opacity: 0, 'pointer-events': 'none' })
     return tip
   }
 
-  // Public: Proxy attr calls to the d3 tip container.  Sets or gets attribute value.
-  //
-  // n - name of the attribute
-  // v - value of the attribute
-  //
-  // Returns tip or attribute value
+  /* Public: Proxy attr calls to the d3 tip container.  Sets or gets attribute value.
+  n - name of the attribute
+  v - value of the attribute
+  Returns tip or attribute value */
   tip.attr = function(n, v) {
     if (arguments.length < 2 && typeof n === 'string') {
       return d3.select(node).attr(n)
@@ -69,12 +63,10 @@ d3.tip = function() {
     return tip
   }
 
-  // Public: Proxy style calls to the d3 tip container.  Sets or gets a style value.
-  //
-  // n - name of the property
-  // v - value of the property
-  //
-  // Returns tip or style property value
+  /* Public: Proxy style calls to the d3 tip container.  Sets or gets a style value.
+  n - name of the property
+  v - value of the property
+  Returns tip or style property value */
   tip.style = function(n, v) {
     if (arguments.length < 2 && typeof n === 'string') {
       return d3.select(node).style(n)
@@ -86,12 +78,10 @@ d3.tip = function() {
     return tip
   }
 
-  // Public: Set or get the direction of the tooltip
-  //
-  // v - One of n(north), s(south), e(east), or w(west), nw(northwest),
-  //     sw(southwest), ne(northeast) or se(southeast)
-  //
-  // Returns tip or direction
+  /* Public: Set or get the direction of the tooltip
+  v - One of n(north), s(south), e(east), or w(west), 
+  nw(northwest), sw(southwest), ne(northeast) or se(southeast)
+  Returns tip or direction */
   tip.direction = function(v) {
     if (!arguments.length) return direction
     direction = v == null ? v : d3.functor(v)
@@ -99,11 +89,9 @@ d3.tip = function() {
     return tip
   }
 
-  // Public: Sets or gets the offset of the tip
-  //
-  // v - Array of [x, y] offset
-  //
-  // Returns offset or
+  /* Public: Sets or gets the offset of the tip
+  v - Array of [x, y] offset
+  Returns offset or */
   tip.offset = function(v) {
     if (!arguments.length) return offset
     offset = v == null ? v : d3.functor(v)
@@ -111,11 +99,9 @@ d3.tip = function() {
     return tip
   }
 
-  // Public: sets or gets the html value of the tooltip
-  //
-  // v - String value of the tip
-  //
-  // Returns html value or tip
+  /* Public: sets or gets the html value of the tooltip
+  v - String value of the tip
+  Returns html value or tip */
   tip.html = function(v) {
     if (!arguments.length) return html
     html = v == null ? v : d3.functor(v)
@@ -224,19 +210,18 @@ d3.tip = function() {
     return el.ownerSVGElement
   }
 
-  // Private - gets the screen coordinates of a shape
-  //
-  // Given a shape on the screen, will return an SVGPoint for the directions
-  // n(north), s(south), e(east), w(west), ne(northeast), se(southeast), nw(northwest),
-  // sw(southwest).
-  //
-  //    +-+-+
-  //    |   |
-  //    +   +
-  //    |   |
-  //    +-+-+
-  //
-  // Returns an Object {n, s, e, w, nw, sw, ne, se}
+  /* Private - gets the screen coordinates of a shape
+  Given a shape on the screen, will return an SVGPoint for the directions
+  n(north), s(south), e(east), w(west), ne(northeast), se(southeast), nw(northwest),
+  sw(southwest).
+  
+     +-+-+
+     |   |
+     +   +
+     |   |
+     +-+-+
+  
+  Returns an Object {n, s, e, w, nw, sw, ne, se} */
   function getScreenBBox() {
     var target     = d3.event.target,
         bbox       = {},
