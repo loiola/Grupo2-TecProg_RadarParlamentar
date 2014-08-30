@@ -3,6 +3,8 @@ import os
 
 MODULE_DIR = os.getcwd() + '/exportadores/'
 
+"""Deserializes party, legislative house, parliamentary, legislature, proposition,
+voting and vote; And save the results"""
 
 def main():
     deserialize_partido()
