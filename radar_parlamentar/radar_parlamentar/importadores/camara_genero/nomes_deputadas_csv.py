@@ -4,10 +4,13 @@ from os import listdir
 from xml.dom.minidom import parseString
 
 
+"""Writes deputy names, its gender and legislature on spreadsheet"""
+
 arqs = listdir("bios")
 saida = open("saida.csv", "w")
 
 cont = 0
+
 for arq in arqs:
         ponteiro = open("bios/" + arq)
         data = ponteiro.read()
@@ -26,6 +29,7 @@ for arq in arqs:
                 'MANDATOSCD')[0].firstChild.data
             legis = legis.split(";")
             saida_legis = ""
+
             for leg in legis:
                 dados = leg.split(",")
                 ano = dados[1]
@@ -39,6 +43,8 @@ for arq in arqs:
                 except:
                     print(dados)
                     saida_legis += " , "
+
             saida.write('%s|%s|%s\n' % (nome, genero, saida_legis))
 
+# Print the deputy account
 print(cont)
