@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-""" a small class for Principal Component Analysis
+""" A small class for Principal Component Analysis
 Usage:
     p = PCA( A, fraction=0.90 )
 In:
@@ -50,8 +50,7 @@ See also:
     PCA micro-tutorial
     iris-pca .py .png
 
-Source: http://stackoverflow.com/questions/1730600/principal-component-analysis-in-python
-"""
+Source: http://stackoverflow.com/questions/1730600/principal-component-analysis-in-python."""
 
 from __future__ import division
 import numpy as np
@@ -122,8 +121,7 @@ class PCA:
 
 class Center:
     """ A -= A.mean() /= A.std(), inplace -- use A.copy() if need be
-        uncenter(x) == original A . x
-    """
+        uncenter(x) == original A . x"""
         # Mttiw:
         
     def __init__( self, A, axis=0, scale=True, verbose=1 ):
