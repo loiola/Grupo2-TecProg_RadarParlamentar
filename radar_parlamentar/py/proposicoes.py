@@ -16,14 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Module propositions - functions for processing propositions
-Has script that lists propositions to polls
+""" Module propositions - functions for processing propositions
+Has script that lists propositions to polls.
 
-functions:
+Functions:
 parse_html - parse recusrsos / proposicoes.html file
 com_votacao - web service verifies the list of propositions that have polls
-proposicoes_com_votacao - returns list of propositions that have voting based votadas.txt file
-"""
+proposicoes_com_votacao - returns list of propositions that have voting based votadas.txt file."""
 
 import re
 import codecs
@@ -36,12 +35,11 @@ import camaraws
 # PEC - proposta de emenda à constituição
 
 def parse_html():
-    """Parse do arquivo recusrsos/proposicoes.htmll
+    """ Parse do arquivo recusrsos/proposicoes.htmll
     Retorna:
     Uma lista com a identificação das proposições encontradas no htmll
     Cada posição da lista é um dicionário com chaves \in {id, tipo, num, ano}
-    As chaves e valores desses dicionários são strings
-    """
+    As chaves e valores desses dicionários são strings."""
 
     # File contains propositions voted on by the chamber in 2011:
 
@@ -56,12 +54,11 @@ def parse_html():
     return proposicoes
 
 def parse():
-    """Parse the recusrsos / proposicoes.htmll file
+    """ Parse the recusrsos / proposicoes.htmll file
      returns:
      A list identifying the propositions found in htmll
      Each position on the list is a dictionary with keys \ in {id, type in a year}
-     The keys and values ​​are strings of these dictionaries
-    """
+     The keys and values ​​are strings of these dictionaries."""
 
     # File contains propositions voted on by the chamber in 2011 for which we obtained the vote xml:
 
@@ -79,7 +76,7 @@ def parse():
     return proposicoes
 
 def com_votacao(proposicoes): 
-    """Checks which propositions have votes in the chamber web service
+    """ Checks which propositions have votes in the chamber web service
      It is only on those propositions we will do our analyzes
      This check is done by invoking the web service camera
      arguments:
@@ -87,8 +84,7 @@ def com_votacao(proposicoes):
 
      returns:
      List of propositions that present voting list
-     Each proposition is a dictionary with keys \ in {id, type in a year}; keys and values ​​are strings    
-    """
+     Each proposition is a dictionary with keys \ in {id, type in a year}; keys and values ​​are strings."""
     votadas = []
     for prop in proposicoes:
         print "requisitando " + prop['id']
@@ -98,13 +94,12 @@ def com_votacao(proposicoes):
     return votadas
 
 def proposicoes_com_votacao():
-    """Returns the list of propositions for which it is possible to get the xml of the vote
+    """ Returns the list of propositions for which it is possible to get the xml of the vote
      This list is taken from the results / votadas.txt file
      returns:
      A list of propositions
      Each position on the list is a dictionary with keys \ in {id, type in a year}
-     The keys and values ​​are strings of these dictionaries   
-    """
+     The keys and values ​​are strings of these dictionaries."""
     return parse()
 
 
