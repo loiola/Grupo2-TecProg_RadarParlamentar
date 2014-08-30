@@ -16,15 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""módulo cria_bd 
+""" Module cria_bd 
 
 Classes:
-GeradorBD -- Cria um banco de dados sqlite3 a partir de proposições fornecidas (lista de objetos do tipo Proposicao) 
+GeradorBD -- Creates a sqlite3 database from propositions provided (list of objects of type Proposicao). 
 
-Funções:
-cria_bd_camara_deputados -- Cria o banco de dados da câmara dos deputados em 'resultados/camara.db' a partir de requisições ao webservice da câmara pelas proposições elencadas no arquivo 'resultados/ids_que_existem.txt' (este último pode ser criado com o módulo ids_que_existem)
+Functions:
+cria_bd_camara_deputados -- Creates the database in the chamber of deputies 'resultados/camara.db' from webservice requests to the chamber by the propositions listed 
+                            in the file 'resultados/ids_que_existem.txt' (the latter can be created with ids_que_existem module)
 
-cira_bc_cmsp -- Cria o banco de dados da Câmara Municipal do Município de São Paulo a partir dos XMLs em resultados/cmsp[ano].xml
+cria_bc_cmsp -- Creates the database of the Câmara Munincipal de São Paulo from XMLs on resultados/cmsp[ano].xml
 """
 
 from __future__ import unicode_literals
@@ -40,13 +41,13 @@ import ids_que_existem
 import sqlite3 as lite
 
 class GeradorBD:
-    """Cria um banco de dados sqlite3 a partir de proposições fornecidas (lista de objetos do tipo Proposicao)"""
+    """ Creates a sqlite3 database from propositions provided (list of objects of type Proposicao)."""
 
     def __init__(self, proposicoes = [], db = "resultados/votos.db"):
-        """ Argumentos:
-        proposicoes - lista de objetos do tipo Proposicao
-        db - string com a localização do banco de dados a ser gerado (default = "resultados/votos.db")
-        """
+        """ Arguments:
+        proposicoes - list of objects of type Proposicao
+        db - string with the location of the database to be generated (default = "resultados/votos.db")."""
+
         self.proposicoes = proposicoes
         self.db = db
 
@@ -146,12 +147,12 @@ class GeradorBD:
 IDS_QUE_EXISTEM = 'resultados/ids_que_existem.txt'
 IDS_VOTADAS = 'resultados/votadas.txt'
 def cria_bd_camara_deputados(arquivo_ids=IDS_VOTADAS):
-    """Cria o banco de dados da câmara dos deputados em 'resultados/camara.db'
-        Argumentos:
-        arquivo_ids -- arquivo com a listagem de "id: tipo num/ano" (uma entrada por linha, suportando comentários com #)
-                        a função utilizará esses ids para realizar chamadas ao web service da câmara e obter as votações
-                        o valor defualt é o arquivo IDS_VOTADAS; 
-                        outro arquivo útil é o IDS_QUE_EXISTEM (que pode ser criado com o módulo ids_que_existem)
+    """ Creates the Chamber od Deputies's database on 'resultados/camara.db'
+        Arguments:
+        arquivo_ids -- > File with the list of "id: tipo num/ano" (one entry per line, supporting comments with #).
+                       > The function will use these ids to make calls to the web service and get the camera polls.
+                       > The default value is the IDS_VOTADAS file.
+                       > Another useful file is IDS_QUE_EXISTEM (which can be created with ids_que_existem module).
     """
 
     props = []
@@ -170,7 +171,7 @@ def cria_bd_camara_deputados(arquivo_ids=IDS_VOTADAS):
     gerador.gera_bd()
 
 def cria_bd_cmsp():
-    """Cria o banco de dados da câmara municipal de são paulo em 'resultados/cmsp.db' """
+    """ Creates the database of the Câmara Munincipal de São Paulo from XMLs on resultados/cmsp[ano].xml."""
 
     props = cmsp.from_xml(cmsp.XML2010)   
     props += cmsp.from_xml(cmsp.XML2011)
