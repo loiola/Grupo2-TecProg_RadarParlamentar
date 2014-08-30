@@ -64,8 +64,8 @@ function desenhar(legislatura){
 	      .call(xAxis)
 			.selectAll("text")
 			.style("text-anchor", "end")
-			//.attr("dx", "-1.8em")
-			//.attr("dy", ".5em")
+			/*.attr("dx", "-1.8em")
+			  .attr("dy", ".5em") */
 			.attr("transform", function(d){ return "rotate(-45)"});
 
 	  svg.append("g")
@@ -103,21 +103,21 @@ function desenhar(legislatura){
 	      .attr("class", function(d){return "barra-"+d.name;})
 	      .attr("height", function(d) { return y(d.y0) - y(d.y1); });
 
-	 // var legend = svg.select(".state:last-child").selectAll(".legend")
-	 //     .data(function(d) { return d.ages; })
-	 //   .enter().append("g")
-	 //     .attr("class", "legend")
-	 //     .attr("transform", function(d) { return "translate(" + 2 * x.rangeBand() + "," + y(1 -  (d.y0 + d.y1)/3) + ")"; });
+	 /* var legend = svg.select(".state:last-child").selectAll(".legend")
+	  .data(function(d) { return d.ages; })
+	 .enter().append("g")
+	  .attr("class", "legend")
+	  .attr("transform", function(d) { return "translate(" + 2 * x.rangeBand() + "," + y(1 -  (d.y0 + d.y1)/3) + ")"; }); */
 
-	 // legend.append("line")
-	 //     .attr("wdith", 10)
-	 //     .attr("height", 10)
-	 //     .attr("class", function(d){ return "barra-"+d.name;});
+	 /* legend.append("line")
+	 .attr("wdith", 10)
+	 .attr("height", 10)
+	 .attr("class", function(d){ return "barra-"+d.name;}); */
 
-	 // legend.append("text")
-	 //     .attr("x", 13)
-	 //     .attr("dy", ".35em")
-	 //     .text(function(d) { return d.name; });
+	 /* legend.append("text")
+	 .attr("x", 13)
+	 .attr("dy", ".35em")
+	 .text(function(d) { return d.name; }); */
 
 	});
 }
