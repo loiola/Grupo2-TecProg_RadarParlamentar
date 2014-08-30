@@ -5,6 +5,8 @@ from xml.dom.minidom import parseString
 import json
 
 
+"""Makes a comparison between parties by gender (F - female / M - male)"""
+
 arqs = listdir("bios")
 
 generos = {}
@@ -12,6 +14,7 @@ historia = {}
 lista_partidos = []
 
 cont = 0
+
 for arq in arqs:
     if arq[0] != ".":
         ponteiro = open("bios/" + arq)
@@ -27,13 +30,16 @@ for arq in arqs:
                 cont += 1
             else:
                 genero = "M"
+
             nome = record.getElementsByTagName('TXTNOME')[0].firstChild.data
             legis_anos = record.getElementsByTagName(
                 'LEGISLATURAS')[0].firstChild.data
             generos[nome] = genero
 
             anos = legis_anos.split(",")
+
             anos2 = []
+
             for ano in anos:
                 if ano.find("e") == -1:
                     anos2.append(ano)
@@ -43,7 +49,9 @@ for arq in arqs:
                     anos2.append(ano2.strip()[:-1])
 
             legis = legis.split(";")
+
             partidos = []
+
             for leg in legis:
                 termos = leg.split(",")
                 data = termos[1].strip()
@@ -74,7 +82,7 @@ for arq in arqs:
                     legis_partidos[partido] = nums
                 nums[genero] = nums.get(genero, 0) + 1
 
-
+# Print the comparison account by gender
 print(cont)
 
 print(historia.keys())
