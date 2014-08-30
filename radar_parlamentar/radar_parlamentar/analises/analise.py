@@ -47,13 +47,12 @@ class AnalisadorTemporal:
     as possible from one side to the other (see algorithm of rotation).
 
     Attributes:
-        data_inicio e data_fim -- strings in the format 'yyyy-mm-dd'.
+        data_inicio and data_fim -- strings in the format 'yyyy-mm-dd'.
         analises_periodo -- list of objects of class AnalisePeriodo 
         palavras_chave -- list of strings to be used in filtering 
         votacoes -- list of objects of type Voting for use in the analysis if not 
         specified, looking for votes in the database according data_inicio, data_fim 
-        e palavras_chave.
-    """
+        e palavras_chave."""
 
     def __init__(self, casa_legislativa, periodicidade,
                  palavras_chave=[], votacoes=[]):
@@ -154,7 +153,7 @@ class AnalisadorPeriodo:
         # In degrees, rotation made ​​possible by self.espelha_ou_roda ()
         self.theta = 0
 
-        # Self._inicializa_vetores calculated by ():
+        # self._inicializa_vetores calculated by ():
         self.vetores_votacao = []
         self.vetores_presencas = []
         self.tamanhos_partidos = {}
@@ -163,11 +162,11 @@ class AnalisadorPeriodo:
         # Array of partido.nome's, one by por legislature
         self.partido_do_parlamentar = []
 
-        # Legislatura.id => {True,False}, being True if was present in
+        # legislatura.id => {True,False}, being True if was present in
         # period.
         self.presencas_legislaturas = {}
 
-        # Partido.nome => list of party legislatures (independent of period).
+        # partido.nome => list of party legislatures (independent of period).
         self.legislaturas_por_partido = {}
 
         self.pca_legislaturas = None
@@ -271,8 +270,8 @@ class AnalisadorPeriodo:
         return self.vetores_presencas.sum(axis=1).nonzero()[0].tolist()
 
     def _preenche_pca_de_legislaturas_nulas(self, ilnn):
-        """Recupera legislaturas ausentes no período, atribuindo NaN em todas
-        as dimensões no espaço das componentes principais"""
+        """Recovers missing legislatures in the period, giving NaN in all 
+        dimensions in the space of principal components"""
 
         # Save result of pca in U2
         U2 = self.pca.U.copy()  
@@ -332,25 +331,24 @@ class MatrizesDeDadosBuilder:
         # Key is the name of party, and value is VotoPartido
         self._dic_partido_votos = {}
 
-        # Legislatura.id => voto.opcao
+        # legislatura.id => voto.opcao
         self._dic_legislaturas_votos = {}  
 
     def gera_matrizes(self):
-        """Cria duas matrizes:
-            matriz_votacoes -- de votações (por legislaturas),
-            matriz_presencas -- presenças de legislaturas
+        """Create two matrixcs:
+            matriz_votacoes -- from voting (by legislatures),
+            matriz_presencas -- presences from legislatures
 
-        Os valores possíveis na matriz de votações são:
-        -1 (não), 0 (abtencão/falta) e 1 (sim).
-        Os valores possíveis na matriz de presenças são:
-        0 (falta) e 1 (presente).
-        As linhas indexam parlamentares. As colunas indexam as votações.
-        A ordenação das linhas segue a ordem de self.partidos ou
-        self.legislaturas, e a ordenação das colunas segue a ordem
-        de self.votacoes.
+        The possible values in voting matrix are:
+        -1 (no), 0 (abteining/miss) and 1 (yes).
+        The possible values in prences matrix are:
+        0 (lack) e 1 (present).
+        The lines index parliamentaries. The columns index the votings.
+        The ordering of the rows follows the order of self.partidos or 
+        self.legislaturas, and the ordering of the columns follows the 
+        order of self.votacoes.
         
-        Retorna matriz_votacoes
-        """
+        Returns matriz_votacoes"""
 
         # Voting index
         iv = -1  
@@ -431,6 +429,7 @@ class AnalisadorPartidos:
 
     def _media_sem_nans(self, array_numpy):
         """ Returns average by array numpy columns, desregardin the nans."""
+        
         mdat = numpy.ma.masked_array(array_numpy, numpy.isnan(array_numpy))
         mm = numpy.mean(mdat, axis=0)
         return mm.filled(numpy.nan)
