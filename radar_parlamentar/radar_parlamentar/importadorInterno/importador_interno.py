@@ -26,6 +26,8 @@ logger = logging.getLogger("radar")
 
 MODULE_DIR = os.getcwd() + '/exportadores/'
 
+"""Methods that deserialize objects for reading."""
+
 
 def main():
     deserialize_partido()
