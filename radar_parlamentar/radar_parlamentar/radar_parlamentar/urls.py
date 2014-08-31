@@ -36,8 +36,7 @@ urlpatterns = patterns(
     url(r'^dados/(?P<dado_solicitado>\w*)/$',
         'exportadores.views.download_dados'),
 
-    # Páginas do Projeto Gênero do Hackathon da Câmara dos
-    # Deputados em 2013
+    # Pages Project Gender Hackathon House of Representatives in 2013
     url(r'^genero/$', 'radar_parlamentar.views.genero'),
     url(r'^genero/tematica/partido/$',
         'radar_parlamentar.views.genero_matriz'),
@@ -54,7 +53,7 @@ urlpatterns = patterns(
     url(r'^genero/tematica/nuvem/$',
         'radar_parlamentar.views.genero_termos_nuvem'),
 
-    # Serivço que retorna conteúdo para plotar o mapa
+    # Ports Supported returning content to plot the map
     url(r'^analises/analise/(?P<nome_curto_casa_legislativa>\w*)/$',
         'analises.views.analise'),
     url(r'^analises/json_analise/(?P<nome_curto_casa_legislativa>\w*)/(?P<periodicidade>\w*)/$',
