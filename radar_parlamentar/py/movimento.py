@@ -24,7 +24,9 @@ import sys
 # Modifiable parameters:
 # Political parties to be included in the analyzes:
 
-parts = [u'PMDB', u'PTB', u'PDT', u'PT', u'DEM', u'PCdoB', u'PSB', u'PSDB', u'PSC', u'PMN', u'PPS', u'PV', u'PTdoB', u'PP', u'PHS', u'PRB', u'PSOL', u'PR', u'PSD']
+parts = [u'PMDB', u'PTB', u'PDT', u'PT', u'DEM', u'PCdoB', u'PSB', u'PSDB', 
+	u'PSC', u'PMN', u'PPS', u'PV', u'PTdoB', u'PP', u'PHS', u'PRB', u'PSOL', 
+	u'PR', u'PSD']
 
 ano_inicial = 2002
 ano_final = 2011
@@ -54,8 +56,16 @@ for a in anuais:
 
 # Auxiliary functions:
 def quantidade_movimento(i,graus=0,espelho=0):
+<<<<<<< HEAD
     """Calculates the amount of movement between the instant i (corresponding to the year years [i]) and the time i + 1.
      When calculating the time i has the rotated axes (degree value between 0 and 360) and the first axis multiplied by -1 if the mirror = 0."""
+=======
+    """ Calculates the amount of movement between the instant i (corresponding 
+	to the year years [i]) and the time i + 1.
+     When calculating the time i has the rotated axes (degree value between 0 
+	and 360) and the first axis multiplied by -1 if the mirror = 0.
+	"""
+>>>>>>> estilo-e-design
 
     qm = 0
     antes = dados[i]
@@ -69,7 +79,13 @@ def quantidade_movimento(i,graus=0,espelho=0):
     return qm
 
 def matrot(graus):
+<<<<<<< HEAD
    """Returns 2x2 rotation that rotates the axes in degrees (0-360) in counterclockwise array (as if the points spun clockwise around fixed axes).""" 
+=======
+   """ Returns 2x2 rotation that rotates the axes in degrees (0-360) in counterclockwise 
+	array (as if the points spun clockwise around fixed axes).
+	""" 
+>>>>>>> estilo-e-design
    
    graus = float(graus)
    rad = numpy.pi * graus/180.

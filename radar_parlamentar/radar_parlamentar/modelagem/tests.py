@@ -350,7 +350,7 @@ class ModelsTest(TestCase):
         nomes_votacao = [vt.id_vot for vt in antes_objetos_votacao]
         self.assertTrue(' 12345' in nomes_votacao)
 
-        # Tentando excluir uma casa que não existe
+        # Trying to delete a house that does not exist
         models.CasaLegislativa.deleta_casa('casa_qualquer')
         models.CasaLegislativa.deleta_casa('cs1')
 

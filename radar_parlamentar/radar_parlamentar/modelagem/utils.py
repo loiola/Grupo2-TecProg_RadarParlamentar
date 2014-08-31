@@ -27,13 +27,13 @@ import datetime
 class MandatoLists:
 
     def get_mandatos(self, esfera, ini_date, end_date):
-        """Retorna datas do início de cada mandato no período compreendido
-            entre ini_date e end_date
-            Argumentos:
-                ini_date, end_date -- tipo date
-            Retorno:
-                lista do tipo date
-            Obs: início de cada mandato é sempre em 1 de janeiro
+        """Return dates for the start of each term in the period
+             between ini_date and end_date
+             arguments:
+                 ini_date, end_date - date type
+             return:
+                 list of type date
+             Note: beginning of each term is always on January 1st
         """
         if esfera == MUNICIPAL:
             return self._get_mandatos(ini_date, end_date, 2009)
@@ -55,29 +55,29 @@ class MandatoLists:
 
 class PeriodosRetriever:
 
-    """Recupera os períodos com um mínimo de votações de uma casa legislativa
-        entre data_da_primeira_votacao e data_da_ultima_votacao
-        Argumentos:
-          casa_legislativa -- um objeto CasaLegislativa.
-          periodicidade -- uma constante em PERIODOS (ex. ANO, SEMESTRE).
-          data_da_primeira_votacao, data_da_ultima_votacao:
-              objetos datetime. Se não especificados,
-              utiliza todo o histórico da casa.
-          numero_minimo_de_votacoes -- periodos com menos votações
-          são excluídos da lista. Default é 1.
-        Retorna:
-            Uma lista de objetos do tipo PeriodoCasaLegislativa.
-        Detalhes:
-        1) Períodos anual, biênio e quadriênio sempre começam em 1 de janeiro.
-            Período semestral começa em 1 de janeiro ou 1 de julho.
-            Período bimestral começa no primeiro dia do mês inicial do período.
-        2) O início do primeiro período sempre coincidi com um início
-            de um mandato. Assim, é garantido que cada período esteja
-            inteiramente dentro de um mandato. Mandatos municipais são grupos
-            de 4 anos começando em 2009 + i*4, i \in Z
-            Mandatos federais/estaduais são grupos de 4 anos começando
-            em 2011 + i*4, i \in Z
-            WARNING: Brazil dependent code!
+    """Retrieves periods with a minimum of a legislative house polls
+         between data_da_primeira_votacao and data_da_ultima_votacao
+         arguments:
+           casa_legislativa - CasaLegislativa one object.
+           periodicity - a constant in PERIODS (ex YEAR PERIOD.).
+           data_da_primeira_votacao, data_da_ultima_votacao:
+               datetime objects. If not specified,
+               uses the entire history of the house.
+           numero_minimo_de_votacoes - periods with less votes
+           are excluded from the list. Default is 1.
+         returns:
+             A list of objects of type PeriodoCasaLegislativa.
+         Details:
+         1) Periods annual, biennial and quadrennial always begin on January 1.
+             Six-month period begins on January 1 or July 1.
+             Bimonthly period begins on the first day of the initial month of the period.
+         2) The beginning of the first period with a beginning always coincidi
+             a mandate. Thus, it is guaranteed that each period is
+             entirely within one term. Municipal mandates are groups
+             4 years starting in 2009 + 4 * i, i \ in Z
+             Federal / state mandates are groups of four years beginning
+             in 2011 * 4 + i, i \ in Z
+             WARNING: Brazil dependent code!
     """
 
     def __init__(self, casa_legislativa, periodicidade,
@@ -120,9 +120,9 @@ class PeriodosRetriever:
 
     def _inicio_primeiro_periodo(self):
         # TODO extrair e fazer teste de unidade só pra esse método
-        # dia
+        # day
         dia_inicial = 1
-        # mês
+        # month
         if self.periodicidade == MES:
             mes_inicial = self.data_da_primeira_votacao.month
         elif self.periodicidade in [ANO, BIENIO, QUADRIENIO]:
@@ -134,7 +134,7 @@ class PeriodosRetriever:
                 mes_inicial = 1
             else:
                 mes_inicial = 7
-        # ano
+        # year
         mandatos_lists = MandatoLists()
         esfera = self.casa_legislativa.esfera
         mandatos = mandatos_lists.get_mandatos(
@@ -149,9 +149,9 @@ class PeriodosRetriever:
 
     def _data_inicio_prox_periodo(self, data_inicio_periodo):
         # TODO tb extrair e fazer testes
-        # dia
+        # day
         dia_inicial = 1
-        # mês
+        # month
         if self.periodicidade == MES:
             mes_inicial = data_inicio_periodo.month + 1
             if mes_inicial == 13:
@@ -163,7 +163,7 @@ class PeriodosRetriever:
                 mes_inicial = 7
             elif data_inicio_periodo.month == 7:
                 mes_inicial = 1
-        # ano
+        # year
         if self.periodicidade == MES:
             if data_inicio_periodo.month < 12:
                 ano_inicial = data_inicio_periodo.year

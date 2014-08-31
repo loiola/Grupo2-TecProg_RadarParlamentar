@@ -22,7 +22,9 @@ Has script that lists propositions to polls.
 Functions:
 parse_html - parse recusrsos / proposicoes.html file
 com_votacao - web service verifies the list of propositions that have polls
-proposicoes_com_votacao - returns list of propositions that have voting based votadas.txt file."""
+proposicoes_com_votacao - returns list of propositions that have voting based 
+votadas.txt file.
+"""
 
 import re
 import codecs
@@ -48,7 +50,8 @@ def parse_html():
     for line in prop_file:
         res = re.search(regexp, line)
         if res:
-            proposicoes.append({'id':res.group(1), 'tipo':res.group(2), 'num':res.group(3), 'ano':res.group(4)})
+            proposicoes.append({'id':res.group(1), 'tipo':res.group(2), 
+		'num':res.group(3), 'ano':res.group(4)})
     return proposicoes
 
 def parse():
@@ -56,9 +59,12 @@ def parse():
      returns:
      A list identifying the propositions found in htmll
      Each position on the list is a dictionary with keys \ in {id, type in a year}
-     The keys and values ​​are strings of these dictionaries."""
+     The keys and values ​​are strings of these dictionaries.
+	"""
 
-    # File contains propositions voted on by the chamber in 2011 for which we obtained the vote xml:
+    """File contains propositions voted on by the chamber in 2011 for which we 
+	obtained the vote xml:
+	"""
 
     file_name = 'resultados/votadas.txt'  
     prop_file = open(file_name, 'r')
@@ -70,7 +76,8 @@ def parse():
     for line in prop_file:
         res = re.search(regexp, line)
         if res:
-            proposicoes.append({'id':res.group(1), 'tipo':res.group(2), 'num':res.group(3), 'ano':res.group(4)})
+            proposicoes.append({'id':res.group(1), 'tipo':res.group(2), 
+		'num':res.group(3), 'ano':res.group(4)})
     return proposicoes
 
 def com_votacao(proposicoes): 
@@ -78,11 +85,15 @@ def com_votacao(proposicoes):
      It is only on those propositions we will do our analyzes
      This check is done by invoking the web service camera
      arguments:
-     propositions - list of propositions; every proposition is a dictionary with keys \ in {id, type in a year}; keys and values ​​are strings
+     propositions - list of propositions; every proposition is a dictionary with 
+	keys \ in {id, type in a year}; keys and values ​​are strings
 
      returns:
      List of propositions that present voting list
-     Each proposition is a dictionary with keys \ in {id, type in a year}; keys and values ​​are strings."""
+     Each proposition is a dictionary with keys \ in {id, type in a year}; 
+	keys and values ​​are strings.
+	"""
+
     votadas = []
     for prop in proposicoes:
         print "requisitando " + prop['id']

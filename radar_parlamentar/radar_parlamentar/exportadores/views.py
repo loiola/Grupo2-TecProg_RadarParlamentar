@@ -25,6 +25,8 @@ import os
 MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
+"""The method download_dados import open data contained in XML."""
+
 def download_dados(request, dado_solicitado):
 
     arquivo = os.path.join(MODULE_DIR, 'dados/' + dado_solicitado + '.xml')

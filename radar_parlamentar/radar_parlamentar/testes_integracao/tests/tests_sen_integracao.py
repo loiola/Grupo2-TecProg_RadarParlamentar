@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 from django.test import TestCase
 from importadores import sen
 
+#Conducts tests involving Web services Senado
 
 class SenadoWSTest(TestCase):
 

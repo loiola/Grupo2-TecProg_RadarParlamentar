@@ -22,6 +22,10 @@ from django.core import serializers
 from modelagem import models
 import os
 
+
+
+"""The following class makes serial data as a political party, legislature and the like, placing them in XML."""
+
 MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
