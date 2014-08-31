@@ -6,6 +6,9 @@ import logging
 logger = logging.getLogger("radar")
 
 
+"""Writes the legislatura (start year, quantity of deputy by gender, the total 
+    and duration) on spreadsheet"""
+
 arqs = listdir("bios")
 saida = open("saida.csv", "w")
 
@@ -13,6 +16,7 @@ generos = {}
 historia = {}
 
 cont = 0
+
 for arq in arqs:
     if arq[0] != ".":
         ponteiro = open("bios/" + arq)
@@ -27,13 +31,17 @@ for arq in arqs:
                 cont += 1
             else:
                 genero = "M"
+
             nome = record.getElementsByTagName('TXTNOME')[0].firstChild.data
             legis_anos = record.getElementsByTagName(
                 'LEGISLATURAS')[0].firstChild.data
+
             generos[nome] = genero
 
             anos = legis_anos.split(",")
+
             anos2 = []
+
             for ano in anos:
                 if ano.find("e") == -1:
                     anos2.append(ano)
@@ -41,23 +49,29 @@ for arq in arqs:
                     ano1, e, ano2 = ano.partition("e")
                     anos2.append(ano1.strip())
                     anos2.append(ano2.strip()[:-1])
+
             for ano in anos2:
                 ano = ano.strip()
 
                 historia[ano] = historia.get(ano, []) + [nome]
 
 print(cont)
+
 ordenada = []
+
 for a in historia.keys():
     ordenada.append(a)
+
 ordenada.sort()
 
-
+# Writes the values names on spreadsheet
 saida.write("Ano,Feminino,Masculino,Total,Duracao,Legislatura\n")
+
 for i in ordenada:
     femi = 0
     masc = 0
     total = len(historia[i])
+
     for pessoa in historia[i]:
         gen = generos[pessoa]
         if gen == "F":
@@ -67,6 +81,7 @@ for i in ordenada:
 
     try:
         prox_data = ordenada[ordenada.index(i) + 1]
+
     except ValueError, error:
         logger.error("ValueError: %s" % error)
 
@@ -77,4 +92,6 @@ for i in ordenada:
     if ano2 == prox:
         duracao -= 1
 
+    # Writes de values corresponding to the names previously written on 
+    # spreadsheet
     saida.write("%s,%s,%s,%s,%s,%s\n" % (ano1, femi, masc, total, duracao, i))
