@@ -29,7 +29,8 @@ import algebra
 import numpy
 import pca
 
-PARTIDOS = ['PT', 'PSDB', 'PV', 'PSOL', 'PCdoB', 'PP', 'PR', 'DEM', 'PMDB', 'PSC', 'PTB', 'PDT', 'PSB', 'PPS', 'PRB']
+PARTIDOS = ['PT', 'PSDB', 'PV', 'PSOL', 'PCdoB', 'PP', 'PR', 'DEM', 'PMDB', 'PSC', 
+	'PTB', 'PDT', 'PSB', 'PPS', 'PRB']
 
 def vetor_votacoes(partido, proposicoes):
     """ Calculates the vector of voting for a party
@@ -38,7 +39,8 @@ def vetor_votacoes(partido, proposicoes):
      propositions - propositions containing list of polls
 
      returns:
-     A list representing the vector of party polls."""
+     A list representing the vector of party polls.
+	"""
 
     vetor = []
     for prop in proposicoes:
@@ -56,14 +58,16 @@ def semelhanca_vetores(vetor1, vetor2):
     return algebra.prod_escalar(nv1, nv2)
 
 def semelhanca(partido1, partido2, proposicoes):
-    """ Computes the similarity between two parties
+    
+	""" Computes the similarity between two parties
      The similarity is implemented as the scalar product of vectors normalized polls
      arguments:
      partido1, partido2 - names of parties (string)
      propositions - propositions containing list of polls
 
      returns:
-     A real value \ in [0,1] representing the similarity between the parties."""
+     A real value \ in [0,1] representing the similarity between the parties.
+	"""
 
     v1 = vetor_votacoes(partido1, proposicoes)
     v2 = vetor_votacoes(partido2, proposicoes)
