@@ -29,7 +29,7 @@ MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 def serialize_casa_legislativa(nome_curto):
 
-    # Identificando Casa
+    # Identifying house:
     casa = models.CasaLegislativa.objects.filter(nome_curto=nome_curto)
     if len(casa) <= 0:
         raise ValueError('Casa Legislativa não encontrada\n')
@@ -43,7 +43,7 @@ def serialize_casa_legislativa(nome_curto):
                    0].nome_curto, esfera=casa[0].esfera, local=casa[0].local,
                    atualizacao=str(casa[0].atualizacao))
 
-    # Identificando a proposição
+    # Identifying propositions:
     proposicao = models.Proposicao.objects.filter(
         casa_legislativa_id__nome_curto=nome_curto)
 
@@ -63,7 +63,7 @@ def serialize_casa_legislativa(nome_curto):
                 v.id_vot), descricao=v.descricao, data=str(v.data),
                 resultado=v.resultado)
 
-            # =--------------Voto----------=#
+            # Vote:
             votos = models.Voto.objects.filter(votacao_id=v)
             for voto in votos:
 

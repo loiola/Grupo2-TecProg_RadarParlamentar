@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-""" Module parties - functions for characterization and comparison of parties
+"""Module parties - functions for characterization and comparison of parties
 
 functions:
 vetor_votacoes - calculates the vector of voting for a party
@@ -32,7 +32,7 @@ import pca
 PARTIDOS = ['PT', 'PSDB', 'PV', 'PSOL', 'PCdoB', 'PP', 'PR', 'DEM', 'PMDB', 'PSC', 'PTB', 'PDT', 'PSB', 'PPS', 'PRB']
 
 def vetor_votacoes(partido, proposicoes):
-    """ Calculates the vector of voting for a party
+    """Calculates the vector of voting for a party
      arguments:
      party - party name (string)
      propositions - propositions containing list of polls
@@ -56,7 +56,7 @@ def semelhanca_vetores(vetor1, vetor2):
     return algebra.prod_escalar(nv1, nv2)
 
 def semelhanca(partido1, partido2, proposicoes):
-    """ Computes the similarity between two parties
+    """Computes the similarity between two parties
      The similarity is implemented as the scalar product of vectors normalized polls
      arguments:
      partido1, partido2 - names of parties (string)
@@ -71,7 +71,7 @@ def semelhanca(partido1, partido2, proposicoes):
     return (sem+1)/2.0
 
 def semelhanca_pca(vetores):
-    """ Calculates similarities party generating a two-dimensional graph
+    """Calculates similarities party generating a two-dimensional graph
      This is done with the Principal Component Analysis (PCA)
      arguments:
      vectors - a list of lists, where each list is a vector of voting for a party
@@ -82,12 +82,10 @@ def semelhanca_pca(vetores):
     # PCA: lines are samples. Columns are variable 
     # We do: linhas = partidos and colunas = votações
     # Should centralize values.
-    # As all values ​​\ in [0,1], we need not to scale.
-    
+    # As all values ​​\ in [0,1], we need not to scale. 
     matriz =  numpy.array(vetores)
 
     # Centralization:
-    
     matriz -= matriz.mean(axis=0)  
     p = pca.PCA(matriz)
     return p
