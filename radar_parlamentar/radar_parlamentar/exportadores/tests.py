@@ -32,8 +32,8 @@ class ExportadoresFileTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        '''Metodo responsavel por setar o que for necessario para rodar os
-        testes. No nosso a criacao dos objetos no banco de testes'''
+        """Method to set responsible for what is needed to run the tests. 
+        In this case, the creation of objects in the test bank."""
 
         partidoTest1 = models.Partido(nome='PMDB', numero='40')
         partidoTest2 = models.Partido(nome='PT', numero='13')
