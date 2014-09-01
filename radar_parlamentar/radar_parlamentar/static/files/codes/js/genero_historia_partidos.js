@@ -1,16 +1,16 @@
-//Function responsible for plot the graph referent the number of men and women in each legislature in each year
+// Function responsible for plot the graph referent the number of men and women in each legislature in each year
 function desenhar(partido){
 	
 
 	d3.json("/static/files/codes/js/genero_historia_partidos.json", function(error, data) {
 
-		//Setting graph parameters
+		// Setting graph parameters
 		var margin = {top: 20, right: 100, bottom: 50, left: 50},
 		    width = 960 - margin.left - margin.right,
 		    height = 500 - margin.top - margin.bottom;
 
 		
-		//Assigning legislature data in each year for each political party
+		// Assigning legislature data in each year for each political party
 		legislaturas = data[partido];
 		anos = [];
 		for (key in legislaturas) {
@@ -39,6 +39,7 @@ function desenhar(partido){
 		    .orient("left")
 		    .tickFormat(d3.format(".0%"));
 
+		// Screen components aligment
 		var svg = d3.select("#animacao").append("svg")
 		    .attr("width", width + margin.left + margin.right)
 		    .attr("height", height + margin.top + margin.bottom)
@@ -59,9 +60,9 @@ function desenhar(partido){
 	    dados.push(d);
 	  };
 
-	  //legislaturas.sort(function(a, b) { return b.ages[0].y1 - a.ages[0].y1; });
+	  // legislaturas.sort(function(a, b) { return b.ages[0].y1 - a.ages[0].y1; });
 
-		//x.domain(legislaturas.map(function(d) { return d.Ano; }));
+		// x.domain(legislaturas.map(function(d) { return d.Ano; }));
 		x.domain(d3.extent(Object.keys(legislaturas),function(d){return legislaturas[d].ano}));
 
 
@@ -79,7 +80,7 @@ function desenhar(partido){
 	      .attr("class", "y axis")
 	      .call(yAxis);
 
-	//Showing the porcentage of the men and women in each legislature of each year
+	// Showing the porcentage of the men and women in each legislature of each year
 	var tip = d3.tip()
 	  .attr('class', 'd3-tip')
 	  .offset([-10, 0])
