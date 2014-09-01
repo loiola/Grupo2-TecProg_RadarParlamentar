@@ -49,6 +49,7 @@ test_votadas = [[('17338', 'PL 1876/1999')]]
 
 
 class ProposicoesParserTest(TestCase):
+    """Tests if the forest code is in the voted propositions."""
 
     def test_parse(self):
         votadasParser = cdep.ProposicoesParser(test_votadas)
@@ -97,11 +98,12 @@ class CamaraTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # vamos importar apenas as votações das proposições em votadas_test.txt
+
+        # Iporting just the votings of proposition in votadas_test.txt
         votadasParser = cdep.ProposicoesParser(test_votadas)
         votadas = votadasParser.parse()
         importer = cdep.ImportadorCamara(votadas)
-        # dublando a camara
+
         camaraWS = cdep.Camaraws()
         camaraWS.listar_proposicoes = Mock(side_effect=mock_listar_proposicoes)
         camaraWS.obter_proposicao_por_id = Mock(
@@ -111,14 +113,21 @@ class CamaraTest(TestCase):
 
     @classmethod
     def tearDownClass(cls):
+
         from util_test import flush_db
         flush_db(cls)
 
     def test_casa_legislativa(self):
+        """Certifying the short name "cdep" refers to name "Camara dos 
+        Deputados"""
+
         camara = models.CasaLegislativa.objects.get(nome_curto='cdep')
         self.assertEquals(camara.nome, 'Câmara dos Deputados')
 
     def test_prop_cod_florestal(self):
+        """Certifying if the date (day, month and year) and situation of 
+        forest code is correct"""
+
         votadasParser = cdep.ProposicoesParser(test_votadas)
         votadas = votadasParser.parse()
         importer = cdep.ImportadorCamara(votadas)
@@ -133,6 +142,9 @@ class CamaraTest(TestCase):
         self.assertEquals(prop_cod_flor.data_apresentacao.year, data.year)
 
     def test_votacoes_cod_florestal(self):
+        """Checks if the description of voting is the same, besides it tests 
+        if date (day, month and year) of the voting is correct"""
+
         votacoes = models.Votacao.objects.filter(proposicao__id_prop=ID)
         self.assertEquals(len(votacoes), 5)
 
@@ -147,6 +159,9 @@ class CamaraTest(TestCase):
         self.assertEquals(vot.data.year, data.year)
 
     def test_votos_cod_florestal(self):
+        """Checks if the votes are correct (who voted, what he or she voted and
+            his or her party name)"""
+
         votacao = models.Votacao.objects.filter(proposicao__id_prop=ID)[0]
         voto1 = [
             v for v in votacao.votos() if v.legislatura.parlamentar.nome == 'Mara Gabrilli'][0]
@@ -161,6 +176,8 @@ class CamaraTest(TestCase):
 class WsPlenarioTest(TestCase):
 
     def test_prop_in_xml(self):
+        """Tests if the plenary proposition defined are in zip_votadas[x]"""
+
         ano_min = 2013
         ano_max = 2013
         camaraWS = cdep.Camaraws()
@@ -174,6 +191,9 @@ class WsPlenarioTest(TestCase):
             self.assertTrue(prop_test in zip_votadas[x])
 
     def test_prop_in_dict(self):
+        """Tests if the plenary proposition "id", "sigla", "num" and "year" are
+        in dict_votadas"""
+
         ano_min = 2013
         ano_max = 2013
         camaraWS = cdep.Camaraws()
