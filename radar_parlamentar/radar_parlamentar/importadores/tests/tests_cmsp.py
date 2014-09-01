@@ -31,8 +31,7 @@ XML_TEST = os.path.join(cmsp.MODULE_DIR, 'dados/cmsp/cmsp_test.xml')
 
 
 class AprendizadoEtreeCase(TestCase):
-
-    """Testes para entender o funcionamento da lib etree"""
+    """Tests to understand the operation of etree lib"""
 
     def setUp(self):
         xml = """<CMSP>
@@ -85,8 +84,7 @@ class ImportadorCMSPCase(TestCase):
 
 
 class EstaticosCMSPCase(TestCase):
-
-    """Caso de teste de métodos Estáticos do XmlCMSP"""
+    """Test case os static methods of XmlCMSP"""
 
     def setUp(self):
         casa = GeradorCasaLegislativa().gerar_cmsp()
@@ -133,8 +131,7 @@ class EstaticosCMSPCase(TestCase):
 
 
 class ModelCMSPCase(TestCase):
-
-    """Caso de teste de métodos que usam objetos model no XmlCMSP"""
+    """Test Case of methods that use model objects in XmlCMSP"""
 
     def setUp(self):
         casa = GeradorCasaLegislativa().gerar_cmsp()
@@ -165,8 +162,8 @@ class ModelCMSPCase(TestCase):
         self.assertEquals(partido, models.Partido.objects.get(nome="PTest"))
 
     # def test_retorna_vereador_existente(self):
-        # TODO: 2 parlamentares identicos podem ser cadastrados se 1
-        # ja existir no banco
+        # TODO: 2 identical parliamentarians can be registered if one already exists 
+        # in the database
         # xml_vereador = etree.fromstring("<Vereador IDParlamentar=\"1\"
         # NomeParlamentar=\"Teste_vereador\"/>")
         # parlamentar = self.xmlCMSP.votante(xml_vereador)
@@ -188,7 +185,7 @@ class ModelCMSPCase(TestCase):
             parlamentar__id_parlamentar="999", partido__nome="PTest"))
 
     # def test_retorna_legislatura_existente(self):
-        # TODO: problema com parlamentares duplicados
+        # TODO: problem with duplicated parliamentaries
         # xml_vereador = etree.fromstring("<Vereador IDParlamentar=\"1\"
         # NomeParlamentar=\"Teste_vereador\" Partido=\"PTest\"/>")
         # legislatura = self.xmlCMSP.legislatura(xml_vereador)
@@ -198,14 +195,14 @@ class ModelCMSPCase(TestCase):
 
 class IdempotenciaCMSPCase(TestCase):
 
-#    def setUp(self):
+    # def setUp(self):
 
     def test_idempotencia_cmsp(self):
 
         casa = GeradorCasaLegislativa().gerar_cmsp()
         importer = ImportadorCMSP(casa, False)
 
-        # importa a primeira vez
+        # Import to the first time
         votacoes = importer.importar_de(XML_TEST)
         self.votacao = votacoes[0]
 
@@ -217,7 +214,7 @@ class IdempotenciaCMSPCase(TestCase):
             casa_legislativa=casa).count()
         num_parlamentares_antes = models.Parlamentar.objects.all().count()
 
-        # importa de novo
+        # Import again
         self.votacao = importer.importar_de(XML_TEST)[0]
 
         num_casas_depois = models.CasaLegislativa.objects.filter(
