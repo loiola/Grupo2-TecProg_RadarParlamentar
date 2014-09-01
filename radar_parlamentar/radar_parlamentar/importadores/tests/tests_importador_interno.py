@@ -1,22 +1,20 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
-
 from __future__ import unicode_literals
 from django.test import TestCase
 from importadores import importador_interno
 from modelagem import models
 
 
+"""This file demonstrates writing tests using the unittest module. These will pass
+when you run "manage.py test".
+
+Replace this with more appropriate tests for your application."""
+
 class ImportadorInternoTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
 
-        # Criando dados fictícios no mock
+        # Creating fictitious data in mock
         partidoTest1 = models.Partido(nome='PMDB', numero='40')
         partidoTest2 = models.Partido(nome='PT', numero='13')
         partidoTest3 = models.Partido(nome='PSDB', numero='23')
@@ -54,13 +52,13 @@ class ImportadorInternoTest(TestCase):
             partido=partidoTest1, localidade='PB')
         legislaturaTest1.save()
 
-        # Exportando dados do mock para os xml
+        # Exporting data of mock to xml
         # exportar.serialize_partido()
         # exportar.serialize_parlamentar()
         # exportar.serialize_casa_legislativa()
         # exportar.serialize_legislatura()
 
-        # Deletando os registros do mock
+        # Deleting the registers of mock
         partidoTest1.delete()
         partidoTest2.delete()
         partidoTest3.delete()
@@ -75,6 +73,9 @@ class ImportadorInternoTest(TestCase):
         legislaturaTest1.delete()
 
     def test_importar_partido(self):
+        """Tests if the importer is doing right.
+        In this case, it is testing the importing of PMDB name and number."""
+
         importador_interno.deserialize_partido()
         PMDB = Partido.objects.filter(nome='PMDB')
         self.assertEquals(PMDB.numero, 40)
