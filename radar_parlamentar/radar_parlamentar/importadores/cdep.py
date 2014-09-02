@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Radar Parlamentar.  If not, see <http://www.gnu.org/licenses/>.
 
-"""módulo que cuida da importação dos dados da Câmara dos Deputados"""
+"""Module that processes the data import the Chamber of Deputies."""
 
 from __future__ import unicode_literals
 from django.utils.dateparse import parse_datetime
@@ -34,7 +34,7 @@ import threading
 import time
 import math
 
-# data em que a lista votadas.txt foi atualizada
+# Date the list, votadas.txt was updated:
 ULTIMA_ATUALIZACAO = parse_datetime('2013-07-22 0:0:0')
 MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 RESOURCES_FOLDER = os.path.join(MODULE_DIR, 'dados/cdep/')
@@ -48,7 +48,7 @@ logger = logging.getLogger("radar")
 
 class Url(object):
 
-    """Classe que abre urls"""
+    """Class that open urls."""
 
     def toXml(self, url):
         try:
@@ -73,7 +73,7 @@ class Url(object):
 
 class Camaraws:
 
-    """Acesso aos Web Services da Câmara dos Deputados"""
+    """Acess to Chamber of Deputies's Web Services."""
     URL_PROPOSICAO = 'http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/ObterProposicaoPorID?'
     URL_VOTACOES = 'http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/ObterVotacaoProposicao?'
     URL_LISTAR_PROPOSICOES = 'http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ListarProposicoes?'
@@ -99,19 +99,20 @@ class Camaraws:
         return built_url
 
     def obter_proposicao_por_id(self, id_prop):
-        """Obtém detalhes de uma proposição
 
-        Argumentos:
+        """Get details of a proposition
+
+        Arguments:
         id_prop
 
-        Retorna:
-        Um objeto ElementTree correspondente ao XML retornado pelo web service
-        Exemplo:
+        Returns:
+        An object, corresponding to the ElementTree XML returned by the web service.
+        Exemple:
         http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/ObterProposicaoPorID?idProp=17338
 
-        Exceções:
-            ValueError -- quando proposição não existe
-        """
+        Exceptions:
+            ValueError -- when proposition doesn't exist."""
+
         parametros_de_consulta = ["idprop"]
         args = {'idprop': id_prop}
         url = self._montar_url_consulta_camara(
@@ -122,19 +123,19 @@ class Camaraws:
         return tree
 
     def obter_votacoes(self, sigla, num, ano, **kwargs):
-        """Obtém votacões de uma proposição
+        """Get votings of a proposition
 
-        Argumentos:
-        sigla, num, ano -- strings que caracterizam a proposicão
+        Arguments:
+        sigla, num, ano -- strings that caracterize a proposition
 
         Retorna:
-        Um objeto ElementTree correspondente ao XML retornado pelo web service
-        Exemplo:
+        An object, corresponding to the ElementTree XML returned by the web service.
+        Exemple:
         http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/ObterVotacaoProposicao?tipo=pl&numero=1876&ano=1999
 
-        Exceções:
-            ValueError -- quando proposição não existe ou não possui votações
-        """
+        Exceptions:
+            ValueError -- when proposition doesn't existor doesn't has votings."""
+
         parametros_de_consulta = ["tipo", "numero", "ano"]
         args = {'tipo': sigla, 'numero': num, 'ano': ano}
         if kwargs:
@@ -149,17 +150,16 @@ class Camaraws:
         return tree
 
     def obter_proposicoes_votadas_plenario(self, ano):
-        """Obtem as votações votadas em Plenario
+        """Voting gets made ​​in plenary
 
-        Argumentos:
-        obrigatorio : ano
-        opcional : tipo
+        Arguments:
+        > obrigatory: ano
+        > optional: tipo
 
-        Retorna:
-        Um objeto ElementTree correspondente ao XML retornado pelo web service
-        Exemplo:
-        http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/ListarProposicoesVotadasEmPlenario
-        """
+        Returns:
+        An object, corresponding to the ElementTree XML returned by the web service.
+        Exemple:
+        http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/ListarProposicoesVotadasEmPlenario."""
 
         parametros_de_consulta = ["ano", "tipo"]
         args = {'ano': ano, 'tipo': ' '}
@@ -171,22 +171,20 @@ class Camaraws:
         return tree
 
     def listar_proposicoes(self, sigla, ano, **kwargs):
-        """Busca proposições de acordo com ano e sigla desejada
+        """seek propositions according to year and acronym desired.
 
-        Argumentos obrigatórios:
-        sigla, ano -- strings que caracterizam as proposições buscadas
+        Mandatory arguments:
+        sigla, ano -- characterizing strings fetched propositions
 
-        Retorna:
-        ElementTree correspondente ao XML retornado pelo web service
+        Returns:
+        Corresponding to the ElementTree XML returned by webservice.
         Exemplo:
         http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ListarProposicoes?sigla=PL&numero=&ano=2011&datApresentacaoIni=14/11/2011&datApresentacaoFim=16/11/2011&autor=&parteNomeAutor=&siglaPartidoAutor=&siglaUFAutor=&generoAutor=&codEstado=&codOrgaoEstado=&emTramitacao=
-        O retorno é uma lista de objetos Element sendo cara item da lista
-        uma proposição encontrada
+        The return is a list of Element objects with each list item a proposition found.
 
-        Exceções:
-            ValueError -- quando o web service não retorna um XML,
-            que ocorre quando não há resultados para os critérios da busca
-        """
+        Exceptions:
+            ValueError -- when the web service does not return a that occurs when there are no results for the search criteria."""
+
         parametros_de_consulta = [
             "sigla", "numero", "ano", "datapresentacaoini",
             "datapresentacaofim", "idtipoautor", "partenomeautor",
@@ -205,14 +203,13 @@ class Camaraws:
         return tree
 
     def listar_siglas(self):
-        """Listar as siglas de proposições existentes; exemplo: "PL", "PEC" etc.
-        O retorno é feito em uma lista de strings.
-        """
-        # A lista completa se encontra aqui:
+        """List of acronyms existing propositions; example: "PL", "PEC" etc. 
+           The return is a list of strings."""
+
+        # The full list is here:
         # http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ListarSiglasTipoProposicao
-        # No entanto, muito dessas siglas correspondem a proposições que
-        # não possuem votações
-        # Por isso estamos aqui retornando um resultado mais restrito
+        # However, many of these acronyms correspond to propositions do not have voting.
+        # So here we are returning a narrower result.
         return ['PL', 'MPV', 'PDC', 'PEC', 'PLP',
                 'PLC', 'PLN', 'PLOA', 'PLS', 'PLV']
 
@@ -223,11 +220,11 @@ class ProposicoesFinder:
         self.verbose = verbose
 
     def _parse_nomes_lista_proposicoes(self, xml):
-        """Recebe XML (objeto etree) do web service
-        ListarProposicoesVotadasPlenario e devolve uma lista de tuplas,
-        o primeiro item da tuple é o id da proposição, e o segundo item
-        é o nome da proposição (sigla num/ano).
-        """
+        """Receive XML (etree object) from web service
+        ListarProposicoesVotadasPlenario and returns a list of tuples.
+        The first tuple's item is the propositions id, and the second item
+        is the name of proposition (sigla num/ano)."""
+
         list_id_prop = []
         list_nome = []
         for child in xml:
@@ -239,12 +236,11 @@ class ProposicoesFinder:
 
     def find_props_disponiveis(self, ano_min=1991, ano_max=2013,
                                camaraws=Camaraws()):
-        """Retorna uma lista com os ids e nomes das proposicoes disponibilizada
-        pela funcionalidade ListarProposicoesVotadasPlenario.
+        """Returna a list with two ids and names of propositions available
+        by feature ListarProposicoesVotadasPlenario.
 
-        Buscas são feitas por proposições apresentadas desde ano_min, que
-        por padrão é 1991, até o presente.
-        """
+        Searches are made by propositions from ano_min, which by default is 1991 to the present."""
+
         today = datetime.today()
         if (ano_max is None):
             ano_max = today.year
@@ -273,17 +269,15 @@ class ProposicoesParser:
 
     def parse(self):
         """
-        Retorna:
-        Uma lista com a identificação das proposições presentes em zip_votadas
-        Cada posição da lista é um dicionário com chaves \in
-        {id, sigla, num, ano}.
-        As chaves e valores desses dicionários são strings.
+        Returns:
+        A list identifying the propositions present in zip_votadas.
+        Each position on the list is a dictionary with keys \in {id, sigla, num, ano}.
+        The keys and values ​​are strings of these dictionaries.
 
-        formato da lista que será percorrida:
+        list format that will be covered:
         Ex:[('604604', 'REQ 9261/2013 => PRC 228/2013'),
-        '604123', 'PL 9261/2013 => PRC 228/2013')]
-        """
-        # Tratar a seta => na hora de inserir na hash
+        '604123', 'PL 9261/2013 => PRC 228/2013')]."""
+
         proposicoes = []
         for position in self.votadas:
             for prop in position:
@@ -300,28 +294,31 @@ LOCK_TO_CREATE_CASA = threading.Lock()
 
 class ImportadorCamara:
 
-    """Salva os dados dos web services da
-    Câmara dos Deputados no banco de dados"""
+    """Saves the data of the web services of the Chamber of Deputies in the database."""
 
     def __init__(self, votadas, verbose=False):
-        """verbose (booleano) -- ativa/desativa prints na tela"""
+        """verbose (booleano) -- enables / disables the screen prints."""
 
         self.verbose = verbose
         # id/sigla/num/ano das proposições que tiveram votações
         self.votadas = votadas
         self.total = len(self.votadas)
-        self.importadas = 0  # serve para indicar progresso
+
+        # Indicate progress:
+        self.importadas = 0  
         self.partidos = {}
-            # cache de partidos (chave é nome, e valor é objeto Partido)
+
+            # Political parties cache (key is name, and value is object Partido)
         self.parlamentares = {}
-            # cache de parlamentares (chave é 'nome-partido', e valor é objeto
-            # Parlamentar)
+
+            # Parliamentary cache (key is 'nome-partido', and value é object Parlamentar
+
 
     def _converte_data(self, data_str, hora_str='00:00'):
-        """Converte string 'd/m/a' para objeto datetime;
-        retona None se data_str é inválido
-        Pode também receber horário: hora_str como 'h:m'
-        """
+        """Convert string 'd/m/a' to object datetime.
+        Returns None if data_str is invalid.
+        can also receive time: hora_str likes 'h:m'."""
+
         DATA_REGEX = '(\d\d?)/(\d\d?)/(\d{4})'
         HORA_REGEX = '(\d\d?):(\d\d?)'
         dt = re.match(DATA_REGEX, data_str)
@@ -335,10 +332,11 @@ class ImportadorCamara:
             return None
 
     def _gera_casa_legislativa(self):
-        """Gera objeto do tipo CasaLegislativa
-        Câmara dos Deputados e o salva no banco de dados.
-        Caso cdep já exista no banco de dados, retorna o objeto já existente.
-        """
+
+        """Creates object likes CasaLegislativa,
+        Chamber of Deputies and save in database.
+        If cdep already exists in the database, returns the existing object."""
+
         LOCK_TO_CREATE_CASA.acquire()
         count_cdep = models.CasaLegislativa.objects.filter(
             nome_curto='cdep').count()
@@ -356,11 +354,11 @@ class ImportadorCamara:
             return models.CasaLegislativa.objects.get(nome_curto='cdep')
 
     def _prop_from_xml(self, prop_xml, id_prop):
-        """Recebe XML representando proposição (objeto etree)
-        e devolve objeto do tipo Proposicao, que é salvo no banco de dados.
-        Caso proposição já exista no banco, é retornada a proposição que
-        já estava no banco.
-        """
+        """Receive XML representing proposition (object etree)
+        and returns objects like Proposicao, which is saved in database.
+        If proposition already exists in the database, it returned the proposition
+        that was already in the bank."""
+
         try:
             query = models.Proposicao.objects.filter(
                 id_prop=id_prop, casa_legislativa=self.camara_dos_deputados)
@@ -391,15 +389,7 @@ class ImportadorCamara:
         return prop
 
     def _votacao_from_xml(self, votacao_xml, prop):
-        """Salva votação no banco de dados.
-
-        Atributos:
-            votacao_xml -- XML representando votação (objeto etree)
-            prop -- objeto do tipo Proposicao
-
-        Retorna:
-            objeto do tipo Votacao
-        """
+        
         descricao = 'Resumo: [%s]. ObjVotacao: [%s]' % (
             votacao_xml.get('Resumo'), votacao_xml.get('ObjVotacao'))
         data_str = votacao_xml.get('Data').strip()
@@ -426,20 +416,19 @@ class ImportadorCamara:
         return votacao
 
     def _voto_from_xml(self, voto_xml, votacao):
-        """Salva voto no banco de dados.
+        """Save voting in the database.
 
-        Atributos:
-            voto_xml -- XML representando voto (objeto etree)
-            votacao -- objeto do tipo Votacao
+        Attributes:
+            voto_xml -- XML representing voting (object etree)
+            votacao -- object of type Votacao
 
-        Retorna:
-            objeto do tipo Voto
-        """
+        Returns:
+            object of type Voting."""
+            
         voto = models.Voto()
 
         opcao_str = voto_xml.get('Voto')
-        '''Por algum motivo os votos estavam vindo com muitos espaços em branco
-        quebrando a importação dos mesmos'''
+    
         if (opcao_str.find(" ") > -1):
             voto.opcao = self._opcao_xml_to_model(
                 opcao_str[0:opcao_str.index(" ")])
@@ -454,8 +443,7 @@ class ImportadorCamara:
         return voto
 
     def _opcao_xml_to_model(self, voto):
-        """Interpreta voto como tá no XML e responde em adequação a modelagem
-        em models.py"""
+        """Interprets vote as it is in XML and responds suitability modeling in models.py."""
 
         if voto == 'Não':
             return models.NAO
@@ -472,18 +460,11 @@ class ImportadorCamara:
             return models.ABSTENCAO
 
     def _legislatura(self, voto_xml):
-        """Salva legislatura no banco de dados.
-
-        Atributos:
-            voto_xml -- XML representando voto (objeto etree)
-
-        Retorna:
-            objeto do tipo Legislatura
-        """
+    
         partido = self._partido(voto_xml.get('Partido'))
         votante = self._votante(voto_xml.get('Nome'), partido.nome)
 
-        # TODO filtrar tb por inicio e fim
+        
         legs = models.Legislatura.objects.filter(
             parlamentar=votante, partido=partido,
             casa_legislativa=self.camara_dos_deputados)
@@ -496,15 +477,15 @@ class ImportadorCamara:
             leg.partido = partido
             leg.localidade = voto_xml.get('UF')
             leg.casa_legislativa = self.camara_dos_deputados
-            leg.inicio = INICIO_PERIODO  # TODO refinar
-            leg.fim = FIM_PERIODO  # TODO refinar
+            leg.inicio = INICIO_PERIODO  
+            leg.fim = FIM_PERIODO  
             leg.save()
 
         return leg
 
     def _partido(self, nome_partido):
-        """Procura primeiro no cache e depois no banco; se não existir,
-        cria novo partido"""
+        """Search the cache first and then in the database; if not, creates new political party."""
+
         nome_partido = nome_partido.strip()
         partido = self.partidos.get(nome_partido)
         if not partido:
@@ -521,8 +502,8 @@ class ImportadorCamara:
         return partido
 
     def _votante(self, nome_dep, nome_partido):
-        """Procura primeiro no cache e depois no banco; se não existir,
-        cria novo parlamentar"""
+        """Search the cache first and then in the database; if not, creates new parliamentary."""
+
         key = '%s-%s' % (nome_dep, nome_partido)
         parlamentar = self.parlamentares.get(key)
         if not parlamentar:
@@ -539,7 +520,8 @@ class ImportadorCamara:
         return parlamentar
 
     def _progresso(self):
-        """Indica progresso na tela"""
+        """Indicate progress on screen."""
+
         porctg = (int)(1.0 * self.importadas / self.total * 100)
         logger.info('Progresso: %d / %d proposições (%d%%)' %
                     (self.importadas, self.total, porctg))
@@ -570,7 +552,7 @@ class ImportadorCamara:
                 logger.error("ValueError: %s" % error)
 
         logger.info(
-            '### Fim da Importação das Votações das Proposições da Câmara dos Deputados.')
+            ' Fim da Importação das Votações das Proposições da Câmara dos Deputados.')
 
 
 class SeparadorDeLista:

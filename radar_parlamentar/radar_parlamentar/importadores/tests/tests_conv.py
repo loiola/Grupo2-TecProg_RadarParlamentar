@@ -25,6 +25,7 @@ from modelagem import models
 
 
 class ConvencaoTest(TestCase):
+    """Tests for the Franch Convention."""
 
     @classmethod
     def setUpClass(cls):
@@ -40,18 +41,24 @@ class ConvencaoTest(TestCase):
         self.conv = models.CasaLegislativa.objects.get(nome_curto='conv')
 
     def test_check_len_votacoes(self):
+        """Tests if the number of conv votings is correct."""
+
         NUM_VOTACOES = 8
         num_votacoes = len(models.Votacao.objects.filter(
             proposicao__casa_legislativa=self.conv))
         self.assertEquals(num_votacoes, NUM_VOTACOES)
 
     def test_check_len_votos(self):
+        """Tests if the number of conv votes is correct."""
+
         NUM_VOTOS = 8 * 3 * 3
         num_votos = len(models.Voto.objects.filter(
             votacao__proposicao__casa_legislativa=self.conv))
         self.assertEquals(num_votos, NUM_VOTOS)
 
     def test_check_len_votos_por_votacao(self):
+        """Tests if the number of conv votes by votings is correct."""
+
         NUM_VOTOS_POR_VOTACAO = 3 * 3
         votacoes = models.Votacao.objects.filter(
             proposicao__casa_legislativa=self.conv)
@@ -60,6 +67,8 @@ class ConvencaoTest(TestCase):
             self.assertEquals(num_votos, NUM_VOTOS_POR_VOTACAO)
 
     def test_check_partidos(self):
+        """Tests if the names of conv parties are correct."""
+
         partidos = models.Partido.objects.all()
         nomes_partidos = [p.nome for p in partidos]
         self.assertTrue(conv.GIRONDINOS in nomes_partidos)
@@ -67,6 +76,9 @@ class ConvencaoTest(TestCase):
         self.assertTrue(conv.MONARQUISTAS in nomes_partidos)
 
     def test_check_parlamentares(self):
+        """Tests if the number of conv parliamentaries and their names are
+        correct."""
+
         NUM_PARLAMENTARES = 3 * 3
         parlamentares = models.Parlamentar.objects.filter(
             legislatura__casa_legislativa=self.conv)

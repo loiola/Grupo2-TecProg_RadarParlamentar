@@ -1,7 +1,7 @@
-//Function referent the frequency of topics discussed matrix for each politcal party
+// Function referent the frequency of topics discussed matrix for each politcal party
 d3.json("/static/files/codes/js/genero_base2.json", function(miserables) {
   
-  //Creating matrix with political parties and topics discussed
+  // Creating matrix with political parties and topics discussed
   var matrix = [],
       partidos = miserables.partidos,
       termos = miserables.termos,
@@ -9,7 +9,7 @@ d3.json("/static/files/codes/js/genero_base2.json", function(miserables) {
       n_termos = termos.length,
       lista_partidos = [];
 
-//Matrix Dimensions
+// Matrix Dimensions
 var margin = {top: 80, right: 0, bottom: 10, left: 80},
     width = 720,
     height = width / n_partidos * n_termos;
@@ -20,6 +20,7 @@ var x = d3.scale.ordinal().rangeBands([0, width]),
 
     $("#loading").remove();
 
+// Screen components aligment
 var svg = d3.select("#animacao").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -27,18 +28,18 @@ var svg = d3.select("#animacao").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  //Computes each node in index
+  // Computes each node in index
   termos.forEach(function(termo, i) {
 	    matrix[i] = d3.range(n_partidos).map(function(j) { return {x: j, y: i, z: 0}; });
   });
 
-  //Stacks political parties names
+  // Stacks political parties names
   for (var chave in partidos) {
     lista_partidos.unshift(partidos[chave].name)
   }
 	  console.log(matrix);
 
-  //Converts the links in matrix
+  // Converts the links in matrix
   miserables.links.forEach(function(link) {
     matrix[link.source][link.target].z += link.value;
   });

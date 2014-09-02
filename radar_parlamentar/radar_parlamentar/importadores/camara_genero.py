@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Radar Parlamentar.  If not, see <http://www.gnu.org/licenses/>.
 
-"""módulo que cuida da importação dos dados da Câmara dos Deputados"""
+"""Module that processes the data import the Chamber of Deputies."""
 
 from __future__ import unicode_literals
 import json

@@ -1,12 +1,12 @@
 
 d3.csv("/static/files/codes/js/genero_historia_base.csv", function(error, data) {
 
-	//Chart Dimensions 
+	// Chart Dimensions 
   var margin = {top: 20, right: 30, bottom: 50, left: 50},
 	    width = 900 - margin.left - margin.right,
 	    height = 500 - margin.top - margin.bottom;
 
-	//anos = ["1826","1900","1950","2000", "2011"];
+	// Years = ["1826","1900","1950","2000", "2011"];
 	anos = [];
 	pula = true;
 	data.forEach(function(d) {
@@ -30,14 +30,15 @@ d3.csv("/static/files/codes/js/genero_historia_base.csv", function(error, data) 
 	    //.tickFormat(d3.time.format("%Y"))
 	    .tickFormat(function(d){return d;})
 		.tickValues(anos)
-//#.ticks(d3.time.years, 4);
+  //#.ticks(d3.time.years, 4);
 
 	var yAxis = d3.svg.axis()
 	    .scale(y)
 	    .orient("left")
 	    .tickFormat(d3.format(".0%"));
 
-	var svg = d3.select("#animacao").append("svg")
+	// Screen components aligment
+  var svg = d3.select("#animacao").append("svg")
 	    .attr("width", width + margin.left + margin.right)
 	    .attr("height", height + margin.top + margin.bottom)
 	  .append("g")
@@ -56,7 +57,7 @@ d3.csv("/static/files/codes/js/genero_historia_base.csv", function(error, data) 
 
   data.sort(function(a, b) { return b.ages[0].y1 - a.ages[0].y1; });
 
-//x.domain(data.map(function(d) { return d.Ano; }));
+// x.domain(data.map(function(d) { return d.Ano; }));
 	x.domain(d3.extent(data, function(d) { return d.Ano; }));
 
   svg.append("g")
@@ -74,7 +75,7 @@ d3.csv("/static/files/codes/js/genero_historia_base.csv", function(error, data) 
       .attr("class", "y axis")
       .call(yAxis);
 
-//Showing percentage of men and women in each Legislature
+// Showing percentage of men and women in each Legislature
 var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])

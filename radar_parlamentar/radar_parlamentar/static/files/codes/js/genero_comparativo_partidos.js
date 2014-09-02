@@ -1,8 +1,8 @@
-//Function responsible for plot legilasture graph
+// Function responsible for plot legilasture graph
 function desenhar(legislatura){
 	d3.json("/static/files/codes/js/genero_comparativo_partidos.json", function(error, passa_dados) {
 
-		//Assigning data of legislatures in each years
+		// Assigning data of legislatures in each years
 		dados = passa_dados[legislatura];
 		data = [];
 		for (key in dados) {
@@ -13,7 +13,7 @@ function desenhar(legislatura){
 			data.push(elementos)
 		}
 
-		//Setting graph parameters 
+		// Setting graph parameters 
 		var margin = {top: 20, right:30, bottom: 50, left: 50},
 		    width = 900 - margin.left - margin.right,
 		    height = 500 - margin.top - margin.bottom;
@@ -36,6 +36,7 @@ function desenhar(legislatura){
 		    .orient("left")
 		    .tickFormat(d3.format(".0%"));
 
+        // Screen components alignment
         $("#loading").remove();
 		var svg = d3.select("#animacao").append("svg")
 		    .attr("width", width + margin.left + margin.right)
@@ -72,6 +73,7 @@ function desenhar(legislatura){
 	      .attr("class", "y axis")
 	      .call(yAxis);
 
+	    // Showing percentage of men and women in each year of legislature
 		var tip = d3.tip()
 		  .attr('class', 'd3-tip')
 		  .offset([-10, 0])

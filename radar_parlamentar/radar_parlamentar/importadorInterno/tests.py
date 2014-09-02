@@ -29,7 +29,8 @@ class ImportadorInternoTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # Criando dados ficticios no mock
+
+        # Creating dummy data in mock:
         partidoTest1 = models.Partido(nome='PMDB', numero='40')
         partidoTest2 = models.Partido(nome='PT', numero='13')
         partidoTest3 = models.Partido(nome='PSDB', numero='23')
@@ -83,7 +84,7 @@ class ImportadorInternoTest(TestCase):
             votacao=votacaoTest1, legislatura=legislaturaTest1, opcao='TESTE')
         votoTest1.save()
 
-        # Exportando dados do mock para os xml
+        # Exporting the mocks's data to XMLs:
         exportar.serialize_partido()
         exportar.serialize_parlamentar()
         exportar.serialize_casa_legislativa()
@@ -92,7 +93,7 @@ class ImportadorInternoTest(TestCase):
         exportar.serialize_votacao()
         exportar.serialize_voto()
 
-        # Deletando os registros do mock
+        # Deleting records of mock:
         partidoTest1.delete()
         partidoTest2.delete()
         partidoTest3.delete()
