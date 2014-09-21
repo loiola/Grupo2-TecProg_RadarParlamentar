@@ -60,8 +60,8 @@ class AnalisadorTemporal:
         retriever = utils.PeriodosRetriever(
             self.casa_legislativa, periodicidade)
         self.periodos = retriever.get_periodos()
-        self.ini = self.periodos[0].ini
-        self.fim = self.periodos[len(self.periodos) - 1].fim
+        self.inicial_voting_date = self.periodos[0].inicial_voting_date
+        self.final_voting_date = self.periodos[len(self.periodos) - 1].final_voting_date
         self.periodicidade = periodicidade
         self.analises_periodo = []
         self.palavras_chave = palavras_chave
@@ -89,7 +89,7 @@ class AnalisadorTemporal:
 
         for periodo in self.periodos:
             logger.info("Analisando periodo %s a %s." %
-                        (str(periodo.ini), str(periodo.fim)))
+                        (str(periodo.inicial_voting_date), str(periodo.final_voting_date)))
             analisadorPeriodo = AnalisadorPeriodo(
                 self.casa_legislativa, periodo, self.votacoes, self.palavras_chave)
             if analisadorPeriodo.votacoes:
@@ -136,8 +136,8 @@ class AnalisadorPeriodo:
 
         self.casa_legislativa = casa_legislativa
         self.periodo = periodo
-        self.ini = periodo.ini if periodo is not None else None
-        self.fim = periodo.fim if periodo is not None else None
+        self.inicial_voting_date = periodo.inicial_voting_date if periodo is not None else None
+        self.final_voting_date = periodo.final_voting_date if periodo is not None else None
         self.partidos = self.casa_legislativa.partidos()
         self.legislaturas = self.casa_legislativa.legislaturas()
         self.votacoes = votacoes
@@ -257,8 +257,8 @@ class AnalisadorPeriodo:
             # DO the pca  
             self.pca = pca.PCA(matriz, fraction=1)  
             self._preenche_pca_de_legislaturas_nulas(ilnn)
-            logger.info("PCA terminada com sucesso. ini=%s, fim=%s" %
-                        (str(self.ini), str(self.fim)))
+            logger.info("PCA terminada com sucesso. inicial_voting_date=%s, final_voting_date=%s" %
+                        (str(self.inicial_voting_date), str(self.final_voting_date)))
 
         # Create dictionary to be returned:
         dicionario = {}
