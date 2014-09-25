@@ -80,100 +80,101 @@ class Indexadores(models.Model):
     """Terms used in the indexing of propositions
 
      attributes:
-         party_term - string; ex: "woman" or "political party"
-         principa_party_term - bool; identifying whether a term is the main
-                     a line of synonyms, the term being used."""
-
-    party_term = models.CharField(max_length=120)
-    principa_party_term = models.BooleanField()
+         term - string; ex: "woman" or "political party"
+         Main - bool; identifying whether a term is the main
+                     a line of synonyms, the term being used.
+    """
+    termo = models.CharField(max_length=120)
+    principal = models.BooleanField()
 
     def __unicode__(self):
-        return '%s-%s-%s' % (self.party_name, self.party_number, self.party_color)
+        return '%s-%s-%s' % (self.nome, self.numero, self.cor)
 
 
 class Partido(models.Model):
     """Political party.
 
      attributes:
-         party_name - string; eg 'EN'
-         party_number - int; ex: '13 '
-         party_color - string; eg #FFFFFF
+         name - string; eg 'EN'
+         number - int; ex: '13 '
+         color - string; eg #FFFFFF
 
      Class methods:
          from_nome (name): returns object of type Party
-         from_party_number (number): returns object of type Party
-         get_sem_partido (): returns a party called 'NO PARTY'"""
+         from_numero (number): returns object of type Party
+         get_sem_partido (): returns a party called 'NO PARTY'
+    """
 
     LISTA_PARTIDOS = os.path.join(MODULE_DIR, 'recursos/partidos.txt')
 
-    party_name = models.CharField(max_length=12)
-    party_number = models.IntegerField()
-    party_color = models.CharField(max_length=7)
+    nome = models.CharField(max_length=12)
+    numero = models.IntegerField()
+    cor = models.CharField(max_length=7)
 
     @classmethod
-    def from_party_name(cls, party_name):
+    def from_nome(cls, nome):
         """Given a name and return an object of type Party
-             or None if name is invalid"""
-
-        if party_name is None:
+             or None if name is invalid
+        """
+        if nome is None:
             return None
 
         # procura primeiro no banco de dados
-        party_p = Partido.objects.filter(party_name=party_name)
-        if party_p:
-            return party_p[0]
+        p = Partido.objects.filter(nome=nome)
+        if p:
+            return p[0]
         else:
             # se não estiver no BD, procura hardcoded
-            return cls._from_regex(1, party_name.strip())
+            return cls._from_regex(1, nome.strip())
 
     @classmethod
-    def from_party_number(cls, party_number):
+    def from_numero(cls, numero):
         """Receives a number (int) and returns an object of type Party
-        or None if name is invalid"""
+             or None if name is invalid
+        """
 
-        if party_number is None:
+        if numero is None:
             return None
 
         # procura primeiro no banco de dados
-        party_p = Partido.objects.filter(party_number=party_number)
-        if party_p:
-            return party_p[0]
+        p = Partido.objects.filter(numero=numero)
+        if p:
+            return p[0]
         else:
             # se não estiver no BD, procura no arquivo hardcoded
-            return cls._from_regex(2, str(party_number))
+            return cls._from_regex(2, str(numero))
 
     @classmethod
     def get_sem_partido(cls):
         """Returns a party called 'NO PARTY'"""
-
-        no_party_list = Partido.objects.filter(party_name=SEM_PARTIDO)
-        if not no_party_list:
-            party = Partido()
-            party.party_name = SEM_PARTIDO
-            party.party_number = 0
-            party.party_color = COR_PRETA
-            party.save()
+        lista = Partido.objects.filter(nome=SEM_PARTIDO)
+        if not lista:
+            partido = Partido()
+            partido.nome = SEM_PARTIDO
+            partido.numero = 0
+            partido.cor = COR_PRETA
+            partido.save()
         else:
-            party = no_party_list[0]
-        return party
+            partido = lista[0]
+        return partido
 
     @classmethod
     def _from_regex(cls, idx, key):
         PARTIDO_REGEX = '([a-zA-Z]*) *([0-9]{2}) *(#+[0-f]{6})'
-        party_list = open(cls.LISTA_PARTIDOS)
-        for line in party_list:
+        f = open(cls.LISTA_PARTIDOS)
+        for line in f:
             res = re.search(PARTIDO_REGEX, line)
             if res and res.group(idx) == key:
-                party = Partido()
-                party.party_name = res.group(1)
-                party.party_number = int(res.group(2))
-                party.party_color = res.group(3)
-                party.save()
-                return party
+                partido = Partido()
+                partido.nome = res.group(1)
+                partido.numero = int(res.group(2))
+                partido.cor = res.group(3)
+                partido.save()
+                return partido
         return None
 
     def __unicode__(self):
-        return '%s-%s' % (self.party_name, self.party_number)
+        return '%s-%s' % (self.nome, self.numero)
 
 
 class CasaLegislativa(models.Model):
@@ -181,21 +182,22 @@ class CasaLegislativa(models.Model):
 
      attributes:
          name - string; eg 'City Hall of São Paulo'
-         acronym_legislative_house - string; will be used to generate links.
+         nome_curto - string; will be used to generate links.
                          ex 'PBMC' to 'Municipality of São Paulo'
          sphere - string (municipal, state, federal)
          location - string; ex 'Sao Paulo' for CMSP
          UPDATE - date the database was updated by
-                             last time with this house polls"""
+                             last time with this house polls
+    """
 
-    legislative_house_name = models.CharField(max_length=100)
-    acronym_legislative_house = models.CharField(max_length=50, unique=True)
-    sphere = models.CharField(max_length=10, choices=ESFERAS)
-    legislative_house_place = models.CharField(max_length=100)
-    db_atualization_date = models.DateField(blank=True, null=True)
+    nome = models.CharField(max_length=100)
+    nome_curto = models.CharField(max_length=50, unique=True)
+    esfera = models.CharField(max_length=10, choices=ESFERAS)
+    local = models.CharField(max_length=100)
+    atualizacao = models.DateField(blank=True, null=True)
 
     def __unicode__(self):
-        return self.legislative_house_name
+        return self.nome
 
     def partidos(self):
         #Returns the existing parties this legislative house
@@ -213,23 +215,23 @@ class CasaLegislativa(models.Model):
 
     def num_votos(self, data_inicio=None, data_fim=None):
         #returns the number of votes in a legislative house
-        votings = Votacao.por_casa_legislativa(self, data_inicio, data_fim)
-        Votos = []
-        for votacao in votings:
-            Votos += votacao.Votos()
-        return len(Votos)
+        votacoes = Votacao.por_casa_legislativa(self, data_inicio, data_fim)
+        votos = []
+        for votacao in votacoes:
+            votos += votacao.votos()
+        return len(votos)
 
     @staticmethod
     def deleta_casa(nome_casa_curto):
         """Method that deletes certain record of legislative house
              cascade
              arguments:
-                 nome_casa - Name of the house to be deleted"""
-
+                 nome_casa - Name of the house to be deleted
+	"""
         try:
             try:
                 CasaLegislativa.objects.get(
-                    acronym_legislative_house=nome_casa_curto).delete()
+                    nome_curto=nome_casa_curto).delete()
 
             except CasaLegislativa.DoesNotExist:
                 print 'Casa legislativa ' + nome_casa_curto + ' não existe'
@@ -241,29 +243,31 @@ class CasaLegislativa(models.Model):
 class PeriodoCasaLegislativa(object):
     """attributes:
          ini, end - datetime objects
-         period_description - Description of the period
-         votings_amount - whole"""
+         string - Description of the period
+         quantidade_votacoes - whole
+    """
 
-    def __init__(self, data_inicio, data_fim, votings_amount=0):
+    def __init__(self, data_inicio, data_fim, quantidade_votacoes=0):
         # TODO self.casa_legislativa = ...
-        self.inicial_voting_date = data_inicio
-        self.final_voting_date = data_fim
-        self.votings_amount = votings_amount
-        self.period_description = ""
-        self.period_description = unicode(self)
+        self.ini = data_inicio
+        self.fim = data_fim
+        self.quantidade_votacoes = quantidade_votacoes
+        self.string = ""
+        self.string = unicode(self)
 
     def __str__(self):
         return self.__unicode__()
 
     def __unicode__(self):
-        if not self.period_description:
+        if not self.string:
             self._build_string()
-        return self.period_description
+        return self.string
 
     def _build_string(self):
-        description_string = ''
-        days_amount = self.final_voting_date - self.inicial_voting_date
-        if days_amount.days < 35:  # período é de um mês
+        data_string = ''
+#       data_string = str(self.ini.year) # sempre começa com o ano
+        delta = self.fim - self.ini
+        if delta.days < 35:  # período é de um mês
             meses = ['',
                      'Jan',
                      'Fev',
@@ -277,39 +281,39 @@ class PeriodoCasaLegislativa(object):
                      'Out',
                      'Nov',
                      'Dez']
-            description_string += str(self.inicial_voting_date.year)
-            description_string += " " + str(meses[self.inicial_voting_date.month])
-        elif days_amount.days < 200:  # periodo é de um semestre
-            description_string += str(self.inicial_voting_date.year)
-            if self.inicial_voting_date.month < 6:
-                description_string += " 1o Semestre"
+            data_string += str(self.ini.year)
+            data_string += " " + str(meses[self.ini.month])
+        elif delta.days < 200:  # periodo é de um semestre
+            data_string += str(self.ini.year)
+            if self.ini.month < 6:
+                data_string += " 1o Semestre"
             else:
-                description_string += " 2o Semestre"
-        elif days_amount.days < 370:  # periodo é de um ano
-            description_string += str(self.inicial_voting_date.year)
-        elif days_amount.days < 750:  # periodo é um biênio
-            description_string += str(self.inicial_voting_date.year) + " e "
-            description_string += str(self.final_voting_date.year)
-        elif days_amount.days < 1500:  # periodo é um quadriênio
-            description_string += str(self.inicial_voting_date.year) + " a "
-            description_string += str(self.final_voting_date.year)
-        self.period_description = description_string
+                data_string += " 2o Semestre"
+        elif delta.days < 370:  # periodo é de um ano
+            data_string += str(self.ini.year)
+        elif delta.days < 750:  # periodo é um biênio
+            data_string += str(self.ini.year) + " e "
+            data_string += str(self.fim.year)
+        elif delta.days < 1500:  # periodo é um quadriênio
+            data_string += str(self.ini.year) + " a "
+            data_string += str(self.fim.year)
+        self.string = data_string
 
 
 class Parlamentar(models.Model):
     """Um parlamentar.
 
     Atributos:
-        parliamentary_id - string identificadora de acordo a fonte de dados
-        parliamentary_name, parliamentary_gender -- strings"""
-
-    # obs: parliamentary_id não é chave primária!
-    parliamentary_id = models.CharField(max_length=100, blank=True)
-    parliamentary_name = models.CharField(max_length=100)
-    parliamentary_gender = models.CharField(max_length=10, choices=GENEROS, blank=True)
+        id_parlamentar - string identificadora de acordo a fonte de dados
+        nome, genero -- strings
+    """
+    # obs: id_parlamentar não é chave primária!
+    id_parlamentar = models.CharField(max_length=100, blank=True)
+    nome = models.CharField(max_length=100)
+    genero = models.CharField(max_length=10, choices=GENEROS, blank=True)
 
     def __unicode__(self):
-        return self.parliamentary_name
+        return self.nome
 
 
 class Legislatura(models.Model):
@@ -320,21 +324,22 @@ class Legislatura(models.Model):
      attributes:
          Parliament - Parliamentary exercising the legislature;
                          object of type Parliamentary
-         lesgilative_house - object type CasaLegislativa
+         casa_legislativa - object type CasaLegislativa
          start, end - dates indicating the period
          party - object of type Party
          location - string; eg 'SP', 'RJ' if the Senate or
                                      Chamber of Deputies
 
      methods:
-         find - search by date legislature and parliamentary"""
+         find - search by date legislature and parliamentary
+    """
 
-    parliamentary = models.ForeignKey(Parlamentar)
-    lesgilative_house = models.ForeignKey(CasaLegislativa, null=True)
-    lesgilature_initial_date = models.DateField(null=True)
-    lesgilature_final_date = models.DateField(null=True)
-    party = models.ForeignKey(Partido)
-    legislature_place = models.CharField(max_length=100, blank=True)
+    parlamentar = models.ForeignKey(Parlamentar)
+    casa_legislativa = models.ForeignKey(CasaLegislativa, null=True)
+    inicio = models.DateField(null=True)
+    fim = models.DateField(null=True)
+    partido = models.ForeignKey(Partido)
+    localidade = models.CharField(max_length=100, blank=True)
 
     @staticmethod
     def find(data, nome_parlamentar):
@@ -344,95 +349,94 @@ class Legislatura(models.Model):
               date - the date object type
               nome_parlamentar - string
             Return: object of type Legislature
-            If not, throws exception ValueError"""
-
+            If not, throws exception ValueError
+        """
         # Assumimos que uma pessoa não pode assumir
-        # duas legislaturas em um dado período!
-        search_by_parliamentary_name = Legislatura.objects.filter(parlamentar__nome=nome_parlamentar)
-        for leg in search_by_parliamentary_name:
-            if data >= leg.lesgilature_initial_date and data <= leg.lesgilature_final_date:
+            # duas legislaturas em um dado período!
+        legs = Legislatura.objects.filter(parlamentar__nome=nome_parlamentar)
+        for leg in legs:
+            if data >= leg.inicio and data <= leg.fim:
                 return leg
         raise ValueError('Não achei legislatura para %s em %s' %
                          (nome_parlamentar, data))
 
     def __unicode__(self):
         return "%s - %s@%s [%s, %s]" % (
-            self.parliamentary,
-            self.party,
-            self.lesgilative_house.acronym_legislative_house,
-            self.lesgilature_initial_date,
-            self.lesgilature_final_date)
+            self.parlamentar,
+            self.partido,
+            self.casa_legislativa.nome_curto,
+            self.inicio,
+            self.fim)
 
 
 class Proposicao(models.Model):
     """Parliamentary proposition (bill).
 
      attributes:
-         proposition_name - identifier string according to data source
+         id_prop - identifier string according to data source
          abbreviation, number, year - strings that form the legal name of the proposition
-         proposition_menu-- succinct and official description
+         ementa-- succinct and official description
          Description - more detailed description
          indexing - key words
          authors - list of objects of type Parliamentary
          data_apresentacao - when it was proposed
          situation - as is now
-         lesgilative_house - object type CasaLegislativa
+         casa_legislativa - object type CasaLegislativa
 
      methods:
-         name: return symbol number / year"""
-
-    # obs: proposition_name is not a primary key!
-    proposition_id = models.CharField(max_length=100, blank=True)
-    proposition_acronym = models.CharField(max_length=10)
-    proposition_number = models.CharField(max_length=10)
-    proposition_year = models.CharField(max_length=4)
-    proposition_menu = models.TextField(blank=True)
-    proposition_description = models.TextField(blank=True)
-    proposition_index = models.TextField(blank=True)
-    proposition_date = models.DateField(null=True)
-    proposition_status = models.TextField(blank=True)
-    lesgilative_house = models.ForeignKey(CasaLegislativa, null=True)
-    principal_author = models.TextField(blank=True)
+         name: return "symbol number / year"
+    """
+    # obs: id_prop is not a primary key!
+    id_prop = models.CharField(max_length=100, blank=True)
+    sigla = models.CharField(max_length=10)
+    numero = models.CharField(max_length=10)
+    ano = models.CharField(max_length=4)
+    ementa = models.TextField(blank=True)
+    descricao = models.TextField(blank=True)
+    indexacao = models.TextField(blank=True)
+    data_apresentacao = models.DateField(null=True)
+    situacao = models.TextField(blank=True)
+    casa_legislativa = models.ForeignKey(CasaLegislativa, null=True)
+    autor_principal = models.TextField(blank=True)
     #TODO
-    #principal_author = models.ForeignKey(
+    #autor_principal = models.ForeignKey(
     #    Parlamentar,
     #    null=True,
     #    related_name='Autor principal')
-    authors = models.ManyToManyField(
+    autores = models.ManyToManyField(
         Parlamentar,
         null=True,
         related_name='demais_autores')
 
     def nome(self):
-        return "%s %s/%s" % (self.proposition_acronym, self.proposition_number, self.proposition_year)
+        return "%s %s/%s" % (self.sigla, self.numero, self.ano)
 
     def __unicode__(self):
-        return "[%s] %s" % (self.nome(), self.proposition_menu)
+        return "[%s] %s" % (self.nome(), self.ementa)
 
 
 class Votacao(models.Model):
     """Vote in planário.
 
      attributes:
-         voting_id - identifier string according to data source
-         voting_description, results - strings
-         voting_date - date of the vote (type date)
-         voting_result - string
+         id_vot - identifier string according to data source
+         description, results - strings
+         date - date of the vote (type date)
+         result - string
          proposition - Proposition object of type
-    #    null=True,
-    #    related_name='Autor principal')
+
      methods:
          vote ()
-         por_partido ()"""
+         por_partido ()
+    """
+    # obs: id_vot is not a primary key!
+    id_vot = models.CharField(max_length=100, blank=True)
+    descricao = models.TextField(blank=True)
+    data = models.DateField(blank=True, null=True)
+    resultado = models.TextField(blank=True)
+    proposicao = models.ForeignKey(Proposicao, null=True)
 
-    # obs: voting_id is not a primary key!
-    voting_id = models.CharField(max_length=100, blank=True)
-    voting_description = models.TextField(blank=True)
-    voting_date = models.DateField(blank=True, null=True)
-    voting_result = models.TextField(blank=True)
-    propositon_voted = models.ForeignKey(Proposicao, null=True)
-
-    def Votos(self):
+    def votos(self):
         #Returns the votes vote (depends on database)
         return self.voto_set.all()
 
@@ -440,42 +444,42 @@ class Votacao(models.Model):
         """Returns aggregate vote by party.
 
          Return: a dictionary whose key is the name of the party (string)
-         and the value is a VotoPartido"""
-
-        dictionary_party_votes = {}
-        for voto in self.Votos():
+         and the value is a VotoPartido
+        """
+        dic = {}
+        for voto in self.votos():
             # TODO poderia ser mais complexo:
                 # checar se a data da votação bate com
                 # o período da legislatura mais recente
-            part = voto.legislatura.party.nome
-            if part not in dictionary_party_votes:
-                dictionary_party_votes[part] = VotoPartido(part)
-            voto_partido = dictionary_party_votes[part]
-            voto_partido.add(voto.vote_option)
-        return dictionary_party_votes
+            part = voto.legislatura.partido.nome
+            if part not in dic:
+                dic[part] = VotoPartido(part)
+            voto_partido = dic[part]
+            voto_partido.add(voto.opcao)
+        return dic
 
     @staticmethod
-    def por_casa_legislativa(lesgilative_house,
+    def por_casa_legislativa(casa_legislativa,
                              data_inicial=None,
                              data_final=None):
-        votings_by_legislative_house = Votacao.objects.filter(
-            proposicao__casa_legislativa=lesgilative_house)
+        votacoes = Votacao.objects.filter(
+            proposicao__casa_legislativa=casa_legislativa)
         from django.utils.dateparse import parse_datetime
         if data_inicial is not None:
-            inicial_voting_date = parse_datetime('%s 0:0:0' % data_inicial)
-            votings_by_legislative_house = votings_by_legislative_house.filter(data__gte=inicial_voting_date)
+            ini = parse_datetime('%s 0:0:0' % data_inicial)
+            votacoes = votacoes.filter(data__gte=ini)
         if data_final is not None:
-            final_voting_date = parse_datetime('%s 0:0:0' % data_final)
-            votings_by_legislative_house = votings_by_legislative_house.filter(data__lte=final_voting_date)
-        return votings_by_legislative_house
+            fim = parse_datetime('%s 0:0:0' % data_final)
+            votacoes = votacoes.filter(data__lte=fim)
+        return votacoes
 
     # TODO def por_uf(self):
 
     def __unicode__(self):
-        if self.voting_date:
-            return "[%s] %s" % (self.voting_date, self.voting_description)
+        if self.data:
+            return "[%s] %s" % (self.data, self.descricao)
         else:
-            return self.voting_description
+            return self.descricao
 
 
 class Voto(models.Model):
@@ -484,14 +488,15 @@ class Voto(models.Model):
      attributes:
          legislature - type object Legislature
          option - which was the vote of the parliamentary
-                 (yes, no, abstain, obstruction, did not vote)"""
+                 (yes, no, abstain, obstruction, did not vote)
+    """
 
-    voting = models.ForeignKey(Votacao)
-    legislature = models.ForeignKey(Legislatura)
-    vote_option = models.CharField(max_length=10, choices=OPCOES)
+    votacao = models.ForeignKey(Votacao)
+    legislatura = models.ForeignKey(Legislatura)
+    opcao = models.CharField(max_length=10, choices=OPCOES)
 
     def __unicode__(self):
-        return "%s votou %s" % (self.legislature, self.vote_option)
+        return "%s votou %s" % (self.legislatura, self.opcao)
 
 
 class VotosAgregados:
@@ -504,12 +509,13 @@ class VotosAgregados:
      method:
          add
          Total
-         voto_medio"""
+         voto_medio
+    """
 
     def __init__(self):
-        self.yes_number = 0
-        self.no_number = 0
-        self.abstention_number = 0
+        self.sim = 0
+        self.nao = 0
+        self.abstencao = 0
 
     def add(self, voto):
         """Adds a set of votes to vote.
@@ -517,32 +523,34 @@ class VotosAgregados:
          arguments:
              vote - string \ in {YES, NO, ABSTAIN, AWAY, OBSTRUCTION}
              OBSTRUCTION counts as a vote abstention
-             MISSING does not count as a vote"""
-
+             MISSING does not count as a vote
+        """
         if (voto == SIM):
-            self.yes_number += 1
+            self.sim += 1
         if (voto == NAO):
-            self.no_number += 1
+            self.nao += 1
         if (voto == ABSTENCAO):
-            self.abstention_number += 1
+            self.abstencao += 1
         if (voto == OBSTRUCAO):
-            self.abstention_number += 1
+            self.abstencao += 1
+        #if (voto == AUSENTE):
+        #    self.abstencao += 1
 
-    def total_votes(self):
-        return self.yes_number + self.no_number + self.abstention_number
+    def total(self):
+        return self.sim + self.nao + self.abstencao
 
     def voto_medio(self):
         """Real value representing the 'average opnion' of
-             aggregate votes; 1 is yes and no is -1."""
-
-        total_votes = self.total_votes()
-        if total_votes > 0:
-            return 1.0 * (self.yes_number - self.no_number) / self.total_votes()
+             aggregate votes; 1 is yes and no is -1.
+	"""
+        total = self.total()
+        if total > 0:
+            return 1.0 * (self.sim - self.nao) / self.total()
         else:
             return 0
 
     def __unicode__(self):
-        return '(%s, %s, %s)' % (self.yes_number, self.no_number, self.abstention_number)
+        return '(%s, %s, %s)' % (self.sim, self.nao, self.abstencao)
 
     def __str__(self):
         return unicode(self).encode('utf-8')
@@ -554,10 +562,10 @@ class VotoPartido(VotosAgregados):
      attributes:
          party - object of type Party
          yes, no, abstention -
-             integers representing the number of votes in the set"""
-
-    def __init__(self, party):
+             integers representing the number of votes in the set
+    """
+    def __init__(self, partido):
         VotosAgregados.__init__(self)
-        self.party = party
+        self.partido = partido
 
 # TODO class VotoUF(VotosAgregados):
