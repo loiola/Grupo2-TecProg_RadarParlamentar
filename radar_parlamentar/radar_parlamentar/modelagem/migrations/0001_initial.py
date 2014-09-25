@@ -12,9 +12,9 @@ class Migration(SchemaMigration):
         db.create_table('modelagem_indexadores', (
             ('id', self.gf('django.db.models.fields.AutoField')(
                 primary_key=True)),
-            ('party_term', self.gf('django.db.models.fields.CharField')(
+            ('termo', self.gf('django.db.models.fields.CharField')(
                 max_length=120)),
-            ('principa_party_term', self.gf('django.db.models.fields.BooleanField')(
+            ('principal', self.gf('django.db.models.fields.BooleanField')(
                 default=False)),
         ))
         db.send_create_signal('modelagem', ['Indexadores'])
@@ -23,10 +23,10 @@ class Migration(SchemaMigration):
         db.create_table('modelagem_partido', (
             ('id', self.gf('django.db.models.fields.AutoField')(
                 primary_key=True)),
-            ('party_name', self.gf('django.db.models.fields.CharField')(
+            ('nome', self.gf('django.db.models.fields.CharField')(
                 max_length=12)),
-            ('party_number', self.gf('django.db.models.fields.IntegerField')()),
-            ('party_color', self.gf('django.db.models.fields.CharField')(
+            ('numero', self.gf('django.db.models.fields.IntegerField')()),
+            ('cor', self.gf('django.db.models.fields.CharField')(
                 max_length=7)),
         ))
         db.send_create_signal('modelagem', ['Partido'])
@@ -35,15 +35,15 @@ class Migration(SchemaMigration):
         db.create_table('modelagem_casalegislativa', (
             ('id', self.gf('django.db.models.fields.AutoField')(
                 primary_key=True)),
-            ('legislative_house_name', self.gf('django.db.models.fields.CharField')(
+            ('nome', self.gf('django.db.models.fields.CharField')(
                 max_length=100)),
-            ('acronym_legislative_house', self.gf('django.db.models.fields.CharField')
+            ('nome_curto', self.gf('django.db.models.fields.CharField')
              (unique=True, max_length=50)),
-            ('sphere', self.gf('django.db.models.fields.CharField')
+            ('esfera', self.gf('django.db.models.fields.CharField')
                 (max_length=10)),
-            ('legislative_house_place', self.gf('django.db.models.fields.CharField')
+            ('local', self.gf('django.db.models.fields.CharField')
                 (max_length=100)),
-            ('db_atualization_date', self.gf('django.db.models.fields.DateField')
+            ('atualizacao', self.gf('django.db.models.fields.DateField')
              (null=True, blank=True)),
         ))
         db.send_create_signal('modelagem', ['CasaLegislativa'])
@@ -52,11 +52,11 @@ class Migration(SchemaMigration):
         db.create_table('modelagem_parlamentar', (
             ('id', self.gf('django.db.models.fields.AutoField')
                 (primary_key=True)),
-            ('parliamentary_id', self.gf('django.db.models.fields.CharField')
+            ('id_parlamentar', self.gf('django.db.models.fields.CharField')
              (max_length=100, blank=True)),
-            ('parliamentary_name', self.gf('django.db.models.fields.CharField')
+            ('nome', self.gf('django.db.models.fields.CharField')
                 (max_length=100)),
-            ('parliamentary_gender', self.gf('django.db.models.fields.CharField')
+            ('genero', self.gf('django.db.models.fields.CharField')
              (max_length=10, blank=True)),
         ))
         db.send_create_signal('modelagem', ['Parlamentar'])
@@ -65,18 +65,18 @@ class Migration(SchemaMigration):
         db.create_table('modelagem_legislatura', (
             ('id', self.gf('django.db.models.fields.AutoField')
                 (primary_key=True)),
-            ('parliamentary', self.gf(
+            ('parlamentar', self.gf(
                 'django.db.models.fields.related.ForeignKey')
              (to=orm['modelagem.Parlamentar'])),
-            ('lesgilative_house', self.gf(
+            ('casa_legislativa', self.gf(
                 'django.db.models.fields.related.ForeignKey')
              (to=orm['modelagem.CasaLegislativa'], null=True)),
-            ('lesgilature_initial_date', self.gf('django.db.models.fields.DateField')
+            ('inicio', self.gf('django.db.models.fields.DateField')
                 (null=True)),
-            ('lesgilature_final_date', self.gf('django.db.models.fields.DateField')(null=True)),
-            ('party', self.gf('django.db.models.fields.related.ForeignKey')
+            ('fim', self.gf('django.db.models.fields.DateField')(null=True)),
+            ('partido', self.gf('django.db.models.fields.related.ForeignKey')
              (to=orm['modelagem.Partido'])),
-            ('legislature_place', self.gf('django.db.models.fields.CharField')
+            ('localidade', self.gf('django.db.models.fields.CharField')
              (max_length=100, blank=True)),
         ))
         db.send_create_signal('modelagem', ['Legislatura'])
@@ -85,28 +85,28 @@ class Migration(SchemaMigration):
         db.create_table('modelagem_proposicao', (
             ('id', self.gf('django.db.models.fields.AutoField')
                 (primary_key=True)),
-            ('proposition_id', self.gf('django.db.models.fields.CharField')
+            ('id_prop', self.gf('django.db.models.fields.CharField')
              (max_length=100, blank=True)),
-            ('proposition_acronym', self.gf('django.db.models.fields.CharField')
+            ('sigla', self.gf('django.db.models.fields.CharField')
                 (max_length=10)),
-            ('proposition_number', self.gf('django.db.models.fields.CharField')
+            ('numero', self.gf('django.db.models.fields.CharField')
                 (max_length=10)),
-            ('proposition_year', self.gf('django.db.models.fields.CharField')
+            ('ano', self.gf('django.db.models.fields.CharField')
                 (max_length=4)),
-            ('proposition_menu', self.gf('django.db.models.fields.TextField')
+            ('ementa', self.gf('django.db.models.fields.TextField')
                 (blank=True)),
-            ('proposition_description', self.gf('django.db.models.fields.TextField')
+            ('descricao', self.gf('django.db.models.fields.TextField')
                 (blank=True)),
-            ('proposition_index', self.gf('django.db.models.fields.TextField')
+            ('indexacao', self.gf('django.db.models.fields.TextField')
                 (blank=True)),
-            ('proposition_date', self.gf(
+            ('data_apresentacao', self.gf(
                 'django.db.models.fields.DateField')(null=True)),
-            ('proposition_status', self.gf('django.db.models.fields.TextField')
+            ('situacao', self.gf('django.db.models.fields.TextField')
                 (blank=True)),
-            ('lesgilative_house', self.gf(
+            ('casa_legislativa', self.gf(
                 'django.db.models.fields.related.ForeignKey')
              (to=orm['modelagem.CasaLegislativa'], null=True)),
-            ('principal_author', self.gf(
+            ('autor_principal', self.gf(
                 'django.db.models.fields.TextField')(blank=True)),
         ))
         db.send_create_signal('modelagem', ['Proposicao'])
@@ -121,21 +121,21 @@ class Migration(SchemaMigration):
             ('parlamentar', models.ForeignKey(
                 orm['modelagem.parlamentar'], null=False))
         ))
-        db.create_unique(m2m_table_name, ['proposition_id', 'parliamentary_id'])
+        db.create_unique(m2m_table_name, ['proposicao_id', 'parlamentar_id'])
 
         # Adding model 'Votacao'
         db.create_table('modelagem_votacao', (
             ('id', self.gf('django.db.models.fields.AutoField')
                 (primary_key=True)),
-            ('voting_id', self.gf('django.db.models.fields.CharField')
+            ('id_vot', self.gf('django.db.models.fields.CharField')
              (max_length=100, blank=True)),
-            ('voting_description', self.gf('django.db.models.fields.TextField')
+            ('descricao', self.gf('django.db.models.fields.TextField')
                 (blank=True)),
-            ('voting_date', self.gf('django.db.models.fields.DateField')
+            ('data', self.gf('django.db.models.fields.DateField')
              (null=True, blank=True)),
-            ('voting_result', self.gf('django.db.models.fields.TextField')
+            ('resultado', self.gf('django.db.models.fields.TextField')
                 (blank=True)),
-            ('propositon_voted', self.gf(
+            ('proposicao', self.gf(
                 'django.db.models.fields.related.ForeignKey')
              (to=orm['modelagem.Proposicao'], null=True)),
         ))
@@ -145,12 +145,12 @@ class Migration(SchemaMigration):
         db.create_table('modelagem_voto', (
             ('id', self.gf('django.db.models.fields.AutoField')
                 (primary_key=True)),
-            ('voting', self.gf('django.db.models.fields.related.ForeignKey')
+            ('votacao', self.gf('django.db.models.fields.related.ForeignKey')
              (to=orm['modelagem.Votacao'])),
-            ('legislature', self.gf(
+            ('legislatura', self.gf(
                 'django.db.models.fields.related.ForeignKey')
              (to=orm['modelagem.Legislatura'])),
-            ('vote_option', self.gf('django.db.models.fields.CharField')
+            ('opcao', self.gf('django.db.models.fields.CharField')
                 (max_length=10)),
         ))
         db.send_create_signal('modelagem', ['Voto'])
@@ -186,125 +186,125 @@ class Migration(SchemaMigration):
     models = {
         'modelagem.casalegislativa': {
             'Meta': {'object_name': 'CasaLegislativa'},
-            'db_atualization_date': ('django.db.models.fields.DateField', [],
+            'atualizacao': ('django.db.models.fields.DateField', [],
              {'null': 'True', 'blank': 'True'}),
-            'sphere': ('django.db.models.fields.CharField', [],
+            'esfera': ('django.db.models.fields.CharField', [],
                        {'max_length': '10'}),
             'id': ('django.db.models.fields.AutoField', [],
                    {'primary_key': 'True'}),
-            'legislative_house_place': ('django.db.models.fields.CharField', [],
+            'local': ('django.db.models.fields.CharField', [],
                       {'max_length': '100'}),
-            'legislative_house_name': ('django.db.models.fields.CharField', [],
+            'nome': ('django.db.models.fields.CharField', [],
                      {'max_length': '100'}),
-            'acronym_legislative_house': ('django.db.models.fields.CharField', [],
+            'nome_curto': ('django.db.models.fields.CharField', [],
                            {'unique': 'True', 'max_length': '50'})
         },
         'modelagem.indexadores': {
             'Meta': {'object_name': 'Indexadores'},
             'id': ('django.db.models.fields.AutoField', [],
                    {'primary_key': 'True'}),
-            'principa_party_term': ('django.db.models.fields.BooleanField', [],
+            'principal': ('django.db.models.fields.BooleanField', [],
                           {'default': 'False'}),
-            'party_term': ('django.db.models.fields.CharField', [],
+            'termo': ('django.db.models.fields.CharField', [],
                       {'max_length': '120'})
         },
         'modelagem.legislatura': {
             'Meta': {'object_name': 'Legislatura'},
-            'lesgilative_house': ('django.db.models.fields.related.ForeignKey',
+            'casa_legislativa': ('django.db.models.fields.related.ForeignKey',
                                  [],
                                  {'to': "orm['modelagem.CasaLegislativa']",
                                   'null': 'True'}),
-            'lesgilature_final_date': ('django.db.models.fields.DateField', [], {'null': 'True'}),
+            'fim': ('django.db.models.fields.DateField', [], {'null': 'True'}),
             'id': ('django.db.models.fields.AutoField', [],
                    {'primary_key': 'True'}),
-            'lesgilature_initial_date': ('django.db.models.fields.DateField', [],
+            'inicio': ('django.db.models.fields.DateField', [],
                        {'null': 'True'}),
-            'legislature_place': ('django.db.models.fields.CharField', [],
+            'localidade': ('django.db.models.fields.CharField', [],
                            {'max_length': '100', 'blank': 'True'}),
-            'parliamentary': ('django.db.models.fields.related.ForeignKey', [],
+            'parlamentar': ('django.db.models.fields.related.ForeignKey', [],
                             {'to': "orm['modelagem.Parlamentar']"}),
-            'party': ('django.db.models.fields.related.ForeignKey', [],
+            'partido': ('django.db.models.fields.related.ForeignKey', [],
                         {'to': "orm['modelagem.Partido']"})
         },
         'modelagem.parlamentar': {
             'Meta': {'object_name': 'Parlamentar'},
-            'parliamentary_gender': ('django.db.models.fields.CharField', [],
+            'genero': ('django.db.models.fields.CharField', [],
                        {'max_length': '10', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [],
                    {'primary_key': 'True'}),
-            'parliamentary_id': ('django.db.models.fields.CharField', [],
+            'id_parlamentar': ('django.db.models.fields.CharField', [],
                                {'max_length': '100', 'blank': 'True'}),
-            'parliamentary_name': ('django.db.models.fields.CharField', [],
+            'nome': ('django.db.models.fields.CharField', [],
                      {'max_length': '100'})
         },
         'modelagem.partido': {
             'Meta': {'object_name': 'Partido'},
-            'party_color': ('django.db.models.fields.CharField', [],
+            'cor': ('django.db.models.fields.CharField', [],
                     {'max_length': '7'}),
             'id': ('django.db.models.fields.AutoField', [],
                    {'primary_key': 'True'}),
-            'party_name': ('django.db.models.fields.CharField', [],
+            'nome': ('django.db.models.fields.CharField', [],
                      {'max_length': '12'}),
-            'party_number': ('django.db.models.fields.IntegerField', [], {})
+            'numero': ('django.db.models.fields.IntegerField', [], {})
         },
         'modelagem.proposicao': {
             'Meta': {'object_name': 'Proposicao'},
-            'proposition_year': ('django.db.models.fields.CharField', [],
+            'ano': ('django.db.models.fields.CharField', [],
                     {'max_length': '4'}),
-            'principal_author': ('django.db.models.fields.TextField', [],
+            'autor_principal': ('django.db.models.fields.TextField', [],
                                 {'blank': 'True'}),
-            'authors': ('django.db.models.fields.related.ManyToManyField', [],
+            'autores': ('django.db.models.fields.related.ManyToManyField', [],
                         {'symmetrical': 'False',
                          'related_name': "u'demais_autores'",
                          'null': 'True',
                          'to': "orm['modelagem.Parlamentar']"}),
-            'lesgilative_house': ('django.db.models.fields.related.ForeignKey',
+            'casa_legislativa': ('django.db.models.fields.related.ForeignKey',
                                  [], {'to': "orm['modelagem.CasaLegislativa']",
                                       'null': 'True'}),
-            'proposition_date': ('django.db.models.fields.DateField', [],
+            'data_apresentacao': ('django.db.models.fields.DateField', [],
                                   {'null': 'True'}),
-            'proposition_description': ('django.db.models.fields.TextField', [],
+            'descricao': ('django.db.models.fields.TextField', [],
                           {'blank': 'True'}),
-            'proposition_menu': ('django.db.models.fields.TextField', [],
+            'ementa': ('django.db.models.fields.TextField', [],
                        {'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [],
                    {'primary_key': 'True'}),
-            'proposition_id': ('django.db.models.fields.CharField', [],
+            'id_prop': ('django.db.models.fields.CharField', [],
                         {'max_length': '100', 'blank': 'True'}),
-            'proposition_index': ('django.db.models.fields.TextField', [],
+            'indexacao': ('django.db.models.fields.TextField', [],
                           {'blank': 'True'}),
-            'proposition_number': ('django.db.models.fields.CharField', [],
+            'numero': ('django.db.models.fields.CharField', [],
                        {'max_length': '10'}),
-            'proposition_acronym': ('django.db.models.fields.CharField', [],
+            'sigla': ('django.db.models.fields.CharField', [],
                       {'max_length': '10'}),
-            'proposition_status': ('django.db.models.fields.TextField', [],
+            'situacao': ('django.db.models.fields.TextField', [],
                          {'blank': 'True'})
         },
         'modelagem.votacao': {
             'Meta': {'object_name': 'Votacao'},
-            'voting_date': ('django.db.models.fields.DateField', [],
+            'data': ('django.db.models.fields.DateField', [],
                      {'null': 'True', 'blank': 'True'}),
-            'voting_description': ('django.db.models.fields.TextField', [],
+            'descricao': ('django.db.models.fields.TextField', [],
                           {'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [],
                    {'primary_key': 'True'}),
-            'voting_id': ('django.db.models.fields.CharField', [],
+            'id_vot': ('django.db.models.fields.CharField', [],
                        {'max_length': '100', 'blank': 'True'}),
-            'propositon_voted': ('django.db.models.fields.related.ForeignKey', [],
+            'proposicao': ('django.db.models.fields.related.ForeignKey', [],
                            {'to': "orm['modelagem.Proposicao']",
                             'null': 'True'}),
-            'voting_result': ('django.db.models.fields.TextField', [],
+            'resultado': ('django.db.models.fields.TextField', [],
                           {'blank': 'True'})
         },
         'modelagem.voto': {
             'Meta': {'object_name': 'Voto'},
             'id': ('django.db.models.fields.AutoField', [],
                    {'primary_key': 'True'}),
-            'legislature': ('django.db.models.fields.related.ForeignKey', [],
+            'legislatura': ('django.db.models.fields.related.ForeignKey', [],
                             {'to': "orm['modelagem.Legislatura']"}),
-            'voting_option': ('django.db.models.fields.CharField', [],
+            'opcao': ('django.db.models.fields.CharField', [],
                       {'max_length': '10'}),
-            'voting': ('django.db.models.fields.related.ForeignKey', [],
+            'votacao': ('django.db.models.fields.related.ForeignKey', [],
                         {'to': "orm['modelagem.Votacao']"})
         }
     }
