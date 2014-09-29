@@ -18,13 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Radar Parlamentar.  If not, see <http://www.gnu.org/licenses/>.
 
-"""módulo senado
+"""Senate Module
 
 Classes:
     CasaLegislativaGerador
     ImportadorVotacoesSenado
-    ImportadorSenadores
-"""
+    ImportadorSenadores"""
 
 from __future__ import unicode_literals
 from django.utils.dateparse import parse_datetime
@@ -36,12 +35,12 @@ import os
 import xml.etree.ElementTree as etree
 import logging
 
-# data em que os arquivos XMLs foram atualizados
+# Date the XML files were updated
 ULTIMA_ATUALIZACAO = parse_datetime('2013-02-14 0:0:0')
 
 MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-# pasta com os arquivos com os dados fornecidos pelo senado
+# Folder with the files with data provided by senate
 DATA_FOLDER = os.path.join(MODULE_DIR, 'dados/senado')
 VOTACOES_FOLDER = os.path.join(DATA_FOLDER, 'votacoes')
 
@@ -51,25 +50,24 @@ logger = logging.getLogger("radar")
 
 
 class SenadoWS:
-
-    """Acesso aos web services do senado"""
+    """Access to senate web services"""
 
     URL_LEGISLATURA = 'http://legis.senado.gov.br/dadosabertos/senador/lista/legislatura/%s'
 
     def obter_senadores_from_legislatura(self, id_leg):
-        """Obtém senadores de uma legislatura
+        """Get senator from a legislature
 
-        Argumentos:
+        Arguments:
         id_leg
 
-        Retorna:
-        Um objeto ElementTree correspondente ao XML retornado pelo web service
-        Exemplo:
+        Returns:
+        An object ElementTree corresponding to XML returned by web service
+        Exemple:
         http://legis.senado.gov.br/dadosabertos/senador/lista/legislatura/52
 
-        Exceções:
-            ValueError -- quando legislatura não existe
-        """
+        Exceptions:
+            ValueError -- when legislature does not exist"""
+
         url = SenadoWS.URL_LEGISLATURA % id_leg
         try:
             request = urllib2.Request(url)
@@ -90,7 +88,7 @@ class SenadoWS:
 class CasaLegislativaGerador:
 
     def gera_senado(self):
-        """Gera objeto do tipo CasaLegislativa representando o Senado"""
+        """Generate object by CasaLegislativa type representing the Senate"""
 
         if not models.CasaLegislativa.objects.filter(nome_curto=NOME_CURTO):
             sen = models.CasaLegislativa()
@@ -105,8 +103,7 @@ class CasaLegislativaGerador:
 
 
 class ImportadorVotacoesSenado:
-
-    """Salva os dados dos arquivos XML do senado no banco de dados"""
+    """Save the XML Snetae datas in the database"""
 
     def __init__(self):
         self.senado = models.CasaLegislativa.objects.get(nome_curto=NOME_CURTO)
@@ -115,8 +112,9 @@ class ImportadorVotacoesSenado:
             # Proposicao
 
     def _converte_data(self, data_str):
-        """Converte string "aaaa-mm-dd para objeto datetime;
-        retona None se data_str é inválido"""
+        """Converts string "aaaa-mm-dd to datetime object;
+        returns None if data_str is invalid"""
+
         DATA_REGEX = '(\d{4})-(\d{2})-(\d{2})'
         res = re.match(DATA_REGEX, data_str)
         if res:
@@ -126,13 +124,13 @@ class ImportadorVotacoesSenado:
             raise ValueError
 
     def _voto_senado_to_model(self, voto):
-        """Interpreta voto como tá no XML e responde em adequação a modelagem
-        em models.py"""
+        """Interprets vote as in XML and answer according to the modeling in 
+        models.py"""
 
         DESCULPAS = ['MIS', 'MERC', 'P-NRV', 'REP',
                      'AP', 'LA', 'LAP', 'LC', 'LG', 'LS', 'NA']
 
-        # XML não tá em UTF-8, acho q vai dar probema nessas comparações!
+        # XML is not in UTF-8, it can issue the operations
         if voto == 'Não':
             return models.NAO
         elif voto == 'Sim':
@@ -143,7 +141,9 @@ class ImportadorVotacoesSenado:
             return models.AUSENTE
         elif voto == 'Abstenção':
             return models.ABSTENCAO
-        elif voto == 'P-OD':  # obstrução
+
+        # Obstruction
+        elif voto == 'P-OD':  
             return models.ABSTENCAO
         else:
             return models.ABSTENCAO
@@ -187,9 +187,9 @@ class ImportadorVotacoesSenado:
         return leg
 
     def _votos_from_tree(self, votos_tree, votacao):
-        """Faz o parse dos votos, salva no BD e devolve lista de votos
-           Retorna lista dos votos salvos
-        """
+        """Makes parsing of the votes, save in the database and returns the list 
+        of votes"""
+
         votos = []
         for voto_parlamentar_tree in votos_tree:
             nome_senador = voto_parlamentar_tree.find('NomeParlamentar').text
@@ -214,8 +214,8 @@ class ImportadorVotacoesSenado:
         return votos
 
     def _periodo_arbitrario(self, dt):
-        """Retorna datas de início e fim de uma legislatura arbitrária que
-        contenha a data informada"""
+        """Returns start and end of an arbitrary term that contains the date 
+        entered"""
 
         periodo1 = (date(2011, 02, 01), date(2019, 01, 31))
         periodo2 = (date(2003, 02, 01), date(2011, 01, 31))
@@ -249,7 +249,7 @@ class ImportadorVotacoesSenado:
         return prop
 
     def _from_xml_to_bd(self, xml_file):
-        """Salva no banco de dados do Django e retorna lista das votações"""
+        """Save in the database and returns the Django voting list"""
 
         f = open(xml_file, 'r')
         xml = f.read()
@@ -257,13 +257,14 @@ class ImportadorVotacoesSenado:
         tree = etree.fromstring(xml)
 
         votacoes = []
-        # Pelo q vimos, nesses XMLs não há votações 'inúteis' (homenagens etc)
-        # como na cmsp (exceto as secretas)
+
         votacoes_tree = tree.find('Votacoes')
         if votacoes_tree is not None:
             for votacao_tree in votacoes_tree:
-                # se votação não é secreta
+
                 votacao_secreta = votacao_tree.find('Secreta').text
+
+                # If voting is not secret:
                 if votacao_tree.tag == 'Votacao' and votacao_secreta == 'N':
 
                     codigo = votacao_tree.find('CodigoSessaoVotacao').text
@@ -281,8 +282,8 @@ class ImportadorVotacoesSenado:
                         logger.debug('Importando %s' % nome)
                         votacao = models.Votacao()
                         votacao.id_vot = codigo
-                        # só pra criar a chave primária e poder atribuir o
-                        # votos
+
+                        # To create the primary key and assign the votes
                         votacao.save()
                         votacao.descricao = votacao_tree.find(
                             'DescricaoVotacao').text
@@ -309,20 +310,23 @@ class ImportadorVotacoesSenado:
         return votacoes
 
     def progresso(self):
-        """Indica progresso na tela"""
+        """Indicates progress on screen"""
+
         print('.'),
 
     def _xml_file_names(self):
-        """Retorna uma lista com os caminhos dos arquivos XMLs contidos
-        na pasta VOTACOES_FOLDER"""
+        """Returns a list of paths of XMLs files contained in the folder 
+        VOTACOES_FOLDER"""
+
         files = os.listdir(VOTACOES_FOLDER)
         xmls = filter(lambda name: name.endswith('.xml'), files)
         xmls = map(lambda name: os.path.join(VOTACOES_FOLDER, name), xmls)
         return xmls
 
     def importar_votacoes(self):
+
         # for xml_file in ['importadores/dados/senado/ListaVotacoes2011.xml']:
-        # facilita debug
+        # Facilitates debuging
         for xml_file in self._xml_file_names():
             logger.info('Importando %s' % xml_file)
             self._from_xml_to_bd(xml_file)
@@ -330,11 +334,10 @@ class ImportadorVotacoesSenado:
 
 class ImportadorSenadores:
 
-    # essa lista precisa ser atualizado de anos em anos
+    # This list needs to be updated year by year
+    # 52 is the minimum legislature because we just have voting from 2005 to now
     LEGISLATURAS = [52, 53, 54, 55]
-                                # 52 é a legislatura mínima porque só temos
-                                # votacões desde 2005
-
+                                
     def __init__(self):
         self.senado = models.CasaLegislativa.objects.get(nome_curto=NOME_CURTO)
 
@@ -360,9 +363,10 @@ class ImportadorSenadores:
         return partido
 
     def _find_nome_partido(self, partidos_tree):
-        """Por hora retorna o último partido da lista"""
-        # TODO em alguns casos um senador aparece com vários partidos durante a
-        # legislatura; oq fazer?
+        """By hour, returns the last party in the list"""
+
+        # TODO in some cases a senator shows with several parties during the
+        # legislature. What do we have to do?
         for partido_tree in partidos_tree:
             last_partido_tree = partido_tree
         return last_partido_tree.find('SiglaPartido').text
@@ -418,7 +422,7 @@ class ImportadorSenadores:
                 leg.save()
 
     def importar_senadores(self):
-        """Cria parlamentares e legislaturas no banco de dados"""
+        """Create parliamentaries and legislatures in database"""
 
         senws = SenadoWS()
         for id_leg in ImportadorSenadores.LEGISLATURAS:
@@ -428,6 +432,7 @@ class ImportadorSenadores:
 
 
 def main():
+    """Imports Senate datas"""
 
     logger.info('IMPORTANDO DADOS DO SENADO')
     geradorCasaLeg = CasaLegislativaGerador()

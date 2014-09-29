@@ -30,6 +30,8 @@ class Temas():
 
     @staticmethod
     def get_temas_padrao():
+        """Get topics and insert topics synonymous"""
+
         temas = Temas()
         sinonimos = {}
         sinonimos['educação'] = [
@@ -63,15 +65,20 @@ class Temas():
         sinonimos['constituição'] = ['PEC', 'constituinte']
         sinonimos['burocrática'] = [
             'pauta', 'quorum', 'urgência', 'adiamento', 'sessão']
+
         for i in sinonimos:
             for j in sinonimos[i]:
                 temas.inserir_sinonimo(i, j)
         return temas
 
     def inserir_sinonimo(self, tema, sinonimo):
+        """Verify if has topics or synonymous. If topics or synonymous, add. If not,
+        show valueError"""
+
         if tema is None or sinonimo is None:
             raise ValueError('Impossivel adicionar sinonimo\n')
         if tema.encode('utf-8') in self.dicionario:
+
         # if self.dicionario.has_key(tema.encode('utf-8')):
             self.dicionario[tema.encode('utf-8')].add(sinonimo.encode('utf-8'))
         else:
@@ -103,24 +110,21 @@ class Temas():
 
 
 class FiltroVotacao():
-
-    """Filtra votações pelos campos:
+    """Filters polls by fields:
         * votacao.descricao
         * proposicao.ementa
         * proposicao.descricao
-        * proposicao.indexacao
-    """
+        * proposicao.indexacao"""
 
     def __init__(self, casa_legislativa, periodo_casa_legislativa,
                  palavras_chave):
-        """Argumentos:
-            casa_legislativa -- objeto do tipo CasaLegislativa;
-            somente votações desta casa serão filtradas.
-            periodo_casa_legislativa -- objeto do tipo PeriodoCasaLegislativa;
-            somente votações deste período serão filtradas.
-            palavras_chave -- lista de strings para serem usadas na filtragem
-            das votações.
-        """
+        """Arguments:
+            casa_legislativa -- object of type CasaLegislativa;
+            only voting from this house will be filtered.
+            periodo_casa_legislativa -- object of type PeriodoCasaLegislativa;
+            only voting from this period will be filtered.
+            palavras_chave -- strings list for be used in voting filtering."""
+
         self.casa_legislativa = casa_legislativa
         self.periodo_casa_legislativa = periodo_casa_legislativa
         self.palavras_chaves = palavras_chave
@@ -152,7 +156,8 @@ class FiltroVotacao():
         return False
 
     def _palavra_existe_em_votacao(self, votacao, palavra_chave):
-        # procura uma substring dentro de uma string
+
+        # Search a substring within a string
         proposicao = votacao.proposicao
         if((re.search(palavra_chave.upper(),
             proposicao.descricao.upper()) is not None) or

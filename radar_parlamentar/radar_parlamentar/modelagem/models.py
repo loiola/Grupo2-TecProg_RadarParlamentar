@@ -77,12 +77,12 @@ COR_PRETA = '#000000'
 
 
 class Indexadores(models.Model):
-    """Termos utilizados na indexação de proposições
+    """Terms used in the indexing of propositions
 
-    Atributos:
-        termo -- string; ex: "mulher" ou "partido político"
-        principal -- bool; identifica se o termo é o principal
-                    de uma linha de sinônimos, o termo a ser usado.
+     attributes:
+         term - string; ex: "woman" or "political party"
+         Main - bool; identifying whether a term is the main
+                     a line of synonyms, the term being used.
     """
     termo = models.CharField(max_length=120)
     principal = models.BooleanField()
@@ -92,17 +92,17 @@ class Indexadores(models.Model):
 
 
 class Partido(models.Model):
-    """Partido político.
+    """Political party.
 
-    Atributos:
-        nome -- string; ex: 'PT'
-        numero -- int; ex: '13'
-        cor -- string; ex: #FFFFFF
+     attributes:
+         name - string; eg 'EN'
+         number - int; ex: '13 '
+         color - string; eg #FFFFFF
 
-    Métodos da classe:
-        from_nome(nome): retorna objeto do tipo Partido
-        from_numero(numero): retorna objeto do tipo Partido
-        get_sem_partido(): retorna um partido chamado 'SEM PARTIDO'
+     Class methods:
+         from_nome (name): returns object of type Party
+         from_numero (number): returns object of type Party
+         get_sem_partido (): returns a party called 'NO PARTY'
     """
 
     LISTA_PARTIDOS = os.path.join(MODULE_DIR, 'recursos/partidos.txt')
@@ -113,8 +113,8 @@ class Partido(models.Model):
 
     @classmethod
     def from_nome(cls, nome):
-        """Recebe um nome e retornar um objeto do tipo Partido,
-            ou None se nome for inválido
+        """Given a name and return an object of type Party
+             or None if name is invalid
         """
         if nome is None:
             return None
@@ -129,8 +129,8 @@ class Partido(models.Model):
 
     @classmethod
     def from_numero(cls, numero):
-        """Recebe um número (int) e retornar um objeto do tipo Partido,
-            ou None se nome for inválido
+        """Receives a number (int) and returns an object of type Party
+             or None if name is invalid
         """
 
         if numero is None:
@@ -146,7 +146,7 @@ class Partido(models.Model):
 
     @classmethod
     def get_sem_partido(cls):
-        """Retorna um partido chamado 'SEM PARTIDO'"""
+        """Returns a party called 'NO PARTY'"""
         lista = Partido.objects.filter(nome=SEM_PARTIDO)
         if not lista:
             partido = Partido()
@@ -178,16 +178,16 @@ class Partido(models.Model):
 
 
 class CasaLegislativa(models.Model):
-    """Instituição tipo Senado, Câmara etc
+    """IType institution Senate, House etc.
 
-    Atributos:
-        nome -- string; ex 'Câmara Municipal de São Paulo'
-        nome_curto -- string; será usado pra gerar links.
-                        ex 'cmsp' para 'Câmara Municipal de São Paulo'
-        esfera -- string (municipal, estadual, federal)
-        local -- string; ex 'São Paulo' para a CMSP
-        atualizacao -- data em que a base de dados foi atualizada pela
-                            última vez com votações desta casa
+     attributes:
+         name - string; eg 'City Hall of São Paulo'
+         nome_curto - string; will be used to generate links.
+                         ex 'PBMC' to 'Municipality of São Paulo'
+         sphere - string (municipal, state, federal)
+         location - string; ex 'Sao Paulo' for CMSP
+         UPDATE - date the database was updated by
+                             last time with this house polls
     """
 
     nome = models.CharField(max_length=100)
@@ -200,21 +200,21 @@ class CasaLegislativa(models.Model):
         return self.nome
 
     def partidos(self):
-        """Retorna os partidos existentes nesta casa legislativa"""
+        #Returns the existing parties this legislative house
         return Partido.objects.filter(
             legislatura__casa_legislativa=self).distinct()
 
     def legislaturas(self):
-        """Retorna as legislaturas existentes nesta casa legislativa"""
+        #Returns existing legislative legislatures this house
         return Legislatura.objects.filter(casa_legislativa=self).distinct()
 
     def num_votacao(self, data_inicial=None, data_final=None):
-        """retorna a quantidade de votacao numa casa legislativa"""
+        #returns the number of voting on a legislative house
         return Votacao.por_casa_legislativa(
             self, data_inicial, data_final).count()
 
     def num_votos(self, data_inicio=None, data_fim=None):
-        """retorna a quantidade de votos numa casa legislativa"""
+        #returns the number of votes in a legislative house
         votacoes = Votacao.por_casa_legislativa(self, data_inicio, data_fim)
         votos = []
         for votacao in votacoes:
@@ -223,10 +223,11 @@ class CasaLegislativa(models.Model):
 
     @staticmethod
     def deleta_casa(nome_casa_curto):
-        """Método que deleta determinado registro de casa legislativa
-            em cascata
-            Argumentos:
-                nome_casa - Nome da casa a ser deletada"""
+        """Method that deletes certain record of legislative house
+             cascade
+             arguments:
+                 nome_casa - Name of the house to be deleted
+	"""
         try:
             try:
                 CasaLegislativa.objects.get(
@@ -240,10 +241,10 @@ class CasaLegislativa(models.Model):
 
 
 class PeriodoCasaLegislativa(object):
-    """Atributos:
-        ini, fim -- objetos datetime
-        string -- Descrição do período
-        quantidade_votacoes -- inteiro
+    """attributes:
+         ini, end - datetime objects
+         string - Description of the period
+         quantidade_votacoes - whole
     """
 
     def __init__(self, data_inicio, data_fim, quantidade_votacoes=0):
@@ -316,21 +317,21 @@ class Parlamentar(models.Model):
 
 
 class Legislatura(models.Model):
-    """Um período de tempo contínuo em que um político atua como parlamentar.
-    É diferente de mandato. Um mandato dura 4 anos. Se o titular sai
-    e o suplente assume, temos aí uma troca de legislatura.
+    """A continuous period of time in which a policy acts as parliamentarian.
+     It's different mandate. A term lasts four years. If the holder leaves
+     and alternate takes, then we have an exchange of legislature.
 
-    Atributos:
-        parlamentar -- parlamentar exercendo a legislatura;
-                        objeto do tipo Parlamentar
-        casa_legislativa -- objeto do tipo CasaLegislativa
-        inicio, fim -- datas indicando o período
-        partido -- objeto do tipo Partido
-        localidade -- string; ex 'SP', 'RJ' se for no senado ou
-                                    câmara dos deputados
+     attributes:
+         Parliament - Parliamentary exercising the legislature;
+                         object of type Parliamentary
+         casa_legislativa - object type CasaLegislativa
+         start, end - dates indicating the period
+         party - object of type Party
+         location - string; eg 'SP', 'RJ' if the Senate or
+                                     Chamber of Deputies
 
-    Métodos:
-        find -- busca legislatura por data e parlamentar
+     methods:
+         find - search by date legislature and parliamentary
     """
 
     parlamentar = models.ForeignKey(Parlamentar)
@@ -342,13 +343,13 @@ class Legislatura(models.Model):
 
     @staticmethod
     def find(data, nome_parlamentar):
-        """Busca a legislatura de um parlamentar pelo nome
-            em uma determinada data
-           Argumentos:
-             data -- objeto do tipo date
-             nome_parlamentar -- string
-           Retorno: objeto do tipo Legislatura
-           Se não existir, lança exceção ValueError
+        """Search the legislature of a parliamentary by name
+             on a certain date
+            arguments:
+              date - the date object type
+              nome_parlamentar - string
+            Return: object of type Legislature
+            If not, throws exception ValueError
         """
         # Assumimos que uma pessoa não pode assumir
             # duas legislaturas em um dado período!
@@ -369,23 +370,23 @@ class Legislatura(models.Model):
 
 
 class Proposicao(models.Model):
-    """Proposição parlamentar (proposta de lei).
+    """Parliamentary proposition (bill).
 
-    Atributos:
-        id_prop - string identificadora de acordo a fonte de dados
-        sigla, numero, ano -- strings que formam o nome legal da proposição
-        ementa-- descrição sucinta e oficial
-        descricao -- descrição mais detalhada
-        indexacao -- palavras chaves
-        autores -- lista de objetos do tipo Parlamentar
-        data_apresentacao -- quando foi proposta
-        situacao -- como está agora
-        casa_legislativa -- objeto do tipo CasaLegislativa
+     attributes:
+         id_prop - identifier string according to data source
+         abbreviation, number, year - strings that form the legal name of the proposition
+         ementa-- succinct and official description
+         Description - more detailed description
+         indexing - key words
+         authors - list of objects of type Parliamentary
+         data_apresentacao - when it was proposed
+         situation - as is now
+         casa_legislativa - object type CasaLegislativa
 
-    Métodos:
-        nome: retorna "sigla numero/ano"
+     methods:
+         name: return "symbol number / year"
     """
-    # obs: id_prop não é chave primária!
+    # obs: id_prop is not a primary key!
     id_prop = models.CharField(max_length=100, blank=True)
     sigla = models.CharField(max_length=10)
     numero = models.CharField(max_length=10)
@@ -415,20 +416,20 @@ class Proposicao(models.Model):
 
 
 class Votacao(models.Model):
-    """Votação em planário.
+    """Vote in planário.
 
-    Atributos:
-        id_vot - string identificadora de acordo a fonte de dados
-        descricao, resultado -- strings
-        data -- data da votação (tipo date)
-        resultado -- string
-        proposicao -- objeto do tipo Proposicao
+     attributes:
+         id_vot - identifier string according to data source
+         description, results - strings
+         date - date of the vote (type date)
+         result - string
+         proposition - Proposition object of type
 
-    Métodos:
-        votos()
-        por_partido()
+     methods:
+         vote ()
+         por_partido ()
     """
-    # obs: id_vot não é chave primária!
+    # obs: id_vot is not a primary key!
     id_vot = models.CharField(max_length=100, blank=True)
     descricao = models.TextField(blank=True)
     data = models.DateField(blank=True, null=True)
@@ -436,14 +437,14 @@ class Votacao(models.Model):
     proposicao = models.ForeignKey(Proposicao, null=True)
 
     def votos(self):
-        """Retorna os votos da votação (depende do banco de dados)"""
+        #Returns the votes vote (depends on database)
         return self.voto_set.all()
 
     def por_partido(self):
-        """Retorna votos agregados por partido.
+        """Returns aggregate vote by party.
 
-        Retorno: um dicionário cuja chave é o nome do partido (string)
-        e o valor é um VotoPartido
+         Return: a dictionary whose key is the name of the party (string)
+         and the value is a VotoPartido
         """
         dic = {}
         for voto in self.votos():
@@ -482,12 +483,12 @@ class Votacao(models.Model):
 
 
 class Voto(models.Model):
-    """Um voto dado por um parlamentar em uma votação.
+    """A vote given in a parliamentary vote.
 
-    Atributos:
-        legislatura -- objeto do tipo Legislatura
-        opcao -- qual foi o voto do parlamentar
-                (sim, não, abstenção, obstrução, não votou)
+     attributes:
+         legislature - type object Legislature
+         option - which was the vote of the parliamentary
+                 (yes, no, abstain, obstruction, did not vote)
     """
 
     votacao = models.ForeignKey(Votacao)
@@ -499,16 +500,16 @@ class Voto(models.Model):
 
 
 class VotosAgregados:
-    """Um conjunto de votos.
+    """A set of votes.
 
-    Atributos:
-        sim, nao, abstencao --
-            inteiros que representam a quantidade de votos no conjunto
+     attributes:
+         yes, no, abstention -
+             integers representing the number of votes in the set
 
-    Método:
-        add
-        total
-        voto_medio
+     method:
+         add
+         Total
+         voto_medio
     """
 
     def __init__(self):
@@ -517,12 +518,12 @@ class VotosAgregados:
         self.abstencao = 0
 
     def add(self, voto):
-        """Adiciona um voto ao conjunto de votos.
+        """Adds a set of votes to vote.
 
-        Argumentos:
-            voto -- string \in {SIM, NAO, ABSTENCAO, AUSENTE, OBSTRUCAO}
-            OBSTRUCAO conta como um voto ABSTENCAO
-            AUSENTE não conta como um voto
+         arguments:
+             vote - string \ in {YES, NO, ABSTAIN, AWAY, OBSTRUCTION}
+             OBSTRUCTION counts as a vote abstention
+             MISSING does not count as a vote
         """
         if (voto == SIM):
             self.sim += 1
@@ -539,8 +540,9 @@ class VotosAgregados:
         return self.sim + self.nao + self.abstencao
 
     def voto_medio(self):
-        """Valor real que representa a 'opnião média' dos
-            votos agregados; 1 representa sim e -1 representa não."""
+        """Real value representing the 'average opnion' of
+             aggregate votes; 1 is yes and no is -1.
+	"""
         total = self.total()
         if total > 0:
             return 1.0 * (self.sim - self.nao) / self.total()
@@ -555,12 +557,12 @@ class VotosAgregados:
 
 
 class VotoPartido(VotosAgregados):
-    """Um conjunto de votos de um partido.
+    """A set of votes a party.
 
-    Atributos:
-        partido -- objeto do tipo Partido
-        sim, nao, abstencao --
-            inteiros que representam a quantidade de votos no conjunto
+     attributes:
+         party - object of type Party
+         yes, no, abstention -
+             integers representing the number of votes in the set
     """
     def __init__(self, partido):
         VotosAgregados.__init__(self)

@@ -28,7 +28,7 @@ import sys
 partidos_list = []
 vetores = []
 
-# recuperação dos vetores de votações
+# Recovering vectors polls
 name = 'resultados/vetores.txt'
 vfile = open(name, 'r')
 flag = 1
@@ -39,12 +39,12 @@ for line in vfile:
     vetores.append(eval(line))
   flag += 1
 
-# análise das semelhanças
+# Analyzing similarities
 print('Análise PCA')
 p = partidos.semelhanca_pca(vetores)
 pc = p.pc()
 
-# impressão
+# Printing similarities
 print "Fração da variância explicada pelas dimensões:"
 for i in range(0, 4):
   print "%f " % ( p.eigen[i] / p.eigen.sum() )

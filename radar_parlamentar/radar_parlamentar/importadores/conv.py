@@ -18,12 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Radar Parlamentar.  If not, see <http://www.gnu.org/licenses/>.
 
-"""módulo convencao (Convenção Nacional Francesa)
+"""Convencao Module (Convenção Nacional Francesa)
 
 Classes:
-    ImportadorConvencao gera dados para casa legislativa fictícia chamada
-    Convenção Nacional Francesa
-"""
+    ImportadorConvencao generate datas for fictitious legislative house called 
+    Convenção Nacional Francesa"""
 
 from __future__ import unicode_literals
 from django.utils.dateparse import parse_datetime
@@ -31,8 +30,6 @@ from modelagem import models
 
 ULTIMA_ATUALIZACAO = parse_datetime('2012-06-01 0:0:0')
 
-# Eu queria deixar as datas no século de 1700, mas o datetime só lida com
-# datas a partir de 1900
 INICIO_PERIODO = parse_datetime('1989-01-01 0:0:0')
 FIM_PERIODO = parse_datetime('1989-12-30 0:0:0')
 
@@ -49,6 +46,7 @@ MONARQUISTAS = 'Monarquistas'
 class ImportadorConvencao:
 
     def _gera_casa_legislativa(self):
+
         conv = models.CasaLegislativa()
         conv.nome = 'Convenção Nacional Francesa'
         conv.nome_curto = 'conv'
@@ -59,6 +57,7 @@ class ImportadorConvencao:
         return conv
 
     def _gera_partidos(self):
+
         girondinos = models.Partido()
         girondinos.nome = GIRONDINOS
         girondinos.numero = 27
@@ -77,7 +76,9 @@ class ImportadorConvencao:
         self.partidos = {girondinos, jacobinos, monarquistas}
 
     def _gera_legislaturas(self):
-        self.legs = {}  # nome partido => lista de legislaturas do partido
+
+        # Name partido => list of party legislatures
+        self.legs = {}  
         for p in self.partidos:
             self.legs[p.nome] = []
             for i in range(0, PARLAMENTARES_POR_PARTIDO):
@@ -97,6 +98,7 @@ class ImportadorConvencao:
                 self.legs[p.nome].append(leg)
 
     def _gera_proposicao(self, num, descricao):
+
         prop = models.Proposicao()
         prop.id_prop = num
         prop.sigla = 'PL'
@@ -108,6 +110,7 @@ class ImportadorConvencao:
         return prop
 
     def _gera_votacao(self, num, descricao, data, prop):
+
         votacao = models.Votacao()
         votacao.id_vot = num
         votacao.descricao = descricao
@@ -117,7 +120,8 @@ class ImportadorConvencao:
         return votacao
 
     def _gera_votos(self, votacao, nome_partido, opcoes):
-        # opcoes é uma lista de opções (SIM, NÃO ...)
+
+        # opcoes is an options list (YES, NO...)
         for i in range(0, PARLAMENTARES_POR_PARTIDO):
             voto = models.Voto()
             voto.legislatura = self.legs[nome_partido][i]
@@ -244,7 +248,7 @@ class ImportadorConvencao:
         votos_monarquistas = [models.SIM, models.AUSENTE, models.SIM]
         self._gera_votos(votacao, MONARQUISTAS, votos_monarquistas)
 
-    # votação com atributos diferentes para teste
+    # Voting with different attributes for test
     def _gera_votacao8(self):
 
         NUM = '8'

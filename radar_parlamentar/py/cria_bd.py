@@ -16,15 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""módulo cria_bd 
+"""Module cria_bd 
 
 Classes:
-GeradorBD -- Cria um banco de dados sqlite3 a partir de proposições fornecidas (lista de objetos do tipo Proposicao) 
+GeradorBD -- Creates a sqlite3 database from propositions provided (list of objects of type Proposicao). 
 
-Funções:
-cria_bd_camara_deputados -- Cria o banco de dados da câmara dos deputados em 'resultados/camara.db' a partir de requisições ao webservice da câmara pelas proposições elencadas no arquivo 'resultados/ids_que_existem.txt' (este último pode ser criado com o módulo ids_que_existem)
+Functions:
+cria_bd_camara_deputados -- Creates the database in the chamber of deputies 'resultados/camara.db' from webservice requests to the chamber by the propositions listed 
+                            in the file 'resultados/ids_que_existem.txt' (the latter can be created with ids_que_existem module)
 
-cira_bc_cmsp -- Cria o banco de dados da Câmara Municipal do Município de São Paulo a partir dos XMLs em resultados/cmsp[ano].xml
+cria_bc_cmsp -- Creates the database of the Câmara Munincipal de São Paulo from XMLs on resultados/cmsp[ano].xml
 """
 
 from __future__ import unicode_literals
@@ -40,13 +41,13 @@ import ids_que_existem
 import sqlite3 as lite
 
 class GeradorBD:
-    """Cria um banco de dados sqlite3 a partir de proposições fornecidas (lista de objetos do tipo Proposicao)"""
+    """Creates a sqlite3 database from propositions provided (list of objects of type Proposicao)."""
 
     def __init__(self, proposicoes = [], db = "resultados/votos.db"):
-        """ Argumentos:
-        proposicoes - lista de objetos do tipo Proposicao
-        db - string com a localização do banco de dados a ser gerado (default = "resultados/votos.db")
-        """
+        """ Arguments:
+        proposicoes - list of objects of type Proposicao
+        db - string with the location of the database to be generated (default = "resultados/votos.db")."""
+
         self.proposicoes = proposicoes
         self.db = db
 
@@ -63,9 +64,16 @@ class GeradorBD:
         return
             
     def _prepara_backup(self):
-        os.system('rm %s.backup' % self.db) # Apagar backup anterior.
-        os.system('mv %s %s.backup' % (self.db, self.db)) # Faz backup do bd antigo.
-        os.system('rm %s' % self.db) # Apagar bd antigo para fazer um novo em folha.
+	
+	# Delete previous backup:
+        os.system('rm %s.backup' % self.db) 
+
+	# Backup the previous database:
+        os.system('mv %s %s.backup' % (self.db, self.db)) 
+
+	# Delete the old database to a new:
+        os.system('rm %s' % self.db) 
+
         print 'resultados/camara.db renomeado para resultados/camara.db.backup'
         print 'Backup anterior, se havia, foi apagado.'
 
@@ -76,13 +84,15 @@ class GeradorBD:
         print 'Entre parenteses, (id da proposicao,numero de votacoes).'
         print 'Proposicoes sem votacoes aparecem como um ponto.'
 
-        numero_votacoes = [] # lista de ints que informa quantas votacoes cada proposicao da lista acima tem.
+	# List of 'ints' that tells you how many votes each proposition listed above has:
+        numero_votacoes = [] 
 
         con = lite.connect(self.db) # abrir conexão com bd.
         with con:
             cur = con.cursor()
-            # Para criar tabela só se já não existir: create table if not exists TableName
-            # Para testar se tabela existe: SELECT name FROM sqlite_master WHERE type='table' AND name='table_name';
+
+            # Create table if not exists TableName.
+            # Test if table exist: SELECT name FROM sqlite_master WHERE type='table' AND name='table_name';
             cur.execute("CREATE TABLE if not exists  PROPOSICOES(idProp INT, tipo TEXT, num TEXT, ano TEXT, ementa TEXT, explicacao TEXT, situacao TEXT, num_votacoes INT)")
             cur.execute("CREATE TABLE if not exists PARLAMENTARES(id INT, nome TEXT, partido TEXT, uf TEXT)")
             cur.execute("CREATE TABLE if not exists VOTACOES(idProp INT, idVot INT, resumo TEXT, data TEXT, hora TEXT, sim TEXT, nao TEXT, abstencao TEXT, obstrucao TEXT)")
@@ -93,7 +103,8 @@ class GeradorBD:
             numero_votacoes.append(len(prop.votacoes))
             sys.stdout.write('(%s,%d),'%(prop.id, len(prop.votacoes)))
             sys.stdout.flush()
-            #adicionar proposicao na tabela PROPOSICOES
+
+            # Add proposition in the table PROPOSICOES:
             con = lite.connect(self.db)
             con.execute("INSERT INTO PROPOSICOES VALUES(?,?,?,?,?,?,?,?)",(prop.id, prop.sigla, prop.numero, prop.ano, prop.ementa, prop.explicacao, prop.situacao, len(prop.votacoes)))
             con.commit()
@@ -136,20 +147,23 @@ class GeradorBD:
 IDS_QUE_EXISTEM = 'resultados/ids_que_existem.txt'
 IDS_VOTADAS = 'resultados/votadas.txt'
 def cria_bd_camara_deputados(arquivo_ids=IDS_VOTADAS):
-    """Cria o banco de dados da câmara dos deputados em 'resultados/camara.db'
-        Argumentos:
-        arquivo_ids -- arquivo com a listagem de "id: tipo num/ano" (uma entrada por linha, suportando comentários com #)
-                        a função utilizará esses ids para realizar chamadas ao web service da câmara e obter as votações
-                        o valor defualt é o arquivo IDS_VOTADAS; 
-                        outro arquivo útil é o IDS_QUE_EXISTEM (que pode ser criado com o módulo ids_que_existem)
+    """Creates the Chamber od Deputies's database on 'resultados/camara.db'
+        Arguments:
+        arquivo_ids -- > File with the list of "id: tipo num/ano" (one entry per line, supporting comments with #).
+                       > The function will use these ids to make calls to the web service and get the camera polls.
+                       > The default value is the IDS_VOTADAS file.
+                       > Another useful file is IDS_QUE_EXISTEM (which can be created with ids_que_existem module).
     """
 
     props = []
     lista_proposicoes = ids_que_existem.parse_txt(arquivo_ids)
     for iprop in lista_proposicoes:
         print 'AVALIANDO %s %s %s' % (iprop['tipo'],iprop['num'],iprop['ano'])
-        p = camaraws.obter_votacao(iprop['tipo'], iprop['num'],iprop['ano']) # Obtém proposição e suas votações do web service
-        if p != None:
+
+	# Proposition and get their votes from the web service:
+        p = camaraws.obter_votacao(iprop['tipo'], iprop['num'],iprop['ano']) 
+        
+	if p != None:
             props.append(p)
 
     print 'Agora sim gerando o banco'
@@ -157,7 +171,7 @@ def cria_bd_camara_deputados(arquivo_ids=IDS_VOTADAS):
     gerador.gera_bd()
 
 def cria_bd_cmsp():
-    """Cria o banco de dados da câmara municipal de são paulo em 'resultados/cmsp.db' """
+    """Creates the database of the Câmara Munincipal de São Paulo from XMLs on resultados/cmsp[ano].xml."""
 
     props = cmsp.from_xml(cmsp.XML2010)   
     props += cmsp.from_xml(cmsp.XML2011)

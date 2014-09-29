@@ -16,13 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Módulo proposicoes -- funções para processamento de proposições
-Possui script que lista proposições com votações
+"""Module propositions - functions for processing propositions
+Has script that lists propositions to polls.
 
-Funcões:
-parse_html -- parse do arquivo recusrsos/proposicoes.html
-com_votacao -- verifica pelo web service lista de proposições que possuem votações
-proposicoes_com_votacao -- retorna lista de proposições que possuem votações baseado no arquivo votadas.txt
+Functions:
+parse_html - parse recusrsos / proposicoes.html file
+com_votacao - web service verifies the list of propositions that have polls
+proposicoes_com_votacao - returns list of propositions that have voting based 
+votadas.txt file.
 """
 
 import re
@@ -34,53 +35,65 @@ import camaraws
 # PDC - projeto de decreto legislativo
 # MPV - projeto de medida provisória
 # PEC - proposta de emenda à constituição
-
 def parse_html():
-    """Parse do arquivo recusrsos/proposicoes.htmll
-    Retorna:
-    Uma lista com a identificação das proposições encontradas no htmll
-    Cada posição da lista é um dicionário com chaves \in {id, tipo, num, ano}
-    As chaves e valores desses dicionários são strings
-    """
-    file_name = 'recursos/proposicoes2011.html'  # arquivo contem proposições votadas pela câmara em 2011
+    """Parse of the file recusrsos/proposicoes.htmll
+    Retorns:
+    A list with a identification of the propositions found in html
+    Each list position is a dicionary with key \in {id, tipo, num, ano}
+    The keys and values of this dictionaries are strings."""
+
+    # File contains propositions voted on by the chamber in 2011:
+    file_name = 'recursos/proposicoes2011.html'  
     prop_file = codecs.open(file_name, encoding='ISO-8859-15', mode='r')
     regexp = '<A HREF=http://.*?id=([0-9]*?)>([A-Z]*?) ([0-9]*?)/([0-9]{4})</A>'
     proposicoes = []
     for line in prop_file:
         res = re.search(regexp, line)
         if res:
-            proposicoes.append({'id':res.group(1), 'tipo':res.group(2), 'num':res.group(3), 'ano':res.group(4)})
+            proposicoes.append({'id':res.group(1), 'tipo':res.group(2), 
+		'num':res.group(3), 'ano':res.group(4)})
     return proposicoes
 
 def parse():
-    """Parse do arquivo recursos/votadas.txt
-    Retorna:
-    Uma lista com a identificação das proposições encontradas no txt
-    Cada posição da lista é um dicionário com chaves \in {id, tipo, num, ano}
-    As chaves e valores desses dicionários são strings
-    """
-    file_name = 'resultados/votadas.txt'  # arquivo contem proposições votadas pela câmara em 2011 para as quais obtivemos o xml da votação
+    """Parse the recursos / proposicoes.htmll file
+     returns:
+     A list identifying the propositions found in htmll
+     Each position on the list is a dictionary with keys \ in {id, type in a year}
+     The keys and values ​​are strings of these dictionaries.
+	"""
+
+    """File contains propositions voted on by the chamber in 2011 for which we 
+	obtained the vote xml:
+	"""
+
+    file_name = 'resultados/votadas.txt'  
     prop_file = open(file_name, 'r')
-    # ex: "485262: MPV 501/2010"
+
+    # Example: "485262: MPV 501/2010"
+    
     regexp = '^([0-9]*?): ([A-Z]*?) ([0-9]*?)/([0-9]{4})'
     proposicoes = []
     for line in prop_file:
         res = re.search(regexp, line)
         if res:
-            proposicoes.append({'id':res.group(1), 'tipo':res.group(2), 'num':res.group(3), 'ano':res.group(4)})
+            proposicoes.append({'id':res.group(1), 'tipo':res.group(2), 
+		'num':res.group(3), 'ano':res.group(4)})
     return proposicoes
 
 def com_votacao(proposicoes): 
-    """Verifica quais proposições possuem votações no web service da câmara
-    É somente sobre essas proposições que faremos nossas análises
-    Essa verificação é feita invocando o web service da câmara 
-    Argumentos:
-    proposicoes -- lista de proposições; cada proposição é um dicionário com chaves \in {id, tipo, num, ano}; chaves e valores são strings
+    """Checks which propositions have votes in the chamber web service
+     It is only on those propositions we will do our analyzes
+     This check is done by invoking the web service camera
+     arguments:
+     propositions - list of propositions; every proposition is a dictionary with 
+	keys \ in {id, type in a year}; keys and values ​​are strings
 
-    Retorna:
-    Lista com proposições que apresentam lista de votações
-    Cada proposição é um dicionário com chaves \in {id, tipo, num, ano}; chaves e valores são strings     
-    """
+     returns:
+     List of propositions that present voting list
+     Each proposition is a dictionary with keys \ in {id, type in a year}; 
+	keys and values ​​are strings.
+	"""
+
     votadas = []
     for prop in proposicoes:
         print "requisitando " + prop['id']
@@ -90,13 +103,12 @@ def com_votacao(proposicoes):
     return votadas
 
 def proposicoes_com_votacao():
-    """Retorna a lista de proposições para as quais é possível obter o xml da votação
-    Esta lista é retirada do arquivo resultados/votadas.txt
-    Retorna:
-    Uma lista de proposições
-    Cada posição da lista é um dicionário com chaves \in {id, tipo, num, ano}
-    As chaves e valores desses dicionários são strings    
-    """
+    """Returns the list of propositions for which it is possible to get the xml of the vote
+     This list is taken from the results / votadas.txt file
+     returns:
+     A list of propositions
+     Each position on the list is a dictionary with keys \ in {id, type in a year}
+     The keys and values ​​are strings of these dictionaries."""
     return parse()
 
 

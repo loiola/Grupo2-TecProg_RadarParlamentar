@@ -33,8 +33,8 @@ MOCK_PROPOSICOES_VOTADAS = glob.glob(
 
 
 def verificar_xml(nome, lista_xmls):
-    """verifica se existe um arquivo com determinado nome, dentro de uma
-    lista de arquivos"""
+    """Checks if there is a file with certain name, in a list of files"""
+
     for xml in lista_xmls:
         if nome == os.path.basename(xml):
             with open(xml) as arquivo_xml:
@@ -43,26 +43,30 @@ def verificar_xml(nome, lista_xmls):
 
 
 def mock_obter_proposicao(id_prop):
-    """mock do método obter_proposicao de camaraWS.
-        Recebe o id da proposição e retorna um xml"""
+    """Mock of obter_proposicao method from camaraWS.
+    Gets the id of the proposition and returns verificar_xml"""
+
     return verificar_xml('proposicao_' + str(id_prop), MOCK_PROPOSICAO)
 
 
 def mock_listar_proposicoes(sigla, ano):
-    """mock do método listar_proposicoes de camaraWS.
-        Recebe a sigla e o ano da proposicao e retorna um xml"""
+    """Mock of listar_proposicoes method from camaraWS.
+    Receives the acronym and the year of proposition and returns a xml"""
+
     return verificar_xml('proposicoes_' + sigla + str(ano), MOCK_PROPOSICOES)
 
 
 def mock_obter_proposicoes_votadas_plenario(ano):
-    """mock do método mock_obter_proposicoes_com_votacoes de camaraWS.
-        Recebe o ano da proposicao e retorna um xml"""
+    """Mock ob mock_obter_proposicoes_com_votacoes method frome camaraWS.
+    Receive the year of proposition and returns a xml"""
+
     return verificar_xml('proposicoes_votadas_' + str(
         ano), MOCK_PROPOSICOES_VOTADAS)
 
 
 def mock_obter_votacoes(sigla, num, ano):
-    """mock do método obter_votacoes de camaraWS.
-        Recebe a sigla, o numero e o ano e retorna um xml"""
+    """Mock of obter_votacoes method from camaraWS.
+    Receives a acronym, the number and the year and returns a xml"""
+
     return verificar_xml('votacoes_' + sigla + str(num) + str(
         ano), MOCK_VOTACOES)

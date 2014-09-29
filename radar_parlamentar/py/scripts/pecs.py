@@ -26,20 +26,21 @@ import camaraws
 
 pecs = []
 
-# PEC da música (isenção fiscal para músicas e artistas brasileiros)
+# PEC music (tax exemption for music and Brazilian artists)
 # http://www.camara.gov.br/proposicoesWeb/fichadetramitacao?idProposicao=357094
-# (a primeira vista me parece absurdo que algo assim deva estar na constituição)
 tipo = 'pec'
 num = '98'
 ano = '2007'
 pecs.append(camaraws.obter_votacao(tipo, num, ano))
-# prorroga a vigência da DRU até 31 de dezembro de 2015
+
+# Extending the validity of DRU until December 31, 2015
 # http://www.camara.gov.br/proposicoesWeb/fichadetramitacao?idProposicao=513496
 tipo = 'pec'
 num = '61'
 ano = '2011'
 pecs.append(camaraws.obter_votacao(tipo, num, ano))
 
+# Print propositions
 for prop in pecs:
   print(prop)
   for votacao in prop.votacoes:

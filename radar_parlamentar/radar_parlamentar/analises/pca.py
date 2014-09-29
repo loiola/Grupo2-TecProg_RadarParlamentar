@@ -55,9 +55,10 @@ Source: http://stackoverflow.com/questions/1730600/principal-component-analysis-
 
 from __future__ import division
 import numpy as np
+
+# import bz.numpyutil as nu
+# dot = nu.pdot
 dot = np.dot
-    # import bz.numpyutil as nu
-    # dot = nu.pdot
 
 __version__ = "2010-04-14 apr"
 __author_email__ = "denis-bz-py at t-online dot de"
@@ -71,10 +72,15 @@ logger = logging.getLogger("radar")
 class PCA:
 
     def __init__(self, A, fraction=0.90):
+
+        # A = U . diag(d) . Vt, O( m n^2 ), lapack_lite --
         assert 0 <= fraction <= 1
-            # A = U . diag(d) . Vt, O( m n^2 ), lapack_lite --
+            
         self.U, self.d, self.Vt = np.linalg.svd(A, full_matrices=False)
-        assert np.all(self.d[:-1] >= self.d[1:])  # sorted
+
+        # sorted
+        assert np.all(self.d[:-1] >= self.d[1:])
+
         self.eigen = self.d ** 2
         self.sumvariance = np.cumsum(self.eigen)
         self.sumvariance /= self.sumvariance[-1]
@@ -92,19 +98,23 @@ class PCA:
 
     def vars_pc(self, x):
         n = self.npc
-        return self.d[:n] * dot(self.Vt[:n], x.T).T  # 20 vars -> 2 principal
+        # 20 vars -> 2 principal
+        return self.d[:n] * dot(self.Vt[:n], x.T).T  
 
     def pc_vars(self, p):
         n = self.npc
-        return dot(self.Vt[:n].T, (self.dinv[:n] * p).T) .T  # 2 PC -> 20 vars
+        # 2 PC -> 20 vars
+        return dot(self.Vt[:n].T, (self.dinv[:n] * p).T) .T  
 
     def pc_obs(self, p):
         n = self.npc
-        return dot(self.U[:, :n], p.T)  # 2 principal -> 1000 obs
+        # 2 principal -> 1000 obs
+        return dot(self.U[:, :n], p.T)  
 
     def obs_pc(self, obs):
         n = self.npc
-        return dot(self.U[:, :n].T, obs) .T  # 1000 obs -> 2 principal
+        # 1000 obs -> 2 principal
+        return dot(self.U[:, :n].T, obs) .T  
 
     def obs(self, x):
         # 20 vars -> 2 principal -> 1000 obs
@@ -118,11 +128,11 @@ class PCA:
 class Center:
 
     """ A -= A.mean() /= A.std(), inplace -- use A.copy() if need be
-        uncenter(x) == original A . x
-    """
+        uncenter(x) == original A . x"""
         # mttiw
 
     def __init__(self, A, axis=0, scale=True, verbose=1):
+
         self.mean = A.mean(axis=axis)
         if verbose:
             print "Center -= A.mean:", self.mean
@@ -138,6 +148,7 @@ class Center:
         self.A = A
 
     def uncenter(self, x):
+
         return np.dot(self.A, x * self.std) + np.dot(x, self.mean)
 
 
@@ -145,20 +156,24 @@ class Center:
 if __name__ == "__main__":
     import sys
 
-    csv = "iris4.csv"  # wikipedia Iris_flower_data_set
-        # 5.1,3.5,1.4,0.2  # ,Iris-setosa ...
+    # Wikipedia Iris_flower_data_set
+    # 5.1,3.5,1.4,0.2  # ,Iris-setosa ...
+    csv = "iris4.csv"  
     N = 1000
     K = 20
     fraction = .90
     seed = 1
-    exec "\n".join(sys.argv[1:])  # N= ...
+    # N= ...
+    exec "\n".join(sys.argv[1:])  
     np.random.seed(seed)
-    np.set_printoptions(1, threshold=100, suppress=True)  # .1f
+    # .1f
+    np.set_printoptions(1, threshold=100, suppress=True)  
     try:
         A = np.genfromtxt(csv, delimiter=",")
         N, K = A.shape
     except IOError, error:
-        A = np.random.normal(size=(N, K))  # gen correlated ?
+        # gen correlated ?
+        A = np.random.normal(size=(N, K))  
         logger.error("IOError: %s" % error)
 
     print "csv: %s  N: %d  K: %d  fraction: %.2g" % (csv, N, K, fraction)
@@ -178,17 +193,20 @@ if __name__ == "__main__":
     x = np.ones(K)
     # x = np.ones(( 3, K ))
     print "x:", x
-    pc = p.vars_pc(x)  # d' Vt' x
+    # d' Vt' x
+    pc = p.vars_pc(x)  
     print "vars_pc(x):", pc
     print "back to ~ x:", p.pc_vars(pc)
 
     Ax = dot(A, x.T)
-    pcx = p.obs(x)  # U' d' Vt' x
+    # U' d' Vt' x
+    pcx = p.obs(x)  
     print "Ax:", Ax
     print "A'x:", pcx
     print "max |Ax - A'x|: %.2g" % np.linalg.norm(Ax - pcx, np.inf)
 
-    b = Ax  # ~ back to original x, Ainv A x
+    # ~ back to original x, Ainv A x
+    b = Ax  
     back = p.vars(b)
     print "~ back again:", back
     print "max |back - x|: %.2g" % np.linalg.norm(back - x, np.inf)

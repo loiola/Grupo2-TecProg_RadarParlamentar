@@ -145,7 +145,7 @@ Plot = (function ($) {
     // Function that draws the chart
     function plot_data(dados) {
 
-        // Inicialmente remove o spinner de loading
+        // Initially removes the loading spinner 
         $("#loading").remove();
 
         plot_total_votacoes_filtradas(dados["geral"]);
@@ -215,7 +215,7 @@ Plot = (function ($) {
             .attr("width", 113)
             .attr("height", 113);
         
-        // setando variáveis já declaradas
+        // Setting declared variables
         partidos = dados.partidos;
         periodos = dados.periodos;
         periodo_min = 0;
@@ -284,9 +284,9 @@ Plot = (function ($) {
             .text("Recolher Todos")
             .on("click", implode_todos);
 
-        // ############## Funções de controle de mudanças de estado ###########
+        // ############## State change controle function ###########
         
-        // Função que controla mudança de estado para o estado seguinte
+        // Function that controls change state for next state
         function configure_go_to_next() {
             go_to_next
                 .on("mouseover", mouseover_next)
@@ -294,7 +294,7 @@ Plot = (function ($) {
                 .on("click", change_to_next_period);
         }
 
-        // Função que controla a mudança de estado para o estado anterior
+        // Function that controls change state for previous state
         function configure_go_to_previous() {
             go_to_previous
                 .on("mouseover", mouseover_previous)
@@ -324,9 +324,9 @@ Plot = (function ($) {
             atualiza_grafico(false);
         }
 
-        // atualiza partidos e deputados no gráfico de acordo com o período atual
-        // explodindo: true quando estamos atualizando o gráfico por causa de uma explosão de partido
-        // (explosão de partido é quando se clica no partido para ver seus parlamentares)
+        // Updates parties and parliamentarian in chart according to current period
+        // exploding: true when are updating chart because of a political party explosion
+        // (party explode happens when you click on party for see your parliamentarian)
         function atualiza_grafico(explodindo) {
             label_nvotacoes.text("Não há votações relacionadas com as palavras chave informadas");
 
@@ -394,8 +394,8 @@ Plot = (function ($) {
                 .attr("dy",3)
                 .text(function(d) { return d.nome; });
 
-            // o circulo abaixo é totalmente transparente mas serve para os eventos de mouse,
-            // pois ele fica em cima do circulo do partido e em cima do texto.
+            /* The circle below is completely transparent but serves for the mouse events, 
+            because it's stays on circle of the party and above the text */
             new_parties.append("circle")
                 .attr("r", function(d) {return d.r[periodo_atual]; })
                 .attr("opacity",0.0)
@@ -410,7 +410,7 @@ Plot = (function ($) {
             new_circles.transition().duration(TEMPO_ANIMACAO)
                 .attr("r", function(d) { return d.r[periodo_atual]; });
             
-            // tirar os parlamentares eventualmente explodidos que pertencam a partidos que estejam saindo de cena:
+            // remove the parliamentarians that eventually exploded that belong the parties that stay out the scene:
             partidos_ou_parlamentares_no_periodo = get_partidos_no_periodo(periodo_atual);
             var parties2 = grupo_grafico.selectAll('.party').data(partidos_ou_parlamentares_no_periodo, function(d) { return d.nome });
             var parties_vao_sair2 = parties2.exit();
@@ -435,14 +435,14 @@ Plot = (function ($) {
 
             svg_base.call(parlamentar_tip);
 
-            // Parlamentares (represented by dots), treating one party at a time in this loop:
+            // Parliamentarians (represented by dots), treating one party at a time in this loop:
             partidos_legenda.forEach(function(partido) {
                 if (jQuery.inArray(partido,partidos_explodidos) == -1)
-                    var parlamentares_no_periodo = []; // não é para ter dados de parlamentares se o partido não estiver explodido.
+                    var parlamentares_no_periodo = []; // Must not have parliamentarians data ifthe political party no exploded.
                 else
                     var parlamentares_no_periodo = get_parlamentares_no_periodo(partido, periodo_atual);
 
-                // DATA-JOIN dos parlamentares deste partido:
+                // Parliamentarians DATA-JOIN this party::
                 var parlamentares = grupo_grafico.selectAll('.parlamentar_circle.partido_' + nome(partido))
                     .data(parlamentares_no_periodo, function(d) { return d.id });
 
@@ -598,7 +598,7 @@ Plot = (function ($) {
             atualiza_grafico(true);
         }
 
-        // remove o elemento de valor el da array lista, e retorna a lista modificada
+        //  removes the element of value equals el of the list array and return the modified list
         function remove_from_array(lista,el) {
             for(var i = lista.length - 1; i >= 0; i--) {
                 if(lista[i] === el) {
@@ -639,12 +639,12 @@ Plot = (function ($) {
             return partidos.filter(function(d){ return d.t[period] == 0;});
         }
 
-        // Retorna partidos excluindo partidos ausentes no período e partidos explodidos
+        // Returns parties excluding absent parties in period and exploded parties.
         function get_partidos_nao_explodidos_no_periodo(period) {
             return partidos.filter(function(d){ return d.t[period] > 0 && jQuery.inArray(d,partidos_explodidos) == -1;});
         }
         
-        // Retorna o json de parlamentares do partido, do qual foram excluídos parlamentares ausentes no dado period.
+        // Returns the parliamentarians json of the party, which were excluded absent parliamentarians in certain period.
         function get_parlamentares_no_periodo(partido, period) {
             return partido.parlamentares.filter(function (d) {return d.x[periodo_atual] !== null; })
         }

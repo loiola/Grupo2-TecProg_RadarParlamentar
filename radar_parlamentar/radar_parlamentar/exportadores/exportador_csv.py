@@ -18,10 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Radar Parlamentar.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Exportação para CSV para nossas análises no R.
-   Para ler o arquivo csv no R: read.csv('votes.csv', sep=',', as.is=T)
-   O último argumento impede que as strings sejam importadas como "factors".
-"""
+""" Export to CSV for our analyzes in R.
+    To read the csv file in R: read.csv('votes.csv', sep=',', as.is=T)
+    The last argument prevents the strings are imported as "factors"."""
 
 import os
 import csv
@@ -34,7 +33,6 @@ MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 COALITION_PARTIES = ['PT', 'PCdoB', 'PSB', 'PP', 'PMDB', 'PTB']
 # PR, PDT não são coalition?
-
 ROLLCALL = 'rollcall'
 VOTER_ID = 'voter_id'
 NAME = 'name'
@@ -56,11 +54,14 @@ class ExportadorCSV:
         self.votacoes = None
         self.csv_rows = []
 
+
+    # Retrieving, transforming and writing CSV:    
     def exportar_csv(self):
         self.retrieve_votacoes()
         self.transform_data()
         self.write_csv()
 
+    
     def retrieve_votacoes(self):
         casa = models.CasaLegislativa.objects.get(nome_curto=self.nome_curto)
         if self.ini is None and self.fim is None:
@@ -103,6 +104,7 @@ class ExportadorCSV:
     def coalition(self, nome_partido):
         return '1' if nome_partido in COALITION_PARTIES else '0'
 
+    # Options of votes:
     def voto(self, opcao):
         if opcao == models.SIM:
             return 1
@@ -117,6 +119,7 @@ class ExportadorCSV:
         else:
             raise ValueError()
 
+    # Writing CSV:
     def write_csv(self):
         filepath = os.path.join(MODULE_DIR, 'dados', CSV_FILE)
         with open(filepath, 'wb') as f:

@@ -7,6 +7,8 @@ import logging
 logger = logging.getLogger("radar")
 
 
+"""Makes history between parties by gender (F - female / M - male)"""
+
 arqs = listdir("bios")
 
 generos = {}
@@ -14,6 +16,7 @@ historia = {}
 lista_partidos = []
 
 cont = 0
+
 for arq in arqs:
     if arq[0] != ".":
         ponteiro = open("bios/" + arq)
@@ -29,6 +32,7 @@ for arq in arqs:
                 cont += 1
             else:
                 genero = "M"
+
             nome = record.getElementsByTagName('TXTNOME')[0].firstChild.data
             legis_anos = record.getElementsByTagName(
                 'LEGISLATURAS')[0].firstChild.data
@@ -36,6 +40,7 @@ for arq in arqs:
 
             anos = legis_anos.split(",")
             anos2 = []
+
             for ano in anos:
                 if ano.find("e") == -1:
                     anos2.append(ano)
@@ -45,7 +50,9 @@ for arq in arqs:
                     anos2.append(ano2.strip()[:-1])
 
             legis = legis.split(";")
+
             partidos = []
+
             for leg in legis:
                 termos = leg.split(",")
                 data = termos[1].strip()
@@ -58,6 +65,7 @@ for arq in arqs:
                 if partido == "S":
                     partido = "SEM PARTIDO"
 
+                # If party is not in the party list, we append it
                 if partido not in lista_partidos:
                     lista_partidos.append(partido)
 
@@ -104,12 +112,18 @@ for arq in arqs:
             #    nums["duracao"] = duracao
 
 
+# Print the history account by gender
 print(cont)
+
 ordenada = []
+
 for a in historia.keys():
     ordenada.append(a)
+
+# Orders ordenada list
 ordenada.sort()
 
+# Print party list
 print(lista_partidos)
 
 arq = open("genero_historia_partidos.json", "w")

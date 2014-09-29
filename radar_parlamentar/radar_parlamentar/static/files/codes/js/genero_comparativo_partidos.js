@@ -1,6 +1,8 @@
+// Function responsible for plot legilasture graph
 function desenhar(legislatura){
 	d3.json("/static/files/codes/js/genero_comparativo_partidos.json", function(error, passa_dados) {
 
+		// Assigning data of legislatures in each years
 		dados = passa_dados[legislatura];
 		data = [];
 		for (key in dados) {
@@ -11,6 +13,7 @@ function desenhar(legislatura){
 			data.push(elementos)
 		}
 
+		// Setting graph parameters 
 		var margin = {top: 20, right:30, bottom: 50, left: 50},
 		    width = 900 - margin.left - margin.right,
 		    height = 500 - margin.top - margin.bottom;
@@ -33,6 +36,7 @@ function desenhar(legislatura){
 		    .orient("left")
 		    .tickFormat(d3.format(".0%"));
 
+        // Screen components alignment
         $("#loading").remove();
 		var svg = d3.select("#animacao").append("svg")
 		    .attr("width", width + margin.left + margin.right)
@@ -61,14 +65,15 @@ function desenhar(legislatura){
 	      .call(xAxis)
 			.selectAll("text")
 			.style("text-anchor", "end")
-			//.attr("dx", "-1.8em")
-			//.attr("dy", ".5em")
+			/*.attr("dx", "-1.8em")
+			  .attr("dy", ".5em") */
 			.attr("transform", function(d){ return "rotate(-45)"});
 
 	  svg.append("g")
 	      .attr("class", "y axis")
 	      .call(yAxis);
 
+	    // Showing percentage of men and women in each year of legislature
 		var tip = d3.tip()
 		  .attr('class', 'd3-tip')
 		  .offset([-10, 0])
@@ -100,25 +105,26 @@ function desenhar(legislatura){
 	      .attr("class", function(d){return "barra-"+d.name;})
 	      .attr("height", function(d) { return y(d.y0) - y(d.y1); });
 
-	 // var legend = svg.select(".state:last-child").selectAll(".legend")
-	 //     .data(function(d) { return d.ages; })
-	 //   .enter().append("g")
-	 //     .attr("class", "legend")
-	 //     .attr("transform", function(d) { return "translate(" + 2 * x.rangeBand() + "," + y(1 -  (d.y0 + d.y1)/3) + ")"; });
+	 /* var legend = svg.select(".state:last-child").selectAll(".legend")
+	  .data(function(d) { return d.ages; })
+	 .enter().append("g")
+	  .attr("class", "legend")
+	  .attr("transform", function(d) { return "translate(" + 2 * x.rangeBand() + "," + y(1 -  (d.y0 + d.y1)/3) + ")"; }); */
 
-	 // legend.append("line")
-	 //     .attr("wdith", 10)
-	 //     .attr("height", 10)
-	 //     .attr("class", function(d){ return "barra-"+d.name;});
+	 /* legend.append("line")
+	 .attr("wdith", 10)
+	 .attr("height", 10)
+	 .attr("class", function(d){ return "barra-"+d.name;}); */
 
-	 // legend.append("text")
-	 //     .attr("x", 13)
-	 //     .attr("dy", ".35em")
-	 //     .text(function(d) { return d.name; });
+	 /* legend.append("text")
+	 .attr("x", 13)
+	 .attr("dy", ".35em")
+	 .text(function(d) { return d.name; }); */
 
 	});
 }
 
+//Setting years of each legislatures 
 desenhar("2011-2015");
 
 legis = ['1864-1866', '1935-1937', '1967-1971', '1897-1899', '1983-1987', '1885-1885', '1845-1847', '1834-1837', '1971-1975', '1930-1930', '1975-1979', '1894-1896', '1934-1935', '1857-1860', '1906-1909', '1849-1852', '2007-2011', '1987-1991', '1946-1951', '1991-1995', '1979-1983', '1869-1872', '1903-1905', '1999-2003', '2003-2007', '1872-1875', '1853-1856', '2011-2015', '1900-1902', '1963-1967', '1867-1868', '1881-1884', '1927-1930', '1843-1844', '1912-1915', '1848-1848', '1830-1833', '1918-1921', '1951-1955', '1915-1918', '1924-1927', '1826-1829', '1959-1963', '1955-1959', '1995-1999', '1861-1863', '1878-1881', '1886-1889', '1891-1893', '1876-1877', '1838-1841', '1909-1912', '1921-1924']

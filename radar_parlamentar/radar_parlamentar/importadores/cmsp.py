@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Radar Parlamentar.  If not, see <http://www.gnu.org/licenses/>.
 
-"""módulo cmsp (Câmara Municipal de São Paulo)"""
+"""CMSP Module (Câmara Municipal de São Paulo)"""
 
 from __future__ import unicode_literals
 from django.utils.dateparse import parse_datetime
@@ -28,41 +28,28 @@ import sys
 import os
 import xml.etree.ElementTree as etree
 
-# data em que os arquivos XMLs foram atualizados
+# Date on which the XML files were updated
 ULTIMA_ATUALIZACAO = parse_datetime('2012-12-31 0:0:0')
 
 MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-# arquivos com os dados fornecidos pela cmsp
+# Files with the data provided by CMSP
 XML2010 = os.path.join(MODULE_DIR, 'dados/cmsp/cmsp2010.xml')
 XML2011 = os.path.join(MODULE_DIR, 'dados/cmsp/cmsp2011.xml')
 XML2012 = os.path.join(MODULE_DIR, 'dados/cmsp/cmsp2012.xml')
 XML2013 = os.path.join(MODULE_DIR, 'dados/cmsp/cmsp2013.xml')
 XML2014 = os.path.join(MODULE_DIR, 'dados/cmsp/cmsp2014.xml')
 
-# tipos de proposições encontradas nos XMLs da cmsp
-# esta lista ajuda a identificar as votações que são de proposições
-# Exemplos de votações que não são de proposições: Adiamento do Prolong.
-# do Expediente; Adiamento dos Demais itens da Pauta.
+# Types of propositions found in the PBMC XMLs. Be list helps identify the votes 
+# that are propositions. Examples of votes that are not propositions: Postponement 
+# of prolongation Expedient; Other items postponement of the Tariff.
 TIPOS_PROPOSICOES = ['PL', 'PLO', 'PDL']
 
-# regex que captura um nome de proposição (ex: PL 12/2010)
+# Regex that captures a proposition name (ex: PL 12/2010)
 PROP_REGEX = '([a-zA-Z]{1,3}) ([0-9]{1,4}) ?/([0-9]{4})'
 
 INICIO_PERIODO = parse_datetime('2010-01-01 0:0:0')
 FIM_PERIODO = parse_datetime('2012-12-31 0:0:0')
-
-# TODO: caso o parlamentar pertenca a partidos distintos, ou,
-# mais generciamente, se sua "legislatura" mudar, caso seu ID,
-# provindo do XML de entrada, continue o mesmo, a primeira
-# legislatura que sobrevalecerah para as demais votacoes tambem.
-# Mas, se o ID corretamente mudar, entao tudo estarah perfeito.
-# TODO  Como a LEGISLATURA eh many to many, parece que o parlamentar
-# pode ter varias legislaturas (e ainda por cima no mesmo arquivo entrada).
-# Assim, talvez fosse interessante armazenar a legislatura no VOTO,
-# e não numa lista de legislatura.
-# A nao ser q, a cada voto, o parlamentar esteja relacionada tb a todas as
-# suas legislaturas.
 
 
 class GeradorCasaLegislativa(object):
@@ -93,8 +80,9 @@ class XmlCMSP:
         self.verbose = verbose
 
     def converte_data(self, data_str):
-        """Converte string "d/m/a para objeto datetime;
-        retona None se data_str é inválido"""
+        """Converts string "d/m/y" to datetime object;
+        returns None if data_str is invalid"""
+
         DATA_REGEX = '(\d\d?)/(\d\d?)/(\d{4})'
         res = re.match(DATA_REGEX, data_str)
         if res:
@@ -105,7 +93,8 @@ class XmlCMSP:
             return None
 
     def prop_nome(self, texto):
-        """Procura "tipo num/ano" no texto"""
+        """Search "type num/ano" in the text"""
+
         res = re.search(PROP_REGEX, texto)
         if res:
             nome = res.group(1).upper()
@@ -117,7 +106,7 @@ class XmlCMSP:
         return nome_prop in TIPOS_PROPOSICOES and not 'Inversão' in texto
 
     def tipo_num_anoDePropNome(self, prop_nome):
-        """Extrai ano de "tipo num/ano" """
+        """Extract year from "tipo num/ano" """
         res = re.search(PROP_REGEX, prop_nome)
         if res:
             return res.group(1), res.group(2), res.group(3)
@@ -125,8 +114,8 @@ class XmlCMSP:
             return None, None, None
 
     def voto_cmsp_to_model(self, voto):
-        """Interpreta voto como tá no XML e responde em adequação a
-        modelagem em models.py"""
+        """Interprets as voting is up in XML and responds suitability modeling 
+        in models.py"""
 
         if voto == 'Não':
             return models.NAO
@@ -161,18 +150,20 @@ class XmlCMSP:
             if self.verbose:
                 print 'Vereador %s salvo' % votante
             self.parlamentares[id_parlamentar] = votante
-            # TODO genero
+            # TODO gender
         return votante
 
     def legislatura(self, ver_tree):
-        """Cria e retorna uma legistura para o partido fornecido"""
+        """Creates and returns a legistura for the given party"""
 
         partido = self.partido(ver_tree)
         votante = self.votante(ver_tree)
 
+        # TODO also filter by start and end
         legs = models.Legislatura.objects.filter(
             parlamentar=votante, partido=partido, casa_legislativa=self.cmsp)
-        # TODO acima filtrar tb por inicio e fim
+       
+       # TODO this period should be further refined to support guys who switch parties
         if legs:
             leg = legs[0]
         else:
@@ -180,8 +171,6 @@ class XmlCMSP:
             leg.parlamentar = votante
             leg.partido = partido
             leg.casa_legislativa = self.cmsp
-            # TODO este período deve ser mais refinado para suportar caras que
-            # trocaram de partido
             leg.inicio = INICIO_PERIODO
             leg.fim = FIM_PERIODO
             leg.save()
@@ -189,12 +178,11 @@ class XmlCMSP:
         return leg
 
     def votos_from_tree(self, vot_tree, votacao):
-        """Extrai lista de votos do XML da votação e as salva no banco de dados
+        """Extract list of votes the vote of XML and saved in the database
+        Arguments:
+           vot_tree -- tree of votes
+           votacao -- object of Votacao type"""
 
-        Argumentos:
-           vot_tree -- etree dos votos
-           votacao -- objeto do tipo Votacao
-        """
         for ver_tree in vot_tree.getchildren():
             if ver_tree.tag == 'Vereador':
                 leg = self.legislatura(ver_tree)
@@ -206,17 +194,19 @@ class XmlCMSP:
                     voto.save()
 
     def votacao_from_tree(self, proposicoes, votacoes, vot_tree):
-        # se é votação nominal
+
+        # If the votation is nominal, vot_tree gets the subject and the menu
         votacao_TipoVotacao = vot_tree.get('TipoVotacao')
         if vot_tree.tag == 'Votacao' and votacao_TipoVotacao == 'Nominal':
             resumo = '%s -- %s' % (
                 vot_tree.get('Materia'), vot_tree.get('Ementa'))
-            # Prop_nome eh como se identifica internamente as propostas.
-            # Queremos saber a que proposicao estah associada a votacao
-            # analisanda.
-            # vai retornar prop_nome se votação for de proposição
+
+            # Prop_nome is as internally identifies the proposals
+            # We want to know which proposition the analyzed voting is associated
+            # Will return if prop_nome vote for Proposition
             prop_nome = self.prop_nome(resumo)
-            # se a votacao for associavel a uma proposicao, entao..
+
+            # If the voting was associable to a proposition, so..
             if (prop_nome):
                 id_vot = vot_tree.get('VotacaoID')
                 votacoes_em_banco = models.Votacao.objects.filter(
@@ -224,12 +214,11 @@ class XmlCMSP:
                 if votacoes_em_banco:
                     vot = votacoes_em_banco[0]
                 else:
-                    # a proposicao a qual a votacao sob analise se refere jah
-                    # estava no dicionario (eba!)
                     if prop_nome in proposicoes:
                         prop = proposicoes[prop_nome]
-                    # a prop. nao estava ainda, entao devemo-la tanto  criar
-                    # qnt cadastrar no dicionario.
+
+                    # The propositon was not in dictionary yet, so we have to create and
+                    # register it on dictionary
                     else:
                         prop = models.Proposicao()
                         prop.sigla, prop.numero, prop.ano = self.tipo_num_anoDePropNome(
@@ -241,7 +230,8 @@ class XmlCMSP:
                         print 'Proposicao %s salva' % prop
                     prop.save()
                     vot = models.Votacao()
-                    # só pra criar a chave primária e poder atribuir o votos
+
+                    # To create de primary key and assign the votes
                     vot.save()
                     vot.id_vot = id_vot
                     vot.descricao = resumo
@@ -264,23 +254,24 @@ class XmlCMSP:
 
 
 class ImportadorCMSP:
-
-    """Salva os dados dos arquivos XML da cmsp no banco de dados"""
+    """Save the CMSP XML archives datas in database"""
 
     def __init__(self, cmsp, verbose=False):
-        """verbose (booleano) -- ativa/desativa prints na tela"""
+        """verbose (booleano) -- activate/desactivate prints on screen"""
+
         self.verbose = verbose
         self.xml_cmsp = XmlCMSP(cmsp, verbose)
 
     def importar_de(self, xml_file):
-        """Salva no banco de dados do Django e retorna lista das votações"""
+        """Save in Django database and returns the voting list"""
+
         if self.verbose:
             print "importando de: " + str(xml_file)
 
         tree = ImportadorCMSP.abrir_xml(xml_file)
         proposicoes = {}
-            # chave é string (ex: 'pl 127/2004'); valor é objeto do tipo
-            # Proposicao
+            # The ley is a string (ex: 'pl 127/2004'); value ix object from
+            # Proposiction type
         votacoes = []
         self.analisar_xml(proposicoes, votacoes, tree)
         return votacoes
@@ -291,15 +282,17 @@ class ImportadorCMSP:
 
     @staticmethod
     def abrir_xml(xml_file):
-#         f = open(xml_file, 'r')
-#         xml = f.read()
-#         f.close()
-#         return etree.fromstring(xml)
+    # f = open(xml_file, 'r')
+    # xml = f.read()
+    # f.close()
+    # return etree.fromstring(xml)
         return etree.parse(xml_file).getroot()
 
 
 
 def main():
+    """Imports all data from XML by importer"""
+    
     print 'IMPORTANDO DADOS DA CAMARA MUNICIPAL DE SAO PAULO (CMSP)'
     gerador_casa = GeradorCasaLegislativa()
     cmsp = gerador_casa.gerar_cmsp()

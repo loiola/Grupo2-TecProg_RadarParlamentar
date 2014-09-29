@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 def main(lista_casas_legislativas):
+    """Assigns importers to legislative houses and calls the function 
+    that imports the data"""
 
     for casa_legislativa in lista_casas_legislativas:
 

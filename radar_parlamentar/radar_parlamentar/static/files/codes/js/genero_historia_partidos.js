@@ -1,12 +1,16 @@
+// Function responsible for plot the graph referent the number of men and women in each legislature in each year
 function desenhar(partido){
 	
 
 	d3.json("/static/files/codes/js/genero_historia_partidos.json", function(error, data) {
 
+		// Setting graph parameters
 		var margin = {top: 20, right: 100, bottom: 50, left: 50},
 		    width = 960 - margin.left - margin.right,
 		    height = 500 - margin.top - margin.bottom;
 
+		
+		// Assigning legislature data in each year for each political party
 		legislaturas = data[partido];
 		anos = [];
 		for (key in legislaturas) {
@@ -35,6 +39,7 @@ function desenhar(partido){
 		    .orient("left")
 		    .tickFormat(d3.format(".0%"));
 
+		// Screen components aligment
 		var svg = d3.select("#animacao").append("svg")
 		    .attr("width", width + margin.left + margin.right)
 		    .attr("height", height + margin.top + margin.bottom)
@@ -55,9 +60,9 @@ function desenhar(partido){
 	    dados.push(d);
 	  };
 
-	  //legislaturas.sort(function(a, b) { return b.ages[0].y1 - a.ages[0].y1; });
+	  // legislaturas.sort(function(a, b) { return b.ages[0].y1 - a.ages[0].y1; });
 
-		//x.domain(legislaturas.map(function(d) { return d.Ano; }));
+		// x.domain(legislaturas.map(function(d) { return d.Ano; }));
 		x.domain(d3.extent(Object.keys(legislaturas),function(d){return legislaturas[d].ano}));
 
 
@@ -67,14 +72,15 @@ function desenhar(partido){
 	      .call(xAxis)
 		.selectAll("text")
 		.style("text-anchor", "end")
-		//.attr("dx", "-1.8em")
-		//.attr("dy", ".5em")
+		/*.attr("dx", "-1.8em")
+		.attr("dy", ".5em") */
 		.attr("transform", function(d){ return "rotate(-45)"});
 
 	  svg.append("g")
 	      .attr("class", "y axis")
 	      .call(yAxis);
 
+	// Showing the porcentage of the men and women in each legislature of each year
 	var tip = d3.tip()
 	  .attr('class', 'd3-tip')
 	  .offset([-10, 0])
@@ -116,23 +122,24 @@ function desenhar(partido){
 
 
 
-	//  var legend = svg.select(".state:last-child").selectAll(".legend")
-	//      .data(function(d) { return d.ages; })
-	//    .enter().append("g")
-	//      .attr("class", "legend")
-	//      .attr("transform", function(d) { return "translate(" + x.range() / 2 + "," + y((d.y0 + d.y1) / 2) + ")"; });
-	//
-	//  legend.append("line")
-	//      .attr("x2", 10);
-	//
-	//  legend.append("text")
-	//      .attr("x", 13)
-	//      .attr("dy", ".35em")
-	//      .text(function(d) { return d.name; });
+	/*  var legend = svg.select(".state:last-child").selectAll(".legend")
+	      .data(function(d) { return d.ages; })
+	    .enter().append("g")
+	      .attr("class", "legend")
+	      .attr("transform", function(d) { return "translate(" + x.range() / 2 + "," + y((d.y0 + d.y1) / 2) + ")"; });
+	
+	  legend.append("line")
+	      .attr("x2", 10);
+	
+	  legend.append("text")
+	      .attr("x", 13)
+	      .attr("dy", ".35em")
+	      .text(function(d) { return d.name; }); */
 
 	});
 }
 
+//Setting the politcal parties
 desenhar("PT");
 
 partidos = ['PCB', 'PSD', 'UDN', 'PP', 'PR', 'PTB', 'PRE', 'PRF', 'PST', 'UPF', 'AL', 'FUG', 'PSN', 'PSP', 'PRP', 'PTN', 'PDC', 'PNI', 'PL', 'PPR', 'ARENA', 'PTR', 'PSB', 'PRR', 'PSC', 'PRD', 'LASP', 'PRM', 'PRT', 'PPS', 'PSR', 'PS', 'PDS', 'MTR', 'MDB', 'PMDB', 'PSDB', 'PFL', 'PT', 'PTdoB', 'PDT', 'PJ', 'PCdoB', 'PC', 'PV', 'PRN', 'PPB', 'PSDC', 'PRONA', 'DEM', 'PSOL', 'PMN', 'PSL', 'PRS', 'PRB', 'PE', 'PRC', 'PRL', 'UDB', 'PLC', 'LEC', 'PD', 'ED', 'PRPa', 'PED', 'PNS', 'PPA', 'PNA', 'PSTU', 'PTC', 'PAN', 'PHS', 'PRTB'];

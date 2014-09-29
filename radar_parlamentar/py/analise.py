@@ -90,7 +90,7 @@ class Analise:
         ANLS.figura(escala=10) : apresenta um gráfico de bolhas dos partidos com a primeira componente principal no eixo x e a segunda no eixo y, o tamanho da bolha proporcional ao tamanho do partido
     """
 
-    # Constantes:
+    # Constant:
     lista_ufs = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO']
     db = 'resultados/camara.db'
 
@@ -106,26 +106,26 @@ class Analise:
         self.tipos_proposicao = tipos_proposicao
         self.lista_partidos = lista_partidos
         self.partidos = partidos
-        self.num_votacoes = 0     # { calculados por
-        self.lista_votacoes = []  #   self._buscaVotacoes() }
-        self.vetores_votacao = [] # {
-        self.quadrivet_vot = []   #   calculados por   
-        self.vetores_tamanho = [] #   self._inicializa_vetores() 
-        self.vetores_presenca = []#
-        self.tamanho_partidos = [] #  }
-        self.vetores_votacao_uf = [] # { calculados por
-        self.vetores_tamanho_uf = [] #   self_inicializa_vetores_uf()
-        self.tamanho_uf = []         # }
-        self.pca_partido = None # calculado por self._pca_partido()
-        self.pca_uf = None # calculado por self._pca_uf()
-        self.semelhancas_escalar = [] # self._calcula_semelhancas()
-        self.semelhancas_convolucao = [] # idem
+        self.num_votacoes = 0     
+        self.lista_votacoes = []  
+        self.vetores_votacao = [] 
+        self.quadrivet_vot = []   
+        self.vetores_tamanho = [] 
+        self.vetores_presenca = []
+        self.tamanho_partidos = [] 
+        self.vetores_votacao_uf = [] 
+        self.vetores_tamanho_uf = [] 
+        self.tamanho_uf = []         
+        self.pca_partido = None 
+        self.pca_uf = None 
+        self.semelhancas_escalar = [] 
+        self.semelhancas_convolucao = [] 
 
-        # Verificar se datas foram entradas corretamente:
+        # Check if dates were entered correctly:
         if not (re.match('(19)|(20)\d\d-[01]\d-[0123]\d',data_inicial) and re.match('(19)|(20)\d\d-[01]\d-[0123]\d',data_final)):
             raise StandardError('Datas devem estar no formato "aaaa-mm-dd", mês e dia obrigatoriamente com dois dígitos.')
 
-        # se lista 'tipos_proposicao' vazia, usar todos os tipos de proposição
+	# If the list 'tipos_proposicao' is empty, use all kinds of proposition:
         if not self.tipos_proposicao: 
             con = lite.connect(Analise.db)
             lista = con.execute('SELECT distinct tipo FROM PROPOSICOES')
@@ -133,7 +133,7 @@ class Analise:
                 self.tipos_proposicao.append(tipo[0])
             con.close()
 
-        # se lista vazia, usar todos os partidos
+        # If the list is empty, use all political parties:
         if not self.lista_partidos:
             popula_partidos = 0
             if not self.partidos:
@@ -148,12 +148,13 @@ class Analise:
                         partido = model.Partido(item[1],item[0])
                         self.partidos.append(partido)
             con.close()
-        # se inteiro, usar partidos maiores ou iguais a este inteiro
+
+        # If integer, use greater than or equal to this whole political parties:
         elif isinstance(self.lista_partidos,int): 
             N = self.lista_partidos
             self.lista_partidos = partidos_expressivos(N,self.data_inicial,self.data_final,self.tipos_proposicao)
 
-    #imprime informações principais da classe analise - utilizado ao se dar 'print' do objeto 'ANA'
+    # Print key information class 'analise'. Used to give 'print' of object 'ANA':
     def __str__(self):
         retorno = ''
         retorno = retorno + 'Data inicial da análise : ' + self.data_inicial + '\n'
@@ -185,9 +186,11 @@ class Analise:
         """Cria os 'vetores' e 'quadrivetores' votação agregados por partido. Aproveita para calcular o tamanho dos partidos, presença dos deputados, etc.
         O 'vetor' usa um número entre -1 (não) e 1 (sim) para representar a posição global do partido em cada votação, sendo o vetor em si um de dimensão N formado pelas N votações.
         O 'quadrivetor' usa uma tupla de 4 inteiros para representar a posição do partido em cada votação, os inteiros são o número de deputados que votaram sim, não, abstenção e obstrução. O quadrivetor em si é um vetor com N destas tuplas."""
-        # Pegar votações no BD:
+
+        # Pick up votes in the database:
         votacoes = self._buscaVotacoes()
-        # Criar dicionario com id dos partidos
+
+        # Create dictionary with id of political parties:
         con = lite.connect(Analise.db)
         tabela_partidos = con.execute('select numero,nome from partidos').fetchall()
         idPartido = {}
@@ -200,10 +203,14 @@ class Analise:
         self.vetores_presenca = numpy.zeros((len(self.lista_partidos),self.num_votacoes))
         self.tamanho_partidos = [0]*len(self.lista_partidos)
         ip =-1
+
         for p in self.lista_partidos:
             ip += 1
-            num_deputados = set() # Número de deputados diferentes de um partido que apareceram em pelo menos uma votação no período.
+            
+            # Number of different members of a political party that appeared in at least one vote in the period.
+            num_deputados = set() 
             iv =-1
+
             for v in votacoes:
                 iv += 1
                 nsim = numpy.where((numpy.array(eval(v[3]))/100000)==idPartido[p])[0].size
@@ -217,14 +224,18 @@ class Analise:
                 else:
                     self.vetores_votacao[ip][iv] = 0
                 
-                # Contar deputados presentes:
+                # Tell deputies present:
                 deps_presentes_list = [list(numpy.array(eval(v[3]))[numpy.where(numpy.array(eval(v[3]))/100000==idPartido[p])]) + list(numpy.array(eval(v[4]))[numpy.where(numpy.array(eval(v[4]))/100000==idPartido[p])]) + list(numpy.array(eval(v[5]))[numpy.where(numpy.array(eval(v[5]))/100000==idPartido[p])]) + list(numpy.array(eval(v[6]))[numpy.where(numpy.array(eval(v[6]))/100000==idPartido[p])]) ]
 #                deps_presentes_list = numpy.reshape(deps_presentes_list,(1,numpy.size(deps_presentes_list)))
                 self.vetores_tamanho[ip][iv] = numpy.size(deps_presentes_list)
                 for d in deps_presentes_list[0]:
-                    num_deputados.add(d) # repetidos não entrarão duas vezes no set, permitindo calcular tamanho_partidos.
+                    
+                    # Not enter repeated twice on set, allowing calculate tamanho_partidos:
+                    num_deputados.add(d) 
+
             self.tamanho_partidos[ip] = len(num_deputados)
-            # Calcular vetores_presenca:
+
+            # Figure out:
             ivv = -1
             for v in votacoes:
                 ivv += 1
@@ -249,7 +260,8 @@ class Analise:
 
     def _inicializa_vetores_uf(self):
         """Análogo a _inicializa_vetores(self), mas agregado por estados e não por partidos."""
-        # Pegar votações no BD:
+
+        # Pick up votes in the database:
         votacoes = self._buscaVotacoes()
 
         self.vetores_votacao_uf = numpy.zeros((len(Analise.lista_ufs),self.num_votacoes))
@@ -257,9 +269,13 @@ class Analise:
         self.tamanho_uf = [0]*len(Analise.lista_ufs)
         ie =-1
         for e in Analise.lista_ufs:
+
             ie += 1
-            num_deputados_uf = set() # Número de deputados diferentes de um estado que apareceram em pelo menos uma votação no período.
+            
+            # Number of different members of a state that appeared in at least one vote in the period:
+            num_deputados_uf = set() 
             iv =-1
+
             for v in votacoes:
                 iv += 1
                 nsim = numpy.where(((numpy.array(eval(v[3]))/1000)%100)==(ie+1))[0].size
@@ -271,12 +287,16 @@ class Analise:
                     self.vetores_votacao_uf[ie][iv] = (float(nsim) - float(nnao)) / float(ntot)
                 else:
                     self.vetores_votacao_uf[ie][iv] = 0
-                # Contar deputados presentes:
+
+                # Tell deputies present::
                 deps_presentes_list_uf = [ list(numpy.array(eval(v[3]))[numpy.where((numpy.array(eval(v[3]))/1000)%100==(ie+1))]) + list(numpy.array(eval(v[4]))[numpy.where((numpy.array(eval(v[4]))/1000)%100==(ie+1))]) + list(numpy.array(eval(v[5]))[numpy.where((numpy.array(eval(v[5]))/1000)%100==(ie+1))]) + list(numpy.array(eval(v[6]))[numpy.where((numpy.array(eval(v[6]))/1000)%100==(ie+1))]) ]
 #                deps_presentes_list_uf = numpy.reshape(deps_presentes_list,(1,numpy.size(deps_presentes_list)))
                 self.vetores_tamanho_uf[ie][iv] = numpy.size(deps_presentes_list_uf)
                 for d in deps_presentes_list_uf[0]:
-                    num_deputados_uf.add(d) # repetidos não entrarão duas vezes no set
+
+                    # Not enter repeated twice on set, allowing calculate tamanho_partidos:
+                    num_deputados_uf.add(d) 
+
             self.tamanho_uf[ie] = len(num_deputados_uf)
         return
 
@@ -304,9 +324,11 @@ class Analise:
         self.semelhancas_convolucao = numpy.zeros((len(self.lista_partidos),len(self.lista_partidos)))
         for i in range(0,len(self.lista_partidos)):
             for j in range(0,len(self.lista_partidos)):
-                # método 1:
+
+                # Method 1:
                 self.semelhancas_escalar[i][j] = 100 *( ( numpy.dot(self.vetores_votacao[i],self.vetores_votacao[j]) / (numpy.sqrt(numpy.dot(self.vetores_votacao[i],self.vetores_votacao[i])) * numpy.sqrt(numpy.dot(self.vetores_votacao[j],self.vetores_votacao[j])) ) ) + 1 )/ 2
-                # método 2:
+                
+		# Method 2:
                 x = 0
                 for k in range(self.num_votacoes) :
                     x += Analise._convolui(self.quadrivet_vot[i][k],self.quadrivet_vot[j][k])
@@ -324,7 +346,9 @@ class Analise:
         un= numpy.array(u,dtype=float)
         vn= numpy.array(v,dtype=float)
         x = numpy.dot(un,vn)
-        x = x / ( numpy.sqrt(numpy.dot(un,un)) * numpy.sqrt(numpy.dot(vn,vn)) ) # normalizar
+
+	# Normalize:
+        x = x / ( numpy.sqrt(numpy.dot(un,un)) * numpy.sqrt(numpy.dot(vn,vn)) ) 
         return x
 
 
@@ -478,42 +502,55 @@ class Analise:
 
 def partidos_expressivos(N=1,data_inicial='2011-01-01',data_final='2011-12-31',tipos_proposicao=[]):
     """Retorna uma lista com os partidos com pelo menos N deputados diferentes que tenham vindo em votações entre as datas data_inicial e data_final. Consideram-se as proposições em tipos_proposição, ou todas se tipos_proposicao=[]."""
-    # Criar dicionario com id dos partidos:
+
+    # Create dictionary with id of political parties:
     con = lite.connect(Analise.db)
     tabela_partidos = con.execute('select numero,nome from partidos').fetchall()
     idPartido = {}
     for tp in tabela_partidos:
         idPartido[tp[1]] = tp[0]
     
-    # Criar lista de todos os partidos:
+    # Create list of all political parties:
     lista_todos_partidos = con.execute('SELECT nome FROM PARTIDOS').fetchall()
     con.close()
-    # Pegar votacoes no bd:
+
+    # Pick up votes in the database:
     a = Analise(data_inicial,data_final,tipos_proposicao)
     votacoes = a._buscaVotacoes()
-    # Inicializar variáveis
+
+    # Initialize variables:
     tamanho_partidos = [0]*len(lista_todos_partidos) 
     vetores_tamanho = numpy.zeros((len(lista_todos_partidos),a.num_votacoes))
-    #Transformar lista de tuplas em lista de strings:
+
+    # Transform list of tuples in list of strings:
     i = 0 
     for lp in lista_todos_partidos: 
         lista_todos_partidos[i] = lp[0]
         i += 1
-    # Calcular tamanho dos partidos:
+
+    # Calculate size of political parties:
     ip =-1
     for p in lista_todos_partidos:
+
         ip += 1
-        num_deputados = set() # Número de deputados diferentes de um partido que apareceram em pelo menos uma votação no período.
+
+        # Number of different members of a political party that appeared in at least one vote in the period..
+        num_deputados = set() 
         iv =-1
-        for v in votacoes:
+        
+	for v in votacoes:
             iv += 1
-            # Contar deputados presentes:
+           
+	    # Tell deputies present:
             deps_presentes_list = [list(numpy.array(eval(v[3]))[numpy.where(numpy.array(eval(v[3]))/100000==idPartido[p])]) + list(numpy.array(eval(v[4]))[numpy.where(numpy.array(eval(v[4]))/100000==idPartido[p])]) + list(numpy.array(eval(v[5]))[numpy.where(numpy.array(eval(v[5]))/100000==idPartido[p])]) + list(numpy.array(eval(v[6]))[numpy.where(numpy.array(eval(v[6]))/100000==idPartido[p])]) ]
             vetores_tamanho[ip][iv] = numpy.size(deps_presentes_list)
             for d in deps_presentes_list[0]:
-                num_deputados.add(d) # repetidos não entrarão duas vezes no set, permitindo calcular tamanho_partidos.
+
+		# Not enter repeated twice on set, allowing calculate tamanho_partidos:
+                num_deputados.add(d) 
         tamanho_partidos[ip] = len(num_deputados)
-    # Fazer lista de partidos maiores do que N:
+   
+    # Make list of major political parties than N:
     expressivos = []
     ip = -1
     for p in lista_todos_partidos:
