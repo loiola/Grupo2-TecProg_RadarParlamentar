@@ -74,7 +74,6 @@ for model in models:
 
                     # This field is a foreign key, so save the primary key
                     # Of the referring object
-
                     pk_name = value._meta.pk.name
                     pk_value = getattr(value, pk_name)
                     writer.content(pk_value)

@@ -15,12 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Módulo camaraws -- requisições para os Web Services da câmara
+"""Module camaraws -- requirements for the chamber Web Services
 
-Funcões:
-obter_votacao -- obtém votacões e detalhes de uma proposicão
-obter_nomeProp_porid -- Obtém nome da proposição dado o id.
-"""
+Functions:
+obter_votacao -- gets votings and details of proposition, giving the ID.
+obter_nomeProp_porid -- gets name of proposition, giving the ID.."""
 
 from model import Proposicao
 import urllib2
@@ -32,15 +31,15 @@ OBTER_INFOS_PROPOSICAO = 'http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/
 OBTER_INFOS_PORID = 'http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/ObterProposicaoPorID?idProp=%s'
 
 def obter_votacao(tipo, num, ano):
-    """Obtém votacões e detalhes de uma proposicão
+    """Get votings ande details of a propositions.
 
-    Argumentos:
-    tipo, num, ano -- strings que caracterizam a proposicão
+    Arguments:
+    tipo, num, ano -- strings that caracterize a proposition
 
-    Retorna:
-    Uma proposicão como um objeto da classe model.Proposicao
-    Caso a proposição não seja encontrada ou não possua votações, retorna None
-    """
+    Retorns:
+    A propostions as an object class model.Proposicao.
+    If the proposition doesn't be found or doesn't have votings, returns None."""
+
     url  = OBTER_VOTACOES_PROPOSICAO % (tipo, num, ano)
     try:
         request = urllib2.Request(url)
@@ -66,14 +65,14 @@ def obter_votacao(tipo, num, ano):
     return prop
 
 def obter_proposicao(tipo, num, ano):
-    """Obtém detalhes da proposição por tipo, número e ano
+    """Get details of the propositions by type, number and year
 
-    Argumentos:
-    tipo, num, ano -- strings que caracterizam a proposicão
+    Arguments:
+    tipo, num, ano -- strings that caracterize the propositions.
 
-    Retorna:
-    Um xml represenando a proposicão como um objeto da classe bytes
-    """
+    Return:
+    A xml representing a proposition as an object of bytes classe."""
+
     url = OBTER_INFOS_PROPOSICAO % (tipo, num, ano)
     request = urllib2.Request(url)
     xml = urllib2.urlopen(request).read()
@@ -81,17 +80,16 @@ def obter_proposicao(tipo, num, ano):
 
 
 def obter_nomeProp_porid(idProp):
-    """Obtém nome da proposição dado o id.
-    Por exemplo: obter_nomeProp_porid(513512) retorna o string "MPV 540/2011"
+    """Giving the id, gets the name of proposition.
+    For exemple: obter_nomeProp_porid(513512) retorns the string "MPV 540/2011"
 
-    Argumentos:
-    idprop -- inteiro usado como identificador único de uma proposição no webservice
+    Arguments:
+    idprop -- integer used as unique identificator of a proposition in webservice.
 
-    Retorna:
-    Uma string com tipo, número e ano da proposição, por exemplo "MPV 540/2011".
-    Caso a proposição não seja encontrada, retorna None.
-    Obs: Mesmo que a proposição seja encontrada, poderá ainda assim não possuir votações.
-    """
+    Returns:
+    A string with type, number and year of proposition, for exemple "MPV 540/2011".
+    If the proposition doesn't be found, returns None."""
+
     url = OBTER_INFOS_PORID % (idProp)
     try:
         request = urllib2.Request(url)

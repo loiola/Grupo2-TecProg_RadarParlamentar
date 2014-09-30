@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-""" Module cria_bd 
+"""Module cria_bd 
 
 Classes:
 GeradorBD -- Creates a sqlite3 database from propositions provided (list of objects of type Proposicao). 
@@ -41,7 +41,7 @@ import ids_que_existem
 import sqlite3 as lite
 
 class GeradorBD:
-    """ Creates a sqlite3 database from propositions provided (list of objects of type Proposicao)."""
+    """Creates a sqlite3 database from propositions provided (list of objects of type Proposicao)."""
 
     def __init__(self, proposicoes = [], db = "resultados/votos.db"):
         """ Arguments:
@@ -147,7 +147,7 @@ class GeradorBD:
 IDS_QUE_EXISTEM = 'resultados/ids_que_existem.txt'
 IDS_VOTADAS = 'resultados/votadas.txt'
 def cria_bd_camara_deputados(arquivo_ids=IDS_VOTADAS):
-    """ Creates the Chamber od Deputies's database on 'resultados/camara.db'
+    """Creates the Chamber od Deputies's database on 'resultados/camara.db'
         Arguments:
         arquivo_ids -- > File with the list of "id: tipo num/ano" (one entry per line, supporting comments with #).
                        > The function will use these ids to make calls to the web service and get the camera polls.
@@ -171,7 +171,7 @@ def cria_bd_camara_deputados(arquivo_ids=IDS_VOTADAS):
     gerador.gera_bd()
 
 def cria_bd_cmsp():
-    """ Creates the database of the Câmara Munincipal de São Paulo from XMLs on resultados/cmsp[ano].xml."""
+    """Creates the database of the Câmara Munincipal de São Paulo from XMLs on resultados/cmsp[ano].xml."""
 
     props = cmsp.from_xml(cmsp.XML2010)   
     props += cmsp.from_xml(cmsp.XML2011)

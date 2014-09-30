@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-""" Module propositions - functions for processing propositions
+"""Module propositions - functions for processing propositions
 Has script that lists propositions to polls.
 
 Functions:
@@ -35,16 +35,14 @@ import camaraws
 # PDC - projeto de decreto legislativo
 # MPV - projeto de medida provisória
 # PEC - proposta de emenda à constituição
-
 def parse_html():
-    """ Parse do arquivo recusrsos/proposicoes.htmll
-    Retorna:
-    Uma lista com a identificação das proposições encontradas no htmll
-    Cada posição da lista é um dicionário com chaves \in {id, tipo, num, ano}
-    As chaves e valores desses dicionários são strings."""
+    """Parse of the file recusrsos/proposicoes.htmll
+    Retorns:
+    A list with a identification of the propositions found in html
+    Each list position is a dicionary with key \in {id, tipo, num, ano}
+    The keys and values of this dictionaries are strings."""
 
     # File contains propositions voted on by the chamber in 2011:
-
     file_name = 'recursos/proposicoes2011.html'  
     prop_file = codecs.open(file_name, encoding='ISO-8859-15', mode='r')
     regexp = '<A HREF=http://.*?id=([0-9]*?)>([A-Z]*?) ([0-9]*?)/([0-9]{4})</A>'
@@ -57,7 +55,7 @@ def parse_html():
     return proposicoes
 
 def parse():
-    """ Parse the recusrsos / proposicoes.htmll file
+    """Parse the recursos / proposicoes.htmll file
      returns:
      A list identifying the propositions found in htmll
      Each position on the list is a dictionary with keys \ in {id, type in a year}
@@ -83,7 +81,7 @@ def parse():
     return proposicoes
 
 def com_votacao(proposicoes): 
-    """ Checks which propositions have votes in the chamber web service
+    """Checks which propositions have votes in the chamber web service
      It is only on those propositions we will do our analyzes
      This check is done by invoking the web service camera
      arguments:
@@ -105,7 +103,7 @@ def com_votacao(proposicoes):
     return votadas
 
 def proposicoes_com_votacao():
-    """ Returns the list of propositions for which it is possible to get the xml of the vote
+    """Returns the list of propositions for which it is possible to get the xml of the vote
      This list is taken from the results / votadas.txt file
      returns:
      A list of propositions

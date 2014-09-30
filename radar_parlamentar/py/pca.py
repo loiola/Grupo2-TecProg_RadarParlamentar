@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-""" A small class for Principal Component Analysis
+"""A small class for Principal Component Analysis
 Usage:
     p = PCA( A, fraction=0.90 )
 In:
@@ -83,47 +83,39 @@ class PCA:
 
     # These 1-line methods may not be worth the bother;
     # Then use U d Vt directly --
-
     def vars_pc( self, x ):
         n = self.npc
-
         # 20 vars -> 2 principal
         return self.d[:n] * dot( self.Vt[:n], x.T ).T  
 
     def pc_vars( self, p ):
         n = self.npc
-
         # 2 PC -> 20 vars
         return dot( self.Vt[:n].T, (self.dinv[:n] * p).T ) .T  # 2 PC -> 20 vars
 
     def pc_obs( self, p ):
         n = self.npc
-
         # 2 principal -> 1000 obs
         return dot( self.U[:, :n], p.T )  
 
     def obs_pc( self, obs ):
         n = self.npc
-
         # 1000 obs -> 2 principal
         return dot( self.U[:, :n].T, obs ) .T  
 
     def obs( self, x ):
-
         # 20 vars -> 2 principal -> 1000 obs
         return self.pc_obs( self.vars_pc(x) )  
 
     def vars( self, obs ):
-
         # 1000 obs -> 2 principal -> 20 vars
         return self.pc_vars( self.obs_pc(obs) )  
 
 
 class Center:
-    """ A -= A.mean() /= A.std(), inplace -- use A.copy() if need be
+    """A -= A.mean() /= A.std(), inplace -- use A.copy() if need be
         uncenter(x) == original A . x"""
         # Mttiw:
-        
     def __init__( self, A, axis=0, scale=True, verbose=1 ):
         self.mean = A.mean(axis=axis)
         if verbose:
@@ -147,7 +139,8 @@ class Center:
 if __name__ == "__main__":
     import sys
 
-    csv = "iris4.csv"  # wikipedia Iris_flower_data_set
+    # Wikipedia Iris_flower_data_set
+    csv = "iris4.csv"  
         # 5.1,3.5,1.4,0.2  # ,Iris-setosa ...
     N = 1000
     K = 20
@@ -160,7 +153,9 @@ if __name__ == "__main__":
         A = np.genfromtxt( csv, delimiter="," )
         N, K = A.shape
     except IOError:
-        A = np.random.normal( size=(N, K) )  # gen correlated ?
+
+        # gen correlated ?
+        A = np.random.normal( size=(N, K) )  
 
     print "csv: %s  N: %d  K: %d  fraction: %.2g" % (csv, N, K, fraction)
     Center(A)
@@ -177,19 +172,25 @@ if __name__ == "__main__":
 
     print "\nobs <-> pc <-> x: with fraction=1, diffs should be ~ 0"
     x = np.ones(K)
+
     # x = np.ones(( 3, K ))
     print "x:", x
-    pc = p.vars_pc(x)  # d' Vt' x
+
+    # d' Vt' x
+    pc = p.vars_pc(x)  
     print "vars_pc(x):", pc
     print "back to ~ x:", p.pc_vars(pc)
 
     Ax = dot( A, x.T )
-    pcx = p.obs(x)  # U' d' Vt' x
+
+    # U' d' Vt' x
+    pcx = p.obs(x)  
     print "Ax:", Ax
     print "A'x:", pcx
     print "max |Ax - A'x|: %.2g" % np.linalg.norm( Ax - pcx, np.inf )
 
-    b = Ax  # ~ back to original x, Ainv A x
+    # ~ back to original x, Ainv A x
+    b = Ax  
     back = p.vars(b)
     print "~ back again:", back
     print "max |back - x|: %.2g" % np.linalg.norm( back - x, np.inf )

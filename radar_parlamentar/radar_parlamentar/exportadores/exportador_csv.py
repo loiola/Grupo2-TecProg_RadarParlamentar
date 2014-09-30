@@ -33,7 +33,6 @@ MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 COALITION_PARTIES = ['PT', 'PCdoB', 'PSB', 'PP', 'PMDB', 'PTB']
 # PR, PDT não são coalition?
-
 ROLLCALL = 'rollcall'
 VOTER_ID = 'voter_id'
 NAME = 'name'
@@ -56,8 +55,7 @@ class ExportadorCSV:
         self.csv_rows = []
 
 
-    # Retrieving, transforming and writing CSV:
-        
+    # Retrieving, transforming and writing CSV:    
     def exportar_csv(self):
         self.retrieve_votacoes()
         self.transform_data()
@@ -107,7 +105,6 @@ class ExportadorCSV:
         return '1' if nome_partido in COALITION_PARTIES else '0'
 
     # Options of votes:
-
     def voto(self, opcao):
         if opcao == models.SIM:
             return 1
@@ -123,7 +120,6 @@ class ExportadorCSV:
             raise ValueError()
 
     # Writing CSV:
-    
     def write_csv(self):
         filepath = os.path.join(MODULE_DIR, 'dados', CSV_FILE)
         with open(filepath, 'wb') as f:

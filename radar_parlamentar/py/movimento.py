@@ -35,14 +35,13 @@ arquivo_de_saida = 'colar_num_html.txt'
 
 
  
-# Algorithm:        
-
-anuais = [] # lista de objetos do tipo Analise (que serão análises anuais)
+# Algorithm:  
+# Lista of objects like Analise (que serão análises anuais):     
+anuais = [] 
 
 anos = range(ano_inicial,ano_final+1)
 
 # Make PCAs:
-
 for ano in anos:
     anuais.append(analise.Analise(str(ano)+'-01-01', str(ano)+'-12-31', [], parts))
 
@@ -56,13 +55,17 @@ for a in anuais:
 
 
 # Auxiliary functions:
-
 def quantidade_movimento(i,graus=0,espelho=0):
+<<<<<<< HEAD
+    """Calculates the amount of movement between the instant i (corresponding to the year years [i]) and the time i + 1.
+     When calculating the time i has the rotated axes (degree value between 0 and 360) and the first axis multiplied by -1 if the mirror = 0."""
+=======
     """ Calculates the amount of movement between the instant i (corresponding 
 	to the year years [i]) and the time i + 1.
      When calculating the time i has the rotated axes (degree value between 0 
 	and 360) and the first axis multiplied by -1 if the mirror = 0.
 	"""
+>>>>>>> estilo-e-design
 
     qm = 0
     antes = dados[i]
@@ -76,9 +79,13 @@ def quantidade_movimento(i,graus=0,espelho=0):
     return qm
 
 def matrot(graus):
+<<<<<<< HEAD
+   """Returns 2x2 rotation that rotates the axes in degrees (0-360) in counterclockwise array (as if the points spun clockwise around fixed axes).""" 
+=======
    """ Returns 2x2 rotation that rotates the axes in degrees (0-360) in counterclockwise 
 	array (as if the points spun clockwise around fixed axes).
 	""" 
+>>>>>>> estilo-e-design
    
    graus = float(graus)
    rad = numpy.pi * graus/180.
@@ -92,7 +99,6 @@ print 'Espelhando e rotacionando...'
 
 
 # Indices of years, backwards:
-
 for i in range(len(anos)-2,-1,-1): 
     print anos[i]
 
@@ -121,9 +127,8 @@ for i in range(len(anos)-2,-1,-1):
 print 'Fim'
 
 # Writing file:
-
 f = open(arquivo_de_saida,'w')
-f.write("""  <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+f.write("""<script type="text/javascript" src="http://www.google.com/jsapi"></script>
   <script type="text/javascript">
     google.load('visualization', '1', {packages: ['motionchart']});
 
