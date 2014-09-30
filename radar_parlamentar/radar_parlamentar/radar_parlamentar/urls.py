@@ -56,16 +56,21 @@ urlpatterns = patterns(
     # Ports Supported returning content to plot the map
     url(r'^analises/analise/(?P<nome_curto_casa_legislativa>\w*)/$',
         'analises.views.analise'),
-    url(r'^analises/json_analise/(?P<nome_curto_casa_legislativa>\w*)/(?P<periodicidade>\w*)/$',
+    url(r'^analises/json_analise/(?P<nome_curto_casa_legislativa>\w*)/'
+        r'(?P<periodicidade>\w*)/$',
         'analises.views.json_analise'),
-    url(r'^analises/json_analise/(?P<nome_curto_casa_legislativa>\w*)/(?P<periodicidade>\w*)/(?P<palavras_chave>.*)/$',
+    url(r'^analises/json_analise/(?P<nome_curto_casa_legislativa>\w*)/'
+        r'(?P<periodicidade>\w*)/(?P<palavras_chave>.*)/$',
         'analises.views.json_analise'),
     url(r'^analises/lista_de_votacoes_filtradas/(?P<nome_curto_casa_legislativa>\w*)/$', 
         'analises.views.lista_de_votacoes_filtradas'),
-    url(r'^analises/lista_de_votacoes_filtradas/(?P<nome_curto_casa_legislativa>\w*)/(?P<periodicidade>\w*)/(?P<palavras_chave>.*)/$', 
+    url(r'^analises/lista_de_votacoes_filtradas/(?P<nome_curto_casa_legislativa>\w*)/'
+        r'(?P<periodicidade>\w*)/(?P<palavras_chave>.*)/$',
         'analises.views.lista_de_votacoes_filtradas'),
-    url(r'^analises/lista_de_votacoes_filtradas/(?P<nome_curto_casa_legislativa>\w*)/$', 'analises.views.lista_de_votacoes_filtradas'),
-    url(r'^analises/lista_de_votacoes_filtradas/(?P<nome_curto_casa_legislativa>\w*)/(?P<periodicidade>\w*)/(?P<palavras_chave>.*)/$', 'analises.views.lista_de_votacoes_filtradas')
+    url(r'^analises/lista_de_votacoes_filtradas/(?P<nome_curto_casa_legislativa>\w*)/$',
+        'analises.views.lista_de_votacoes_filtradas'),
+    url(r'^analises/lista_de_votacoes_filtradas/(?P<nome_curto_casa_legislativa>\w*)/'
+        r'(?P<periodicidade>\w*)/(?P<palavras_chave>.*)/$', 'analises.views.lista_de_votacoes_filtradas')
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
