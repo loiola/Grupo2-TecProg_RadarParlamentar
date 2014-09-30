@@ -38,74 +38,73 @@ class CamarawsTest(TestCase):
         self.camaraws = cdep.Camaraws()
 
     def test_obter_proposicao(self):
-        codigo_florestal_xml = self.camaraws.obter_proposicao_por_id(ID)
-        nome = codigo_florestal_xml.find('nomeProposicao').text
-        self.assertEquals(nome, NOME)
+        forest_code_xml = self.camaraws.obter_proposicao_por_id(ID)
+        forest_code_name = forest_code_xml.find('nomeProposicao').text
+        self.assertEquals(forest_code_name, NOME)
 
     def test_obter_votacoes(self):
-        codigo_florestal_xml = self.camaraws.obter_votacoes(SIGLA, NUM, ANO)
-        data_vot_encontrada = codigo_florestal_xml.find(
+        forest_code_xml = self.camaraws.obter_votacoes(SIGLA, NUM, ANO)
+        found_vote_date = forest_code_xml.find(
             'Votacoes').find('Votacao').get('Data')
-        self.assertEquals(data_vot_encontrada, '11/5/2011')
+        self.assertEquals(found_vote_date, '11/5/2011')
 
     def test_listar_proposicoes(self):
         pecs_2011_xml = self.camaraws.listar_proposicoes('PEC', '2011')
         pecs_elements = pecs_2011_xml.findall('proposicao')
         self.assertEquals(len(pecs_elements), 135)
-        # 135 obtido por conferência manual com:
-        # http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ListarProposicoes?sigla=PEC&numero=&ano=2011&datApresentacaoIni=&datApresentacaoFim=&autor=&parteNomeAutor=&siglaPartidoAutor=&siglaUFAutor=&generoAutor=&codEstado=&codOrgaoEstado=&emTramitacao=
 
     def test_prop_nao_existe(self):
-        id_que_nao_existe = 'id_que_nao_existe'
+        no_id = 'id_que_nao_existe'
         caught = False
         try:
-            self.camaraws.obter_proposicao_por_id(id_que_nao_existe)
+            self.camaraws.obter_proposicao_por_id(no_id)
         except ValueError as e:
             self.assertEquals(
-                e.message, 'Proposicao %s nao encontrada' % id_que_nao_existe)
+                e.message, 'Proposicao %s nao encontrada' % no_id)
             caught = True
         self.assertTrue(caught)
 
     def test_votacoes_nao_existe(self):
-        sigla = 'PCC'
-        num = '1500'
-        ano = '1876'
+        acronym = 'PCC'
+        number_of_proposition = '1500'
+        year_of_voting = '1876'
         caught = False
         try:
-            self.camaraws.obter_votacoes(sigla, num, ano)
+            self.camaraws.obter_votacoes(acronym, number_of_proposition,
+                                         year_of_voting)
         except ValueError as e:
             self.assertEquals(
                 e.message, 'Votacoes da proposicao %s %s/%s nao encontrada'
-                % (sigla, num, ano))
+                % (acronym, number_of_proposition, year_of_voting))
             caught = True
         self.assertTrue(caught)
 
     def test_listar_proposicoes_que_nao_existem(self):
-        sigla = 'PEC'
-        ano = '3013'
+        acronym = 'PEC'
+        year_of_proposition = '3013'
         try:
-            self.camaraws.listar_proposicoes(sigla, ano)
+            self.camaraws.listar_proposicoes(acronym, year_of_proposition)
         except ValueError as e:
             self.assertEquals(
                 e.message, 'Proposicoes nao encontradas para sigla=%s&ano=%s'
-                % (sigla, ano))
+                % (acronym, year_of_proposition))
             caught = True
         self.assertTrue(caught)
 
     def test_listar_siglas(self):
-        siglas = self.camaraws.listar_siglas()
-        self.assertTrue('PL' in siglas)
-        self.assertTrue('PEC' in siglas)
-        self.assertTrue('MPV' in siglas)
+        acronyms = self.camaraws.listar_siglas()
+        self.assertTrue('PL' in acronyms)
+        self.assertTrue('PEC' in acronyms)
+        self.assertTrue('MPV' in acronyms)
 
     def test_votacao_presente_plenario(self):
-        ANO_PLENARIO = 2013
-        NOME_PLENARIO = 'REQ 8196/2013'
-        NOT_NOME_PLENARIO = 'DAVID 1309/1992'
-        etree_plenario = self.camaraws.obter_proposicoes_votadas_plenario(
-            ANO_PLENARIO)
-        nome_prop_list = []
-        for nomeProp in etree_plenario:
-            nome_prop_list.append(nomeProp.find('nomeProposicao').text)
-        self.assertTrue(NOME_PLENARIO in nome_prop_list)
-        self.assertFalse(NOT_NOME_PLENARIO in nome_prop_list)
+        plenary_year = 2013
+        plenary_name = 'REQ 8196/2013'
+        no_plenary_name = 'DAVID 1309/1992'
+        plenary_etree = self.camaraws.obter_proposicoes_votadas_plenario(
+            plenary_year)
+        list_of_propositions = []
+        for nomeProp in plenary_etree:
+            list_of_propositions.append(nomeProp.find('nomeProposicao').text)
+        self.assertTrue(plenary_name in list_of_propositions)
+        self.assertFalse(no_plenary_name in list_of_propositions)
