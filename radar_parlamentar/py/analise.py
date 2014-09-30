@@ -20,8 +20,7 @@
 análises, incluindo análise de semelhança e de componentes principais. Cada
 instância desta classe guarda os resultados da análise de um subconjunto dos dados,
 definido por um intervalo de tempo, pelos tipos de proposição a considerar e pelos
-partidos a considerar.
-"""
+partidos a considerar."""
 
 import re
 import numpy
@@ -138,8 +137,8 @@ class Analise:
         * Uma lista de strings com os partidos a incluir na análise (deixar vazio para incluir todos
         os partidos), ou um inteiro N para usar partidos que tenham N ou mais deputados no período
         São feitas análises de tamanho dos partidos e das UFs, análise de componentes principais (pca)
-        por partido e por UFs, e análise de semelhança percentual por dois métodos.
-        """
+        por partido e por UFs, e análise de semelhança percentual por dois métodos."""
+
         self.data_inicial = data_inicial
         self.data_final = data_final
         self.tipos_proposicao = tipos_proposicao
@@ -275,9 +274,11 @@ class Analise:
                     (numpy.array(eval(vote[6]))/100000)==party_id[party])[0].size
                 total_number = number_of_yes + number_of_no + number_of_abstain + number_of_obstruction
 
-                self.quadrivet_vot[party_index][vote_index] = (number_of_yes,number_of_no,number_of_abstain,number_of_obstruction)
+                self.quadrivet_vot[party_index][vote_index] = (
+                    number_of_yes,number_of_no,number_of_abstain,number_of_obstruction)
                 if total_number != 0:
-                    self.vetores_votacao[party_index][vote_index] = (float(number_of_yes) - float(number_of_no)) / float(total_number)
+                    self.vetores_votacao[party_index][vote_index] = (float(
+                        number_of_yes) - float(number_of_no)) / float(total_number)
                 else:
                     self.vetores_votacao[party_index][vote_index] = 0
 
@@ -287,7 +288,8 @@ class Analise:
                     eval(vote[4]))[numpy.where(numpy.array(eval(vote[4]))/100000==party_id[party])]) +
                                        list(numpy.array(eval(vote[5]))[numpy.where(numpy.array(
                                            eval(vote[5]))/100000==party_id[party])]) + list(
-                    numpy.array(eval(vote[6]))[numpy.where(numpy.array(eval(vote[6]))/100000==party_id[party])])]
+                    numpy.array(eval(vote[6]))[numpy.where(numpy.array(eval(
+                        vote[6]))/100000==party_id[party])])]
 
                 self.vetores_tamanho[party_index][vote_index] = numpy.size(list_of_present_deputies)
                 for deputy in list_of_present_deputies[0]:
@@ -301,7 +303,8 @@ class Analise:
             ivv = -1
             for vote in votings:
                 ivv += 1
-                self.vetores_presenca[party_index][ivv] = self.vetores_tamanho[party_index][ivv]/self.tamanho_partidos[party_index]
+                self.vetores_presenca[party_index][ivv] = self.vetores_tamanho[party_index][ivv]/\
+                                                          self.tamanho_partidos[party_index]
         return
 
 
@@ -310,6 +313,7 @@ class Analise:
         Guarda o resultado em self.pca
         Retorna um dicionário no qual as chaves são as siglas dos partidos
         e o valor de cada chave é um vetor com as n dimensões da análise pca"""
+
         if not bool(self.pca_partido):
             if self.vetores_votacao==[]:
                 self._inicializa_vetores()
@@ -352,7 +356,8 @@ class Analise:
                 total_number = number_of_yes + number_of_no + number_of_abstain + number_of_obstruction
 
                 if total_number != 0:
-                    self.vetores_votacao_uf[ie][iv] = (float(number_of_yes) - float(number_of_no)) / float(total_number)
+                    self.vetores_votacao_uf[ie][iv] = (float(
+                        number_of_yes) - float(number_of_no)) / float(total_number)
                 else:
                     self.vetores_votacao_uf[ie][iv] = 0
 
@@ -377,6 +382,7 @@ class Analise:
         Guarda o resultado em self.pca
         Retorna um dicionário no qual as chaves são as siglas dos partidos
         e o valor de cada chave é um vetor com as n dimensões da análise pca"""
+
         if not bool(self.pca_uf):
             if self.vetores_votacao_uf==[]:
                 self._inicializa_vetores_uf()
@@ -391,7 +397,8 @@ class Analise:
         """Calcula semelhancas entre todos os partidos da análise, dois a dois, segundo o
         produto escalar e o método da convolução, normalizadas entre 0 e 100[%].
         O resultado é guardado nos atributos self.semelhancas (produto escalar) e
-        self.semelhancas2 (convolução). """
+        self.semelhancas2 (convolução)."""
+
         if self.vetores_votacao==[]:
             self._inicializa_vetores()
         self.semelhancas_escalar = numpy.zeros((len(self.lista_partidos),len(self.lista_partidos)))
@@ -423,8 +430,8 @@ class Analise:
         partidos em uma votação. Por exemplo se u=(4,3,0,3) houve 4 sim, 3 não, 0
         abstenções e 3 obstruções do partido na votação.
         Cada tupla é normalizada dividindo pela soma dos quadrados dos elementos, e
-        a função retorna o produto escalar das duas tuplas normalizadas.
-         """
+        a função retorna o produto escalar das duas tuplas normalizadas."""
+
         if sum(u)==0 or sum(v)==0:
             return numpy.NaN
         un= numpy.array(u,dtype=float)
@@ -437,8 +444,8 @@ class Analise:
 
 
     def tamanho_sigla(self,siglaPartido):
-        """Retorna o tamanho do partido dada sua sigla.
-        """
+        """Retorna o tamanho do partido dada sua sigla."""
+
         if self.tamanho_partidos==0:
             self._inicializa_vetores()
         try:
@@ -449,8 +456,8 @@ class Analise:
             return 0
 
     def tamanho_estado(self,siglaEstado):
-        """Retorna o tamanho do estado (número de deputados) dada sua sigla.
-        """
+        """Retorna o tamanho do estado (número de deputados) dada sua sigla."""
+
         if self.tamanho_uf==[]:
             self._inicializa_vetores_uf()
         try:
@@ -463,8 +470,8 @@ class Analise:
         primeiras componentes principais.
 
         Se for passado como argumento o nome (não vazio) de um arquivo, o resultado da pca
-        é escrito neste arquivo, caso contrário é escrito em stdout.
-        """
+        é escrito neste arquivo, caso contrário é escrito em stdout."""
+
         coordinates = self._pca_partido()
         for partido in coordinates.keys():
             coordinates[partido] = (coordinates[partido])[0:2]
@@ -496,8 +503,8 @@ class Analise:
         primeiras componentes principais.
 
         Se for passado como argumento o nome (não vazio) de um arquivo, o resultado da
-        pca é escrito neste arquivo, caso contrário é escrito em stdout.
-        """
+        pca é escrito neste arquivo, caso contrário é escrito em stdout."""
+
         if not bool(self.pca_uf):
             self._pca_uf()
         coordinates = self.pca_uf.U[:,0:2]
@@ -545,8 +552,8 @@ class Analise:
     def figura(self, escala=10):
         """Apresenta um plot de bolhas (usando matplotlib) com os partidos de tamanho
         maior ou igual a tamanho_min com o primeiro componente principal no eixo x e o
-        segundo no eixo y.
-        """
+        segundo no eixo y."""
+
         data = self.partidos_2d()
 
         fig = figure(1)
