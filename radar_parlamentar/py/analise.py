@@ -120,8 +120,9 @@ class Analise:
         ANLS.sem(siglaP1,siglaP2,tipo=2) : imprime e retorna a semelhança entre os dois partidos
         dados pelas siglas, calculada pelo método do produto escalar (tipo=1) ou pelo método da
         convolução (tipo=2)(default)
-        ANLS.figura(escala=10) : apresenta um gráfico de bolhas dos partidos com a primeira componente
-        principal no eixo x e a segunda no eixo y, o tamanho da bolha proporcional ao tamanho do partido"""
+        ANLS.figura(escala=10) : apresenta um gráfico de bolhas dos partidos com a primeira
+        componente principal no eixo x e a segunda no eixo y, o tamanho da bolha proporcional ao
+        tamanho do partido"""
 
     # Constant:
     lista_ufs = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB',
