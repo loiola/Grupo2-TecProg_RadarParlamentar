@@ -22,7 +22,7 @@ Has script that lists propositions to polls.
 Functions:
 parse_html - parse recusrsos / proposicoes.html file
 com_votacao - web service verifies the list of propositions that have polls
-proposicoes_com_votacao - returns list of propositions that have voting based 
+proposicoes_com_votacao - returns list of propositions that have voting based
 votadas.txt file."""
 
 import re
@@ -34,6 +34,7 @@ import camaraws
 # PDC - projeto de decreto legislativo
 # MPV - projeto de medida provisória
 # PEC - proposta de emenda à constituição
+
 def parse_html():
     """Parse of the file recusrsos/proposicoes.htmll
     Retorns:
@@ -42,7 +43,7 @@ def parse_html():
     The keys and values of this dictionaries are strings."""
 
     # File contains propositions voted on by the chamber in 2011:
-    file_name = 'recursos/proposicoes2011.html'  
+    file_name = 'recursos/proposicoes2011.html'
     prop_file = codecs.open(file_name, encoding='ISO-8859-15', mode='r')
     regexp = '<A HREF=http://.*?id=([0-9]*?)>([A-Z]*?) ([0-9]*?)/([0-9]{4})</A>'
     propositions = []
@@ -50,7 +51,7 @@ def parse_html():
         res = re.search(regexp, line)
         if res:
             propositions.append({'id':res.group(1), 'tipo':res.group(2),
-		'num':res.group(3), 'ano':res.group(4)})
+        'num':res.group(3), 'ano':res.group(4)})
     return propositions
 
 def parse():
@@ -60,10 +61,10 @@ def parse():
      Each position on the list is a dictionary with keys \ in {id, type in a year}
      The keys and values ​​are strings of these dictionaries."""
 
-    """File contains propositions voted on by the chamber in 2011 for which we 
+    """File contains propositions voted on by the chamber in 2011 for which we
 	obtained the vote xml:"""
 
-    file_name = 'resultados/votadas.txt'  
+    file_name = 'resultados/votadas.txt'
     prop_file = open(file_name, 'r')
 
     regexp = '^([0-9]*?): ([A-Z]*?) ([0-9]*?)/([0-9]{4})'
@@ -75,7 +76,7 @@ def parse():
 		'num':res.group(3), 'ano':res.group(4)})
     return propositions
 
-def com_votacao(proposicoes): 
+def com_votacao(proposicoes):
     """Checks which propositions have votes in the chamber web service
      It is only on those propositions we will do our analyzes
      This check is done by invoking the web service camera
@@ -85,9 +86,8 @@ def com_votacao(proposicoes):
 
      returns:
      List of propositions that present voting list
-     Each proposition is a dictionary with keys \ in {id, type in a year}; 
-	keys and values ​​are strings.
-	"""
+     Each proposition is a dictionary with keys \ in {id, type in a year};
+	keys and values ​​are strings."""
 
     voted = []
     for proposition in proposicoes:
