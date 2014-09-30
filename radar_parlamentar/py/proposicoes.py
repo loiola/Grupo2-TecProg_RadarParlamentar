@@ -34,6 +34,7 @@ import camaraws
 # PDC - projeto de decreto legislativo
 # MPV - projeto de medida provisória
 # PEC - proposta de emenda à constituição
+
 def parse_html():
     """Parse of the file recusrsos/proposicoes.htmll
     Retorns:
@@ -51,6 +52,7 @@ def parse_html():
         if res:
             propositions.append({'id':res.group(1), 'tipo':res.group(2),
 		'num':res.group(3), 'ano':res.group(4)})
+
     return propositions
 
 def parse():
@@ -73,6 +75,7 @@ def parse():
         if res:
             propositions.append({'id':res.group(1), 'tipo':res.group(2),
 		'num':res.group(3), 'ano':res.group(4)})
+
     return propositions
 
 def com_votacao(proposicoes): 
@@ -86,8 +89,7 @@ def com_votacao(proposicoes):
      returns:
      List of propositions that present voting list
      Each proposition is a dictionary with keys \ in {id, type in a year}; 
-	keys and values ​​are strings.
-	"""
+	keys and values ​​are strings."""
 
     voted = []
     for proposition in proposicoes:
@@ -106,8 +108,8 @@ def proposicoes_com_votacao():
      A list of propositions
      Each position on the list is a dictionary with keys \ in {id, type in a year}
      The keys and values ​​are strings of these dictionaries."""
-    return parse()
 
+    return parse()
 
 if __name__ == "__main__":
     propositions = parse_html()
