@@ -27,8 +27,8 @@ from importadores import sen
 class SenadoWSTest(TestCase):
 
     def test_obter_senadores_from_legislatura(self):
-        id_leg = '52'
+        legislature_id = '52'
         senws = sen.SenadoWS()
-        tree = senws.obter_senadores_from_legislatura(id_leg)
+        tree = senws.obter_senadores_from_legislatura(legislature_id)
         self.assertIsNotNone(tree)
         self.assertTrue(len(tree.findall('Metadados')) == 1)
