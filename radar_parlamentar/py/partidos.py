@@ -20,12 +20,13 @@
 functions:
 vetor_votacoes - calculates the vector of voting for a party
 similarity - calculates the similarity between two parties
-semelhanca_pca - calculates similarities party generating a two-dimensional graph
+semelhanca_pca - calculates similarities party generating a two-dimensional
+graph
 
 constants:
 PARTIES: List the names of the parties."""
 
-import algebra
+import algebralinha
 import numpy
 import pca
 

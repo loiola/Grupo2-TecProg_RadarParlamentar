@@ -178,7 +178,7 @@ open_file.write("""
       motionchart.draw(data, options);
 
     }
-    
+
     google.setOnLoadCallback(drawVisualization);
   </script>
 
