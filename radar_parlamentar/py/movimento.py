@@ -24,67 +24,78 @@ import sys
 # Modifiable parameters:
 # Political parties to be included in the analyzes:
 
-parts = [u'PMDB', u'PTB', u'PDT', u'PT', u'DEM', u'PCdoB', u'PSB', u'PSDB', 
+parties = [u'PMDB', u'PTB', u'PDT', u'PT', u'DEM', u'PCdoB', u'PSB', u'PSDB',
 	u'PSC', u'PMN', u'PPS', u'PV', u'PTdoB', u'PP', u'PHS', u'PRB', u'PSOL', 
 	u'PR', u'PSD']
 
-ano_inicial = 2002
-ano_final = 2011
+initial_year = 2002
+final_year = 2011
 
-arquivo_de_saida = 'colar_num_html.txt'
-
-
+output_file = 'colar_num_html.txt'
  
-# Algorithm:        
+# Algorithm:  
+# List of objects like Analise (that will be analisis anunual):
+annual_list = []
 
-anuais = [] # lista de objetos do tipo Analise (que serão análises anuais)
-
-anos = range(ano_inicial,ano_final+1)
+years = range(initial_year,final_year+1)
 
 # Make PCAs:
+for year in years:
+    annual_list.append(analise.Analise(str(year)+'-01-01', str(year)+'-12-31', [],
+                                  parties))
 
-for ano in anos:
-    anuais.append(analise.Analise(str(ano)+'-01-01', str(ano)+'-12-31', [], parts))
-
-dados = []
+data = []
 print "Fazendo PCAs:"
-print '-'*(len(anuais)-1)+'v'
-for a in anuais:
-    dados.append( a.partidos_2d('/dev/null') )
+print '-'*(len(annual_list)-1)+'v'
+for annual in annual_list:
+    data.append(annual.partidos_2d('/dev/null'))
     sys.stdout.write('.')
     sys.stdout.flush()
 
 
 # Auxiliary functions:
-
 def quantidade_movimento(i,graus=0,espelho=0):
+<<<<<<< HEAD
+    """Calculates the amount of movement between the instant i (corresponding
+    to the year years [i]) and the time i + 1.
+     When calculating the time i has the rotated axes (degree value between 0
+     and 360) and the first axis multiplied by -1 if the mirror = 0."""
+=======
     """ Calculates the amount of movement between the instant i (corresponding 
 	to the year years [i]) and the time i + 1.
      When calculating the time i has the rotated axes (degree value between 0 
-	and 360) and the first axis multiplied by -1 if the mirror = 0.
-	"""
+	and 360) and the first axis multiplied by -1 if the mirror = 0."""
 
-    qm = 0
-    antes = dados[i]
-    depois = dados[i+1]
+>>>>>>> estilo-e-design
+
+    moviment_amount = 0
+    before = data[index]
+    after = data[index+1]
     if espelho:
-        antes = numpy.dot( antes,numpy.array( [[-1.,0.],[0.,1.]] ) )
-    if graus != 0:
-        antes = numpy.dot( antes,matrot(graus) )
-    for j in range(len(parts)):
-        qm += numpy.sqrt( numpy.dot( antes[j,:] - depois[j,:],  antes[j,:] - depois[j,:] ) ) * anuais[i+1].tamanho_partido[j]
-    return qm
+        before = numpy.dot( before,numpy.array( [[-1.,0.],[0.,1.]] ) )
+    if degrees != 0:
+        before = numpy.dot( before,matrot(degrees) )
+    for j in range(len(parties)):
+        moviment_amount += numpy.sqrt( numpy.dot( before[j,:] - after[j,:],  before[j,:] - \
+                                     after[j,:] ) ) * annual_list[index+1].tamanho_partido[j]
+    return moviment_amount
 
 def matrot(graus):
-   """ Returns 2x2 rotation that rotates the axes in degrees (0-360) in counterclockwise 
-	array (as if the points spun clockwise around fixed axes).
-	""" 
+<<<<<<< HEAD
+   """Returns 2x2 rotation that rotates the axes in degrees (0-360) in
+   counterclockwise array (as if the points spun clockwise around fixed axes)."""
+=======
+   """ Returns 2x2 rotation that rotates the axes in degrees (0-360) in
+   counterclockwise array (as if the points spun clockwise around fixed axes)."""
+
+>>>>>>> estilo-e-design
    
-   graus = float(graus)
-   rad = numpy.pi * graus/180.
-   c = numpy.cos(rad)
-   s = numpy.sin(rad)
-   return numpy.array([[c,-s],[s,c]])
+   degrees = float(degrees)
+   radian = numpy.pi * degrees/180.
+   cosine_of_radian = numpy.cos(radian)
+   sin_of_radian = numpy.sin(radian)
+   return numpy.array([[cosine_of_radian,-sin_of_radian],
+                       [sin_of_radian,cosine_of_radian]])
 
 
 print ' '
@@ -92,79 +103,85 @@ print 'Espelhando e rotacionando...'
 
 
 # Indices of years, backwards:
-
-for i in range(len(anos)-2,-1,-1): 
-    print anos[i]
+for index in range(len(years)-2,-1,-1):
+    print years[index]
 
     # Minimizing the amount of motion:
-    qm_min = 1000000 
+    minimum_quantity_amount = 1000000
 
     # Mirror, degrees:
-    campeao = (0,0) 
+    champion = (0,0)
     for espelhar in [0,1]:
-        for graus in [0,45,90,135,180,225,270,315]:
-            qm_agora = quantidade_movimento(i,graus,espelhar)
+        for degrees in [0,45,90,135,180,225,270,315]:
+            current_moviment_amount = quantidade_movimento(index,degrees,espelhar)
             #print '%d, %d, %f' % (espelhar,graus,qm_agora )
-            if qm_agora < qm_min:
-                campeao = (espelhar, graus)
-                qm_min = qm_agora
-    print campeao
-    if campeao[0] == 1: 
+            if current_moviment_amount < minimum_quantity_amount:
+                champion = (espelhar, degrees)
+                minimum_quantity_amount = current_moviment_amount
+    print champion
+    if champion[0] == 1:
 
         # Mirror:
-        dados[i] = numpy.dot( dados[i], numpy.array([[-1.,0.],[0.,1.]]) )
-    if campeao[1] != 0: 
+        data[index] = numpy.dot( data[index], numpy.array([[-1.,0.],[0.,1.]]) )
+    if champion[1] != 0:
 
         # Rotate:
-        dados[i] = numpy.dot( dados[i], matrot(campeao[1]) )
+        data[index] = numpy.dot( data[index], matrot(champion[1]) )
 
 print 'Fim'
 
 # Writing file:
-
-f = open(arquivo_de_saida,'w')
-f.write("""  <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-  <script type="text/javascript">
+open_file = open(output_file,'w')
+open_file.write("""<script type="text/javascript" src="http://www.google.com/jsapi">
+    </script><script type="text/javascript">
     google.load('visualization', '1', {packages: ['motionchart']});
 
-    function drawVisualization() {
+    function drawVisualization() { """)
 
-""")
-f.write('var data = new google.visualization.DataTable();\n')
-f.write("data.addColumn('string', 'Partido');\n")
-f.write("data.addColumn('date', 'Data');\n")
-f.write("data.addColumn('number', 'Eixo1');\n")
-f.write("data.addColumn('number', 'Eixo2');\n")
-f.write("data.addColumn('number', 'Tamanho');\n")
-f.write("data.addRows([\n")
-for ia in range(len(anuais)): 
-    a = anuais[ia]
-    d_ano = int(a.data_final[0:4])
-    d_mes = int(a.data_final[5:7])-1 
-    d_dia = int(a.data_final[8:10])
-    for ip in range(len(parts)): 
-        linha = "  ['%s',new Date(%d,%d,%d), %f,%f,%d],\n" % (parts[ip],d_ano,d_mes,d_dia,dados[ia][ip,0],dados[ia][ip,1],a.tamanho_partido[ip])
-        f.write(linha)
-f.seek(-2,1)
-f.write("\n]);")
-f.write("""     
+open_file.write('var data = new google.visualization.DataTable();\n')
+open_file.write("data.addColumn('string', 'Partido');\n")
+open_file.write("data.addColumn('date', 'Data');\n")
+open_file.write("data.addColumn('number', 'Eixo1');\n")
+open_file.write("data.addColumn('number', 'Eixo2');\n")
+open_file.write("data.addColumn('number', 'Tamanho');\n")
+open_file.write("data.addRows([\n")
+
+for annual_index in range(len(annual_list)):
+    annual = annual_list[annual_index]
+    d_ano = int(annual.data_final[0:4])
+    d_mes = int(annual.data_final[5:7])-1
+    d_dia = int(annual.data_final[8:10])
+    for party_index in range(len(parties)):
+        line = "  ['%s',new Date(%d,%d,%d), %f,%f,%d],\n" % (parties[party_index],d_ano,d_mes,d_dia,
+                                                              data[annual_index][party_index,0],
+                                                              data[annual_index][party_index,1],
+                                                              annual.tamanho_partido[party_index])
+        open_file.write(line)
+
+open_file.seek(-2,1)
+open_file.write("\n]);")
+open_file.write("""
       var motionchart = new google.visualization.MotionChart(
           document.getElementById('visualization'));
 
       var options = {};
-      options['state'] = '{"yAxisOption":"3","xLambda":1,"colorOption":"_UNIQUE_COLOR","playDuration":40000,"showTrails":false,"iconKeySettings":[],"xAxisOption":"2","nonSelectedAlpha":0.4,"uniColorForNonSelected":false,"xZoomedDataMax":0.815577,"sizeOption":"4","orderedByY":false,"iconType":"BUBBLE","dimensions":{"iconDimensions":["dim0"]},"yZoomedDataMax":0.907421,"orderedByX":false,"xZoomedIn":false,"xZoomedDataMin":-0.510363,"time":"2002-12-31","duration":{"timeUnit":"D","multiplier":1},"yLambda":1,"yZoomedIn":false,"yZoomedDataMin":-0.558064}'
+      options['state'] = '{"yAxisOption":"3","xLambda":1,"colorOption":"_UNIQUE_COLOR",
+      "playDuration":40000,"showTrails":false,"iconKeySettings":[],"xAxisOption":"2",
+      "nonSelectedAlpha":0.4,"uniColorForNonSelected":false,"xZoomedDataMax":0.815577,
+      "sizeOption":"4","orderedByY":false,"iconType":"BUBBLE","dimensions":{"iconDimensions":
+      ["dim0"]},"yZoomedDataMax":0.907421,"orderedByX":false,"xZoomedIn":false,
+      "xZoomedDataMin":-0.510363,"time":"2002-12-31","duration":{"timeUnit":"D",
+      "multiplier":1},"yLambda":1,"yZoomedIn":false,"yZoomedDataMin":-0.558064}'
       options['width'] = 800;
       options['height'] = 500;
 
       motionchart.draw(data, options);
 
     }
-    
 
     google.setOnLoadCallback(drawVisualization);
   </script>
 
-<div id="visualization" style="width: 800px; height: 400px;"></div>
-""")
-f.close()
+<div id="visualization" style="width: 800px; height: 400px;"></div> """)
+open_file.close()
 
