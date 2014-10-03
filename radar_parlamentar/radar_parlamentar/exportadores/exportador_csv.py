@@ -54,46 +54,48 @@ class ExportadorCSV:
         self.votacoes = None
         self.csv_rows = []
 
-
-    # Retrieving, transforming and writing CSV:    
+    # Retrieving, transforming and writing CSV:
     def exportar_csv(self):
         self.retrieve_votacoes()
         self.transform_data()
         self.write_csv()
 
-    
     def retrieve_votacoes(self):
-        casa = models.CasaLegislativa.objects.get(nome_curto=self.nome_curto)
+        legislative_house = models.CasaLegislativa.objects.get(nome_curto=self.nome_curto)
+
         if self.ini is None and self.fim is None:
             self.votacoes = models.Votacao.objects.filter(
-                proposicao__casa_legislativa=casa).order_by('data')
+                proposicao__casa_legislativa=legislative_house).order_by('data')
         if self.ini is None and self.fim is not None:
             self.votacoes = models.Votacao.objects.filter(
-                proposicao__casa_legislativa=casa
+                proposicao__casa_legislativa=legislative_house
             ).filter(data__lte=self.fim).order_by('data')
         if self.ini is not None and self.fim is None:
             self.votacoes = models.Votacao.objects.filter(
-                proposicao__casa_legislativa=casa
+                proposicao__casa_legislativa=legislative_house
             ).filter(data__gte=self.ini).order_by('data')
         if self.ini is not None and self.fim is not None:
             self.votacoes = models.Votacao.objects.filter(
-                proposicao__casa_legislativa=casa
+                proposicao__casa_legislativa=legislative_house
             ).filter(data__gte=self.ini, data__lte=self.fim).order_by('data')
 
     def transform_data(self):
         self.csv_rows.append(LABELS)
+
         for votacao in self.votacoes:
-            votos = votacao.votos()
-            for voto in votos:
-                legislatura = voto.legislatura
-                parlamentar = legislatura.parlamentar
-                partido = legislatura.partido
+            votes = votacao.votos()
+
+            for voto in votes:
+                legislature = voto.legislatura
+                parliamentary = legislature.parlamentar
+                party = legislature.partido
                 csv_row = []
                 csv_row.append(votacao.id_vot)
-                csv_row.append(legislatura.id)
-                csv_row.append(parlamentar.nome.encode('UTF-8'))
-                csv_row.append(partido.nome)
-                csv_row.append(self.coalition(partido.nome))
+                csv_row.append(legislature.id)
+                csv_row.append(parliamentary.nome.encode('UTF-8'))
+                csv_row.append(party.nome)
+                csv_row.append(self.coalition(party.nome))
+
                 try:
                     csv_row.append(self.voto(voto.opcao))
                     self.csv_rows.append(csv_row)
@@ -128,7 +130,7 @@ class ExportadorCSV:
 
 
 def main():
-    data_ini = parse_datetime('2010-06-09 0:0:0')
-    data_fim = parse_datetime('2010-06-09 23:59:0')
-    exportador = ExportadorCSV('sen', data_ini, data_fim)
+    initial_date = parse_datetime('2010-06-09 0:0:0')
+    finish_date = parse_datetime('2010-06-09 23:59:0')
+    exportador = ExportadorCSV('sen', initial_date, finish_date)
     exportador.exportar_csv()
