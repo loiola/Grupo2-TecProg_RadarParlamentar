@@ -19,31 +19,31 @@ class CamaraWS_Test(unittest.TestCase):
     # (0,8,1) 
     # (7,1,1) 
     # (3,3,3) 
-    partido = 'arena'
-    votacoes = []
+    party = 'arena'
+    votings = []
 
     deputy_vote_yes = Deputado()
-    deputy_vote_yes.partido = partido
+    deputy_vote_yes.partido = party
     deputy_vote_yes.voto = model.SIM
     deputy_vote_no = Deputado()
-    deputy_vote_no.partido = partido
+    deputy_vote_no.partido = party
     deputy_vote_no.voto = model.NAO
     depute_vote_abstention = Deputado()
-    depute_vote_abstention.partido = partido
+    depute_vote_abstention.partido = party
     depute_vote_abstention.voto = model.ABSTENCAO
 
     # First grade:
     vote = Votacao()
     for i in range(0,9):
       vote.deputados.append(deputy_vote_yes)
-    votacoes.append(vote)
+    votings.append(vote)
 
     # Second grade::
     vote = Votacao()
     for i in range(0,8):
       vote.deputados.append(deputy_vote_no)
     vote.deputados.append(depute_vote_abstention)
-    votacoes.append(vote)
+    votings.append(vote)
 
     # Third grade:
     vote = Votacao()
@@ -51,7 +51,7 @@ class CamaraWS_Test(unittest.TestCase):
       vote.deputados.append(deputy_vote_yes)
     vote.deputados.append(deputy_vote_no)
     vote.deputados.append(depute_vote_abstention)
-    votacoes.append(vote)
+    votings.append(vote)
 
     # Fourth voting:
     vote = Votacao()
@@ -61,14 +61,14 @@ class CamaraWS_Test(unittest.TestCase):
       vote.deputados.append(deputy_vote_no)
     for i in range(0,3):
       vote.deputados.append(depute_vote_abstention)
-    votacoes.append(vote)
+    votings.append(vote)
 
     proposition = Proposicao()
-    proposition.votacoes = votacoes
+    proposition.votacoes = votings
     propositions = [proposition]
   
     # Tested by invoking the function:
-    vector = partidos.vetor_votacoes(partido, propositions)
+    vector = partidos.vetor_votacoes(party, propositions)
 
     # If testing is right:
     expected = [1, -0.88889, 0.66667, 0]
