@@ -3,6 +3,7 @@ import os
 import sys
 
 if __name__ == "__main__":
+
     if (len(sys.argv) >= 2) and (sys.argv[1] == 'test'):
         os.environ["DJANGO_SETTINGS_MODULE"] = "settings.test"
     else:

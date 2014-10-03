@@ -20,9 +20,11 @@ class XMLWriter:
 
         """ Add an open tag"""
         self.stack.append(tag)
+
         if self.pretty:
             self.output += "  " * (len(self.stack) - 1)
         self.output += "<" + tag + ">"
+
         if self.pretty:
             self.output += "\n"
 
@@ -33,6 +35,7 @@ class XMLWriter:
             self.output += "\n" + "  " * (len(self.stack) - 1)
         tag = self.stack.pop()
         self.output += "</" + tag + ">"
+
         if self.pretty:
             self.output += "\n"
 
@@ -61,15 +64,20 @@ class XMLWriter:
 writer = XMLWriter(pretty=False)
 writer.open("djangoexport")
 models = django.db.models.get_models()
+
 for model in models:
     # model._meta.object_name holds the name of the model
     writer.open(model._meta.object_name + "s")
+
     for item in model.objects.all():
         writer.open(model._meta.object_name)
+
         for field in item._meta.fields:
             writer.open(field.name)
             value = getattr(item, field.name)
+
             if value is not None:
+
                 if isinstance(value, django.db.models.base.Model):
 
                     # This field is a foreign key, so save the primary key
@@ -77,6 +85,7 @@ for model in models:
                     pk_name = value._meta.pk.name
                     pk_value = getattr(value, pk_name)
                     writer.content(pk_value)
+
                 else:
                     writer.content(value)
             writer.close()
