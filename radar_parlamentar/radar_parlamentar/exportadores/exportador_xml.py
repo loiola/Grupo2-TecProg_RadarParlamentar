@@ -44,10 +44,10 @@ def serialize_casa_legislativa(nome_curto):
                    atualizacao=str(casa[0].atualizacao))
 
     # Identifying propositions:
-    proposicao = models.Proposicao.objects.filter(
+    proposition = models.Proposicao.objects.filter(
         casa_legislativa_id__nome_curto=nome_curto)
 
-    for e in proposicao:
+    for e in proposition:
         print "Exportando todas as votações e votos da Proposicao com id: "
         print str(e.id_prop) + ", numero: " + str(e.numero)
         proposicao_xml = Element(
@@ -57,25 +57,25 @@ def serialize_casa_legislativa(nome_curto):
             indexacao=str(e.indexacao),
             data_apresentacao=str(e.data_apresentacao), situacao=e.situacao)
 
-        votacao = models.Votacao.objects.filter(proposicao_id=e)
-        for v in votacao:
+        voting = models.Votacao.objects.filter(proposicao_id=e)
+        for v in voting:
             votacao_xml = Element('Votacao', id_vot=str(
                 v.id_vot), descricao=v.descricao, data=str(v.data),
                 resultado=v.resultado)
 
             # Vote:
-            votos = models.Voto.objects.filter(votacao_id=v)
-            for voto in votos:
+            votes = models.Voto.objects.filter(votacao_id=v)
+            for voto in votes:
 
-                legislatura = voto.legislatura
-                parlamentar = legislatura.parlamentar
-                partido = legislatura.partido
+                legislature = voto.legislatura
+                parliamentary = legislature.parlamentar
+                party = legislature.partido
 
                 voto_xml = Element(
-                    'Voto', nome=parlamentar.nome, id_parlamentar=str(
-                        parlamentar.id_parlamentar), genero=parlamentar.genero,
-                    partido=partido.nome, inicio=str(legislatura.inicio),
-                    fim=str(legislatura.fim), numero=str(partido.numero),
+                    'Voto', nome=parliamentary.nome, id_parlamentar=str(
+                        parliamentary.id_parlamentar), genero=parliamentary.genero,
+                    partido=party.nome, inicio=str(legislature.inicio),
+                    fim=str(legislature.fim), numero=str(party.numero),
                     opcao=voto.opcao)
 
                 votacao_xml.append(voto_xml)
