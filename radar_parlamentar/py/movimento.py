@@ -63,7 +63,7 @@ def quantidade_movimento(i,graus=0,espelho=0):
 =======
     """ Calculates the amount of movement between the instant i (corresponding 
 	to the year years [i]) and the time i + 1.
-     When calculating the time i has the rotated axes (degree value between 0 
+     When calculating the time i has the rotated axes (degree value between 0
 	and 360) and the first axis multiplied by -1 if the mirror = 0."""
 
 >>>>>>> estilo-e-design
@@ -114,15 +114,18 @@ for index in range(len(years)-2,-1,-1):
     for espelhar in [0,1]:
         for degrees in [0,45,90,135,180,225,270,315]:
             current_moviment_amount = quantidade_movimento(index,degrees,espelhar)
+
             #print '%d, %d, %f' % (espelhar,graus,qm_agora )
             if current_moviment_amount < minimum_quantity_amount:
                 champion = (espelhar, degrees)
                 minimum_quantity_amount = current_moviment_amount
     print champion
+
     if champion[0] == 1:
 
         # Mirror:
         data[index] = numpy.dot( data[index], numpy.array([[-1.,0.],[0.,1.]]) )
+
     if champion[1] != 0:
 
         # Rotate:
@@ -148,11 +151,11 @@ open_file.write("data.addRows([\n")
 
 for annual_index in range(len(annual_list)):
     annual = annual_list[annual_index]
-    d_ano = int(annual.data_final[0:4])
-    d_mes = int(annual.data_final[5:7])-1
-    d_dia = int(annual.data_final[8:10])
+    date_year = int(annual.data_final[0:4])
+    date_month = int(annual.data_final[5:7])-1
+    date_day = int(annual.data_final[8:10])
     for party_index in range(len(parties)):
-        line = "  ['%s',new Date(%d,%d,%d), %f,%f,%d],\n" % (parties[party_index],d_ano,d_mes,d_dia,
+        line = "  ['%s',new Date(%d,%d,%d), %f,%f,%d],\n" % (parties[party_index],date_year,date_month,date_day,
                                                               data[annual_index][party_index,0],
                                                               data[annual_index][party_index,1],
                                                               annual.tamanho_partido[party_index])
