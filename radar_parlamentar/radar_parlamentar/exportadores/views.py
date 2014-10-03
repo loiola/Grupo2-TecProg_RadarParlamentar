@@ -29,25 +29,25 @@ MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 def download_dados(request, dado_solicitado):
 
-    arquivo = os.path.join(MODULE_DIR, 'dados/' + dado_solicitado + '.xml')
+    file = os.path.join(MODULE_DIR, 'dados/' + dado_solicitado + '.xml')
 
-    if not os.path.exists(arquivo):
+    if not os.path.exists(file):
         raise Http404()
 
-    mimetype, encoding = mimetypes.guess_type(arquivo)
+    mimetype, encoding = mimetypes.guess_type(file)
 
     if mimetype is None:
         mimetype = 'application/force-download'
 
-    dados_arquivo = arquivo.split("/")[-1]
+    data_file = file.split("/")[-1]
 
-    response = HttpResponse(open(arquivo, 'r').read())
+    response = HttpResponse(open(file, 'r').read())
     response['Content-Type'] = mimetype
     response['Pragma'] = 'public'
     response['Expires'] = '0'
     response['Cache-Control'] = 'must-revalidate, post-check=0, pre-check=0'
-    response['Content-Disposition'] = 'attachment; filename=%s' % dados_arquivo
+    response['Content-Disposition'] = 'attachment; filename=%s' % data_file
     response['Content-Transfer-Encoding'] = 'binary'
-    response['Content-Length'] = str(os.path.getsize(arquivo))
+    response['Content-Length'] = str(os.path.getsize(file))
 
     return response
