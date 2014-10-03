@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Módulo analise -- Define a classe Analise, que possui os métodos para diversas
-análises, incluindo análise de semelhança e de componentes principais. Cada
-instância desta classe guarda os resultados da análise de um subconjunto dos dados,
-definido por um intervalo de tempo, pelos tipos de proposição a considerar e pelos
-partidos a considerar."""
+"""Módulo analise -- Set Analysis class, which has methods for various
+analysis, including similarity analysis and principal components. each
+instance of this class stores the results of the analysis of a subset of data,
+defined by a time interval, by type of proposition and consider the
+parties to consider."""
 
 import re
 import numpy
@@ -33,95 +33,97 @@ from matplotlib.patches import Ellipse
 import matplotlib.colors
 
 class Analise:
-    """ Cada instância a guarda os resultados da análise em um período de tempo
-    entre self.data_inicial e self.data_final, onde sao considerados os partidos
-    listados em self.lista_partidos e as proposicoes dos tipos listados em self.
+    """Each instance custody analysis results in a period of time between
+    self.data_inicial and self.data_final, where the parties are considered
+    listed in self.lista_partidos and the propositions of the  listed in self.
     tipos_proposicao.
 
-    == Construtor ==
+    == Constructor ==
     ----------------
-    Para criar uma instância ANLS, que corresponde a uma análise por exemplo do
-    primeiro semestre de 2010, usar:
+    To create a ANLS instance, which corresponds to an analysis by example of the
+    first half of 2010, use:
 
     import analise
     ANLS = analise.Analise('2010-01-01','2010-30-06')
 
-    Se for desejado incluir apenas alguns tipos de proposição, usar o terceiro
-    argumento, e se for desejado incluir apenas alguns partidos, usar o quarto, por
-    exemplo:
+    If it is desired to include only a few types of proposition, using the third
+    argument, and if it is desired to include only a few parties use the room, for
+    example:
 
     ANLS2 = analise.Analise('2010-01-01','2010-30-06',['MPV','PEC'],['PT','PMDB',
     'PSDB','DEM','PSOL'])
 
-    Em vez de uma lista de partidos, o quarto argumento pode ser um inteiro N para
-    incluir apenas partidos com N ou mais deputados. Por exemplo para usar todos os
-    tipos de proposição mas apenas partidos com 6 ou mais deputados:
+    Instead of a list of parties, the fourth argument can be an integer N to include
+    only parties with N or more deputies. For example, to use all types of
+    proposition but only parties with six or more Members:
 
     ANLS3 = analise.Analise('2010-01-01','2010-30-06',[],6)
 
-    == Atributos ==
+    == Attributes ==
     ---------------
-    Seja ANLS um objeto do tipo Analise, então ANLS possui os atributos abaixo, onde
-    as letras entre chaves indicam as dimensões de objetos (matrizes) do tipo numpy.array :
+    Be ANLS an object of type analysis, then ANLS possesses the attributes below,
+    where the letters in braces indicate the dimensions of objects (arrays) of
+    numpy.array type:
         ANLS.data_inicial : string 'aaaa-mm-dd'
         ANLS.data_final : string 'aaaa-mm-dd'
-        ANLS.tipos_proposicao : lista de strings
-        TODO: Substituir 'lista_partidos' por 'partidos'
-        ANLS.lista_partidos : lista de strings com P partidos
-        ANLS.partidos : lista de objetos do tipo Partido
-        ANLS.lista_votacoes : lista de tuplas (idProp,idVot) com V votações
+        ANLS.tipos_proposicao : string list
+        TODO: Replace 'lista_partidos' by 'partidos'
+        ANLS.lista_partidos : string list with P parties
+        ANLS.partidos : objects list type Parties
+        ANLS.lista_votacoes : tuple list (idProp,idVot) with V voting
         ANLS.vetores_votacao [P]x[V]: elemento ij é o voto médio do partido i na votação
             j, entre -1(não) e 1(sim)
-        ANLS.quadrivet_vot [P]x[V]: elemento ij é uma tupla de 4 elementos representando
-            o número de votos sim, não, abst. e obstr. do partido i na votação j
-        ANLS.vetores_tamanho [P]x[V]: elemento ij é o número de deputados do partido i
-            presentes na votação j
-        ANLS.vetores_presenca [P]x[V]: elemento ij é a fração de deputados do partido i
-        presentes na votação j (usa a.tamanho_partidos como aproximação para o tamanho dos
-        partidos)
-        ANLS.tamanho_partidos [P]: Lista com número total de deputados, com presença mínima
-            de 1 votação no período, do partido i
-        ANLS.vetores_votacao_uf [E]x[V]: Votação média por estado. 'E' é o número de UFs
-        ANLS.vetores_tamanho_uf [E]x[V]: Deputados presentes por estado por votação
-        ANLS.tamanho_uf [E]: Número total de deputados, com presença mínima de 1 votação no
-            período, do estado i
-        ANLS.pca : objeto da classe pca.PCA
-        ANLS.pca_partido : objeto da classe pca.PCA analisado por partido
-        ANLS.pca_uf : objeto da classe pca.PCA analisado por UF
-        ANLS.semelhancas_escalar [P]x[P] : matriz simétrica de valores entre 0 e 100
-        representando a porcentagem de semelhança entre os partidos i e j (calculado pelo
-        produto escalar)
-        ANLS.semelhancas_convolucao [P]x[P] : matriz simétrica de valores entre 0 e 100
-        representando a semelhança entre partidos i e j, calculada pelo método da convolução
+        ANLS.quadrivet_vot [P]x[V]: ij element is a tuple of four elements representing
+            the number of votes yes, no, abst. and obstr. of party i in voting j
+        ANLS.vetores_tamanho [P]x[V]: ij elements is a number of deputies of party i
+            present in voting j
+        ANLS.vetores_presenca [P]x[V]: ij element is a fraction of deputies of party i
+            presentna in voting j (uss a.tamanho_partidos with aproximação for parties size)
+        ANLS.tamanho_partidos [P]: List with total number of deputies, with minimal presence
+            of 1 voting in period, of party i
+        ANLS.vetores_votacao_uf [E]x[V]: average voting by state. 'E' is a number of UFs
+        ANLS.vetores_tamanho_uf [E]x[V]: Deputies present by state by voting
+        ANLS.tamanho_uf [E]: Total number of deputies, with minimal presence of 1 voting in
+            period, of state i
+        ANLS.pca : Object of class pca.PCA
+        ANLS.pca_partido : Object of class pca.PCA analyzed by party
+        ANLS.pca_uf : Object of class pca.PCA analyzed by UF
+        ANLS.semelhancas_escalar [P]x[P] : symmetric matrix of values ​​between 0 and 100
+            representing the percentage of similarity between the parties i and j (calculated
+            by scalar product)
+        ANLS.semelhancas_convolucao [P]x[P] : symmetric matrix of values ​​between 0 and 100
+            representing the similarity between parties i and j, calculated by the
+            convolution method
 
-        Objetos da classe pca.PCA possuem entre outros os atributos:
-        a.pca.U [P][C] : contém os vetores votação porém na base dos componentes principais
-            (em número C=V), não mais das votações
-        a.pca.Vt [C][V] : informa como construir os componentes principais a partir das
-        votações
-        a.pca.eigen [C] : autovalores. Para obter variâncias explicadas por cada c.p., basta
-        fazer eigen[j]/eigen.sum()
+       Objects of class pca.PCA has among other attributes:
+        a.pca.U [P][C] : cHowever vectors containing the vote identified as the main
+        components
+            (C V = number), not more of the voting
+        a.pca.Vt [C][V] : tells how to build major components from
+            polls
+        a.pca.eigen [C] :eigenvalues​​. To get variance explained by each cp, just
+            do eigen[j]/eigen.sum()
 
-    == Métodos (dinâmicos) ==
+    == Methods (dynamics) ==
     -------------------------
-    Seja ANLS um objeto tipo análise, aplicam-se os métodos:
+    Be ANLS one analysis object type, apply the methods:
 
-        TODO: Juntar 'tamanho_sigla' e 'tamanho_estado' num único método, passando como
-        parâmetro a entidade que se quer ter o tamanho (partido ou UF)
-        ANLS.tamanho_sigla(siglaPartido) : retorna o tamanho do partido pela sigla, ou seja,
-        número  de deputados diferentes encontrados no período do estudo
-        ANLS.tamanho_estado(siglaUF) : retorna o tamanho do estado pela sigla
-        TODO: Juntar 'partidos_2d' e 'estados_2d' num único método
-        ANLS.partidos_2d(), a.partidos_2d(arquivo) : retorna matriz com as coordenadas dos
-        partidos nas duas primeiras componentes principais, e se fornecido o nome de um arquivo
-        escreve-as no mesmo
-        ANLS.estados_2d(), a.estados_2d(arquivo) : analogamente para a pca por estados
-        ANLS.sem(siglaP1,siglaP2,tipo=2) : imprime e retorna a semelhança entre os dois partidos
-        dados pelas siglas, calculada pelo método do produto escalar (tipo=1) ou pelo método da
-        convolução (tipo=2)(default)
-        ANLS.figura(escala=10) : apresenta um gráfico de bolhas dos partidos com a primeira
-        componente principal no eixo x e a segunda no eixo y, o tamanho da bolha proporcional ao
-        tamanho do partido"""
+        TODO: Add 'tamanho_sigla' and 'tamanho_estado' in a single method, passing as
+            parameter entity that wants to have the size (party or UF)
+        ANLS.tamanho_sigla(siglaPartido) : returns the size of the party by its acronym, ie,
+            number of different deputies found during the study period
+        ANLS.tamanho_estado(siglaUF) : returns the size of the state by the acronym
+        TODO: Add 'partidos_2d' and 'estados_2d' in a single method
+        ANLS.partidos_2d(), a.partidos_2d(arquivo) : returns array with the coordinates of
+            parties in the first two principal components, and provided the name of a file
+            write them upon the same
+        ANLS.estados_2d(), a.estados_2d(arquivo) : analogously to PCA by states
+        ANLS.sem(siglaP1,siglaP2,tipo=2) : prints and returns the similarity between
+            the two parties data by acronyms, calculated by the scalar product (type = 1) or
+            by the method method convolution (type = 2) (default)
+        ANLS.figura(escala=10) : presents a bubble chart of the parties with the first
+            second major component in the x axis and the y-axis proportional to the size of
+            the bubble party size"""
 
     # Constant:
     ufs_list = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB',
@@ -130,14 +132,14 @@ class Analise:
 
     def __init__(self,data_inicial='2011-01-01',data_final='2011-12-31',tipos_proposicao=[],
                  lista_partidos=[],partidos=[]):
-        """ Construtor de objetos do tipo Analise, pede como argumentos:
-        * As datas inicial e final entre as quais devem ser consideradas as votações;
-        * Uma lista de strings com os tipos de proposição a analisar, deixar vazio para considerar
-        todos os tipos;
-        * Uma lista de strings com os partidos a incluir na análise (deixar vazio para incluir todos
-        os partidos), ou um inteiro N para usar partidos que tenham N ou mais deputados no período
-        São feitas análises de tamanho dos partidos e das UFs, análise de componentes principais (pca)
-        por partido e por UFs, e análise de semelhança percentual por dois métodos."""
+        """ Constructor objects of type analysis, asks as arguments:
+        *The start and end dates between which should be considered votes;
+        *A list of strings with the types of proposition analyze, leave empty to consider
+        all types;
+        *A list of strings with the parties to include in the analysis (leave blank to include all
+        parties), or an integer N to use parties that have N or more Members in the period
+        Size analyzes of parties and UFs, principal component analysis (PCA) are made
+        by party and by state, and percentage similarity analysis by two methods."""
 
         self.data_inicial = data_inicial
         self.data_final = data_final
@@ -165,7 +167,7 @@ class Analise:
             raise StandardError('Datas devem estar no formato "aaaa-mm-dd", mês e dia obrigatoriamente '
                                 'com dois dígitos.')
 
-    # If the list 'tipos_proposicao' is empty, use all kinds of proposition:
+        # If the list 'tipos_proposicao' is empty, use all kinds of proposition:
         if not self.tipos_proposicao:
             connection = lite.connect(Analise.db)
             list_of_types = connection.execute('SELECT distinct tipo FROM PROPOSICOES')
@@ -180,14 +182,14 @@ class Analise:
                 fill_parties = 1
             connection = lite.connect(Analise.db)
             list_of_types = connection.execute('SELECT * FROM PARTIDOS')
-            lista_gambiarra = ['PT', 'PSDB', 'PV', 'PSOL', 'PCdoB', 'PP', 'PR', 'DEM', 'PMDB',
+            improvisation_list = ['PT', 'PSDB', 'PV', 'PSOL', 'PCdoB', 'PP', 'PR', 'DEM', 'PMDB',
                                'PSC', 'PTB', 'PDT', 'PSB', 'PPS', 'PRB']
             for item in list_of_types:
-                if item[1] in lista_gambiarra:
+                if item[1] in improvisation_list:
                     self.lista_partidos.append(item[1])
                     if fill_parties:
-                        partido = model.Partido(item[1],item[0])
-                        self.partidos.append(partido)
+                        party = model.Partido(item[1],item[0])
+                        self.partidos.append(party)
             connection.close()
 
         # If integer, use greater than or equal to this whole political parties:
@@ -211,11 +213,11 @@ class Analise:
         return feedback
 
     def _buscaVotacoes(self):
-        """Copia votações do BD (sqlite) para uma lista (python), e a retorna."""
+        """Paste polls BD (sqlite) to a list (python), and returns."""
 
         filter_types='('
-        for tipo in self.tipos_proposicao:
-            filter_types = filter_types + "'" + tipo + "',"
+        for type in self.tipos_proposicao:
+            filter_types = filter_types + "'" + type + "',"
         filter_types = filter_types[0:len(filter_types)-1] + ")"
         connection = lite.connect(Analise.db)
         votings = connection.execute('SELECT votacoes.idProp,idVot,data,sim,nao,abstencao,obstrucao '
@@ -229,13 +231,14 @@ class Analise:
 
 
     def _inicializa_vetores(self):
-        """Cria os 'vetores' e 'quadrivetores' votação agregados por partido. Aproveita para
-        calcular o tamanho dos partidos, presença dos deputados, etc.
-        O 'vetor' usa um número entre -1 (não) e 1 (sim) para representar a posição global do
-        partido em cada votação, sendo o vetor em si um de dimensão N formado pelas N votações.
-        O 'quadrivetor' usa uma tupla de 4 inteiros para representar a posição do partido em
-        cada votação, os inteiros são o número de deputados que votaram sim, não, abstenção e
-        obstrução. O quadrivetor em si é um vetor com N destas tuplas."""
+        """Creates the 'vectors' and 'Four-Vectors' aggregate voting party. for leverages
+        calculate the size of the parties, presence of Members, etc.
+        The 'vector' uses a number between -1 (no) and 1 (yes) to represent the global
+        position of vote in each party, being in itself a vector of dimension N formed
+        by the N votes.
+        The 'quadrivetor' uses a tuple of four integers to represent the party's position
+        on each vote, the integers are the number of MPs who voted yes, no, and
+        abstention obstruction. The quadrivetor itself is a vector of these N tuples."""
 
         # Pick up votes in the database:
         votings = self._buscaVotacoes()
@@ -309,23 +312,23 @@ class Analise:
 
 
     def _pca_partido(self):
-        """Roda a análise de componentes principais por partidos.
-        Guarda o resultado em self.pca
-        Retorna um dicionário no qual as chaves são as siglas dos partidos
-        e o valor de cada chave é um vetor com as n dimensões da análise pca"""
+        """Run analysis of main components for parties.
+        Stores the result in self.pca
+        Returns a dictionary where the keys are the symbols of political parties
+        and the value of each key is a vector with n dimensions of the pca analys"""
 
         if not bool(self.pca_partido):
             if self.vetores_votacao==[]:
                 self._inicializa_vetores()
-            matriz = self.vetores_votacao - self.vetores_votacao.mean(axis=0)
-            self.pca_partido = pca.PCA(matriz)
+            matrix = self.vetores_votacao - self.vetores_votacao.mean(axis=0)
+            self.pca_partido = pca.PCA(matrix)
         disctionary = {}
-        for partido, vetor in zip(self.partidos, self.pca_partido.U):
-            disctionary[partido.nome] = vetor
+        for party, vector in zip(self.partidos, self.pca_partido.U):
+            disctionary[party.nome] = vector
         return disctionary
 
     def _inicializa_vetores_uf(self):
-        """Análogo a _inicializa_vetores(self), mas agregado por estados e não por partidos."""
+        """Analogous to _inicializa_vetores(self), but aggregated by states and not by parties."""
 
         # Pick up votes in the database:
         votings = self._buscaVotacoes()
@@ -378,31 +381,32 @@ class Analise:
         return
 
     def _pca_uf(self):
-        """Roda a análise de componentes principais por UF.
-        Guarda o resultado em self.pca
-        Retorna um dicionário no qual as chaves são as siglas dos partidos
-        e o valor de cada chave é um vetor com as n dimensões da análise pca"""
+        """Run the principal components analysis by UF.
+        Stores the result in self.pca
+        Returns a dictionary where the keys are the symbols of political parties
+        and the value of each key is a vector with n dimensions of the pca analysis."""
 
         if not bool(self.pca_uf):
             if self.vetores_votacao_uf==[]:
                 self._inicializa_vetores_uf()
-            matriz = self.vetores_votacao_uf - self.vetores_votacao_uf.mean(axis=0)
-            self.pca_uf = pca.PCA(matriz)
+            matrix = self.vetores_votacao_uf - self.vetores_votacao_uf.mean(axis=0)
+            self.pca_uf = pca.PCA(matrix)
         dictionary = {}
-        for uf, vetor in zip(self.ufs_list, self.pca_uf.U):
-            dictionary[uf]=vetor
+        for uf, vector in zip(self.ufs_list, self.pca_uf.U):
+            dictionary[uf]=vector
         return dictionary
 
     def _calcula_semelhancas(self):
-        """Calcula semelhancas entre todos os partidos da análise, dois a dois, segundo o
-        produto escalar e o método da convolução, normalizadas entre 0 e 100[%].
-        O resultado é guardado nos atributos self.semelhancas (produto escalar) e
-        self.semelhancas2 (convolução)."""
+        """Calculates similarities between all parties of the analysis, two by two, according to the
+         scalar product and the method of convolution, normalized between 0 and 100 [%].
+         The result is stored in self.semelhancas attributes (scalar product) and
+         self.semelhancas2 (convolution)."""
 
         if self.vetores_votacao==[]:
             self._inicializa_vetores()
         self.semelhancas_escalar = numpy.zeros((len(self.lista_partidos),len(self.lista_partidos)))
         self.semelhancas_convolucao = numpy.zeros((len(self.lista_partidos),len(self.lista_partidos)))
+
         for i in range(0,len(self.lista_partidos)):
             for j in range(0,len(self.lista_partidos)):
 
@@ -416,7 +420,7 @@ class Analise:
                                                                self.vetores_votacao[j],
                                                                self.vetores_votacao[j])))) + 1)/2
 
-        # Method 2:
+                # Method 2:
                 x = 0
                 for k in range(self.num_votacoes) :
                     x += Analise._convolui(self.quadrivet_vot[i][k],self.quadrivet_vot[j][k])
@@ -426,11 +430,11 @@ class Analise:
 
     @staticmethod
     def _convolui(u,v):
-        """Recebe duas tuplas de 4 inteiros u e v, representando os votos de dois
-        partidos em uma votação. Por exemplo se u=(4,3,0,3) houve 4 sim, 3 não, 0
-        abstenções e 3 obstruções do partido na votação.
-        Cada tupla é normalizada dividindo pela soma dos quadrados dos elementos, e
-        a função retorna o produto escalar das duas tuplas normalizadas."""
+        """Receives two integers u and v 4 tuples, representing the votes of two
+        parties in a vote. For example if u = (4,3,0,3) there were 4 yes, 3 no, 0
+        and 3 abstentions obstructions party vote.
+        Each tuple is normalized by dividing by the sum of the squares of the elements, and
+        the function returns the dot product of two normalized tuples."""
 
         if sum(u)==0 or sum(v)==0:
             return numpy.NaN
@@ -438,13 +442,13 @@ class Analise:
         vn= numpy.array(v,dtype=float)
         x = numpy.dot(un,vn)
 
-    # Normalize:
+        # Normalize:
         x = x / ( numpy.sqrt(numpy.dot(un,un)) * numpy.sqrt(numpy.dot(vn,vn)) )
         return x
 
 
     def tamanho_sigla(self,siglaPartido):
-        """Retorna o tamanho do partido dada sua sigla."""
+        """Return the size of party giver your acronym."""
 
         if self.tamanho_partidos==0:
             self._inicializa_vetores()
@@ -456,7 +460,7 @@ class Analise:
             return 0
 
     def tamanho_estado(self,siglaEstado):
-        """Retorna o tamanho do estado (número de deputados) dada sua sigla."""
+        """Returns the size of the state (number of seats) given its acronym."""
 
         if self.tamanho_uf==[]:
             self._inicializa_vetores_uf()
@@ -466,15 +470,15 @@ class Analise:
             raise ValueError('Estado "%s" inválido.'%siglaEstado)
 
     def partidos_2d(self,arquivo=''):
-        """Retorna matriz com as coordenadas dos partidos no plano 2d formado pelas duas
-        primeiras componentes principais.
+        """Returns array with the coordinates of the parties in the 2d plane formed by the two
+        first principal components.
 
-        Se for passado como argumento o nome (não vazio) de um arquivo, o resultado da pca
-        é escrito neste arquivo, caso contrário é escrito em stdout."""
+        If passed as argument the name (not empty) of a file, the result of PCA
+        is written to this file, otherwise it is written to stdout."""
 
         coordinates = self._pca_partido()
-        for partido in coordinates.keys():
-            coordinates[partido] = (coordinates[partido])[0:2]
+        for party in coordinates.keys():
+            coordinates[party] = (coordinates[party])[0:2]
         close = False
         if arquivo:
             fo = open(arquivo,'w')
@@ -490,8 +494,8 @@ class Analise:
         fo.write('%f\n' % (self.pca_partido.eigen[2]/self.pca_partido.eigen.sum()))
         fo.write('%f\n' % (self.pca_partido.eigen[3]/self.pca_partido.eigen.sum()))
         fo.write('\nCoordenadas:\n')
-        for partido in coordinates.keys():
-            fo.write('%s: [%f, %f]\n' % (partido,coordinates[partido][0],coordinates[partido][1]))
+        for party in coordinates.keys():
+            fo.write('%s: [%f, %f]\n' % (party,coordinates[party][0],coordinates[party][1]))
         fo.write('Tamanhos=%s\n' % str(self.tamanho_partidos))
         if close:
             fo.close()
@@ -499,11 +503,11 @@ class Analise:
 
 
     def estados_2d(self,arquivo=''):
-        """Retorna matriz com as coordenadas dos estados no plano 2d formado pelas duas
-        primeiras componentes principais.
+        """Returns array with the coordinates of the states in the 2d plane formed by the two
+        first principal components.
 
-        Se for passado como argumento o nome (não vazio) de um arquivo, o resultado da
-        pca é escrito neste arquivo, caso contrário é escrito em stdout."""
+        If passed as argument the name (not empty) of a file, the result of
+        pca is written to this file, otherwise it is written to stdout."""
 
         if not bool(self.pca_uf):
             self._pca_uf()
@@ -550,9 +554,9 @@ class Analise:
 
 
     def figura(self, escala=10):
-        """Apresenta um plot de bolhas (usando matplotlib) com os partidos de tamanho
-        maior ou igual a tamanho_min com o primeiro componente principal no eixo x e o
-        segundo no eixo y."""
+        """Presents a plot of bubbles (using matplotlib) with parties of size
+        tamanho_min greater than or equal to the first principal component in the x axis
+        second y-axis."""
 
         data = self.partidos_2d()
 
@@ -577,9 +581,9 @@ class Analise:
                       'PRB'  :'#67a91e'}
 
         list_parties_colors = []
-        for partido in self.partidos:
-            if partido.nome in parties_colors:
-                list_parties_colors.append(parties_colors[partido.nome])
+        for party in self.partidos:
+            if party.nome in parties_colors:
+                list_parties_colors.append(parties_colors[party.nome])
             else:
                 list_parties_colors.append((1,1,1))
 
@@ -589,22 +593,22 @@ class Analise:
         ax = fig.add_subplot(111, autoscale_on=True)
         x = []
         y = []
-        for partido in self.partidos:
-            x.append(data[partido.nome][0])
-            y.append(data[partido.nome][1])
+        for party in self.partidos:
+            x.append(data[party.nome][0])
+            y.append(data[party.nome][1])
         size = numpy.array(self.tamanho_partidos) * escala
         scatter(x, y, size, range(len(x)), marker='o', cmap=parties_colormap)
-        for partido in self.partidos:
-            text(data[partido.nome][0]+.005,data[partido.nome][1],partido.numero,
+        for party in self.partidos:
+            text(data[party.nome][0]+.005,data[party.nome][1],party.numero,
                  fontsize=12,stretch=100,alpha=1)
 
         show()
 
 
 def partidos_expressivos(N=1,data_inicial='2011-01-01',data_final='2011-12-31',tipos_proposicao=[]):
-    """Retorna uma lista com os partidos com pelo menos N deputados diferentes que
-    tenham vindo em votações entre as datas data_inicial e data_final. Consideram-se
-    as proposições em tipos_proposição, ou todas se tipos_proposicao=[]."""
+    """Returns a list of parties with at least N different deputies who
+    polls have come in between start_date and end_date dates. Consider themselves
+    propositions in tipos_proposição, or if all tipos_proposicao = []."""
 
     # Create dictionary with id of political parties:
     connection = lite.connect(Analise.db)
@@ -645,7 +649,7 @@ def partidos_expressivos(N=1,data_inicial='2011-01-01',data_final='2011-12-31',t
     for vote in votings:
             vote_index += 1
 
-        # Tell deputies present:
+            # Tell deputies present:
             list_of_present_deputies = [list(numpy.array(eval(vote[3]))[numpy.where(
                 numpy.array(eval(vote[3]))/100000==party_id[p])]) + list(
                 numpy.array(eval(vote[4]))[numpy.where(numpy.array(
