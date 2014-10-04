@@ -28,25 +28,25 @@ import sys
 
 # Código florestal
 # http://www.camara.gov.br/proposicoesWeb/fichadetramitacao?idProposicao=17338
-tipo = 'pl'
-num = '1876'
-ano = '1999'
-prop = camaraws.obter_votacao(tipo, num, ano) 
+type = 'pl'
+number = '1876'
+year = '1999'
+proposition = camaraws.obter_votacao(type, number, year)
 
-txt = str(prop)
+txt = str(proposition)
 print type(txt)
 
 # Print propositions
-for votacao in prop.votacoes:
+for votations in proposition.votacoes:
   print('************')
-  print(votacao)
+  print(votations)
   if (len(sys.argv)>1 and sys.argv[1] == '-uf'):
-    dic = votacao.por_uf()
+    dic = votations.por_uf()
   else:
-    dic = votacao.por_partido()
-  for key, voto in dic.items():
-    sim = voto.sim
-    nao = voto.nao
-    abst = voto.abstencao
-    print("%s: \t Sim: %s \t Não: %s \t Abstenções: %s" % (key, sim, nao, abst))
+    dic = votations.por_partido()
+  for key, vote in dic.items():
+    yes = vote.sim
+    no = vote.nao
+    abstention = vote.abstencao
+    print("%s: \t Sim: %s \t Não: %s \t Abstenções: %s" % (key, yes, no, abstention))
 
