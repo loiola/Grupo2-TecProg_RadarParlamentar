@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Script semelhancas -- Verifica a diferença entre dois partidos baseado nas proposições votadas em 2011"""
+"""Script semelhancas -- Checks the difference between two parties based on the
+propositions voted on in 2011"""
 
 import proposicoes
 import camaraws
@@ -26,22 +27,30 @@ from partidos import PARTIDOS
 
 length = len(PARTIDOS)
 
-# PRTB, PRP, PMN, PSL, PHS deram problema, pois não aparecem em algumas votações
+# PRTB, PRP, PMN, PSL, PHS given problem, did appear in some polls
 # TODO: o que fazer nesses casos?
 length = len(PARTIDOS)
 
-# recuperação das proposições
-votadas = proposicoes.parse() # identificação das proposições votadas em 2011
-proposicoes = [] # listagem das proposições com suas respectivas votações
-n_vot = 0 # total de votações analisadas
-for prop in votadas:
-  print('Analisando proposição ' + prop['id'])
-  prop_vot = camaraws.obter_votacao(prop['tipo'], prop['num'], prop['ano']) # obtêm votação do web service
+# recovery propositions
+
+# identification of propositions voted on in 2011
+voted = proposicoes.parse()
+
+# list of propositions with their respective votes
+proposicoes = []
+
+# total analyzed votes
+n_vot = 0
+for propositions in voted:
+  print('Analisando proposição ' + propositions['id'])
+
+  # get voting web service
+  prop_vot = camaraws.obter_votacao(propositions['tipo'], propositions['num'], propositions['ano'])
   n_vot += len(prop_vot.votacoes)
   proposicoes.append(prop_vot)
 
-# análise das semelhanças
-print('Análise baseada em %d votações de %d proposições, votadas na camâra em 2011' % (n_vot, len(votadas)))
+# analysis of the similarity
+print('Análise baseada em %d votações de %d proposições, votadas na camâra em 2011' % (n_vot, len(voted)))
 for i in range(0,length):
   for j in range(i+1,length):
     sem = partidos.semelhanca(PARTIDOS[i], PARTIDOS[j], proposicoes)
