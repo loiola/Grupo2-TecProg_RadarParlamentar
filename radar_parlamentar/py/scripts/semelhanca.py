@@ -33,7 +33,7 @@ voted = proposicoes.parse()
 # List of propositions with their respective votes 
 proposicoes = []
 
-# Total votes analyzed
+# Total analyzed votes
 n_vot = 0 
 
 

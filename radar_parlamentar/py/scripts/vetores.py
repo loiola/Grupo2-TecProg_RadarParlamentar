@@ -26,13 +26,21 @@ from partidos import PARTIDOS
 
 length = len(PARTIDOS)
 
-# recuperação das proposições
-votadas = proposicoes.parse() # identificação das proposições votadas em 2011
-proposicoes = [] # listagem das proposições com suas respectivas votações
-n_vot = 0 # total de votações analisadas
-for prop in votadas:
-    print('Analisando proposição ' + prop['id'])
-    prop_vot = camaraws.obter_votacao(prop['tipo'], prop['num'], prop['ano']) # obtêm votação do web service
+# recovery propositions
+
+# identification of propositions voted on 2011
+voted = proposicoes.parse()
+
+# list of propositions with their respective votes
+proposicoes = []
+
+# Total analyzed votes
+n_vot = 0
+for propositions in voted:
+    print('Analisando proposição ' + propositions['id'])
+
+    # get voting web service
+    prop_vot = camaraws.obter_votacao(propositions['tipo'], propositions['num'], propositions['ano'])
     n_vot += len(prop_vot.votacoes)
     proposicoes.append(prop_vot)
 
