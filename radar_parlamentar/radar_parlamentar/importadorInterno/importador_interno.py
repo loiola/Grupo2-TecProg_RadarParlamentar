@@ -28,7 +28,6 @@ MODULE_DIR = os.getcwd() + '/exportadores/'
 
 """Methods that deserialize objects for reading."""
 
-
 def main():
     deserialize_partido()
     deserialize_casa_legislativa()
@@ -37,7 +36,6 @@ def main():
     _deserialize_proposicao()
     _deserialize_votacao()
     _deserialize_voto()
-
 
 def deserialize_partido():
     try:
@@ -50,9 +48,9 @@ def deserialize_partido():
         return
 
     data = serializers.deserialize("xml", out)
+
     for deserialized_object in data:
         deserialized_object.save()
-
 
 def deserialize_casa_legislativa():
     try:
@@ -65,9 +63,9 @@ def deserialize_casa_legislativa():
         return
 
     data = serializers.deserialize("xml", out)
+
     for deserialized_object in data:
         deserialized_object.save()
-
 
 def deserialize_parlamentar():
     try:
@@ -80,9 +78,9 @@ def deserialize_parlamentar():
         return
 
     data = serializers.deserialize("xml", out)
+
     for deserialized_object in data:
         deserialized_object.save()
-
 
 def _deserialize_legislatura():
     try:
@@ -98,7 +96,6 @@ def _deserialize_legislatura():
     for deserialized_object in data:
         deserialized_object.save()
 
-
 def _deserialize_proposicao():
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/proposicao.xml')
@@ -110,9 +107,9 @@ def _deserialize_proposicao():
         return
 
     data = serializers.deserialize("xml", out)
+
     for deserialized_object in data:
         deserialized_object.save()
-
 
 def _deserialize_votacao():
     try:
@@ -125,9 +122,9 @@ def _deserialize_votacao():
         return
 
     data = serializers.deserialize("xml", out)
+
     for deserialized_object in data:
         deserialized_object.save()
-
 
 def _deserialize_voto():
     try:
@@ -140,9 +137,9 @@ def _deserialize_voto():
         return
 
     data = serializers.deserialize("xml", out)
+
     for deserialized_object in data:
         deserialized_object.save()
-
 
 def _importa_legislatura(nome_casa_curto):
     try:
@@ -155,10 +152,10 @@ def _importa_legislatura(nome_casa_curto):
         return
 
     data = serializers.deserialize("xml", out)
+
     for deserialized_object in data:
         if deserialized_object.object.casa_legislativa.nome_curto == nome_casa_curto:
             deserialized_object.save()
-
 
 def _importa_proposicao(nome_casa_curto):
     try:
@@ -171,10 +168,10 @@ def _importa_proposicao(nome_casa_curto):
         return
 
     data = serializers.deserialize("xml", out)
+
     for deserialized_object in data:
         if deserialized_object.object.casa_legislativa.nome_curto == nome_casa_curto:
             deserialized_object.save()
-
 
 def _importa_votacao(nome_casa_curto):
     try:
@@ -187,10 +184,10 @@ def _importa_votacao(nome_casa_curto):
         return
 
     data = serializers.deserialize("xml", out)
+
     for deserialized_object in data:
         if deserialized_object.object.proposicao.casa_legislativa.nome_curto == nome_casa_curto:
             deserialized_object.save()
-
 
 def _importa_voto(nome_casa_curto):
     try:
@@ -203,10 +200,10 @@ def _importa_voto(nome_casa_curto):
         return
 
     data = serializers.deserialize("xml", out)
+
     for deserialized_object in data:
         if deserialized_object.object.votacao.proposicao.casa_legislativa.nome_curto == nome_casa_curto:
             deserialized_object.save()
-
 
 def importa_casa_legislativa(nome_casa_curto):
     try:
