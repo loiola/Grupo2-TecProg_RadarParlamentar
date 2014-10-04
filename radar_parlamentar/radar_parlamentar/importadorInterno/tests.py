@@ -31,24 +31,24 @@ class ImportadorInternoTest(TestCase):
     def setUpClass(cls):
 
         # Creating dummy data in mock:
-        partidoTest1 = models.Partido(nome='PMDB', numero='40')
-        partidoTest2 = models.Partido(nome='PT', numero='13')
-        partidoTest3 = models.Partido(nome='PSDB', numero='23')
+        partyTest1 = models.Partido(nome='PMDB', numero='40')
+        partyTest2 = models.Partido(nome='PT', numero='13')
+        partyTest3 = models.Partido(nome='PSDB', numero='23')
 
-        partidoTest1.save()
-        partidoTest2.save()
-        partidoTest3.save()
+        partyTest1.save()
+        partyTest2.save()
+        partyTest3.save()
 
-        parlamentarTest1 = models.Parlamentar(
+        parliamentarianTest1 = models.Parlamentar(
             id_parlamentar='', nome='Ivandro Cunha Lima', genero='')
-        parlamentarTest2 = models.Parlamentar(
+        parliamentarianTest2 = models.Parlamentar(
             id_parlamentar='', nome='Fernando Ferro', genero='')
-        parlamentarTest3 = models.Parlamentar(
+        parliamentarianTest3 = models.Parlamentar(
             id_parlamentar='', nome='Humberto Costa', genero='')
 
-        parlamentarTest1.save()
-        parlamentarTest2.save()
-        parlamentarTest3.save()
+        parliamentarianTest1.save()
+        parliamentarianTest2.save()
+        parliamentarianTest3.save()
 
         casa_legislativaTest1 = models.CasaLegislativa(
             nome='Camara dos Deputados', nome_curto='cdep', esfera='FEDERAL',
@@ -62,27 +62,27 @@ class ImportadorInternoTest(TestCase):
         casa_legislativaTest1.save()
         casa_legislativaTest2.save()
 
-        legislaturaTest1 = models.Legislatura(
-            parlamentar=parlamentarTest1,
+        legislatureTest1 = models.Legislatura(
+            parlamentar=parliamentarianTest1,
             casa_legislativa=casa_legislativaTest1, inicio='2004-01-01',
-            fim='2012-07-01', partido=partidoTest1, localidade='PB')
-        legislaturaTest1.save()
+            fim='2012-07-01', partido=partyTest1, localidade='PB')
+        legislatureTest1.save()
 
-        proposicaoTest1 = models.Proposicao()
-        proposicaoTest1.id_prop = '5555'
-        proposicaoTest1.sigla = 'PL'
-        proposicaoTest1.numero = '4520'
-        proposicaoTest1.casa_legislativa = casa_legislativaTest1
-        proposicaoTest1.save()
+        propositionTest1 = models.Proposicao()
+        propositionTest1.id_prop = '5555'
+        propositionTest1.sigla = 'PL'
+        propositionTest1.numero = '4520'
+        propositionTest1.casa_legislativa = casa_legislativaTest1
+        propositionTest1.save()
 
-        votacaoTest1 = models.Votacao(
+        votingTest1 = models.Votacao(
             id_vot=' 12345', descricao='Teste da votacao',
-            data='1900-12-05', resultado='Teste', proposicao=proposicaoTest1)
-        votacaoTest1.save()
+            data='1900-12-05', resultado='Teste', proposicao=propositionTest1)
+        votingTest1.save()
 
-        votoTest1 = models.Voto(
-            votacao=votacaoTest1, legislatura=legislaturaTest1, opcao='TESTE')
-        votoTest1.save()
+        voteTest1 = models.Voto(
+            votacao=votingTest1, legislatura=legislatureTest1, opcao='TESTE')
+        voteTest1.save()
 
         # Exporting the mocks's data to XMLs:
         exportar.serialize_partido()
@@ -94,24 +94,24 @@ class ImportadorInternoTest(TestCase):
         exportar.serialize_voto()
 
         # Deleting records of mock:
-        partidoTest1.delete()
-        partidoTest2.delete()
-        partidoTest3.delete()
+        partyTest1.delete()
+        partyTest2.delete()
+        partyTest3.delete()
 
-        parlamentarTest1.delete()
-        parlamentarTest2.delete()
-        parlamentarTest3.delete()
+        parliamentarianTest1.delete()
+        parliamentarianTest2.delete()
+        parliamentarianTest3.delete()
 
         casa_legislativaTest1.delete()
         casa_legislativaTest2.delete()
 
-        legislaturaTest1.delete()
+        legislatureTest1.delete()
 
-        proposicaoTest1.delete()
+        propositionTest1.delete()
 
-        votacaoTest1.delete()
+        votingTest1.delete()
 
-        votoTest1.delete()
+        voteTest1.delete()
 
     @classmethod
     def tearDownClass(cls):
@@ -127,44 +127,44 @@ class ImportadorInternoTest(TestCase):
     def test_deserialize_parlamentar(self):
 
         importador_interno.deserialize_parlamentar()
-        parlamentar = models.Parlamentar.objects.filter(
+        parliamentarian = models.Parlamentar.objects.filter(
             nome='Ivandro Cunha Lima')
-        self.assertEquals(parlamentar[0].nome, 'Ivandro Cunha Lima')
+        self.assertEquals(parliamentarian[0].nome, 'Ivandro Cunha Lima')
 
     def test_deserialize_casa_legislativa(self):
 
         importador_interno.deserialize_casa_legislativa()
-        casa_legislativa = models.CasaLegislativa.objects.filter(
+        legislative_house = models.CasaLegislativa.objects.filter(
             nome_curto='cdep')
-        self.assertEquals(casa_legislativa[0].nome, 'Camara dos Deputados')
+        self.assertEquals(legislative_house[0].nome, 'Camara dos Deputados')
 
     def test_deserialize_legislatura(self):
 
         importador_interno.main()
-        parlamentar = models.Parlamentar.objects.filter(
+        parliamentarian = models.Parlamentar.objects.filter(
             nome='Ivandro Cunha Lima')
-        legislatura = models.Legislatura.objects.filter(
-            parlamentar=parlamentar[0])
+        legislature = models.Legislatura.objects.filter(
+            parlamentar=parliamentarian[0])
         self.assertEquals(
-            legislatura[0].parlamentar.nome, 'Ivandro Cunha Lima')
+            legislature[0].parlamentar.nome, 'Ivandro Cunha Lima')
 
     def test_deserialize_proposicao(self):
 
         importador_interno.main()
-        proposicao = models.Proposicao.objects.filter(numero='4520')
-        self.assertEquals(proposicao[0].sigla, 'PL')
+        propostion = models.Proposicao.objects.filter(numero='4520')
+        self.assertEquals(propostion[0].sigla, 'PL')
 
     def test_deserialize_votacao(self):
 
         importador_interno.main()
-        votacao = models.Votacao.objects.filter(id_vot='12345')
-        self.assertEquals(str(votacao[0].data), '1900-12-05')
+        voting = models.Votacao.objects.filter(id_vot='12345')
+        self.assertEquals(str(voting[0].data), '1900-12-05')
 
     def test_deserialize_voto(self):
 
         importador_interno.main()
-        voto = models.Voto.objects.filter(opcao='TESTE')
-        self.assertEquals(voto[0].opcao, 'TESTE')
+        vote = models.Voto.objects.filter(opcao='TESTE')
+        self.assertEquals(vote[0].opcao, 'TESTE')
 
     def test_importa_casa_legislativa(self):
 
@@ -172,9 +172,9 @@ class ImportadorInternoTest(TestCase):
         models.CasaLegislativa.deleta_casa('cdep')
 
         importador_interno.importa_casa_legislativa('cdep')
-        casa_legislativa = models.CasaLegislativa.objects.filter(
+        legislative_house = models.CasaLegislativa.objects.filter(
             nome_curto='cdep')
-        self.assertEquals(casa_legislativa[0].nome, 'Camara dos Deputados')
+        self.assertEquals(legislative_house[0].nome, 'Camara dos Deputados')
 
         casa_cmsp = models.CasaLegislativa.objects.filter(nome_curto='cmsp')
         self.assertEquals(casa_cmsp[0].nome, 'Camara Municipal de Sao Paulo')
