@@ -17,7 +17,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Script semelhanca -- verifies the difference between two parties based on
-  propositions voted on in 2011"""
+propositions voted on in 2011"""
 
 import proposicoes
 import camaraws

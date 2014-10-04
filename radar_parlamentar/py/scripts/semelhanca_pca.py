@@ -17,16 +17,15 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Script semelhanca_pca
-Verifica a diferença entre os partidos 
-baseado nas proposições votadas em 2011
-utilizando PCA (análise de componentes primários)
-"""
+Checks the difference between the parties
+based on the propositions voted on in 2011
+using PCA (analysis of primary components)"""
 
 import partidos
 import sys
 
-partidos_list = []
-vetores = []
+parties_list = []
+vectors = []
 
 # Recovering vectors polls
 name = 'resultados/vetores.txt'
@@ -34,14 +33,14 @@ vfile = open(name, 'r')
 flag = 1
 for line in vfile:
   if flag % 2 == 1:
-    partidos_list.append(line.rstrip())
+    parties_list.append(line.rstrip())
   else:
-    vetores.append(eval(line))
+    vectors.append(eval(line))
   flag += 1
 
 # Analyzing similarities
 print('Análise PCA')
-p = partidos.semelhanca_pca(vetores)
+p = partidos.semelhanca_pca(vectors)
 pc = p.pc()
 
 # Printing similarities
@@ -50,5 +49,5 @@ for i in range(0, 4):
   print "%f " % ( p.eigen[i] / p.eigen.sum() )
 
 print "\nCoordenadas:"
-for i in range(0,len(partidos_list)):
-  print "%s: [%f, %f]" % (partidos_list[i], pc[i][0], pc[i][1])
+for i in range(0,len(parties_list)):
+  print "%s: [%f, %f]" % (parties_list[i], pc[i][0], pc[i][1])
