@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Script analise_tipos -- faz uma análise dos tipos de proposições votadas em 2011"""
+"""Script analise_tipos -- makes an analysis of the types of propositions voted on
+2011"""
 
 import proposicoes
 
@@ -24,16 +25,16 @@ proposicoes = proposicoes.parse_html()
 pl = plp = pdc = mpv = pec = 0
 
 # Performs proposition count for each type
-for prop in proposicoes:
-  if (prop['tipo'] == 'PL'):
+for propositions in proposicoes:
+  if (propositions['tipo'] == 'PL'):
     pl += 1
-  elif (prop['tipo'] == 'PLP'):
+  elif (propositions['tipo'] == 'PLP'):
     plp += 1
-  elif (prop['tipo'] == 'PDC'):
+  elif (propositions['tipo'] == 'PDC'):
     pdc += 1
-  elif (prop['tipo'] == 'MPV'):
+  elif (propositions['tipo'] == 'MPV'):
     mpv += 1
-  elif (prop['tipo'] == 'PEC'):
+  elif (propositions['tipo'] == 'PEC'):
     pec += 1
 
 # Performs total count of propositions and shows the result for each type
