@@ -48,7 +48,7 @@ class importador_interno:
         print "Voltei"
 
         legislativeHouse = models.CasaLegislativa()
-        legislativeHouse.nome_curto = root.attrib.get("nome_curto")
+        legislativeHouse.nome_curto = root.attrib.get("short_name")
         legislativeHouse.nome = root.attrib.get("nome")
         legislativeHouse.esfera = root.attrib.get("esfera")
         legislativeHouse.local = root.attrib.get("local")

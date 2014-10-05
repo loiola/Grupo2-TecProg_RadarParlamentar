@@ -30,7 +30,7 @@ class Migration(SchemaMigration):
                       {'max_length': '100'}),
             'nome': ('django.db.models.fields.CharField', [],
                      {'max_length': '100'}),
-            'nome_curto': ('django.db.models.fields.CharField', [],
+            'short_name': ('django.db.models.fields.CharField', [],
                            {'unique': 'True', 'max_length': '50'})
         },
         'modelagem.indexadores': {

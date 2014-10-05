@@ -181,7 +181,7 @@ class CasaLegislativa(models.Model):
 
      attributes:
          name - string; eg 'City Hall of São Paulo'
-         nome_curto - string; will be used to generate links.
+         short_name - string; will be used to generate links.
                          ex 'PBMC' to 'Municipality of São Paulo'
          sphere - string (municipal, state, federal)
          location - string; ex 'Sao Paulo' for CMSP

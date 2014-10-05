@@ -91,7 +91,7 @@ class JsonAnaliseGeneratorTest(TestCase):
         dict_analise = json.loads(generated_json)
         self.assertEquals(dict_analise['geral']['total_votacoes'], 8)
         dict_casa = dict_analise['geral']['CasaLegislativa']
-        self.assertEquals(dict_casa['nome_curto'], self.casa.nome_curto)
+        self.assertEquals(dict_casa['short_name'], self.casa.nome_curto)
         list_periodos = dict_analise['periodos']
         self.assertEquals(len(list_periodos), 1)
         dict_periodo = list_periodos[0]

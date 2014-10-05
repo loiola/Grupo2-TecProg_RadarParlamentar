@@ -40,7 +40,7 @@ class Migration(SchemaMigration):
 >>>>>>> 2e4d2ab51db31d9c5dfbf2314813a7041b503c62
             'local': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'nome': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'nome_curto': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'})
+            'short_name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'})
         },
 <<<<<<< HEAD
         'modelagem.indexadores': {
