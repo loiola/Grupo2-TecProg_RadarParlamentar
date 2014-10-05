@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="cd47e6ad-9580-45d2-b4cf-58043d978497" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/importadores/conv.py" afterPath="$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/importadores/conv.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Grupo2-TecProg_RadarParlamentar.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,8 +28,8 @@
       <file leaf-file-name="conv.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/importadores/conv.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.9484536" vertical-offset="4413" max-vertical-offset="5055">
-              <caret line="333" column="0" selection-start-line="333" selection-start-column="0" selection-end-line="333" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.90034366" vertical-offset="4561" max-vertical-offset="5535">
+              <caret line="341" column="8" selection-start-line="341" selection-start-column="8" selection-end-line="341" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -49,7 +48,7 @@
       <file leaf-file-name="init.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/static/files/codes/js/init.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="12196" max-vertical-offset="16335">
+            <state vertical-scroll-proportion="0.0" vertical-offset="11341" max-vertical-offset="16335">
               <caret line="1065" column="51" selection-start-line="1065" selection-start-column="51" selection-end-line="1065" selection-end-column="51" />
               <folding />
             </state>
@@ -456,6 +455,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/static/files/codes/js/init.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="11341" max-vertical-offset="16335">
+          <caret line="1065" column="51" selection-start-line="1065" selection-start-column="51" selection-end-line="1065" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/radar_parlamentar/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1485">
@@ -464,18 +471,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/static/files/codes/js/init.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="12196" max-vertical-offset="16335">
-          <caret line="1065" column="51" selection-start-line="1065" selection-start-column="51" selection-end-line="1065" selection-end-column="51" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/importadores/conv.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.9484536" vertical-offset="4413" max-vertical-offset="5055">
-          <caret line="333" column="0" selection-start-line="333" selection-start-column="0" selection-end-line="333" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.90034366" vertical-offset="4561" max-vertical-offset="5535">
+          <caret line="341" column="8" selection-start-line="341" selection-start-column="8" selection-end-line="341" selection-end-column="8" />
           <folding />
         </state>
       </provider>

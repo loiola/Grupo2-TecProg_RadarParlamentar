@@ -154,6 +154,18 @@ class ImportadorConvencao:
 
     #new_votation1 => get instance the new votation
 
+    def girondine_votes(self, votacao):
+        votos_girondinos = [models.SIM, models.ABSTENCAO, models.NAO]
+        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+
+    def jaconbine_votes(self, votacao):
+        votos_jacobinos = [models.SIM, models.SIM, models.SIM]
+        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+
+    def monarquist_votes(self, votacao):
+        votos_monarquistas = [models.NAO, models.NAO, models.NAO]
+        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+
     def _new_votation1(self):
 
         NUM = '1'
@@ -162,16 +174,25 @@ class ImportadorConvencao:
         votacao = self._new_votation(
             NUM, DESCRICAO, BEGIN_FIRST_SEMESTER, prop)
 
-        votos_girondinos = [models.SIM, models.ABSTENCAO, models.NAO]
-        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes(votacao)
 
-        votos_jacobinos = [models.SIM, models.SIM, models.SIM]
-        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+        self.jaconbine_votes(votacao)
 
-        votos_monarquistas = [models.NAO, models.NAO, models.NAO]
-        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes(votacao)
 
     #new_votation2 => get instance the new votation
+
+    def girondine_votes2(self, votacao):
+        votos_girondinos = [models.NAO, models.NAO, models.NAO]
+        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+
+    def jaconbine_votes2(self, votacao):
+        votos_jacobinos = [models.NAO, models.NAO, models.NAO]
+        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+
+    def monarquist_votes2(self, votacao):
+        votos_monarquistas = [models.SIM, models.SIM, models.SIM]
+        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
 
     def _new_votation2(self):
 
@@ -181,16 +202,17 @@ class ImportadorConvencao:
         votacao = self._new_votation(
             NUM, DESCRICAO, BEGIN_FIRST_SEMESTER, prop)
 
-        votos_girondinos = [models.NAO, models.NAO, models.NAO]
-        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes2(votacao)
 
-        votos_jacobinos = [models.NAO, models.NAO, models.NAO]
-        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+        self.jaconbine_votes2(votacao)
 
-        votos_monarquistas = [models.SIM, models.SIM, models.SIM]
-        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes2(votacao)
 
     #new_votation3 => get instance the new votation
+
+    def girondine_votes3(self, votacao):
+        votos_girondinos = [models.NAO, models.NAO, models.SIM]
+        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
 
     def _new_votation3(self):
 
@@ -200,16 +222,25 @@ class ImportadorConvencao:
         votacao = self._new_votation(
             NUM, DESCRICAO, BEGIN_FIRST_SEMESTER, prop)
 
-        votos_girondinos = [models.NAO, models.NAO, models.SIM]
-        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes3(votacao)
 
-        votos_jacobinos = [models.NAO, models.NAO, models.NAO]
-        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+        self.jaconbine_votes2(votacao)
 
-        votos_monarquistas = [models.SIM, models.SIM, models.SIM]
-        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes2(votacao)
 
     #new_votation4 => get instance the new votation
+
+    def girondine_votes4(self, votacao):
+        votos_girondinos = [models.SIM, models.SIM, models.SIM]
+        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+
+    def jacobine_votes4(self, votacao):
+        votos_jacobinos = [models.SIM, models.ABSTENCAO, models.NAO]
+        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+
+    def monarquist_votes4(self, votacao):
+        votos_monarquistas = [models.SIM, models.NAO, models.AUSENTE]
+        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
 
     def _new_votation4(self):
 
@@ -219,16 +250,17 @@ class ImportadorConvencao:
         votacao = self._new_votation(
             NUM, DESCRICAO, BEGIN_FIRST_SEMESTER, prop)
 
-        votos_girondinos = [models.SIM, models.SIM, models.SIM]
-        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes4(votacao)
 
-        votos_jacobinos = [models.SIM, models.ABSTENCAO, models.NAO]
-        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+        self.jacobine_votes4(votacao)
 
-        votos_monarquistas = [models.SIM, models.NAO, models.AUSENTE]
-        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes4(votacao)
 
     #new_votation5 => get instance the new votation
+
+    def girondine_votes5(self, votacao):
+        votos_girondinos = [models.SIM, models.SIM, models.ABSTENCAO]
+        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
 
     def _new_votation5(self):
 
@@ -238,16 +270,17 @@ class ImportadorConvencao:
         votacao = self._new_votation(
             NUM, DESCRICAO, BEGIN_SECOND_SEMESTER, prop)
 
-        votos_girondinos = [models.SIM, models.SIM, models.ABSTENCAO]
-        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes5(votacao)
 
-        votos_jacobinos = [models.SIM, models.SIM, models.SIM]
-        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+        self.jaconbine_votes(votacao)
 
-        votos_monarquistas = [models.NAO, models.NAO, models.NAO]
-        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes(votacao)
 
     #new_votation6 => get instance the new votation
+
+    def monarquist_votes6(self, votacao):
+        votos_monarquistas = [models.AUSENTE, models.SIM, models.SIM]
+        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
 
     def _new_votation6(self):
 
@@ -257,16 +290,17 @@ class ImportadorConvencao:
         votacao = self._new_votation(
             NUM, DESCRICAO, BEGIN_SECOND_SEMESTER, prop)
 
-        votos_girondinos = [models.SIM, models.SIM, models.SIM]
-        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes4(votacao)
 
-        votos_jacobinos = [models.SIM, models.SIM, models.SIM]
-        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+        self.jaconbine_votes(votacao)
 
-        votos_monarquistas = [models.AUSENTE, models.SIM, models.SIM]
-        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes6(votacao)
 
     #new_votation7 => get instance the new votation
+
+    def monarquist_votes7(self, votacao):
+        votos_monarquistas = [models.SIM, models.AUSENTE, models.SIM]
+        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
 
     def _new_votation7(self):
 
@@ -276,16 +310,17 @@ class ImportadorConvencao:
         votacao = self._new_votation(
             NUM, DESCRICAO, BEGIN_SECOND_SEMESTER, prop)
 
-        votos_girondinos = [models.SIM, models.SIM, models.ABSTENCAO]
-        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes5(votacao)
 
-        votos_jacobinos = [models.SIM, models.SIM, models.SIM]
-        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+        self.jaconbine_votes(votacao)
 
-        votos_monarquistas = [models.SIM, models.AUSENTE, models.SIM]
-        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes7(votacao)
 
     # Voting with different attributes for test
+    def jacobine_votes8(self, votacao):
+        votos_jacobinos = [models.ABSTENCAO, models.NAO, models.NAO]
+        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+
     def _new_votation8(self):
 
         NUM = '8'
@@ -302,14 +337,11 @@ class ImportadorConvencao:
         votacao = self._new_votation(
             NUM, DESCRICAO, BEGIN_SECOND_SEMESTER, prop)
 
-        votos_girondinos = [models.NAO, models.NAO, models.NAO]
-        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes2(votacao)
 
-        votos_jacobinos = [models.ABSTENCAO, models.NAO, models.NAO]
-        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+        self.jacobine_votes8(votacao)
 
-        votos_monarquistas = [models.SIM, models.AUSENTE, models.SIM]
-        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes7(votacao)
 
     def importar(self):
         self.casa = self._new_legislative_house()
