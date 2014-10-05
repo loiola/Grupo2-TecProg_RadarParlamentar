@@ -131,7 +131,8 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
 	;$.fn.scrollTo=function(l,j,a){if(typeof j=='object'){a=j;j=0}
 	if(typeof a=='function')a={onAfter:a};if(l=='max')l=9e9;a=$.extend({},m.defaults,a);
 	    j=j||a.speed||a.duration;a.queue=a.queue&&a.axis.length>1;
-	if(a.queue)j/=2;a.offset=n(a.offset);a.over=n(a.over);return this.scrollable().each(function(){var k=this,o=$(k),d=l,p,g={},q=o.is('html,body');switch(typeof d){case'number':case'string':
+	if(a.queue)j/=2;a.offset=n(a.offset);a.over=n(a.over);return this.scrollable().each(function(){
+	var k=this,o=$(k),d=l,p,g={},q=o.is('html,body');switch(typeof d){case'number':case'string':
 	if(/^([+-]=)?\d+(\.\d+)?(px)?$/.test(d)){d=n(d);break}d=$(d,this);
 	case'object':if(d.is||d.style)p=(d=$(d)).offset()}$.each(a.axis.split(''),
 	function(b,h){
@@ -152,7 +153,10 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
 
 /* JavaScript Custom Form Validation Routines
 
-* It's functionality is so simple. It doesn't show any validation message until user first attempts to submit forms with inappropriately filled field. When user's try to submit the form for first time this script checks if every field has been filled properly othwerwise it prevents submission to the server and notifies user about her mistake(s). This time it validates each field as user focuses in and blurs them(fields) off.
+* It's functionality is so simple. It doesn't show any validation message until user first attempts to submit forms with
+* inappropriately filled field. When user's try to submit the form for first time this script checks if every field has
+* been filled properly othwerwise it prevents submission to the server and notifies user about her mistake(s). This time
+* it validates each field as user focuses in and blurs them(fields) off.
 
 * You can also change error messages if you like.
 */
@@ -670,7 +674,8 @@ return this}})(window,jQuery);
                 pause: 1,
                 rev: 1,
                 randomizeEffects: false,
-                easing: 'easeInOutQuad', //jquery.easing library/plugin is required for this functionality
+                //jquery.easing library/plugin is required for this functionality
+                easing: 'easeInOutQuad',
                 next: '',
                 prev: '',
                 pager: '',
@@ -689,7 +694,8 @@ return this}})(window,jQuery);
                 pause: 1,
                 rev: 0,
                 randomizeEffects: false,
-                easing: 'easeInOutQuad', //jquery.easing library/plugin is required for this functionality
+                //jquery.easing library/plugin is required for this functionality
+                easing: 'easeInOutQuad',
                 next:   '#feedback .next',
                 prev:   '#feedback .prev',
                 pager:  '',
@@ -736,22 +742,6 @@ return this}})(window,jQuery);
         }
     });
 
-    /* Twitter plugin for home and about pages */
-//    $(document).ready(function(){
-//        $("#tweets .contents").tweet({
-//            username: "palpaldal",
-//            join_text: "auto",
-//            avatar_size: 40,
-//            count: 3,
-//            auto_join_text_default: "",
-//            auto_join_text_ed: "",
-//            auto_join_text_ing: "",
-//            auto_join_text_reply: "",
-//            auto_join_text_url: "",
-//            loading_text: "loading tweets..."
-//        });
-//    });
-
     /* a modified/tricked initializer to initialize cycle plugins on loaded tweets */
     $('#tweets').ready(function(){
         var addCycle2Tweet = function(){
@@ -763,7 +753,8 @@ return this}})(window,jQuery);
                     pause: 1,
                     rev: 0,
                     randomizeEffects: false,
-                    easing: 'easeInOutQuad', //jquery.easing library/plugin is required for this functionality
+                    //jquery.easing library/plugin is required for this functionality
+                    easing: 'easeInOutQuad',
                     next:   '#tweets .next',
                     prev:   '#tweets .prev',
                     pager:  '',
@@ -907,7 +898,8 @@ return this}})(window,jQuery);
                                 var ele = $(this);
                                 var itemSrc = ele.attr('href');
                                 ele.css({'position': 'relative', 'display': 'block'});
-                                if(itemSrc.match(/youtube\.com\/watch/i) || itemSrc.match(/vimeo\.com/i) || itemSrc.indexOf('.mov') != -1){
+                                if(itemSrc.match(/youtube\.com\/watch/i) || itemSrc.match(/vimeo\.com/i) ||
+                                itemSrc.indexOf('.mov') != -1){
                                     ele.append(movHTML);
                                 }
                                 else if(itemSrc.indexOf('iframe') != -1 || itemSrc.substr(0,1) == '#'){
@@ -968,12 +960,14 @@ $(document).ready(function(){
                 if(!colorLink.hasClass('active')){
                     headerColor = colorLink.attr('data-mode');
                     if(colorLink.attr('data-mode') == 'light'){
-                        $('#imageBox').css({'background-color': '#fff', 'background-image': 'url(files/images/noise-patt.png)'});
+                        $('#imageBox').css({'background-color': '#fff', 'background-image':
+                            'url(files/images/noise-patt.png)'});
                         $('#headerPatterns').find('li[data-type=light]').show();
                         $('#headerPatterns').find('li[data-type=dark]').hide();
                     }
                     else{
-                        $('#imageBox').css({'background-color': '#222', 'background-image': 'url(files/images/noise-patt-dark.png)'});
+                        $('#imageBox').css({'background-color': '#222', 'background-image':
+                            'url(files/images/noise-patt-dark.png)'});
                         $('#headerPatterns').find('li[data-type=light]').hide();
                         $('#headerPatterns').find('li[data-type=dark]').show();
                     }
