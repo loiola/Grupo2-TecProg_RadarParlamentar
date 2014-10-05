@@ -33,11 +33,17 @@ MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 COALITION_PARTIES = ['PT', 'PCdoB', 'PSB', 'PP', 'PMDB', 'PTB']
 # PR, PDT are not coalition?
+# Reference attributes "rollcall" column to be exported for analysis in R
 ROLLCALL = 'rollcall'
+# Reference to column attributes "id" (refers to the id for each attribute within the csv) to be exported for analysis in R
 VOTER_ID = 'voter_id'
+# Reference to column attributes "name" (refers to the name of politicians) to be exported for analysis in R.
 NAME = 'name'
+# Reference attributes "coalition" column to be exported for analysis in R.
 PARTY = 'party'
+# Reference to column attributes "parties" (refers to acronyms of political parties) to be exported for analysis in R.
 COALITION = 'coalition'
+# Reference to column attributes "vote" to be exported for analysis in R.
 VOTE = 'vote'
 
 LABELS = [ROLLCALL, VOTER_ID, NAME, PARTY, COALITION, VOTE]
@@ -46,10 +52,10 @@ CSV_FILE = 'votes.csv'
 
 class ExportadorCSV:
 
-    def __init__(self, nome_curto_casa_legislativa, data_ini, data_fim):
-        self.nome_curto = nome_curto_casa_legislativa
-        self.ini = data_ini
-        self.fim = data_fim
+    def __init__(self, short_name_legislative_house, initial_date, finish_date):
+        self.nome_curto = short_name_legislative_house
+        self.ini = initial_date
+        self.fim = finish_date
         self.votacoes = None
         self.csv_rows = []
 
@@ -102,8 +108,8 @@ class ExportadorCSV:
                     print 'Ignorando voto ', vote.opcao
                     logger.info("Ignorando voto: %s" % vote.opcao)
 
-    def coalition(self, nome_partido):
-        return '1' if nome_partido in COALITION_PARTIES else '0'
+    def coalition(self, party_name):
+        return '1' if party_name in COALITION_PARTIES else '0'
 
     # Options of votes:
     def voto(self, option):
