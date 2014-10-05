@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cd47e6ad-9580-45d2-b4cf-58043d978497" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/importadores/conv.py" afterPath="$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/importadores/conv.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/Grupo2-TecProg_RadarParlamentar.iml" afterPath="$PROJECT_DIR$/.idea/Grupo2-TecProg_RadarParlamentar.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/radar_parlamentar/views.py" afterPath="$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/radar_parlamentar/views.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Grupo2-TecProg_RadarParlamentar.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -25,21 +27,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="conv.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="conv.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/importadores/conv.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.90034366" vertical-offset="4561" max-vertical-offset="5535">
-              <caret line="341" column="8" selection-start-line="341" selection-start-column="8" selection-end-line="341" selection-end-column="8" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5565">
+              <caret line="28" column="22" selection-start-line="28" selection-start-column="22" selection-end-line="28" selection-end-column="22" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="views.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="views.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/radar_parlamentar/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1485">
-              <caret line="95" column="0" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.7938144" vertical-offset="1113" max-vertical-offset="1755">
+              <caret line="107" column="0" selection-start-line="107" selection-start-column="0" selection-end-line="107" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -48,7 +50,7 @@
       <file leaf-file-name="init.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/static/files/codes/js/init.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="11341" max-vertical-offset="16335">
+            <state vertical-scroll-proportion="0.0" vertical-offset="3061" max-vertical-offset="16335">
               <caret line="1065" column="51" selection-start-line="1065" selection-start-column="51" selection-end-line="1065" selection-end-column="51" />
               <folding />
             </state>
@@ -68,9 +70,9 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/radar_parlamentar/views.py" />
         <option value="$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/static/files/codes/js/init.js" />
         <option value="$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/importadores/conv.py" />
+        <option value="$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/radar_parlamentar/views.py" />
       </list>
     </option>
   </component>
@@ -79,6 +81,25 @@
     <option name="y" value="33" />
     <option name="width" value="1346" />
     <option name="height" value="728" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>Python</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>PyUnresolvedReferencesInspection</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -263,12 +284,47 @@
       </pane>
     </panes>
   </component>
+  <component name="PropertiesComponent">
+    <property name="options.lastSelected" value="Errors" />
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
+    <property name="recentsLimit" value="5" />
+  </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
-      <console-settings />
+      <console-settings module-name="Grupo2-TecProg_RadarParlamentar" is-module-sdk="true">
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="Grupo2-TecProg_RadarParlamentar" />
+        <option name="myAddSourceRoots" value="true" />
+      </console-settings>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python tests.Unittests in Grupo2-TecProg_RadarParlamentar">
+    <configuration default="false" name="Unittests in Grupo2-TecProg_RadarParlamentar" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Grupo2-TecProg_RadarParlamentar" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="$PROJECT_DIR$" />
+      <option name="TEST_TYPE" value="TEST_FOLDER" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <RunnerSettings RunnerId="PyDebugRunner" />
+      <ConfigurationWrapper RunnerId="PyDebugRunner" />
+      <method />
+    </configuration>
     <configuration default="true" type="tests" factoryName="py.test">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -390,7 +446,14 @@
       <option name="USE_PATTERN" value="false" />
       <method />
     </configuration>
-    <list size="0" />
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="Python tests.Unittests in Grupo2-TecProg_RadarParlamentar" />
+    </list>
+    <recent_temporary>
+      <list size="1">
+        <item index="0" class="java.lang.String" itemvalue="Python tests.Unittests in Grupo2-TecProg_RadarParlamentar" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
   <component name="SvnConfiguration">
@@ -423,8 +486,8 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -444,13 +507,55 @@
     </option>
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <option name="time" value="1" />
+    </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/importadores/conv.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5535">
+          <caret line="341" column="8" selection-start-line="341" selection-start-column="8" selection-end-line="341" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/radar_parlamentar/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1425" max-vertical-offset="1515">
+          <caret line="95" column="0" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/static/files/codes/js/init.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="11341" max-vertical-offset="16335">
+          <caret line="1065" column="51" selection-start-line="1065" selection-start-column="51" selection-end-line="1065" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/importadores/conv.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4500">
           <caret line="129" column="14" selection-start-line="129" selection-start-column="14" selection-end-line="129" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/radar_parlamentar/py/tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.15463917" vertical-offset="0" max-vertical-offset="3510">
+          <caret line="6" column="12" selection-start-line="6" selection-start-column="12" selection-end-line="6" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/importadores/conv.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5565">
+          <caret line="28" column="22" selection-start-line="28" selection-start-column="22" selection-end-line="28" selection-end-column="22" />
           <folding />
         </state>
       </provider>
@@ -465,16 +570,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/radar_parlamentar/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1485">
-          <caret line="95" column="0" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/radar_parlamentar/radar_parlamentar/importadores/conv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.90034366" vertical-offset="4561" max-vertical-offset="5535">
-          <caret line="341" column="8" selection-start-line="341" selection-start-column="8" selection-end-line="341" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.7938144" vertical-offset="1113" max-vertical-offset="1755">
+          <caret line="107" column="0" selection-start-line="107" selection-start-column="0" selection-end-line="107" selection-end-column="0" />
           <folding />
         </state>
       </provider>
