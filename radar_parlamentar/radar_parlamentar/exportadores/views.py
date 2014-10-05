@@ -27,9 +27,10 @@ MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 """The method download_dados import open data contained in XML."""
 
-def download_dados(request, dado_solicitado):
+def download_dados(request, requested_data):
 
-    file = os.path.join(MODULE_DIR, 'dados/' + dado_solicitado + '.xml')
+    # Receives donwlaod name for the open data referred.
+    file = os.path.join(MODULE_DIR, 'dados/' + requested_data + '.xml')
 
     if not os.path.exists(file):
         raise Http404()

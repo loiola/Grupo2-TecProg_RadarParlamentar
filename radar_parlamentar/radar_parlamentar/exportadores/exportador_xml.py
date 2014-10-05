@@ -27,10 +27,10 @@ import os
 MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
-def serialize_casa_legislativa(nome_curto):
+def serialize_casa_legislativa(short_name):
 
     # Identifying house:
-    legislative_house = models.CasaLegislativa.objects.filter(nome_curto=nome_curto)
+    legislative_house = models.CasaLegislativa.objects.filter(nome_curto=short_name)
     if len(legislative_house) <= 0:
         raise ValueError('Casa Legislativa não encontrada\n')
 
@@ -45,7 +45,7 @@ def serialize_casa_legislativa(nome_curto):
 
     # Identifying propositions:
     proposition = models.Proposicao.objects.filter(
-        casa_legislativa_id__nome_curto=nome_curto)
+        casa_legislativa_id__nome_curto=short_name)
 
     for proposition_aux in proposition:
         print "Exportando todas as votações e votos da Proposicao com id: "
@@ -84,9 +84,9 @@ def serialize_casa_legislativa(nome_curto):
 
         root.append(proposition_xml)
 
-    filepath = os.path.join(MODULE_DIR, 'dados/' + nome_curto + '.xml')
+    filepath = os.path.join(MODULE_DIR, 'dados/' + short_name + '.xml')
     out = open(filepath, "w")
     ElementTree(root).write(out)
     out.close()
 
-    print "Exportação realizada com sucesso"
+print "Exportação realizada com sucesso"

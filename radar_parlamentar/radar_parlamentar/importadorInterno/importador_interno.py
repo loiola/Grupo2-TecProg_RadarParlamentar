@@ -142,7 +142,7 @@ def _deserialize_voto():
     for deserialized_object in data:
         deserialized_object.save()
 
-def _importa_legislatura(nome_casa_curto):
+def _importa_legislatura(short_name_house):
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/legislatura.xml')
         out = open(filepath, "r")
@@ -155,10 +155,10 @@ def _importa_legislatura(nome_casa_curto):
     data = serializers.deserialize("xml", out)
 
     for deserialized_object in data:
-        if deserialized_object.object.casa_legislativa.nome_curto == nome_casa_curto:
+        if deserialized_object.object.casa_legislativa.nome_curto == short_name_house:
             deserialized_object.save()
 
-def _importa_proposicao(nome_casa_curto):
+def _importa_proposicao(short_name_house):
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/proposicao.xml')
         out = open(filepath, "r")
@@ -171,10 +171,10 @@ def _importa_proposicao(nome_casa_curto):
     data = serializers.deserialize("xml", out)
 
     for deserialized_object in data:
-        if deserialized_object.object.casa_legislativa.nome_curto == nome_casa_curto:
+        if deserialized_object.object.casa_legislativa.nome_curto == short_name_house:
             deserialized_object.save()
 
-def _importa_votacao(nome_casa_curto):
+def _importa_votacao(short_name_house):
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/votacao.xml')
         out = open(filepath, "r")
@@ -187,10 +187,10 @@ def _importa_votacao(nome_casa_curto):
     data = serializers.deserialize("xml", out)
 
     for deserialized_object in data:
-        if deserialized_object.object.proposicao.casa_legislativa.nome_curto == nome_casa_curto:
+        if deserialized_object.object.proposicao.casa_legislativa.nome_curto == short_name_house:
             deserialized_object.save()
 
-def _importa_voto(nome_casa_curto):
+def _importa_voto(short_name_house):
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/voto.xml')
         out = open(filepath, "r")
@@ -203,10 +203,10 @@ def _importa_voto(nome_casa_curto):
     data = serializers.deserialize("xml", out)
 
     for deserialized_object in data:
-        if deserialized_object.object.votacao.proposicao.casa_legislativa.nome_curto == nome_casa_curto:
+        if deserialized_object.object.votacao.proposicao.casa_legislativa.nome_curto == short_name_house:
             deserialized_object.save()
 
-def importa_casa_legislativa(nome_casa_curto):
+def importa_casa_legislativa(short_name_house):
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/casa_legislativa.xml')
         out = open(filepath, "r")
@@ -218,12 +218,12 @@ def importa_casa_legislativa(nome_casa_curto):
 
     data = serializers.deserialize("xml", out)
     for deserialized_object in data:
-        if deserialized_object.object.nome_curto == nome_casa_curto:
-            models.CasaLegislativa.deleta_casa(nome_casa_curto)
+        if deserialized_object.object.nome_curto == short_name_house:
+            models.CasaLegislativa.deleta_casa(short_name_house)
         deserialized_object.save()
         deserialize_partido()
         deserialize_parlamentar()
-        _importa_legislatura(nome_casa_curto)
-        _importa_proposicao(nome_casa_curto)
-        _importa_votacao(nome_casa_curto)
-        _importa_voto(nome_casa_curto)
+        _importa_legislatura(short_name_house)
+        _importa_proposicao(short_name_house)
+        _importa_votacao(short_name_house)
+        _importa_voto(short_name_house)
