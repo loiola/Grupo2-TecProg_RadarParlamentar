@@ -54,9 +54,9 @@ class XMLWriter:
         """ Save the data to a file."""
 
         self.closeAll()
-        fp = open(filename, "w")
-        fp.write(self.output)
-        fp.close()
+        fileOpen = open(filename, "w")
+        fileOpen.write(self.output)
+        fileOpen.close()
 
 import django.db.models
 
