@@ -27,16 +27,27 @@ Classes:
 from __future__ import unicode_literals
 from django.utils.dateparse import parse_datetime
 from modelagem import models
+#last_refresh => date of last refresh on data
 
 LAST_REFRESH = parse_datetime('2012-06-01 0:0:0')
 
+#begin_period => date on begin of period of votation
+
 BEGIN_PERIOD = parse_datetime('1989-01-01 0:0:0')
+
+#end_period => date on end of period of votation
+
 END_PERIOD = parse_datetime('1989-12-30 0:0:0')
 
+#begin_first_semester => date on begin the first semester
+
 BEGIN_FIRST_SEMESTER = parse_datetime('1989-02-02 0:0:0')
+
+#begin_second_semester => date on begin the second semester
+
 BEGIN_SECOND_SEMESTER = parse_datetime('1989-10-10 0:0:0')
 
-PARLAMENTARES_POR_PARTIDO = 3
+PARLAMENTS_PER_PARTY = 3
 
 GIRONDINOS = 'Girondinos'
 JACOBINOS = 'Jacobinos'
@@ -44,6 +55,8 @@ MONARQUISTAS = 'Monarquistas'
 
 
 class ImportadorConvencao:
+
+    #new_legislative_hause => get instance the new legislative house
 
     def _new_legislative_house(self):
 
@@ -55,6 +68,8 @@ class ImportadorConvencao:
         conv.atualizacao = LAST_REFRESH
         conv.save()
         return conv
+
+    # new_party => get instance the new party
 
     def _new_party(self):
 
@@ -75,13 +90,15 @@ class ImportadorConvencao:
         monarquistas.save()
         self.partidos = {girondinos, jacobinos, monarquistas}
 
+    #new_legislature => get instance the new legislature
+
     def _new_legislature(self):
 
         # Name partido => list of party legislatures
         self.legs = {}  
         for p in self.partidos:
             self.legs[p.nome] = []
-            for i in range(0, PARLAMENTARES_POR_PARTIDO):
+            for i in range(0, PARLAMENTS_PER_PARTY):
 
                 parlamentar = models.Parlamentar()
                 parlamentar.id_parlamentar = '%s%s' % (p.nome[0], str(i))
@@ -97,6 +114,8 @@ class ImportadorConvencao:
                 leg.save()
                 self.legs[p.nome].append(leg)
 
+    #new_proposition => get instance the new proposition
+
     def _new_proposition(self, num, descricao):
 
         prop = models.Proposicao()
@@ -109,6 +128,8 @@ class ImportadorConvencao:
         prop.save()
         return prop
 
+    #new_votation => get instance the new votation
+
     def _new_votation(self, num, descricao, data, prop):
 
         votacao = models.Votacao()
@@ -119,15 +140,19 @@ class ImportadorConvencao:
         votacao.save()
         return votacao
 
+    #new_vote => get instance the new vote
+
     def _new_votes(self, votacao, nome_partido, opcoes):
 
         # opcoes is an options list (YES, NO...)
-        for i in range(0, PARLAMENTARES_POR_PARTIDO):
+        for i in range(0, PARLAMENTS_PER_PARTY):
             voto = models.Voto()
             voto.legislatura = self.legs[nome_partido][i]
             voto.opcao = opcoes[i]
             voto.votacao = votacao
             voto.save()
+
+    #new_votation1 => get instance the new votation
 
     def _new_votation1(self):
 
@@ -146,6 +171,8 @@ class ImportadorConvencao:
         votos_monarquistas = [models.NAO, models.NAO, models.NAO]
         self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
 
+    #new_votation2 => get instance the new votation
+
     def _new_votation2(self):
 
         NUM = '2'
@@ -162,6 +189,8 @@ class ImportadorConvencao:
 
         votos_monarquistas = [models.SIM, models.SIM, models.SIM]
         self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+
+    #new_votation3 => get instance the new votation
 
     def _new_votation3(self):
 
@@ -180,6 +209,8 @@ class ImportadorConvencao:
         votos_monarquistas = [models.SIM, models.SIM, models.SIM]
         self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
 
+    #new_votation4 => get instance the new votation
+
     def _new_votation4(self):
 
         NUM = '4'
@@ -196,6 +227,8 @@ class ImportadorConvencao:
 
         votos_monarquistas = [models.SIM, models.NAO, models.AUSENTE]
         self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+
+    #new_votation5 => get instance the new votation
 
     def _new_votation5(self):
 
@@ -214,6 +247,8 @@ class ImportadorConvencao:
         votos_monarquistas = [models.NAO, models.NAO, models.NAO]
         self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
 
+    #new_votation6 => get instance the new votation
+
     def _new_votation6(self):
 
         NUM = '6'
@@ -230,6 +265,8 @@ class ImportadorConvencao:
 
         votos_monarquistas = [models.AUSENTE, models.SIM, models.SIM]
         self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+
+    #new_votation7 => get instance the new votation
 
     def _new_votation7(self):
 
