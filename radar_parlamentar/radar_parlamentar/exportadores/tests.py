@@ -115,12 +115,15 @@ class ExportadoresFileTest(TestCase):
             atualizacao='2012-12-31')
         filepath = os.path.join(MODULE_DIR, 'dados/casa_legislativa.xml')
         file_xml = open(filepath, 'r')
-        file_read = file_xml.read()  # Transforma o arquivo xml em uma string
+
+        # Transforms the xml file into a string
+        file_read = file_xml.read()
         self.assertTrue(
             file_read.find(legislative_house.nome.decode("utf-8")) > 0)
         self.assertTrue(file_read.find(legislative_house.nome_curto) > 0)
         self.assertTrue(file_read.find(legislative_house.esfera) > 0)
-        # Caso for menor que zero a palavra nao existe na string
+
+        # Case is less than zero the word does not exist in the string
         self.assertTrue(file_read.find('cdeb') < 0)
 
     def test_create_file_parlamentar(self):
@@ -152,12 +155,12 @@ class ExportadoresFileTest(TestCase):
         self.assertTrue(os.path.isfile(filepath))
 
     def teste_verify_file_proposicao(self):
-        proposicao = models.Proposicao.objects.get(sigla='PL')
+        proposition = models.Proposicao.objects.get(sigla='PL')
         filepath = os.path.join(MODULE_DIR, 'dados/proposicao.xml')
         file_xml = open(filepath, 'r')
         file_read = file_xml.read()
-        self.assertTrue(file_read.find(proposicao.numero) > 0)
-        self.assertTrue(file_read.find(proposicao.id_prop) > 0)
+        self.assertTrue(file_read.find(proposition.numero) > 0)
+        self.assertTrue(file_read.find(proposition.id_prop) > 0)
 
     def test_create_file_votacao(self):
         filepath = os.path.join(MODULE_DIR, 'dados/votacao.xml')

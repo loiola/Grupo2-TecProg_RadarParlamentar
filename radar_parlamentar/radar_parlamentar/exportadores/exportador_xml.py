@@ -47,24 +47,24 @@ def serialize_casa_legislativa(nome_curto):
     proposition = models.Proposicao.objects.filter(
         casa_legislativa_id__nome_curto=nome_curto)
 
-    for e in proposition:
+    for proposition_aux in proposition:
         print "Exportando todas as votações e votos da Proposicao com id: "
-        print str(e.id_prop) + ", numero: " + str(e.numero)
+        print str(proposition_aux.id_prop) + ", numero: " + str(proposition_aux.numero)
         proposition_xml = Element(
-            'Proposicao', id_prop=str(e.id_prop),
-            sigla=e.sigla, numero=str(e.numero), ano=str(e.ano),
-            ementa=e.ementa, descricao=e.descricao,
-            indexacao=str(e.indexacao),
-            data_apresentacao=str(e.data_apresentacao), situacao=e.situacao)
+            'Proposicao', id_prop=str(proposition_aux.id_prop),
+            sigla=proposition_aux.sigla, numero=str(proposition_aux.numero), ano=str(proposition_aux.ano),
+            ementa=proposition_aux.ementa, descricao=proposition_aux.descricao,
+            indexacao=str(proposition_aux.indexacao),
+            data_apresentacao=str(proposition_aux.data_apresentacao), situacao=proposition_aux.situacao)
 
-        voting = models.Votacao.objects.filter(proposicao_id=e)
-        for v in voting:
+        voting = models.Votacao.objects.filter(proposicao_id=proposition_aux)
+        for vote_aux in voting:
             voting_xml = Element('Votacao', id_vot=str(
-                v.id_vot), descricao=v.descricao, data=str(v.data),
-                resultado=v.resultado)
+                vote_aux.id_vot), descricao=vote_aux.descricao, data=str(vote_aux.data),
+                resultado=vote_aux.resultado)
 
             # Vote:
-            votes = models.Voto.objects.filter(votacao_id=v)
+            votes = models.Voto.objects.filter(votacao_id=vote_aux)
             for vote in votes:
 
                 legislature = vote.legislatura
