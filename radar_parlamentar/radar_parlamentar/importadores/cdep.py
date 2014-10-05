@@ -72,10 +72,14 @@ class Url(object):
 class Camaraws:
 
     """Acess to Chamber of Deputies's Web Services."""
-    URL_PROPOSICAO = 'http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/ObterProposicaoPorID?'
-    URL_VOTACOES = 'http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/ObterVotacaoProposicao?'
-    URL_LISTAR_PROPOSICOES = 'http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ListarProposicoes?'
-    URL_PLENARIO = 'http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ListarProposicoesVotadasEmPlenario?'
+    URL_PROPOSICAO = \
+        'http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/ObterProposicaoPorID?'
+    URL_VOTACOES = \
+        'http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/ObterVotacaoProposicao?'
+    URL_LISTAR_PROPOSICOES = \
+        'http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ListarProposicoes?'
+    URL_PLENARIO = \
+        'http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ListarProposicoesVotadasEmPlenario?'
 
     def __init__(self, url=Url()):
         self.url = url
@@ -164,6 +168,7 @@ class Camaraws:
         url = self._montar_url_consulta_camara(
             Camaraws.URL_PLENARIO, consult_parameters, **args)
         tree = self.url.toXml(url)
+
         if tree is None:
             raise ValueError('O ano %s nao possui votacoes ainda' % ano)
         return tree
@@ -189,12 +194,14 @@ class Camaraws:
             "siglapartidoautor", "siglaufautor", "generoautor", "codestado",
             "codorgaoestado", "emtramitacao"]
         args = {'sigla': sigla, 'ano': ano}
+
         if kwargs:
             args.update(kwargs)
         print(args)
         url = self._montar_url_consulta_camara(
             Camaraws.URL_LISTAR_PROPOSICOES, consult_parameters, **args)
         tree = self.url.toXml(url)
+
         if tree is None:
             raise ValueError(
                 'Proposicoes nao encontradas para sigla=%s&ano=%s' % (sigla, ano))
@@ -225,6 +232,7 @@ class ProposicoesFinder:
 
         id_propositions_list = []
         name_list = []
+
         for child in xml:
             id_propositions = child.find('codProposicao').text.strip()
             name_propositions = child.find('nomeProposicao').text.strip()
@@ -237,9 +245,11 @@ class ProposicoesFinder:
         """Return a list with two ids and names of propositions available
         by feature ListarProposicoesVotadasPlenario.
 
-        Searches are made by propositions from ano_min, which by default is 1991 to the present."""
+        Searches are made by propositions from ano_min, which by default is 1991 to the
+        present."""
 
         today = datetime.today()
+
         if (ano_max is None):
             ano_max = today.year
         acronyms = camaraws.listar_siglas()
@@ -323,12 +333,13 @@ class ImportadorCamara:
 
         DATA_REGEX = '(\d\d?)/(\d\d?)/(\d{4})'
         HORA_REGEX = '(\d\d?):(\d\d?)'
-        dt = re.match(DATA_REGEX, data_str)
-        hr = re.match(HORA_REGEX, hora_str)
-        if dt and hr:
+        date_regex_variable = re.match(DATA_REGEX, data_str)
+        hour_regex_variable = re.match(HORA_REGEX, hora_str)
+
+        if date_regex_variable and hour_regex_variable:
             new_str = '%s-%s-%s %s:%s:0' % (
-                dt.group(3), dt.group(2), dt.group(1),
-                hr.group(1), hr.group(2))
+                date_regex_variable.group(3), date_regex_variable.group(2), date_regex_variable.group(1),
+                hour_regex_variable.group(1), hour_regex_variable.group(2))
             return parse_datetime(new_str)
         else:
             return None
@@ -342,15 +353,16 @@ class ImportadorCamara:
         LOCK_TO_CREATE_CASA.acquire()
         count_cdep = models.CasaLegislativa.objects.filter(
             nome_curto='cdep').count()
+
         if (count_cdep == 0):
-            camara_dos_deputados = models.CasaLegislativa()
-            camara_dos_deputados.nome = 'Câmara dos Deputados'
-            camara_dos_deputados.nome_curto = 'cdep'
-            camara_dos_deputados.esfera = models.FEDERAL
-            camara_dos_deputados.atualizacao = ULTIMA_ATUALIZACAO
-            camara_dos_deputados.save()
+            deputies_chamber = models.CasaLegislativa()
+            deputies_chamber.nome = 'Câmara dos Deputados'
+            deputies_chamber.nome_curto = 'cdep'
+            deputies_chamber.esfera = models.FEDERAL
+            deputies_chamber.atualizacao = ULTIMA_ATUALIZACAO
+            deputies_chamber.save()
             LOCK_TO_CREATE_CASA.release()
-            return camara_dos_deputados
+            return deputies_chamber
         else:
             LOCK_TO_CREATE_CASA.release()
             return models.CasaLegislativa.objects.get(nome_curto='cdep')
@@ -410,6 +422,7 @@ class ImportadorCamara:
             voting.data = date_time
             voting.proposicao = prop
             voting.save()
+
             if votacao_xml.find('votos'):
                 for vote_xml in votacao_xml.find('votos'):
                     self._voto_from_xml(vote_xml, voting)
@@ -466,7 +479,6 @@ class ImportadorCamara:
         party = self._partido(voto_xml.get('Partido'))
         voter = self._votante(voto_xml.get('Nome'), party.nome)
 
-        
         legs = models.Legislatura.objects.filter(
             parlamentar=voter, partido=party,
             casa_legislativa=self.camara_dos_deputados)
@@ -490,8 +502,10 @@ class ImportadorCamara:
 
         party_name = party_name.strip()
         party = self.partidos.get(party_name)
+
         if not party:
             party = models.Partido.from_nome(party_name)
+
             if party is None:
                 logger.warning(
                     'Não achou o partido %s; Usando "sem partido"'
@@ -508,6 +522,7 @@ class ImportadorCamara:
 
         key = '%s-%s' % (nome_dep, nome_partido)
         parliamentarian = self.parlamentares.get(key)
+
         if not parliamentarian:
             parliamentarians = models.Parlamentar.objects.filter(nome=nome_dep)
             if parliamentarians:
@@ -567,8 +582,10 @@ class SeparadorDeLista:
         start = 0
         chunk_size = (int)(
             math.ceil(1.0 * len(lista) / self.numero_de_listas))
+
         while start < len(lista):
             end = start + chunk_size
+
             if (end > len(lista)):
                 end = len(lista)
             list_lists.append(lista[start:end])
@@ -644,6 +661,7 @@ def main():
     tab = SeparadorDeLista(NUM_THREADS)
     voted_lists = tab.separa_lista_em_varias_listas(dic_voted)
     threads = []
+
     for voted_list in voted_lists:
         importer = ImportadorCamara(voted_list)
         thread = ImportadorCamaraThread(importer)

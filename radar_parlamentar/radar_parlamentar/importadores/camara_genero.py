@@ -57,42 +57,38 @@ LISTA_BASE_PARTIDOS = [
 
 matrix = {}
 
-def converte_csv_para_json(nome_arquivo_entrada):
+def converte_csv_para_json(input_file_name):
     sep = b";"
-    file = open(nome_arquivo_entrada + '.csv', 'r')
+    file = open(input_file_name + '.csv', 'r')
     reader = csv.DictReader(file, delimiter=sep, fieldnames=HEADERS)
     out = json.loads(json.dumps([row for row in reader], indent=4))
     return out
 
+def _null_to_none(proposition):
+    for attribute in proposition.keys():
+        if proposition[attribute] == "NULL":
+            proposition[attribute] = None
+    return proposition
 
-def _null_to_none(proposicao):
-    for attribute in proposicao.keys():
-        if proposicao[attribute] == "NULL":
-            proposicao[attribute] = None
-    return proposicao
-
-
-def multiple_null_remove(lista_proposicoes):
+def multiple_null_remove(proposition_list):
     new_list = []
-    for proposition in lista_proposicoes:
+    for proposition in proposition_list:
         new_list.append(_null_to_none(proposition))
     return new_list
 
-
-def proposicoes_indexadas(lista_proposicoes):
+def proposicoes_indexadas(proposition_list):
     indexed = []
 
-    for proposition in lista_proposicoes:
+    for proposition in proposition_list:
         if proposition['txtIndexacao'] and proposition['txtSiglaPartido']:
             if proposition['txtSiglaPartido'].strip() in LISTA_BASE_PARTIDOS:
                 indexed.append(proposition)
     return indexed
 
-
-def parseia_indexacoes(indexacao):
+def parseia_indexacoes(indexing):
     indexing1 = [term.strip()
 
-                  for term in indexacao.replace('\n', '').replace('.', '').replace('_', '').split(',')]
+                  for term in indexing.replace('\n', '').replace('.', '').replace('_', '').split(',')]
     indexing2 = []
 
     for term in indexing1:
@@ -103,11 +99,10 @@ def parseia_indexacoes(indexacao):
                 indexing2.append(term2.lower())
     return indexing2
 
-
-def parsear_indexacoes_de_proposicoes(lista_proposicoes):
+def parsear_indexacoes_de_proposicoes(propositions_list):
     new_proposition_list = []
 
-    for proposition in lista_proposicoes:
+    for proposition in propositions_list:
         proposition['txtIndexacao'] = parseia_indexacoes(
             proposition['txtIndexacao'])
         new_proposition_list.append(proposition)
@@ -117,19 +112,17 @@ def parsear_indexacoes_de_proposicoes(lista_proposicoes):
                 proposition['txtSiglaPartido'], proposition['txtIndexacao'])
     return new_proposition_list
 
+def partidos_das_proposicoes(propositions_list):
 
-def partidos_das_proposicoes(lista_proposicoes):
-
-    for proposition in lista_proposicoes:
+    for proposition in propositions_list:
         if proposition['txtSiglaPartido']:
             party = proposition['txtSiglaPartido'].strip()
             if party not in PARTIDOS:
                 PARTIDOS[party] = {}
 
+def contabiliza_termos_geral(indexed_list):
 
-def contabiliza_termos_geral(lista_indexadas):
-
-    for proposition in lista_indexadas:
+    for proposition in indexed_list:
 
         for term in proposition['txtIndexacao']:
             if term not in DESCARTADAS:
@@ -138,16 +131,14 @@ def contabiliza_termos_geral(lista_indexadas):
                 else:
                     DIC_TERMOS[term] = 1
 
-
-def pega_maiores_palavras(dic_palavras):
-    words = sorted(dic_palavras, key=lambda k: -dic_palavras[k])
+def pega_maiores_palavras(dic_words):
+    words = sorted(dic_words, key=lambda k: -dic_words[k])
     export_json(words, "lista_50_mais")
     global PALAVRAS_MAIS_MAIS
     PALAVRAS_MAIS_MAIS = words[0:50]
 
     for term in FILTRADAS:
         PALAVRAS_MAIS_MAIS.remove(term)
-
 
 def ordena_palavras_partido():
     for party in PARTIDOS:
@@ -158,19 +149,16 @@ def ordena_palavras_partido():
         for term in words:
             PARTIDOS[party][term] = party_words[term]
 
-
-def soma_palavras_no_partido(partido, lista_palavras):
-    for word in lista_palavras:
-        if word not in PARTIDOS[partido.strip()]:
-            PARTIDOS[partido.strip()][word] = 1
+def soma_palavras_no_partido(party, words_list):
+    for word in words_list:
+        if word not in PARTIDOS[party.strip()]:
+            PARTIDOS[party.strip()][word] = 1
         else:
-            PARTIDOS[partido.strip()][word] += 1
-
+            PARTIDOS[party.strip()][word] += 1
 
 def export_json(data, filename):
     with open(filename, 'w') as outFile:
         outFile.write(json.dumps(data, indent=4))
-
 
 def jsonMatrix_gera_partidos():
     i = 0
@@ -181,7 +169,6 @@ def jsonMatrix_gera_partidos():
         i += 1
     global matrix
     matrix['partidos'] = parties_list
-
 
 def jsonMatrix_gera_termos_mais_mais():
     i = 0
@@ -196,14 +183,16 @@ def jsonMatrix_gera_termos_mais_mais():
     matrix['termos'] = term_list
     print(matrix['termos'])
 
-
 def jsonMatrix_gera_links_partidos_termos():
     global matrix
     matrix['links'] = []
+
     for p in range(len(matrix['partidos'])):
         partyName = matrix['partidos'][p]['name']
+
         for t in range(len(matrix['termos'])):
             termName = matrix['termos'][t]['name']
+
             if termName in PARTIDOS[partyName]:
                 matrix['links'].append(
                     {'source': t, 'target': p, 'value': PARTIDOS[
