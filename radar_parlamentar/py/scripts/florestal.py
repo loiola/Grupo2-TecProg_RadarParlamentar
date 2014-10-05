@@ -17,16 +17,15 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Script florestal 
-Baixa a votação do código florestal
-Mostra votos agregados por partido
-Se tiver flag -uf, mostra votos por UF
-"""
+Download voting forest code
+Shows aggregate votes by party
+If you flag -uf shows votes by UF"""
 
 from __future__ import unicode_literals
 import camaraws
 import sys
 
-# Código florestal
+# Forest Code
 # http://www.camara.gov.br/proposicoesWeb/fichadetramitacao?idProposicao=17338
 type = 'pl'
 number = '1876'
@@ -40,10 +39,12 @@ print type(txt)
 for votations in proposition.votacoes:
   print('************')
   print(votations)
+
   if (len(sys.argv)>1 and sys.argv[1] == '-uf'):
     dic = votations.por_uf()
   else:
     dic = votations.por_partido()
+
   for key, vote in dic.items():
     yes = vote.sim
     no = vote.nao
