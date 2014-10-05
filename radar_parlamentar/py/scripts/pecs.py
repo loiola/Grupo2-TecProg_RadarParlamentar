@@ -42,10 +42,12 @@ pecs.append(camaraws.obter_votacao(type, number, year))
 # Print propositions
 for propositions in pecs:
   print(propositions)
+
   for voting in propositions.votacoes:
     print('************')
     print(voting)
     dic = voting.por_partido()
+
     for party, vote in dic.items():
       print("%s: \t Sim: %s \t Não: %s \t Abstenções: %s" % (party, vote.sim, vote.nao, vote.abstencao))
   print('=================================================================================')
