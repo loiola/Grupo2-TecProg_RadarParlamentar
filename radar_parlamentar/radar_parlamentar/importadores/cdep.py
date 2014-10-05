@@ -83,15 +83,15 @@ class Camaraws:
     def _montar_url_consulta_camara(self, base_url, url_params, **kwargs):
         built_url = base_url
 
-        for par in kwargs.keys():
-            if type(par) == str:
-                kwargs[par] = kwargs[par].lower()
+        for pair in kwargs.keys():
+            if type(pair) == str:
+                kwargs[pair] = kwargs[pair].lower()
 
-        for par in url_params:
-            if par in kwargs.keys():
-                built_url += str(par) + "=" + str(kwargs[par]) + "&"
+        for pair in url_params:
+            if pair in kwargs.keys():
+                built_url += str(pair) + "=" + str(kwargs[pair]) + "&"
             else:
-                built_url += str(par) + "=&"
+                built_url += str(pair) + "=&"
 
         built_url = built_url.rstrip("&")
         return built_url
@@ -244,8 +244,10 @@ class ProposicoesFinder:
             ano_max = today.year
         acronyms = camaraws.listar_siglas()
         voted = []
+
         for year in range(ano_min, ano_max + 1):
             logger.info('Procurando em %s' % year)
+
             for acronym in acronyms:
                 try:
                     xml = camaraws.obter_proposicoes_votadas_plenario(year)
@@ -277,7 +279,9 @@ class ProposicoesParser:
         '604123', 'PL 9261/2013 => PRC 228/2013')]."""
 
         propositions = []
+
         for position in self.votadas:
+
             for prop in position:
                 id_propositions = prop[0]
                     acronyms = prop[1][0:prop[1].index(" ")]
@@ -390,9 +394,9 @@ class ImportadorCamara:
         
         description = 'Resumo: [%s]. ObjVotacao: [%s]' % (
             votacao_xml.get('Resumo'), votacao_xml.get('ObjVotacao'))
-        data_str = votacao_xml.get('Data').strip()
-        hora_str = votacao_xml.get('Hora').strip()
-        date_time = self._converte_data(data_str, hora_str)
+        date_str = votacao_xml.get('Data').strip()
+        hour_str = votacao_xml.get('Hora').strip()
+        date_time = self._converte_data(date_str, hour_str)
 
         query = models.Votacao.objects.filter(
             descricao=description, data=date_time,
@@ -400,15 +404,15 @@ class ImportadorCamara:
         if query:
             voting = query[0]
         else:
-            logger.info('Importando votação ocorrida em %s' % data_str)
+            logger.info('Importando votação ocorrida em %s' % date_str)
             voting = models.Votacao()
             voting.descricao = description
             voting.data = date_time
             voting.proposicao = prop
             voting.save()
             if votacao_xml.find('votos'):
-                for voto_xml in votacao_xml.find('votos'):
-                    self._voto_from_xml(voto_xml, voting)
+                for vote_xml in votacao_xml.find('votos'):
+                    self._voto_from_xml(vote_xml, voting)
             voting.save()
 
         return voting
@@ -529,20 +533,20 @@ class ImportadorCamara:
         self.camara_dos_deputados = self._gera_casa_legislativa()
 
         f = lambda dic: (dic['id'], dic['sigla'], dic['num'], dic['ano'])
-        for id_prop, sigla, num, ano in [f(dic) for dic in self.votadas]:
+        for id_proposition, acronym, number, year in [f(dic) for dic in self.votadas]:
 
             logger.info(
                 '############################################################')
             logger.info('Importando votações da PROPOSIÇÃO %s: %s %s/%s' %
-                        (id_prop, sigla, num, ano))
+                        (id_proposition, acronym, number, year))
 
             try:
-                prop_xml = camaraws.obter_proposicao_por_id(id_prop)
-                prop = self._prop_from_xml(prop_xml, id_prop)
-                vots_xml = camaraws.obter_votacoes(sigla, num, ano)
+                proposition_xml = camaraws.obter_proposicao_por_id(id_proposition)
+                proposition = self._prop_from_xml(proposition_xml, id_proposition)
+                votes_xml = camaraws.obter_votacoes(acronym, number, year)
 
-                for child in vots_xml.find('Votacoes'):
-                    self._votacao_from_xml(child, prop)
+                for child in votes_xml.find('Votacoes'):
+                    self._votacao_from_xml(child, proposition)
 
                 self.importadas += 1
                 self._progresso()
@@ -590,8 +594,8 @@ def wait_threads(threads):
 def lista_proposicoes_de_mulheres():
     camaraws = Camaraws()
     propFinder = ProposicoesFinder()
-    importador = ImportadorCamara([''])
-    importador.camara_dos_deputados = importador._gera_casa_legislativa()
+    importer = ImportadorCamara([''])
+    importer.camara_dos_deputados = importer._gera_casa_legislativa()
     minimal_year = 2012
     maximum_year = 2013
     propositions = {}
@@ -607,14 +611,15 @@ def lista_proposicoes_de_mulheres():
         count_propositions[year]['M'] = []
         count_propositions[year]['somatotal'] = []
 
-        for gen in ['F', 'M']:
-            prop_ano_gen = propFinder._parse_nomes_lista_proposicoes(
+        for gender in ['F', 'M']:
+            proposition_year_gender = propFinder._parse_nomes_lista_proposicoes(
                 camaraws.listar_proposicoes('PL', str(year), **{
-                    'generoautor': gen}))
-            for prop in prop_ano_gen:
-                prop_xml = camaraws.obter_proposicao_por_id(prop[0])
-                propositions[year][gen].append(
-                    importador._prop_from_xml(prop_xml, prop[0]))
+                    'generoautor': gender}))
+
+            for proposition in proposition_year_gender:
+                proposition_xml = camaraws.obter_proposicao_por_id(proposition[0])
+                propositions[year][gender].append(
+                    importer._prop_from_xml(proposition_xml, proposition[0]))
 
         count_propositions[year]['mulheres'] = len(propositions[year]['F'])
         count_propositions[year]['homens'] = len(propositions[year]['M'])
@@ -636,10 +641,10 @@ def main():
     zip_voted = propFinder.find_props_disponiveis()
     propParser = ProposicoesParser(zip_voted)
     dic_voted = propParser.parse()
-    separador = SeparadorDeLista(NUM_THREADS)
-    listas_votadas = separador.separa_lista_em_varias_listas(dic_voted)
+    tab = SeparadorDeLista(NUM_THREADS)
+    voted_lists = tab.separa_lista_em_varias_listas(dic_voted)
     threads = []
-    for voted_list in listas_votadas:
+    for voted_list in voted_lists:
         importer = ImportadorCamara(voted_list)
         thread = ImportadorCamaraThread(importer)
         threads.append(thread)
