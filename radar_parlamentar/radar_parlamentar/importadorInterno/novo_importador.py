@@ -55,60 +55,63 @@ class importador_interno:
         legislativeHouse.atualizacao = root.attrib.get("atualizacao")
         legislativeHouse.save()
 
-        for child_proposicao in root.iter("Proposicao"):
+        for child_proposition in root.iter("Proposicao"):
 
             proposition = models.Proposicao()
             proposition.casa_legislativa = legislativeHouse
-            proposition.id_prop = child_proposicao.attrib.get("id_prop")
-            proposition.sigla = child_proposicao.attrib.get("sigla")
-            proposition.numero = child_proposicao.attrib.get("numero")
-            proposition.ano = child_proposicao.attrib.get("ano")
-            proposition.ementa = child_proposicao.attrib.get("ementa")
-            proposition.descricao = child_proposicao.attrib.get("descricao")
-            proposition.indexacao = child_proposicao.attrib.get("indexacao")
-            if(child_proposicao.attrib.get("data_apresentacao") == "None"):
+            proposition.id_prop = child_proposition.attrib.get("id_prop")
+            proposition.sigla = child_proposition.attrib.get("sigla")
+            proposition.numero = child_proposition.attrib.get("numero")
+            proposition.ano = child_proposition.attrib.get("ano")
+            proposition.ementa = child_proposition.attrib.get("ementa")
+            proposition.descricao = child_proposition.attrib.get("descricao")
+            proposition.indexacao = child_proposition.attrib.get("indexacao")
+
+            if(child_proposition.attrib.get("data_apresentacao") == "None"):
 
                 # Default value if the date comes in white
                 proposition.data_apresentacao = "1900-01-01"
                 proposition.save()
             else:
-                proposition.data_apresentacao = child_proposicao.attrib.get(
+                proposition.data_apresentacao = child_proposition.attrib.get(
                     "data_apresentacao")
                 proposition.save()
 
             # Get the daughter of the subtree being traversed.
-            for child_votacao in child_proposicao.findall("Votacao"):
+            for child_voting in child_proposition.findall("Votacao"):
 
                 voting = models.Votacao()
                 voting.proposicao = proposition
-                voting.id_votacao = child_votacao.attrib.get("id_votacao")
-                voting.id_vot = child_votacao.attrib.get("id_vot")
-                voting.descricao = child_votacao.attrib.get("descricao")
-                voting.data = child_votacao.attrib.get("data")
-                voting.resultado = child_votacao.attrib.get("resultado")
+                voting.id_votacao = child_voting.attrib.get("id_votacao")
+                voting.id_vot = child_voting.attrib.get("id_vot")
+                voting.descricao = child_voting.attrib.get("descricao")
+                voting.data = child_voting.attrib.get("data")
+                voting.resultado = child_voting.attrib.get("resultado")
                 voting.save()
 
-                for child_voto in child_votacao.findall("Voto"):
+                for child_vote in child_voting.findall("Voto"):
 
                     party = models.Partido()
-                    party.numero = child_voto.attrib.get("numero")
-                    party.nome = child_voto.attrib.get("partido")
+                    party.numero = child_vote.attrib.get("numero")
+                    party.nome = child_vote.attrib.get("partido")
                     partido_existente = models.Partido.objects.filter(
                         numero=party.numero, nome=party.nome)
+
                     if len(partido_existente) > 0:
                         party = partido_existente[0]
                     else:
                         party.save()
 
                     parliamentarian = models.Parlamentar()
-                    parliamentarian.nome = child_voto.attrib.get("nome")
-                    parliamentarian.id_parlamentar = child_voto.attrib.get(
+                    parliamentarian.nome = child_vote.attrib.get("nome")
+                    parliamentarian.id_parlamentar = child_vote.attrib.get(
                         "id_parlamentar")
-                    parliamentarian.genero = child_voto.attrib.get("genero")
+                    parliamentarian.genero = child_vote.attrib.get("genero")
                     existing_parliamentarian = models.Parlamentar.objects.filter(
                         nome=parliamentarian.nome,
                         id_parlamentar=parliamentarian.id_parlamentar,
                         genero=parliamentarian.genero)
+
                     if len(existing_parliamentarian) > 0:
                         parliamentarian = existing_parliamentarian[0]
                     else:
@@ -118,10 +121,11 @@ class importador_interno:
                     legislature.partido = party
                     legislature.parlamentar = parliamentarian
                     legislature.casa_legislativa = legislativeHouse
-                    legislature.inicio = child_voto.attrib.get("inicio")
-                    legislature.fim = child_voto.attrib.get("fim")
-                    legislature.localidade = child_voto.attrib.get(
+                    legislature.inicio = child_vote.attrib.get("inicio")
+                    legislature.fim = child_vote.attrib.get("fim")
+                    legislature.localidade = child_vote.attrib.get(
                         "localidade")
+
                     if legislature.localidade is None:
                         legislature.localidade = ""
                     else:
@@ -131,6 +135,7 @@ class importador_interno:
                         parliamentarian=legislature.parlamentar,
                         legislative_house=legislature.casa_legislativa,
                         init=legislature.inicio, fim=legislature.fim)
+
                     if len(existing_legislature) > 0:
                         legislature = existing_legislature[0]
                     else:
@@ -139,7 +144,7 @@ class importador_interno:
                     vote = models.Voto()
                     vote.votacao = voting
                     vote.legislatura = legislature
-                    vote.opcao = child_voto.attrib.get("opcao")
+                    vote.opcao = child_vote.attrib.get("opcao")
                     vote.save()
 
 

@@ -93,6 +93,7 @@ def _deserialize_legislatura():
         return
 
     data = serializers.deserialize("xml", out)
+
     for deserialized_object in data:
         deserialized_object.save()
 

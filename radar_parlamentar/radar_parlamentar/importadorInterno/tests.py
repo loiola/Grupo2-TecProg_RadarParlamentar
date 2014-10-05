@@ -50,21 +50,21 @@ class ImportadorInternoTest(TestCase):
         parliamentarianTest2.save()
         parliamentarianTest3.save()
 
-        casa_legislativaTest1 = models.CasaLegislativa(
+        legislative_houseTest1 = models.CasaLegislativa(
             nome='Camara dos Deputados', nome_curto='cdep', esfera='FEDERAL',
             local='', atualizacao='2012-06-01')
 
-        casa_legislativaTest2 = models.CasaLegislativa(
+        legislative_houseTest2 = models.CasaLegislativa(
             nome='Camara Municipal de Sao Paulo', nome_curto='cmsp',
             esfera='MUNICIPAL', local='Sao Paulo - SP',
             atualizacao='2012-12-31')
 
-        casa_legislativaTest1.save()
-        casa_legislativaTest2.save()
+        legislative_houseTest1.save()
+        legislative_houseTest2.save()
 
         legislatureTest1 = models.Legislatura(
             parlamentar=parliamentarianTest1,
-            casa_legislativa=casa_legislativaTest1, inicio='2004-01-01',
+            casa_legislativa=legislative_houseTest1, inicio='2004-01-01',
             fim='2012-07-01', partido=partyTest1, localidade='PB')
         legislatureTest1.save()
 
@@ -72,7 +72,7 @@ class ImportadorInternoTest(TestCase):
         propositionTest1.id_prop = '5555'
         propositionTest1.sigla = 'PL'
         propositionTest1.numero = '4520'
-        propositionTest1.casa_legislativa = casa_legislativaTest1
+        propositionTest1.casa_legislativa = legislative_houseTest1
         propositionTest1.save()
 
         votingTest1 = models.Votacao(
@@ -102,8 +102,8 @@ class ImportadorInternoTest(TestCase):
         parliamentarianTest2.delete()
         parliamentarianTest3.delete()
 
-        casa_legislativaTest1.delete()
-        casa_legislativaTest2.delete()
+        legislative_houseTest1.delete()
+        legislative_houseTest2.delete()
 
         legislatureTest1.delete()
 
@@ -121,8 +121,8 @@ class ImportadorInternoTest(TestCase):
     def test_deserialize_partido(self):
 
         importador_interno.deserialize_partido()
-        PMDB = models.Partido.objects.filter(nome='PMDB')
-        self.assertEquals(PMDB[0].numero, 40)
+        partyPMDB = models.Partido.objects.filter(nome='PMDB')
+        self.assertEquals(partyPMDB[0].numero, 40)
 
     def test_deserialize_parlamentar(self):
 
@@ -176,5 +176,5 @@ class ImportadorInternoTest(TestCase):
             nome_curto='cdep')
         self.assertEquals(legislative_house[0].nome, 'Camara dos Deputados')
 
-        casa_cmsp = models.CasaLegislativa.objects.filter(nome_curto='cmsp')
-        self.assertEquals(casa_cmsp[0].nome, 'Camara Municipal de Sao Paulo')
+        cmsp_house = models.CasaLegislativa.objects.filter(nome_curto='cmsp')
+        self.assertEquals(cmsp_house[0].nome, 'Camara Municipal de Sao Paulo')
