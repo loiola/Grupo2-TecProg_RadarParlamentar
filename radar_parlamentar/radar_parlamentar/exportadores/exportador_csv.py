@@ -32,7 +32,7 @@ logger = logging.getLogger("radar")
 MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 COALITION_PARTIES = ['PT', 'PCdoB', 'PSB', 'PP', 'PMDB', 'PTB']
-# PR, PDT não são coalition?
+# PR, PDT are not coalition?
 ROLLCALL = 'rollcall'
 VOTER_ID = 'voter_id'
 NAME = 'name'
@@ -43,7 +43,6 @@ VOTE = 'vote'
 LABELS = [ROLLCALL, VOTER_ID, NAME, PARTY, COALITION, VOTE]
 
 CSV_FILE = 'votes.csv'
-
 
 class ExportadorCSV:
 
@@ -82,41 +81,41 @@ class ExportadorCSV:
     def transform_data(self):
         self.csv_rows.append(LABELS)
 
-        for votacao in self.votacoes:
-            votes = votacao.votos()
+        for voting in self.votacoes:
+            votes = voting.votos()
 
-            for voto in votes:
-                legislature = voto.legislatura
+            for vote in votes:
+                legislature = vote.legislatura
                 parliamentary = legislature.parlamentar
                 party = legislature.partido
                 csv_row = []
-                csv_row.append(votacao.id_vot)
+                csv_row.append(voting.id_vot)
                 csv_row.append(legislature.id)
                 csv_row.append(parliamentary.nome.encode('UTF-8'))
                 csv_row.append(party.nome)
                 csv_row.append(self.coalition(party.nome))
 
                 try:
-                    csv_row.append(self.voto(voto.opcao))
+                    csv_row.append(self.voto(vote.opcao))
                     self.csv_rows.append(csv_row)
                 except:
-                    print 'Ignorando voto ', voto.opcao
-                    logger.info("Ignorando voto: %s" % voto.opcao)
+                    print 'Ignorando voto ', vote.opcao
+                    logger.info("Ignorando voto: %s" % vote.opcao)
 
     def coalition(self, nome_partido):
         return '1' if nome_partido in COALITION_PARTIES else '0'
 
     # Options of votes:
-    def voto(self, opcao):
-        if opcao == models.SIM:
+    def voto(self, option):
+        if option == models.SIM:
             return 1
-        elif opcao == models.NAO:
+        elif option == models.NAO:
             return -1
-        elif opcao == models.ABSTENCAO:
+        elif option == models.ABSTENCAO:
             return 0
-        elif opcao == models.OBSTRUCAO:
+        elif option == models.OBSTRUCAO:
             return 0
-        elif opcao == models.AUSENTE:
+        elif option == models.AUSENTE:
             return 0
         else:
             raise ValueError()
@@ -132,5 +131,5 @@ class ExportadorCSV:
 def main():
     initial_date = parse_datetime('2010-06-09 0:0:0')
     finish_date = parse_datetime('2010-06-09 23:59:0')
-    exportador = ExportadorCSV('sen', initial_date, finish_date)
-    exportador.exportar_csv()
+    exporter = ExportadorCSV('sen', initial_date, finish_date)
+    exporter.exportar_csv()
