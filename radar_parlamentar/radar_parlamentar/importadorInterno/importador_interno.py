@@ -39,7 +39,10 @@ def main():
 
 def deserialize_partido():
     try:
+        # receives a reference to the absolute path of the XML file to open.
         filepath = os.path.join(MODULE_DIR, 'dados/partido.xml')
+        
+        # receives a reference to the objects of the type file contained in the filepath variable.
         out = open(filepath, "r")
     except IOError, error:
         logger.error(
@@ -47,6 +50,7 @@ def deserialize_partido():
             % error)
         return
 
+    # deserialization obtained values ​​held by own class.
     data = serializers.deserialize("xml", out)
 
     for deserialized_object in data:
@@ -64,6 +68,7 @@ def deserialize_casa_legislativa():
 
     data = serializers.deserialize("xml", out)
 
+    # receiving variable object to be deserialized from the repeating structure
     for deserialized_object in data:
         deserialized_object.save()
 
