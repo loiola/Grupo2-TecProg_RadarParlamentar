@@ -50,7 +50,7 @@ class CamarawsTest(TestCase):
         # Receives Cameraws() method of cdep
         self.camaraws = cdep.Camaraws()
 
-    def test_obter_proposicao(self):
+    def test_obtain_proposition(self):
 
         # Receives obter_proposicao_por_id() method
         forest_code_xml = self.camaraws.obter_proposicao_por_id(ID)
@@ -60,7 +60,7 @@ class CamarawsTest(TestCase):
 
         self.assertEquals(forest_code_name, NOME)
 
-    def test_obter_votacoes(self):
+    def test_obtain_votings(self):
 
         # Receives  the votes by acronym, number and year
         forest_code_xml = self.camaraws.obter_votacoes(SIGLA, NUM, ANO)
@@ -71,7 +71,7 @@ class CamarawsTest(TestCase):
 
         self.assertEquals(found_vote_date, '11/5/2011')
 
-    def test_listar_proposicoes(self):
+    def test_list_propositions(self):
 
         # Receives pecs propositions for the year 2011
         pecs_2011_xml = self.camaraws.listar_proposicoes('PEC', '2011')
@@ -81,7 +81,7 @@ class CamarawsTest(TestCase):
 
         self.assertEquals(len(pecs_elements), 135)
 
-    def test_prop_nao_existe(self):
+    def test_proposition_that_doesnt_exist(self):
 
         # Receives a id that does not exists
         no_id = 'id_que_nao_existe'
@@ -100,7 +100,7 @@ class CamarawsTest(TestCase):
 
         self.assertTrue(caught)
 
-    def test_votacoes_nao_existe(self):
+    def test_votings_that_dont_exist(self):
 
         # Receives a acronym that does not exist (PCC)
         acronym = 'PCC'
@@ -127,7 +127,7 @@ class CamarawsTest(TestCase):
 
         self.assertTrue(caught)
 
-    def test_listar_proposicoes_que_nao_existem(self):
+    def test_list_propositions_that_dont_exist(self):
 
         # Receives a acronym (PEC)
         acronym = 'PEC'
@@ -147,7 +147,7 @@ class CamarawsTest(TestCase):
 
         self.assertTrue(caught)
 
-    def test_listar_siglas(self):
+    def test_list_acronyms(self):
         """Test to list the acronyms of propositions"""
 
         # Receives the listar_siglas() method
@@ -157,7 +157,7 @@ class CamarawsTest(TestCase):
         self.assertTrue('PEC' in acronyms)
         self.assertTrue('MPV' in acronyms)
 
-    def test_votacao_presente_plenario(self):
+    def test_voting_present_in_plenary(self):
 
         # Receives a year of an existing vote at Plenarium (2013)
         plenary_year = 2013
