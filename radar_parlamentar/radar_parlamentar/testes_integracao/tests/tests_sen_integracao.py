@@ -22,13 +22,27 @@ from __future__ import unicode_literals
 from django.test import TestCase
 from importadores import sen
 
-#Conducts tests involving Web services Senado
+#Conducts tests involving Web services about Senado
 
 class SenadoWSTest(TestCase):
 
     def test_obter_senadores_from_legislatura(self):
+
+        # Receives a legislature by id (52)
         legislature_id = '52'
+
+        # Receives SenadoWS() method
         senws = sen.SenadoWS()
+
+        # Receives the obter_senadores_from_legislature() method by legislature id
         tree = senws.obter_senadores_from_legislatura(legislature_id)
+
         self.assertIsNotNone(tree)
         self.assertTrue(len(tree.findall('Metadados')) == 1)
+
+
+
+
+
+
+# end

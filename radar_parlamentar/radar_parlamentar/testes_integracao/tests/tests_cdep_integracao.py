@@ -174,7 +174,7 @@ class CamarawsTest(TestCase):
 
         # Receives the list of propositions
         list_of_propositions = []
-        
+
         for nomeProp in plenary_etree:
             list_of_propositions.append(nomeProp.find('nomeProposicao').text)
         self.assertTrue(plenary_name in list_of_propositions)
