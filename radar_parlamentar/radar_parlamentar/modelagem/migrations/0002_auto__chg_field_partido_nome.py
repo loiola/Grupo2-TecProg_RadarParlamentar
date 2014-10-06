@@ -30,11 +30,11 @@ class Migration(SchemaMigration):
                       {'max_length': '100'}),
             'nome': ('django.db.models.fields.CharField', [],
                      {'max_length': '100'}),
-            'nome_curto': ('django.db.models.fields.CharField', [],
+            'short_name': ('django.db.models.fields.CharField', [],
                            {'unique': 'True', 'max_length': '50'})
         },
         'modelagem.indexadores': {
-            'Meta': {'object_name': 'Indexadores'},
+            'Meta': {'object_name': 'Indexers'},
             'id': ('django.db.models.fields.AutoField', [],
                    {'primary_key': 'True'}),
             'principal': ('django.db.models.fields.BooleanField', [],

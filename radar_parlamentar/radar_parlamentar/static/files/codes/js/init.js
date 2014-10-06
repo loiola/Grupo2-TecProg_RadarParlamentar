@@ -29,7 +29,7 @@
  *
  * Open source under the BSD License.
  *
- * Copyright © 2008 George McGinley Smith
+ * Copyright ï¿½ 2008 George McGinley Smith
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -59,7 +59,54 @@
 // t: current time, b: begInnIng value, c: change In value, d: duration
 ;
 jQuery.easing['jswing'] = jQuery.easing['swing'];
-jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){return jQuery.easing[jQuery.easing.def](x, t, b, c, d);},easeInQuad:function(x,t,b,c,d){return c*(t/=d)*t+b;},easeOutQuad:function(x,t,b,c,d){return -c *(t/=d)*(t-2)+b;},easeInOutQuad:function(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t + b;return -c/2*((--t)*(t-2)-1)+b;},easeInCubic:function(x,t,b,c,d){return c*(t/=d)*t*t+b;},easeOutCubic:function(x,t,b,c,d){       return c*((t=t/d-1)*t*t+1)+b;},easeInOutCubic:function(x,t,b,c,d){if((t/=d/2)<1) return c/2*t*t*t+b;return c/2*((t-=2)*t*t+2)+b;},easeInQuart:function(x,t,b,c,d){return c*(t/=d)*t*t*t+b;},easeOutQuart:function(x,t,b,c,d){return -c*((t=t/d-1)*t*t*t-1)+b;},easeInOutQuart:function(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t*t+b;return -c/2*((t-=2)*t*t*t-2)+b;},easeInQuint:function(x,t,b,c,d){return c*(t/=d)*t*t*t*t+b;},easeOutQuint:function(x,t,b,c,d){return c*((t=t/d-1)*t*t*t*t+1)+b;},easeInOutQuint:function(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t*t*t+b;return c/2*((t-=2)*t*t*t*t+2)+b;},easeInSine:function(x,t,b,c,d){return -c*Math.cos(t/d*(Math.PI/2))+c+b;},easeOutSine:function(x,t,b,c,d){return c*Math.sin(t/d*(Math.PI/2))+b;},easeInOutSine:function(x,t,b,c,d){return -c/2*(Math.cos(Math.PI*t/d)-1)+b;},easeInExpo:function(x,t,b,c,d){return (t==0)?b:c*Math.pow(2,10*(t/d-1))+b;},easeOutExpo:function(x,t,b,c,d){return (t==d)?b+c:c*(-Math.pow(2,-10*t/d)+1)+b;},easeInOutExpo:function(x,t,b,c,d){if(t==0)return b;if(t==d)return b+c;if((t/=d/2)<1)return c/2*Math.pow(2,10*(t-1))+b;return c/2*(-Math.pow(2,-10*--t)+2)+b;}, easeInCirc:function(x, t, b, c, d){return -c*(Math.sqrt(1-(t/=d)*t)-1)+b;},easeOutCirc:function(x,t,b,c,d){return c*Math.sqrt(1-(t=t/d-1)*t)+b;},easeInOutCirc:function(x,t,b,c,d){if((t/=d/2)<1)return -c/2*(Math.sqrt(1-t*t)-1)+b;return c/2*(Math.sqrt(1-(t-=2)*t)+1)+b;},easeInElastic:function(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d)==1)return b+c;if(!p)p=d*.3;if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);return -(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p))+b;},easeOutElastic:function(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d)==1)return b+c;if(!p)p=d*.3;if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);return a*Math.pow(2,-10*t)*Math.sin((t*d-s)*(2*Math.PI)/p)+c+b;},easeInOutElastic:function(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d/2)==2)return b+c;if(!p)p=d*(.3*1.5);if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);if(t<1)return -.5*(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p))+b;return a*Math.pow(2,-10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p)*.5+c+b;},easeInBack:function(x,t,b,c,d,s){if(s==undefined)s=1.70158;return c*(t/=d)*t*((s+1)*t-s)+b;},easeOutBack:function(x,t,b,c,d,s){if(s==undefined)s=1.70158;return c*((t=t/d-1)*t*((s+1)*t+s)+1)+b;},easeInOutBack:function(x,t,b,c,d,s){if(s==undefined)s=1.70158;if((t/=d/2)<1)return c/2*(t*t*(((s*=(1.525))+1)*t-s))+b;return c/2*((t-=2)*t*(((s*=(1.525))+1)*t+s)+2)+b;},easeInBounce:function(x,t,b,c,d){return c-jQuery.easing.easeOutBounce(x,d-t,0,c,d)+b;},easeOutBounce:function(x,t,b,c,d){if((t/=d)<(1/2.75)){return c*(7.5625*t*t)+b;}else if(t<(2/2.75)){return c*(7.5625*(t-=(1.5/2.75))*t+.75)+b;}else if(t<(2.5/2.75)){return c*(7.5625*(t-=(2.25/2.75))*t+.9375)+b;}else{return c*(7.5625*(t-=(2.625/2.75))*t+.984375)+b;}},easeInOutBounce:function(x,t,b,c,d){if(t<d/2)return jQuery.easing.easeInBounce(x,t*2,0,c,d)*.5+b;return jQuery.easing.easeOutBounce(x,t*2-d,0,c,d)*.5+c*.5+b;}});
+jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){return jQuery.easing[jQuery.easing.def](x, t,
+    b, c, d);},easeInQuad:function(x,t,b,c,d){return c*(t/=d)*t+b;},easeOutQuad:function(x,t,b,c,d){
+        return -c *(t/=d)*(t-2)+b;},easeInOutQuad:function(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t + b;
+            return -c/2*((--t)*(t-2)-1)+b;},easeInCubic:function(x,t,b,c,d){return c*(t/=d)*t*t+b;},easeOutCubic:
+            function(x,t,b,c,d){       return c*((t=t/d-1)*t*t+1)+b;},easeInOutCubic:
+            function(x,t,b,c,d){if((t/=d/2)<1) return c/2*t*t*t+b;return c/2*((t-=2)*t*t+2)+b;},easeInQuart:
+            function(x,t,b,c,d){return c*(t/=d)*t*t*t+b;},easeOutQuart:function(x,t,b,c,d){
+            return -c*((t=t/d-1)*t*t*t-1)+b;},easeInOutQuart:function(x,t,b,c,d){if((t/=d/2)<1)
+            return c/2*t*t*t*t+b;return -c/2*((t-=2)*t*t*t-2)+b;},easeInQuint:function(x,t,b,c,d){
+            return c*(t/=d)*t*t*t*t+b;},easeOutQuint:function(x,t,b,c,d){
+            return c*((t=t/d-1)*t*t*t*t+1)+b;},easeInOutQuint:
+            function(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t*t*t+b;
+            return c/2*((t-=2)*t*t*t*t+2)+b;},easeInSine:
+            function(x,t,b,c,d){return -c*Math.cos(t/d*(Math.PI/2))+c+b;},easeOutSine:function(x,t,b,c,d){
+            return c*Math.sin(t/d*(Math.PI/2))+b;},easeInOutSine:
+            function(x,t,b,c,d){return -c/2*(Math.cos(Math.PI*t/d)-1)+b;}, easeInExpo:function(x,t,b,c,d){
+            return (t==0)?b:c*Math.pow(2,10*(t/d-1))+b;},easeOutExpo:function(x,t,b,c,d){
+            return (t==d)?b+c:c*(-Math.pow(2,-10*t/d)+1)+b;}, easeInOutExpo:
+            function(x,t,b,c,d){if(t==0)return b;if(t==d)return b+c;if((t/=d/2)<1)return c/2*Math.pow(2,10*(t-1))+b;
+            return c/2*(-Math.pow(2,-10*--t)+2)+b;}, easeInCirc:
+            function(x, t, b, c, d){return -c*(Math.sqrt(1-(t/=d)*t)-1)+b;},easeOutCirc:function(x,t,b,c,d){
+            return c*Math.sqrt(1-(t=t/d-1)*t)+b;},easeInOutCirc:function(x,t,b,c,d){if((t/=d/2)<1)
+            return -c/2*(Math.sqrt(1-t*t)-1)+b;
+            return c/2*(Math.sqrt(1-(t-=2)*t)+1)+b;},easeInElastic:
+            function(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)
+            return b;if((t/=d)==1)return b+c;if(!p)p=d*.3;
+            if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);
+            return -(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p))+b;},easeOutElastic:
+            function(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)
+            return b;if((t/=d)==1)return b+c;if(!p)p=d*.3;if(a<Math.abs(c)){a=c;var s=p/4;}
+            else var s=p/(2*Math.PI)*Math.asin(c/a);
+            return a*Math.pow(2,-10*t)*Math.sin((t*d-s)*(2*Math.PI)/p)+c+b;},easeInOutElastic:
+            function(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d/2)==2)
+            return b+c;if(!p)p=d*(.3*1.5);if(a<Math.abs(c)){a=c;var s=p/4;}
+            else var s=p/(2*Math.PI)*Math.asin(c/a);if(t<1)
+            return -.5*(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p))+b;
+            return a*Math.pow(2,-10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p)*.5+c+b;},easeInBack:
+            function(x,t,b,c,d,s){if(s==undefined)s=1.70158;
+            return c*(t/=d)*t*((s+1)*t-s)+b;},easeOutBack:
+            function(x,t,b,c,d,s){if(s==undefined)s=1.70158;return c*((t=t/d-1)*t*((s+1)*t+s)+1)+b;},easeInOutBack:
+            function(x,t,b,c,d,s){if(s==undefined)s=1.70158;if((t/=d/2)<1)return c/2*(t*t*(((s*=(1.525))+1)*t-s))+b;
+            return c/2*((t-=2)*t*(((s*=(1.525))+1)*t+s)+2)+b;},easeInBounce:function(x,t,b,c,d){
+            return c-jQuery.easing.easeOutBounce(x,d-t,0,c,d)+b;},easeOutBounce:function(x,t,b,c,d){if((t/=d)<(1/2.75)){
+            return c*(7.5625*t*t)+b;}else if(t<(2/2.75)){return c*(7.5625*(t-=(1.5/2.75))*t+.75)+b;}else if(t<(2.5/2.75)){
+            return c*(7.5625*(t-=(2.25/2.75))*t+.9375)+b;}else{
+            return c*(7.5625*(t-=(2.625/2.75))*t+.984375)+b;}},easeInOutBounce:
+            function(x,t,b,c,d){if(t<d/2)return jQuery.easing.easeInBounce(x,t*2,0,c,d)*.5+b;
+            return jQuery.easing.easeOutBounce(x,t*2-d,0,c,d)*.5+c*.5+b;}});
 
 /**
  * jQuery.ScrollTo - Easy element scrolling using jQuery.
@@ -78,11 +125,14 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
 	m.window=function(b){return $(window).scrollable()};
 	$.fn.scrollable=function(){
 		return this.map(function(){
-			var b=this,h=!b.nodeName||$.inArray(b.nodeName.toLowerCase(),['iframe','#document','html','body'])!=-1;if(!h)return b;var f=(b.contentWindow||b).document||b.ownerDocument||b;
+			var b=this,h=!b.nodeName||$.inArray(b.nodeName.toLowerCase(),['iframe','#document','html','body'])!=-1;
+			if(!h)return b;var f=(b.contentWindow||b).document||b.ownerDocument||b;
 		return $.browser.safari||f.compatMode=='BackCompat'?f.body:f.documentElement})}
 	;$.fn.scrollTo=function(l,j,a){if(typeof j=='object'){a=j;j=0}
-	if(typeof a=='function')a={onAfter:a};if(l=='max')l=9e9;a=$.extend({},m.defaults,a);j=j||a.speed||a.duration;a.queue=a.queue&&a.axis.length>1;
-	if(a.queue)j/=2;a.offset=n(a.offset);a.over=n(a.over);return this.scrollable().each(function(){var k=this,o=$(k),d=l,p,g={},q=o.is('html,body');switch(typeof d){case'number':case'string':
+	if(typeof a=='function')a={onAfter:a};if(l=='max')l=9e9;a=$.extend({},m.defaults,a);
+	    j=j||a.speed||a.duration;a.queue=a.queue&&a.axis.length>1;
+	if(a.queue)j/=2;a.offset=n(a.offset);a.over=n(a.over);return this.scrollable().each(function(){
+	var k=this,o=$(k),d=l,p,g={},q=o.is('html,body');switch(typeof d){case'number':case'string':
 	if(/^([+-]=)?\d+(\.\d+)?(px)?$/.test(d)){d=n(d);break}d=$(d,this);
 	case'object':if(d.is||d.style)p=(d=$(d)).offset()}$.each(a.axis.split(''),
 	function(b,h){
@@ -103,7 +153,10 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
 
 /* JavaScript Custom Form Validation Routines
 
-* It's functionality is so simple. It doesn't show any validation message until user first attempts to submit forms with inappropriately filled field. When user's try to submit the form for first time this script checks if every field has been filled properly othwerwise it prevents submission to the server and notifies user about her mistake(s). This time it validates each field as user focuses in and blurs them(fields) off.
+* It's functionality is so simple. It doesn't show any validation message until user first attempts to submit forms with
+* inappropriately filled field. When user's try to submit the form for first time this script checks if every field has
+* been filled properly othwerwise it prevents submission to the server and notifies user about her mistake(s). This time
+* it validates each field as user focuses in and blurs them(fields) off.
 
 * You can also change error messages if you like.
 */
@@ -151,7 +204,8 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
                 var subject = $('#subject');
                 var message = $('#message');
                 //organize the data properly
-                var data = 'name=' + name.val() + '&email=' + email.val() + '&url='+ url.val() + '&subject='+ subject.val() + '&message=' + message.val();
+                var data = 'name=' + name.val() + '&email=' + email.val() + '&url='+ url.val() +
+                    '&subject='+ subject.val() + '&message=' + message.val();
 
                 //start the ajax
                 $.ajax({
@@ -169,12 +223,14 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
                         //if mail.php/mini-mail.php returned 1/true (send mail success)
                         if(html == 1){
                             $('.success', form.parent()).fadeTo('slow', 1);
-                            setTimeout(function(){$('.success', form.parent()).fadeTo('slow', 0, function(){hideAll();});disable(false);}, 6000);
+                            setTimeout(function(){$('.success', form.parent()).fadeTo('slow', 0, function(){hideAll();
+                                });disable(false);}, 6000);
                         //if mail.php/mini-mail.php returned 0/false (send mail failed)
                         }
                         else{
                             $('.error', form.parent()).fadeTo('slow', 1);
-                            setTimeout(function(){$('.error', form.parent()).fadeTo('slow', 0, function(){hideAll();}); disable(false);}, 6000);
+                            setTimeout(function(){$('.error', form.parent()).fadeTo('slow', 0, function(){hideAll();});
+                                disable(false);}, 6000);
                         }
                     }
                 });
@@ -414,22 +470,28 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
 
         return this.each(function(){
 
-            var opts = $.extend(defaults, options); //replacing defaults with user provided options through jQuery.extend method
-            var val = $('#'+ opts.tabs).find('.' + opts.active +' a').attr('href');//retrieving active tabs id
-
-            $('>li', '#'+ opts.content).fadeOut().filter(val).fadeIn(opts.speed);//hiding all but active tabs content
+            //replacing defaults with user provided options through jQuery.extend method
+            var opts = $.extend(defaults, options);
+            //retrieving active tabs id
+            //hiding all but active tabs content
+            var val = $('#'+ opts.tabs).find('.' + opts.active +' a').attr('href');
+            $('>li', '#'+ opts.content).fadeOut().filter(val).fadeIn(opts.speed);
 
             var $obj = $(this);
-
+            //Checking this is the vary same tab which is already active/showing
             $obj.find('a').click(function(){
-                if(!$(this).parent().hasClass(opts.active)){ //Checking this is the vary same tab which is already active/showing
+                if(!$(this).parent().hasClass(opts.active)){
                     var $this = $(this);
-                    var $new = $this.attr('href'); //retrieving its associated contents id
-                    var $old = $('.'+opts.active, $obj).find('a').attr('href'); //retrieving old active tabs id
-                    $($old).fadeOut(opts.speed, function(){$($new).fadeIn(opts.speed);});//first, fading out old active div and then fading in new div
-
-                    $('>li', $obj).removeClass(opts.active);//removing active tabs class
-                    $this.parent().addClass(opts.active);//attaching active tabs class
+                    //retrieving its associated contents id
+                    var $new = $this.attr('href');
+                    //retrieving old active tabs id
+                    var $old = $('.'+opts.active, $obj).find('a').attr('href');
+                    //first, fading out old active div and then fading in new div
+                    $($old).fadeOut(opts.speed, function(){$($new).fadeIn(opts.speed);});
+                    //removing active tabs class
+                    $('>li', $obj).removeClass(opts.active);
+                    //attaching active tabs class
+                    $this.parent().addClass(opts.active);
                     return false;
                 }
             });
@@ -464,8 +526,16 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
 })(jQuery);
 
 /* jQuery.imagesLoaded Plugin */
-(function(c,n){var k="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";c.fn.imagesLoaded=function(l){function m(){var b=c(h),a=c(g);d&&(g.length?d.reject(e,b,a):d.resolve(e));c.isFunction(l)&&l.call(f,e,b,a)}function i(b,a){b.src===k||-1!==c.inArray(b,j)||(j.push(b),a?g.push(b):h.push(b),c.data(b,"imagesLoaded",{isBroken:a,src:b.src}),o&&d.notifyWith(c(b),[a,e,c(h),c(g)]),e.length===j.length&&(setTimeout(m),e.unbind(".imagesLoaded")))}var f=this,d=c.isFunction(c.Deferred)?c.Deferred():
-0,o=c.isFunction(d.notify),e=f.find("img").add(f.filter("img")),j=[],h=[],g=[];e.length?e.bind("load.imagesLoaded error.imagesLoaded",function(b){i(b.target,"error"===b.type)}).each(function(b,a){var e=a.src,d=c.data(a,"imagesLoaded");if(d&&d.src===e)i(a,d.isBroken);else if(a.complete&&a.naturalWidth!==n)i(a,0===a.naturalWidth||0===a.naturalHeight);else if(a.readyState||a.complete)a.src=k,a.src=e}):m();return d?d.promise(f):f}})(jQuery);
+(function(c,n){var k="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+c.fn.imagesLoaded=function(l){function m(){var b=c(h),a=c(g);d&&(g.length?d.reject(e,b,a):d.resolve(e));
+c.isFunction(l)&&l.call(f,e,b,a)}function i(b,a){b.src===k||-1!==c.inArray(b,j)||(j.push(b),a?g.push(b):h.push(b),
+c.data(b,"imagesLoaded",{isBroken:a,src:b.src}),o&&d.notifyWith(c(b),[a,e,c(h),c(g)]),
+e.length===j.length&&(setTimeout(m),e.unbind(".imagesLoaded")))}var f=this,d=c.isFunction(c.Deferred)?c.Deferred():
+0,o=c.isFunction(d.notify),e=f.find("img").add(f.filter("img")),j=[],h=[],g=[];
+e.length?e.bind("load.imagesLoaded error.imagesLoaded",function(b){i(b.target,"error"===b.type)}).each(function(b,a){
+var e=a.src,d=c.data(a,"imagesLoaded");if(d&&d.src===e)i(a,d.isBroken);
+else if(a.complete&&a.naturalWidth!==n)i(a,0===a.naturalWidth||0===a.naturalHeight);
+else if(a.readyState||a.complete)a.src=k,a.src=e}):m();return d?d.promise(f):f}})(jQuery);
 
 
 /**
@@ -477,7 +547,59 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
  * Licensed under the MIT license.
  * Copyright 2011 David DeSandro
  */
-(function(a,b,c){"use strict";var d=b.event,e;d.special.smartresize={setup:function(){b(this).bind("resize",d.special.smartresize.handler)},teardown:function(){b(this).unbind("resize",d.special.smartresize.handler)},handler:function(a,b){var c=this,d=arguments;a.type="smartresize",e&&clearTimeout(e),e=setTimeout(function(){jQuery.event.handle.apply(c,d)},b==="execAsap"?0:100)}},b.fn.smartresize=function(a){return a?this.bind("smartresize",a):this.trigger("smartresize",["execAsap"])},b.Mason=function(a,c){this.element=b(c),this._create(a),this._init()},b.Mason.settings={isResizable:!0,isAnimated:!1,animationOptions:{queue:!1,duration:500},gutterWidth:0,isRTL:!1,isFitWidth:!1,containerStyle:{position:"relative"}},b.Mason.prototype={_filterFindBricks:function(a){var b=this.options.itemSelector;return b?a.filter(b).add(a.find(b)):a},_getBricks:function(a){var b=this._filterFindBricks(a).css({position:"absolute"}).addClass("masonry-brick");return b},_create:function(c){this.options=b.extend(!0,{},b.Mason.settings,c),this.styleQueue=[];var d=this.element[0].style;this.originalStyle={height:d.height||""};var e=this.options.containerStyle;for(var f in e)this.originalStyle[f]=d[f]||"";this.element.css(e),this.horizontalDirection=this.options.isRTL?"right":"left",this.offset={x:parseInt(this.element.css("padding-"+this.horizontalDirection),10),y:parseInt(this.element.css("padding-top"),10)},this.isFluid=this.options.columnWidth&&typeof this.options.columnWidth=="function";var g=this;setTimeout(function(){g.element.addClass("masonry")},0),this.options.isResizable&&b(a).bind("smartresize.masonry",function(){g.resize()}),this.reloadItems()},_init:function(a){this._getColumns(),this._reLayout(a)},option:function(a,c){b.isPlainObject(a)&&(this.options=b.extend(!0,this.options,a))},layout:function(a,b){for(var c=0,d=a.length;c<d;c++)this._placeBrick(a[c]);var e={};e.height=Math.max.apply(Math,this.colYs);if(this.options.isFitWidth){var f=0;c=this.cols;while(--c){if(this.colYs[c]!==0)break;f++}e.width=(this.cols-f)*this.columnWidth-this.options.gutterWidth}this.styleQueue.push({$el:this.element,style:e});var g=this.isLaidOut?this.options.isAnimated?"animate":"css":"css",h=this.options.animationOptions,i;for(c=0,d=this.styleQueue.length;c<d;c++)i=this.styleQueue[c],i.$el[g](i.style,h);this.styleQueue=[],b&&b.call(a),this.isLaidOut=!0},_getColumns:function(){var a=this.options.isFitWidth?this.element.parent():this.element,b=a.width();this.columnWidth=this.isFluid?this.options.columnWidth(b):this.options.columnWidth||this.$bricks.outerWidth(!0)||b,this.columnWidth+=this.options.gutterWidth,this.cols=Math.floor((b+this.options.gutterWidth)/this.columnWidth),this.cols=Math.max(this.cols,1)},_placeBrick:function(a){var c=b(a),d,e,f,g,h;d=Math.ceil(c.outerWidth(!0)/(this.columnWidth+this.options.gutterWidth)),d=Math.min(d,this.cols);if(d===1)f=this.colYs;else{e=this.cols+1-d,f=[];for(h=0;h<e;h++)g=this.colYs.slice(h,h+d),f[h]=Math.max.apply(Math,g)}var i=Math.min.apply(Math,f),j=0;for(var k=0,l=f.length;k<l;k++)if(f[k]===i){j=k;break}var m={top:i+this.offset.y};m[this.horizontalDirection]=this.columnWidth*j+this.offset.x,this.styleQueue.push({$el:c,style:m});var n=i+c.outerHeight(!0),o=this.cols+1-l;for(k=0;k<o;k++)this.colYs[j+k]=n},resize:function(){var a=this.cols;this._getColumns(),(this.isFluid||this.cols!==a)&&this._reLayout()},_reLayout:function(a){var b=this.cols;this.colYs=[];while(b--)this.colYs.push(0);this.layout(this.$bricks,a)},reloadItems:function(){this.$bricks=this._getBricks(this.element.children())},reload:function(a){this.reloadItems(),this._init(a)},appended:function(a,b,c){if(b){this._filterFindBricks(a).css({top:this.element.height()});var d=this;setTimeout(function(){d._appended(a,c)},1)}else this._appended(a,c)},_appended:function(a,b){var c=this._getBricks(a);this.$bricks=this.$bricks.add(c),this.layout(c,b)},remove:function(a){this.$bricks=this.$bricks.not(a),a.remove()},destroy:function(){this.$bricks.removeClass("masonry-brick").each(function(){this.style.position="",this.style.top="",this.style.left=""});var c=this.element[0].style;for(var d in this.originalStyle)c[d]=this.originalStyle[d];this.element.unbind(".masonry").removeClass("masonry").removeData("masonry"),b(a).unbind(".masonry")}},b.fn.imagesLoaded=function(a){function i(a){var c=a.target;c.src!==f&&b.inArray(c,g)===-1&&(g.push(c),--e<=0&&(setTimeout(h),d.unbind(".imagesLoaded",i)))}function h(){a.call(c,d)}var c=this,d=c.find("img").add(c.filter("img")),e=d.length,f="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==",g=[];e||h(),d.bind("load.imagesLoaded error.imagesLoaded",i).each(function(){var a=this.src;this.src=f,this.src=a});return c};var f=function(b){a.console&&a.console.error(b)};b.fn.masonry=function(a){if(typeof a=="string"){var c=Array.prototype.slice.call(arguments,1);this.each(function(){var d=b.data(this,"masonry");if(!d)f("cannot call methods on masonry prior to initialization; attempted to call method '"+a+"'");else{if(!b.isFunction(d[a])||a.charAt(0)==="_"){f("no such method '"+a+"' for masonry instance");return}d[a].apply(d,c)}})}else this.each(function(){var c=b.data(this,"masonry");c?(c.option(a||{}),c._init()):b.data(this,"masonry",new b.Mason(a,this))});return this}})(window,jQuery);
+(function(a,b,c){"use strict";
+var d=b.event,e;d.special.smartresize={setup:function(){b(this).bind("resize",d.special.smartresize.handler)},teardown:
+function(){b(this).unbind("resize",d.special.smartresize.handler)},handler:function(a,b){
+var c=this,d=arguments;a.type="smartresize",e&&clearTimeout(e),e=setTimeout(
+function(){jQuery.event.handle.apply(c,d)},b==="execAsap"?0:100)}},b.fn.smartresize=function(a){
+return a?this.bind("smartresize",a):this.trigger("smartresize",["execAsap"])},b.Mason=
+function(a,c){this.element=b(c),this._create(a),
+this._init()},b.Mason.settings={isResizable:!0,isAnimated:!1,animationOptions:{queue:!1,duration:500},gutterWidth:0,isRTL:!1,isFitWidth:!1,containerStyle:{position:"relative"}},
+b.Mason.prototype={_filterFindBricks:function(a){var b=this.options.itemSelector;return b?a.filter(b).add(a.find(b)):a}
+,_getBricks:function(a){var b=this._filterFindBricks(a).css({position:"absolute"}).addClass("masonry-brick");
+return b},_create:function(c){this.options=b.extend(!0,{},b.Mason.settings,c),this.styleQueue=[];
+var d=this.element[0].style;this.originalStyle={height:d.height||""};var e=this.options.containerStyle;
+for(var f in e)this.originalStyle[f]=d[f]||"";this.element.css(e),this.horizontalDirection=this.options.isRTL?"right":"left",
+this.offset={x:parseInt(this.element.css("padding-"+this.horizontalDirection),10),y:parseInt(this.element.css("padding-top"),10)},
+this.isFluid=this.options.columnWidth&&typeof this.options.columnWidth=="function";
+var g=this;setTimeout(function(){g.element.addClass("masonry")},0),
+this.options.isResizable&&b(a).bind("smartresize.masonry",function(){g.resize()}),
+this.reloadItems()},_init:function(a){this._getColumns(),this._reLayout(a)},option:
+function(a,c){b.isPlainObject(a)&&(this.options=b.extend(!0,this.options,a))},layout:
+function(a,b){for(var c=0,d=a.length;c<d;c++)this._placeBrick(a[c]);var e={};e.height=Math.max.apply(Math,this.colYs);
+if(this.options.isFitWidth){var f=0;c=this.cols;while(--c){if(this.colYs[c]!==0)
+break;f++}e.width=(this.cols-f)*this.columnWidth-this.options.gutterWidth}this.styleQueue.push({$el:this.element,style:e});
+var g=this.isLaidOut?this.options.isAnimated?"animate":"css":"css",h=this.options.animationOptions,i;
+for(c=0,d=this.styleQueue.length;c<d;c++)i=this.styleQueue[c],i.$el[g](i.style,h);this.styleQueue=[],b&&b.call(a),
+this.isLaidOut=!0},_getColumns:function(){var a=this.options.isFitWidth?this.element.parent():this.element,b=a.width();
+this.columnWidth=this.isFluid?this.options.columnWidth(b):this.options.columnWidth||this.$bricks.outerWidth(!0)||b,
+this.columnWidth+=this.options.gutterWidth,this.cols=Math.floor((b+this.options.gutterWidth)/this.columnWidth),
+this.cols=Math.max(this.cols,1)},_placeBrick:
+function(a){var c=b(a),d,e,f,g,h;d=Math.ceil(c.outerWidth(!0)/(this.columnWidth+this.options.gutterWidth)),d=Math.min(d,this.cols);
+if(d===1)f=this.colYs;else{e=this.cols+1-d,f=[];for(h=0;h<e;h++)g=this.colYs.slice(h,h+d),f[h]=Math.max.apply(Math,g)}
+var i=Math.min.apply(Math,f),j=0;for(var k=0,l=f.length;k<l;k++)if(f[k]===i){j=k;break}
+var m={top:i+this.offset.y};m[this.horizontalDirection]=this.columnWidth*j+this.offset.x,this.styleQueue.push({$el:c,style:m});
+var n=i+c.outerHeight(!0),o=this.cols+1-l;for(k=0;k<o;k++)this.colYs[j+k]=n},resize:
+function(){var a=this.cols;this._getColumns(),(this.isFluid||this.cols!==a)&&this._reLayout()},_reLayout:
+function(a){var b=this.cols;this.colYs=[];while(b--)this.colYs.push(0);this.layout(this.$bricks,a)},reloadItems:
+function(){this.$bricks=this._getBricks(this.element.children())},reload:
+function(a){this.reloadItems(),this._init(a)},appended:
+function(a,b,c){if(b){this._filterFindBricks(a).css({top:this.element.height()});
+var d=this;setTimeout(function(){d._appended(a,c)},1)}else this._appended(a,c)},_appended:
+function(a,b){var c=this._getBricks(a);this.$bricks=this.$bricks.add(c),this.layout(c,b)},remove:
+function(a){this.$bricks=this.$bricks.not(a),a.remove()},destroy:
+function(){this.$bricks.removeClass("masonry-brick").each(function(){this.style.position="",this.style.top="",this.style.left=""});
+var c=this.element[0].style;for(var d in this.originalStyle)c[d]=this.originalStyle[d];
+this.element.unbind(".masonry").removeClass("masonry").removeData("masonry"),b(a).unbind(".masonry")}},b.fn.imagesLoaded=function(a){
+function i(a){var c=a.target;c.src!==f&&b.inArray(c,g)===-1&&(g.push(c),--e<=0&&(setTimeout(h),d.unbind(".imagesLoaded",i)))}
+function h(){a.call(c,d)}var c=this,d=c.find("img").add(c.filter("img")),e=d.length,f="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==",g=[];e||h(),d.bind("load.imagesLoaded error.imagesLoaded",i).each(function(){
+var a=this.src;this.src=f,this.src=a});return c};var f=function(b){a.console&&a.console.error(b)};b.fn.masonry=function(a){
+if(typeof a=="string"){var c=Array.prototype.slice.call(arguments,1);this.each(function(){var d=b.data(this,"masonry");
+if(!d)f("cannot call methods on masonry prior to initialization; attempted to call method '"+a+"'");
+else{if(!b.isFunction(d[a])||a.charAt(0)==="_"){f("no such method '"+a+"' for masonry instance");
+return}d[a].apply(d,c)}})}else this.each(function(){
+var c=b.data(this,"masonry");c?(c.option(a||{}),c._init()):b.data(this,"masonry",new b.Mason(a,this))});
+return this}})(window,jQuery);
 
 
 
@@ -552,7 +674,8 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
                 pause: 1,
                 rev: 1,
                 randomizeEffects: false,
-                easing: 'easeInOutQuad', //jquery.easing library/plugin is required for this functionality
+                //jquery.easing library/plugin is required for this functionality
+                easing: 'easeInOutQuad',
                 next: '',
                 prev: '',
                 pager: '',
@@ -571,7 +694,8 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
                 pause: 1,
                 rev: 0,
                 randomizeEffects: false,
-                easing: 'easeInOutQuad', //jquery.easing library/plugin is required for this functionality
+                //jquery.easing library/plugin is required for this functionality
+                easing: 'easeInOutQuad',
                 next:   '#feedback .next',
                 prev:   '#feedback .prev',
                 pager:  '',
@@ -618,22 +742,6 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
         }
     });
 
-    /* Twitter plugin for home and about pages */
-//    $(document).ready(function(){
-//        $("#tweets .contents").tweet({
-//            username: "palpaldal",
-//            join_text: "auto",
-//            avatar_size: 40,
-//            count: 3,
-//            auto_join_text_default: "",
-//            auto_join_text_ed: "",
-//            auto_join_text_ing: "",
-//            auto_join_text_reply: "",
-//            auto_join_text_url: "",
-//            loading_text: "loading tweets..."
-//        });
-//    });
-
     /* a modified/tricked initializer to initialize cycle plugins on loaded tweets */
     $('#tweets').ready(function(){
         var addCycle2Tweet = function(){
@@ -645,7 +753,8 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
                     pause: 1,
                     rev: 0,
                     randomizeEffects: false,
-                    easing: 'easeInOutQuad', //jquery.easing library/plugin is required for this functionality
+                    //jquery.easing library/plugin is required for this functionality
+                    easing: 'easeInOutQuad',
                     next:   '#tweets .next',
                     prev:   '#tweets .prev',
                     pager:  '',
@@ -789,7 +898,8 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
                                 var ele = $(this);
                                 var itemSrc = ele.attr('href');
                                 ele.css({'position': 'relative', 'display': 'block'});
-                                if(itemSrc.match(/youtube\.com\/watch/i) || itemSrc.match(/vimeo\.com/i) || itemSrc.indexOf('.mov') != -1){
+                                if(itemSrc.match(/youtube\.com\/watch/i) || itemSrc.match(/vimeo\.com/i) ||
+                                itemSrc.indexOf('.mov') != -1){
                                     ele.append(movHTML);
                                 }
                                 else if(itemSrc.indexOf('iframe') != -1 || itemSrc.substr(0,1) == '#'){
@@ -850,12 +960,14 @@ $(document).ready(function(){
                 if(!colorLink.hasClass('active')){
                     headerColor = colorLink.attr('data-mode');
                     if(colorLink.attr('data-mode') == 'light'){
-                        $('#imageBox').css({'background-color': '#fff', 'background-image': 'url(files/images/noise-patt.png)'});
+                        $('#imageBox').css({'background-color': '#fff', 'background-image':
+                            'url(files/images/noise-patt.png)'});
                         $('#headerPatterns').find('li[data-type=light]').show();
                         $('#headerPatterns').find('li[data-type=dark]').hide();
                     }
                     else{
-                        $('#imageBox').css({'background-color': '#222', 'background-image': 'url(files/images/noise-patt-dark.png)'});
+                        $('#imageBox').css({'background-color': '#222', 'background-image':
+                            'url(files/images/noise-patt-dark.png)'});
                         $('#headerPatterns').find('li[data-type=light]').hide();
                         $('#headerPatterns').find('li[data-type=dark]').show();
                     }

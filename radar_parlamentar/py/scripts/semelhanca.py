@@ -16,35 +16,36 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Script semelhanca -- verifica a diferença entre dois partidos baseado nas proposições votadas em 2011"""
+"""Script semelhanca -- verifies the difference between two partidos based on
+propositions voted on in 2011"""
 
 import proposicoes
 import camaraws
 import partidos
 import sys
 
-partido1 = sys.argv[1]
-partido2 = sys.argv[2]
+party1 = sys.argv[1]
+party2 = sys.argv[2]
 
 # Identification of propositions voted on in 2011
-votadas = proposicoes.parse()
+voted = proposicoes.parse()
 
 # List of propositions with their respective votes 
 proposicoes = []
 
-# Total votes analyzed
-n_vot = 0 
+# Total analyzed votes
+votes_number = 0
 
 
-for prop in votadas:
-  print('Analisando proposição ' + prop['id'])
+for propositions in voted:
+  print('Analisando proposição ' + propositions['id'])
 
   # Get voting web service
-  prop_vot = camaraws.obter_votacao(prop['tipo'], prop['num'], prop['ano']) 
-  n_vot += len(prop_vot.votacoes)
-  proposicoes.append(prop_vot)
+  votes_propositions = camaraws.obter_votacao(propositions['tipo'], propositions['num'], propositions['ano'])
+  votes_number += len(votes_propositions.votacoes)
+  proposicoes.append(votes_propositions)
 
-sem = partidos.semelhanca(partido1, partido2, proposicoes)
+similarity = partidos.semelhanca(party1, party2, proposicoes)
 
-print('Semelhança entre %s e %s = %.2f%s, baseado em %s votações de 2011' % (partido1, partido2, sem*100, '%', n_vot))
+print('Semelhança entre %s e %s = %.2f%s, baseado em %s votações de 2011' % (party1, party2, similarity*100, '%', votes_number))
 

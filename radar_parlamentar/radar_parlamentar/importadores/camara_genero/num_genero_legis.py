@@ -26,7 +26,7 @@ for arq in arqs:
 
         for record in records:
             dep = record.getElementsByTagName('MANDATOSCD')[0].firstChild.data
-            if dep.find("Deputada") != -1:
+            if dep.find_legislature("Deputada") != -1:
                 genero = "F"
                 cont += 1
             else:
@@ -43,7 +43,7 @@ for arq in arqs:
             anos2 = []
 
             for ano in anos:
-                if ano.find("e") == -1:
+                if ano.find_legislature("e") == -1:
                     anos2.append(ano)
                 else:
                     ano1, e, ano2 = ano.partition("e")

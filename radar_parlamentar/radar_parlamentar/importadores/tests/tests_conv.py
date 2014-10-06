@@ -67,7 +67,7 @@ class ConvencaoTest(TestCase):
             self.assertEquals(num_votos, NUM_VOTOS_POR_VOTACAO)
 
     def test_check_partidos(self):
-        """Tests if the names of conv parties are correct."""
+        """Tests if the names of conv partidos are correct."""
 
         partidos = models.Partido.objects.all()
         nomes_partidos = [p.nome for p in partidos]

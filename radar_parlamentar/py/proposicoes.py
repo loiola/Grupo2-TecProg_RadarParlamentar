@@ -20,10 +20,17 @@
 Has script that lists propositions to polls.
 
 Functions:
+<<<<<<< HEAD
 parse_html - parse recusrsos / proposicoes.html file
 com_votacao - web service verifies the list of propositions that have polls
 proposicoes_com_votacao - returns list of propositions that have voting based
 votadas.txt file."""
+=======
+    parse_html - parse recusrsos / proposicoes.html file
+    com_votacao - web service verifies the list of propositions that have polls
+    proposicoes_com_votacao - returns list of propositions that have voting based
+    votadas.txt file."""
+>>>>>>> estilo-e-design
 
 import re
 import codecs
@@ -38,17 +45,34 @@ import camaraws
 def parse_html():
     """Parse of the file recusrsos/proposicoes.htmll
     Retorns:
-    A list with a identification of the propositions found in html
-    Each list position is a dicionary with key \in {id, tipo, num, ano}
-    The keys and values of this dictionaries are strings."""
+        A list with a identification of the propositions found in html
+        Each list position is a dicionary with key \in {id, tipo, num, ano}
+        The keys and values of this dictionaries are strings."""
 
+<<<<<<< HEAD
     # File contains propositions voted on by the chamber in 2011:
     file_name = 'recursos/proposicoes2011.html'
+=======
+    # File contains propositions voted on by the chamber in 2011
+    # Receives name of html file
+    file_name = 'recursos/proposicoes2011.html'
+
+    # Receives opening of proposition file
+>>>>>>> estilo-e-design
     prop_file = codecs.open(file_name, encoding='ISO-8859-15', mode='r')
+
     regexp = '<A HREF=http://.*?id=([0-9]*?)>([A-Z]*?) ([0-9]*?)/([0-9]{4})</A>'
+
+    # Receives proposition list where each position of list is a dictionary with the
+    # identificator keys, type, number and proposition year
     propositions = []
+
+    # line: temporary variable of loop that generates proposition list
     for line in prop_file:
-        res = re.search(regexp, line)
+
+        # Receives search by propositions in html
+        res = re.search(regexp, line)]
+
         if res:
             propositions.append({'id':res.group(1), 'tipo':res.group(2),
 <<<<<<< HEAD
@@ -69,13 +93,28 @@ def parse():
     """File contains propositions voted on by the chamber in 2011 for which we
 	obtained the vote xml:"""
 
+<<<<<<< HEAD
     file_name = 'resultados/votadas.txt'
+=======
+    # Receives name of html file
+    file_name = 'resultados/votadas.txt'
+
+    # # Receives opening of proposition file
+>>>>>>> estilo-e-design
     prop_file = open(file_name, 'r')
 
     regexp = '^([0-9]*?): ([A-Z]*?) ([0-9]*?)/([0-9]{4})'
+
+    # Receives proposition list where each position of list is a dictionary with the
+    # identificator keys, type, number and proposition year
     propositions = []
+
+    # line: temporary variable of loop that generates proposition list
     for line in prop_file:
+
+        # Receives search by propositions in html
         res = re.search(regexp, line)
+
         if res:
             propositions.append({'id':res.group(1), 'tipo':res.group(2),
 		'num':res.group(3), 'ano':res.group(4)})
@@ -99,9 +138,13 @@ def com_votacao(proposicoes):
 >>>>>>> estilo-e-design
 	keys and values ​​are strings."""
 
+    # Receives list with voted propositions
     voted = []
+
     for proposition in proposicoes:
         print "requisitando " + proposition['id']
+
+        # Receives the votes containing the type, the number and the year of each vote
         votes = camaraws.obter_votacao(proposition['tipo'], proposition['num'],
                                      proposition['ano'])
         if votes != None:
@@ -113,20 +156,26 @@ def proposicoes_com_votacao():
     of the vote
      This list is taken from the results / votadas.txt file
      returns:
-     A list of propositions
-     Each position on the list is a dictionary with keys \ in {id, type in a year}
-     The keys and values ​​are strings of these dictionaries."""
+        A list of propositions
+        Each position on the list is a dictionary with keys \ in {id, type in a year}
+        The keys and values ​​are strings of these dictionaries."""
 
     return parse()
 
 if __name__ == "__main__":
+
+    # Receives the parse_html() method
     propositions = parse_html()
+
+    # Receives the com_votacao() method that pass the propositions as parameter
     voted = com_votacao(propositions)
+
     print("# Documento entregue pela câmara continha %d proposições votadas em 2011" %
           len(propositions))
     print("# %d proposições retornaram informações sobre suas votações pelo web service" %
           len(voted))
     print("# Proposições que retornaram a votação:")
+
     for proposition in voted:
         print("%s: %s %s/%s" % (proposition['id'],proposition['tipo'],proposition['num'],
                                 proposition['ano']))

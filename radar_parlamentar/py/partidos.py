@@ -15,88 +15,112 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Module parties - functions for characterization and comparison of parties
+"""Module partidos - functions for characterization and comparison of partidos
 
 functions:
-vetor_votacoes - calculates the vector of voting for a party
-similarity - calculates the similarity between two parties
-semelhanca_pca - calculates similarities party generating a two-dimensional
-graph
+    vetor_votacoes - calculates the vector of voting for a party
+    similarity - calculates the similarity between two partidos
+    semelhanca_pca - calculates similarities party generating a two-dimensional
+    graph
 
 constants:
-PARTIES: List the names of the parties."""
+    PARTIES: List the names of the partidos."""
 
 import algebralinha
 import numpy
 import pca
 
+# Constant that gets list of existing partidos
 PARTIDOS = ['PT', 'PSDB', 'PV', 'PSOL', 'PCdoB', 'PP', 'PR', 'DEM', 'PMDB', 'PSC', 
 	'PTB', 'PDT', 'PSB', 'PPS', 'PRB']
 
 def vetor_votacoes(partido, proposicoes):
     """Calculates the vector of voting for a party
-     arguments:
-     party - party name (string)
-     propositions - propositions containing list of polls
+    arguments:
+        party - party name (string)
+        propositions - propositions containing list of polls
 
-     returns:
-     A list representing the vector of party polls.
-	"""
+    returns:
+        A list representing the vector of party polls."""
 
-    vetor = []
+    # Receives a list that is the vector of a research party
+    vector = []
+
+    # prop: temporary variable loop that generates the list vector
     for prop in proposicoes:
+
         for votacao in prop.votacoes:
-            dic = votacao.por_partido()
-            voto = dic[partido]
-            #vi = (voto.sim + 0.5*voto.abstencao) / (voto.sim + voto.nao + voto.abstencao) # análise antigo
-            vi = (1.0*voto.sim + 0*voto.abstencao -1.0*voto.nao) / (voto.sim + voto.nao + voto.abstencao)
-            vetor.append(vi)
-    return vetor  
+
+            # Receives the votes by party
+            dic = votacao.by_party()
+
+            # Receives list of vote of a particular party
+            vote = dic[partido]
+
+            # Receives reseultado calculating the search of votes by party
+            vi = (1.0*vote.sim + 0*vote.abstencao -1.0*vote.nao) / (
+                vote.sim + vote.nao + vote.abstencao)
+            vector.append(vi)
+    return vector
 
 def semelhanca_vetores(vetor1, vetor2):
+
+    # Receives the result of normalizing the vector 1
     nv1 = algebra.normaliza(vetor1)
+
+    # Receives the result of normalizing the vector 2
     nv2 = algebra.normaliza(vetor2)
+
     return algebra.prod_escalar(nv1, nv2)
 
 def semelhanca(partido1, partido2, proposicoes):
 <<<<<<< HEAD
-    """Computes the similarity between two parties
+    """Computes the similarity between two partidos"""
 =======
-    
-	""" Computes the similarity between two parties
->>>>>>> estilo-e-design
-     The similarity is implemented as the scalar product of vectors normalized polls
-     arguments:
-     partido1, partido2 - names of parties (string)
-     propositions - propositions containing list of polls
 
-     returns:
-     A real value \ in [0,1] representing the similarity between the parties.
-	"""
+	""" Computes the similarity between two partidos"""
+
+>>>>>>> estilo-e-design
+
+    """The similarity is implemented as the scalar product of vectors normalized polls
+    arguments:
+        partido1, partido2 - names of partidos (string)
+        propositions - propositions containing list of polls
+
+    returns:
+        A real value \ in [0,1] representing the similarity between the partidos."""
 
     v1 = vetor_votacoes(partido1, proposicoes)
     v2 = vetor_votacoes(partido2, proposicoes)
+
+    # Receives similarity between vectors 1 and 2
     sem = semelhanca_vetores(v1, v2)
+
     return (sem+1)/2.0
 
 def semelhanca_pca(vetores):
     """Calculates similarities party generating a two-dimensional graph
-     This is done with the Principal Component Analysis (PCA)
-     arguments:
-     vectors - a list of lists, where each list is a vector of voting for a party
-     returns:
-     A list where the ith position represents the two-dimensional coordinate of the party
-     whose vector voting was the i-th argument list of vectors."""
+    This is done with the Principal Component Analysis (PCA)
+    arguments:
+    vectors - a list of lists, where each list is a vector of voting for a party
+    returns:
+    A list where the ith position represents the two-dimensional coordinate of the party
+    whose vector voting was the i-th argument list of vectors."""
 
     # PCA: lines are samples. Columns are variable 
     # We do: linhas = partidos and colunas = votações
     # Should centralize values.
-    # As all values ​​\ in [0,1], we need not to scale. 
+    # As all values ​​\ in [0,1], we need not to scale.
+    #
+    # Receive a list of lists of vectors of voting of a party
     matriz =  numpy.array(vetores)
 
     # Centralization:
-    matriz -= matriz.mean(axis=0)  
+    matriz -= matriz.mean(axis=0)
+
+    # Receives centering matrix with PCA
     p = pca.PCA(matriz)
+
     return p
 
 

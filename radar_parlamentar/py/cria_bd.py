@@ -84,8 +84,8 @@ class GeradorBD:
         print 'Entre parenteses, (id da proposicao,numero de votacoes).'
         print 'Proposicoes sem votacoes aparecem como um ponto.'
 
-	# List of 'ints' that tells you how many votes each proposition listed above has:
-        numero_votacoes = [] 
+	    # List of 'ints' that tells you how many votes each proposition listed above has:
+        votations_number = []
 
         con = lite.connect(self.db) # abrir conexão com bd.
         with con:
@@ -100,7 +100,7 @@ class GeradorBD:
         con.close()
 
         for prop in self.proposicoes:
-            numero_votacoes.append(len(prop.votacoes))
+            votations_number.append(len(prop.votacoes))
             sys.stdout.write('(%s,%d),'%(prop.id, len(prop.votacoes)))
             sys.stdout.flush()
 
@@ -111,32 +111,32 @@ class GeradorBD:
             con.close()
             for v in prop.votacoes:
                 print 'analisando votação %s' % v
-                sim = []
-                nao = []
-                abstencao = []
-                obstrucao = []
+                yes = []
+                no = []
+                abstention = []
+                obstruction = []
                 for d in v.deputados:
                     sys.stdout.write(".")
                     sys.stdout.flush()
                     idDep = model.Deputado.idDep(d.nome, d.partido, d.uf, self.db)
                     if d.voto == model.SIM: 
-                        sim.append(idDep)
+                        yes.append(idDep)
                     if d.voto == model.NAO:
-                        nao.append(idDep)
+                        no.append(idDep)
                     if d.voto == model.ABSTENCAO:
-                        abstencao.append(idDep)
+                        abstention.append(idDep)
                     if d.voto == model.OBSTRUCAO:
-                        obstrucao.append(idDep)
+                        obstruction.append(idDep)
                 print ' '
                 pid = prop.id
                 votid = prop.votacoes.index(v) + 1
                 resum = v.resumo
                 data = v.data
                 hora = v.hora
-                ssim = str(sim)
-                snao = str(nao)
-                sabs = str(abstencao)
-                sobs = str(obstrucao)
+                ssim = str(yes)
+                snao = str(no)
+                sabs = str(abstention)
+                sobs = str(obstruction)
                 con = lite.connect(self.db)
                 con.execute("INSERT INTO VOTACOES VALUES(?,?,?,?,?,?,?,?,?)",(pid, votid, resum, data, hora, ssim, snao, sabs, sobs))
                 con.commit()
@@ -183,3 +183,4 @@ def cria_bd_cmsp():
 if __name__ == "__main__":
     cria_bd_cmsp()    
 
+estamos em 1994? A Dilma pegou inflação de 916% ao ano? Pegou desemprego de 8,3% ao ano sem confiança do investidor externo para poder reverter o quadro? Pegou um país sem reservas nacionais? Implantou uma moeda nova e lutou para estabiliza-la? Criou uma política macroeconomica basicamente do zero? Não? Então pare de fingir que as situações são comparáveis. A senhora Rousseff pegou o país em ótimas condições internas e com cenário externo favorável a expansão comercial e política do Brasil. Fudeu com tudo.

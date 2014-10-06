@@ -35,57 +35,57 @@ class ExportadoresFileTest(TestCase):
         """Method to set responsible for what is needed to run the tests. 
         In this case, the creation of objects in the test bank."""
 
-        partidoTest1 = models.Partido(nome='PMDB', numero='40')
-        partidoTest2 = models.Partido(nome='PT', numero='13')
-        partidoTest3 = models.Partido(nome='PSDB', numero='23')
-        partidoTest1.save()
-        partidoTest2.save()
-        partidoTest3.save()
+        testParty1 = models.Partido(nome='PMDB', numero='40')
+        testParty2 = models.Partido(nome='PT', numero='13')
+        partyTest3 = models.Partido(nome='PSDB', numero='23')
+        testParty1.save()
+        testParty2.save()
+        partyTest3.save()
 
-        parlamentarTest1 = models.Parlamentar(
+        parliamentaryTest1 = models.Parlamentar(
             id_parlamentar='', nome='Ivandro Cunha Lima', genero='')
-        parlamentarTest2 = models.Parlamentar(
+        parliamentaryTest2 = models.Parlamentar(
             id_parlamentar='', nome='Fernando Ferro', genero='')
-        parlamentarTest3 = models.Parlamentar(
+        parliamentaryTest3 = models.Parlamentar(
             id_parlamentar='', nome='Humberto Costa', genero='')
 
-        parlamentarTest1.save()
-        parlamentarTest2.save()
-        parlamentarTest3.save()
+        parliamentaryTest1.save()
+        parliamentaryTest2.save()
+        parliamentaryTest3.save()
 
-        casa_legislativaTest1 = models.CasaLegislativa(
+        legislative_houseTest1 = models.CasaLegislativa(
             nome='Camara dos Deputados', nome_curto='cdep', esfera='FEDERAL',
             local='', atualizacao='2012-06-01')
 
-        casa_legislativaTest2 = models.CasaLegislativa(
+        legislative_houseTest2 = models.CasaLegislativa(
             nome='Camara Municipal de Sao Paulo', nome_curto='cmsp',
             esfera='MUNICIPAL', local='Sao Paulo - SP',
             atualizacao='2012-12-31')
 
-        casa_legislativaTest1.save()
-        casa_legislativaTest2.save()
+        legislative_houseTest1.save()
+        legislative_houseTest2.save()
 
-        legislaturaTest1 = models.Legislatura(
-            parlamentar=parlamentarTest1,
-            casa_legislativa=casa_legislativaTest1, inicio='2004-01-01',
-            fim='2012-07-01', partido=partidoTest1, localidade='PB')
-        legislaturaTest1.save()
+        legislatureTest1 = models.Legislatura(
+            parlamentar=parliamentaryTest1,
+            casa_legislativa=legislative_houseTest1, inicio='2004-01-01',
+            fim='2012-07-01', partido=testParty1, localidade='PB')
+        legislatureTest1.save()
 
-        proposicaoTest1 = models.Proposicao()
-        proposicaoTest1.id_prop = '5555'
-        proposicaoTest1.sigla = 'PL'
-        proposicaoTest1.numero = '4520'
-        proposicaoTest1.casa_legislativa = casa_legislativaTest1
-        proposicaoTest1.save()
+        propositionTest1 = models.Proposicao()
+        propositionTest1.id_prop = '5555'
+        propositionTest1.sigla = 'PL'
+        propositionTest1.numero = '4520'
+        propositionTest1.casa_legislativa = legislative_houseTest1
+        propositionTest1.save()
 
-        votacaoTest1 = models.Votacao(
+        votingTest1 = models.Votacao(
             id_vot=' 12345', descricao='Teste da votacao',
-            data='1900-12-05', resultado='Teste', proposicao=proposicaoTest1)
-        votacaoTest1.save()
+            data='1900-12-05', resultado='Teste', proposicao=propositionTest1)
+        votingTest1.save()
 
-        votoTest1 = models.Voto(
-            votacao=votacaoTest1, legislatura=legislaturaTest1, opcao='TESTE')
-        votoTest1.save()
+        voteTest1 = models.Voto(
+            votacao=votingTest1, legislatura=legislatureTest1, opcao='TESTE')
+        voteTest1.save()
 
         exportar.main()
 
@@ -99,28 +99,31 @@ class ExportadoresFileTest(TestCase):
         self.assertTrue(os.path.isfile(filepath))
 
     def test_verify_file_partido(self):
-        partido = models.Partido.objects.get(nome='PMDB')
+        party = models.Partido.objects.get(nome='PMDB')
         filepath = os.path.join(MODULE_DIR, 'dados/partido.xml')
         file_xml = open(filepath, 'r')
         file_read = file_xml.read()
-        self.assertTrue(file_read.find(partido.nome) > 0)
-        self.assertTrue(file_read.find(str(partido.numero)) > 0)
+        self.assertTrue(file_read.find(party.nome) > 0)
+        self.assertTrue(file_read.find(str(party.numero)) > 0)
 
     def test_create_file_casa_legislativa(self):
         filepath = os.path.join(MODULE_DIR, 'dados/casa_legislativa.xml')
         self.assertTrue(os.path.isfile(filepath))
 
     def test_verify_file_casa_legislativa(self):
-        casa_legislativa = models.CasaLegislativa.objects.get(
+        legislative_house = models.CasaLegislativa.objects.get(
             atualizacao='2012-12-31')
         filepath = os.path.join(MODULE_DIR, 'dados/casa_legislativa.xml')
         file_xml = open(filepath, 'r')
-        file_read = file_xml.read()  # Transforma o arquivo xml em uma string
+
+        # Transforms the xml file into a string
+        file_read = file_xml.read()
         self.assertTrue(
-            file_read.find(casa_legislativa.nome.decode("utf-8")) > 0)
-        self.assertTrue(file_read.find(casa_legislativa.nome_curto) > 0)
-        self.assertTrue(file_read.find(casa_legislativa.esfera) > 0)
-        # Caso for menor que zero a palavra nao existe na string
+            file_read.find(legislative_house.nome.decode("utf-8")) > 0)
+        self.assertTrue(file_read.find(legislative_house.nome_curto) > 0)
+        self.assertTrue(file_read.find(legislative_house.esfera) > 0)
+
+        # Case is less than zero the word does not exist in the string
         self.assertTrue(file_read.find('cdeb') < 0)
 
     def test_create_file_parlamentar(self):
@@ -139,44 +142,44 @@ class ExportadoresFileTest(TestCase):
         self.assertTrue(os.path.isfile(filepath))
 
     def test_verify_file_legislatura(self):
-        legislatura = models.Legislatura.objects.get(inicio='2004-01-01')
+        legislature = models.Legislatura.objects.get(inicio='2004-01-01')
         filepath = os.path.join(MODULE_DIR, 'dados/legislatura.xml')
         file_xml = open(filepath, 'r')
         file_read = file_xml.read()
-        self.assertTrue(file_read.find(legislatura.localidade) > 0)
-        self.assertTrue(file_read.find(str(legislatura.inicio)) > 0)
-        self.assertTrue(file_read.find(str(legislatura.fim)) > 0)
+        self.assertTrue(file_read.find(legislature.localidade) > 0)
+        self.assertTrue(file_read.find(str(legislature.inicio)) > 0)
+        self.assertTrue(file_read.find(str(legislature.fim)) > 0)
 
     def test_create_file_proposicao(self):
         filepath = os.path.join(MODULE_DIR, 'dados/proposicao.xml')
         self.assertTrue(os.path.isfile(filepath))
 
     def teste_verify_file_proposicao(self):
-        proposicao = models.Proposicao.objects.get(sigla='PL')
+        proposition = models.Proposicao.objects.get(sigla='PL')
         filepath = os.path.join(MODULE_DIR, 'dados/proposicao.xml')
         file_xml = open(filepath, 'r')
         file_read = file_xml.read()
-        self.assertTrue(file_read.find(proposicao.numero) > 0)
-        self.assertTrue(file_read.find(proposicao.id_prop) > 0)
+        self.assertTrue(file_read.find(proposition.numero) > 0)
+        self.assertTrue(file_read.find(proposition.id_prop) > 0)
 
     def test_create_file_votacao(self):
         filepath = os.path.join(MODULE_DIR, 'dados/votacao.xml')
         self.assertTrue(os.path.isfile(filepath))
 
     def test_verify_file_votacao(self):
-        votacao = models.Votacao.objects.get(resultado='Teste')
+        voting = models.Votacao.objects.get(resultado='Teste')
         filepath = os.path.join(MODULE_DIR, 'dados/votacao.xml')
         file_xml = open(filepath, 'r')
         file_read = file_xml.read()
-        self.assertTrue(file_read.find(votacao.descricao) > 0)
-        self.assertTrue(file_read.find(str(votacao.data)) > 0)
+        self.assertTrue(file_read.find(voting.descricao) > 0)
+        self.assertTrue(file_read.find(str(voting.data)) > 0)
 
     def test_verify_file_voto(self):
-        voto = models.Voto.objects.get(opcao='TESTE')
+        vote = models.Voto.objects.get(opcao='TESTE')
         filepath = os.path.join(MODULE_DIR, 'dados/voto.xml')
         file_xml = open(filepath, 'r')
         file_read = file_xml.read()
-        self.assertTrue(file_read.find(voto.opcao) > 0)
+        self.assertTrue(file_read.find(vote.opcao) > 0)
 
     def test_create_file_voto(self):
         filepath = os.path.join(MODULE_DIR, 'dados/voto.xml')

@@ -27,16 +27,27 @@ Classes:
 from __future__ import unicode_literals
 from django.utils.dateparse import parse_datetime
 from modelagem import models
+#last_refresh => date of last refresh on data
 
-ULTIMA_ATUALIZACAO = parse_datetime('2012-06-01 0:0:0')
+LAST_REFRESH = parse_datetime('2012-06-01 0:0:0')
 
-INICIO_PERIODO = parse_datetime('1989-01-01 0:0:0')
-FIM_PERIODO = parse_datetime('1989-12-30 0:0:0')
+#begin_period => date on begin of period of votation
 
-DATA_NO_PRIMEIRO_SEMESTRE = parse_datetime('1989-02-02 0:0:0')
-DATA_NO_SEGUNDO_SEMESTRE = parse_datetime('1989-10-10 0:0:0')
+BEGIN_PERIOD = parse_datetime('1989-01-01 0:0:0')
 
-PARLAMENTARES_POR_PARTIDO = 3
+#end_period => date on end of period of votation
+
+END_PERIOD = parse_datetime('1989-12-30 0:0:0')
+
+#begin_first_semester => date on begin the first semester
+
+BEGIN_FIRST_SEMESTER = parse_datetime('1989-02-02 0:0:0')
+
+#begin_second_semester => date on begin the second semester
+
+BEGIN_SECOND_SEMESTER = parse_datetime('1989-10-10 0:0:0')
+
+PARLAMENTS_PER_PARTY = 3
 
 GIRONDINOS = 'Girondinos'
 JACOBINOS = 'Jacobinos'
@@ -45,18 +56,22 @@ MONARQUISTAS = 'Monarquistas'
 
 class ImportadorConvencao:
 
-    def _gera_casa_legislativa(self):
+    #new_legislative_hause => get instance the new legislative house
+
+    def _new_legislative_house(self):
 
         conv = models.CasaLegislativa()
         conv.nome = 'Convenção Nacional Francesa'
-        conv.nome_curto = 'conv'
+        conv.short_name = 'conv'
         conv.esfera = models.FEDERAL
         conv.local = 'Paris (FR)'
-        conv.atualizacao = ULTIMA_ATUALIZACAO
+        conv.atualizacao = LAST_REFRESH
         conv.save()
         return conv
 
-    def _gera_partidos(self):
+    # new_party => get instance the new party
+
+    def _new_party(self):
 
         girondinos = models.Partido()
         girondinos.nome = GIRONDINOS
@@ -75,13 +90,15 @@ class ImportadorConvencao:
         monarquistas.save()
         self.partidos = {girondinos, jacobinos, monarquistas}
 
-    def _gera_legislaturas(self):
+    #new_legislature => get instance the new legislature
 
-        # Name partido => list of party legislatures
+    def _new_legislature(self):
+
+        # Name partido => list of party legislaturas
         self.legs = {}  
         for p in self.partidos:
             self.legs[p.nome] = []
-            for i in range(0, PARLAMENTARES_POR_PARTIDO):
+            for i in range(0, PARLAMENTS_PER_PARTY):
 
                 parlamentar = models.Parlamentar()
                 parlamentar.id_parlamentar = '%s%s' % (p.nome[0], str(i))
@@ -90,14 +107,16 @@ class ImportadorConvencao:
 
                 leg = models.Legislatura()
                 leg.casa_legislativa = self.casa
-                leg.inicio = INICIO_PERIODO
-                leg.fim = FIM_PERIODO
+                leg.inicio = BEGIN_PERIOD
+                leg.fim = END_PERIOD
                 leg.partido = p
                 leg.parlamentar = parlamentar
                 leg.save()
                 self.legs[p.nome].append(leg)
 
-    def _gera_proposicao(self, num, descricao):
+    #new_proposition => get instance the new proposition
+
+    def _new_proposition(self, num, descricao):
 
         prop = models.Proposicao()
         prop.id_prop = num
@@ -109,7 +128,9 @@ class ImportadorConvencao:
         prop.save()
         return prop
 
-    def _gera_votacao(self, num, descricao, data, prop):
+    #new_votation => get instance the new votation
+
+    def _new_votation(self, num, descricao, data, prop):
 
         votacao = models.Votacao()
         votacao.id_vot = num
@@ -119,137 +140,188 @@ class ImportadorConvencao:
         votacao.save()
         return votacao
 
-    def _gera_votos(self, votacao, nome_partido, opcoes):
+    #new_vote => get instance the new vote
+
+    def _new_votes(self, votacao, nome_partido, opcoes):
 
         # opcoes is an options list (YES, NO...)
-        for i in range(0, PARLAMENTARES_POR_PARTIDO):
+        for i in range(0, PARLAMENTS_PER_PARTY):
             voto = models.Voto()
             voto.legislatura = self.legs[nome_partido][i]
             voto.opcao = opcoes[i]
             voto.votacao = votacao
             voto.save()
 
-    def _gera_votacao1(self):
+    #new_votation1 => get instance the new votation
+
+    def girondine_votes(self, votacao):
+        votos_girondinos = [models.SIM, models.ABSTENCAO, models.NAO]
+        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+
+    def jaconbine_votes(self, votacao):
+        votos_jacobinos = [models.SIM, models.SIM, models.SIM]
+        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+
+    def monarquist_votes(self, votacao):
+        votos_monarquistas = [models.NAO, models.NAO, models.NAO]
+        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+
+    def _new_votation1(self):
 
         NUM = '1'
         DESCRICAO = 'Reforma agrária'
-        prop = self._gera_proposicao(NUM, DESCRICAO)
-        votacao = self._gera_votacao(
-            NUM, DESCRICAO, DATA_NO_PRIMEIRO_SEMESTRE, prop)
+        prop = self._new_proposition(NUM, DESCRICAO)
+        votacao = self._new_votation(
+            NUM, DESCRICAO, BEGIN_FIRST_SEMESTER, prop)
 
-        votos_girondinos = [models.SIM, models.ABSTENCAO, models.NAO]
-        self._gera_votos(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes(votacao)
 
-        votos_jacobinos = [models.SIM, models.SIM, models.SIM]
-        self._gera_votos(votacao, JACOBINOS, votos_jacobinos)
+        self.jaconbine_votes(votacao)
 
-        votos_monarquistas = [models.NAO, models.NAO, models.NAO]
-        self._gera_votos(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes(votacao)
 
-    def _gera_votacao2(self):
+    #new_votation2 => get instance the new votation
+
+    def girondine_votes2(self, votacao):
+        votos_girondinos = [models.NAO, models.NAO, models.NAO]
+        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+
+    def jaconbine_votes2(self, votacao):
+        votos_jacobinos = [models.NAO, models.NAO, models.NAO]
+        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+
+    def monarquist_votes2(self, votacao):
+        votos_monarquistas = [models.SIM, models.SIM, models.SIM]
+        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+
+    def _new_votation2(self):
 
         NUM = '2'
         DESCRICAO = 'Aumento da pensão dos nobres'
-        prop = self._gera_proposicao(NUM, DESCRICAO)
-        votacao = self._gera_votacao(
-            NUM, DESCRICAO, DATA_NO_PRIMEIRO_SEMESTRE, prop)
+        prop = self._new_proposition(NUM, DESCRICAO)
+        votacao = self._new_votation(
+            NUM, DESCRICAO, BEGIN_FIRST_SEMESTER, prop)
 
-        votos_girondinos = [models.NAO, models.NAO, models.NAO]
-        self._gera_votos(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes2(votacao)
 
-        votos_jacobinos = [models.NAO, models.NAO, models.NAO]
-        self._gera_votos(votacao, JACOBINOS, votos_jacobinos)
+        self.jaconbine_votes2(votacao)
 
-        votos_monarquistas = [models.SIM, models.SIM, models.SIM]
-        self._gera_votos(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes2(votacao)
 
-    def _gera_votacao3(self):
+    #new_votation3 => get instance the new votation
+
+    def girondine_votes3(self, votacao):
+        votos_girondinos = [models.NAO, models.NAO, models.SIM]
+        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+
+    def _new_votation3(self):
 
         NUM = '3'
         DESCRICAO = 'Institui o Dia de Carlos Magno'
-        prop = self._gera_proposicao(NUM, DESCRICAO)
-        votacao = self._gera_votacao(
-            NUM, DESCRICAO, DATA_NO_PRIMEIRO_SEMESTRE, prop)
+        prop = self._new_proposition(NUM, DESCRICAO)
+        votacao = self._new_votation(
+            NUM, DESCRICAO, BEGIN_FIRST_SEMESTER, prop)
 
-        votos_girondinos = [models.NAO, models.NAO, models.SIM]
-        self._gera_votos(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes3(votacao)
 
-        votos_jacobinos = [models.NAO, models.NAO, models.NAO]
-        self._gera_votos(votacao, JACOBINOS, votos_jacobinos)
+        self.jaconbine_votes2(votacao)
 
-        votos_monarquistas = [models.SIM, models.SIM, models.SIM]
-        self._gera_votos(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes2(votacao)
 
-    def _gera_votacao4(self):
+    #new_votation4 => get instance the new votation
+
+    def girondine_votes4(self, votacao):
+        votos_girondinos = [models.SIM, models.SIM, models.SIM]
+        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+
+    def jacobine_votes4(self, votacao):
+        votos_jacobinos = [models.SIM, models.ABSTENCAO, models.NAO]
+        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+
+    def monarquist_votes4(self, votacao):
+        votos_monarquistas = [models.SIM, models.NAO, models.AUSENTE]
+        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+
+    def _new_votation4(self):
 
         NUM = '4'
         DESCRICAO = 'Diminuição de impostos sobre a indústria'
-        prop = self._gera_proposicao(NUM, DESCRICAO)
-        votacao = self._gera_votacao(
-            NUM, DESCRICAO, DATA_NO_PRIMEIRO_SEMESTRE, prop)
+        prop = self._new_proposition(NUM, DESCRICAO)
+        votacao = self._new_votation(
+            NUM, DESCRICAO, BEGIN_FIRST_SEMESTER, prop)
 
-        votos_girondinos = [models.SIM, models.SIM, models.SIM]
-        self._gera_votos(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes4(votacao)
 
-        votos_jacobinos = [models.SIM, models.ABSTENCAO, models.NAO]
-        self._gera_votos(votacao, JACOBINOS, votos_jacobinos)
+        self.jacobine_votes4(votacao)
 
-        votos_monarquistas = [models.SIM, models.NAO, models.AUSENTE]
-        self._gera_votos(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes4(votacao)
 
-    def _gera_votacao5(self):
+    #new_votation5 => get instance the new votation
+
+    def girondine_votes5(self, votacao):
+        votos_girondinos = [models.SIM, models.SIM, models.ABSTENCAO]
+        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+
+    def _new_votation5(self):
 
         NUM = '5'
         DESCRICAO = 'Guilhotinar o Conde Pierre'
-        prop = self._gera_proposicao(NUM, DESCRICAO)
-        votacao = self._gera_votacao(
-            NUM, DESCRICAO, DATA_NO_SEGUNDO_SEMESTRE, prop)
+        prop = self._new_proposition(NUM, DESCRICAO)
+        votacao = self._new_votation(
+            NUM, DESCRICAO, BEGIN_SECOND_SEMESTER, prop)
 
-        votos_girondinos = [models.SIM, models.SIM, models.ABSTENCAO]
-        self._gera_votos(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes5(votacao)
 
-        votos_jacobinos = [models.SIM, models.SIM, models.SIM]
-        self._gera_votos(votacao, JACOBINOS, votos_jacobinos)
+        self.jaconbine_votes(votacao)
 
-        votos_monarquistas = [models.NAO, models.NAO, models.NAO]
-        self._gera_votos(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes(votacao)
 
-    def _gera_votacao6(self):
+    #new_votation6 => get instance the new votation
+
+    def monarquist_votes6(self, votacao):
+        votos_monarquistas = [models.AUSENTE, models.SIM, models.SIM]
+        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+
+    def _new_votation6(self):
 
         NUM = '6'
         DESCRICAO = 'Criação de novas escolas'
-        prop = self._gera_proposicao(NUM, DESCRICAO)
-        votacao = self._gera_votacao(
-            NUM, DESCRICAO, DATA_NO_SEGUNDO_SEMESTRE, prop)
+        prop = self._new_proposition(NUM, DESCRICAO)
+        votacao = self._new_votation(
+            NUM, DESCRICAO, BEGIN_SECOND_SEMESTER, prop)
 
-        votos_girondinos = [models.SIM, models.SIM, models.SIM]
-        self._gera_votos(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes4(votacao)
 
-        votos_jacobinos = [models.SIM, models.SIM, models.SIM]
-        self._gera_votos(votacao, JACOBINOS, votos_jacobinos)
+        self.jaconbine_votes(votacao)
 
-        votos_monarquistas = [models.AUSENTE, models.SIM, models.SIM]
-        self._gera_votos(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes6(votacao)
 
-    def _gera_votacao7(self):
+    #new_votation7 => get instance the new votation
+
+    def monarquist_votes7(self, votacao):
+        votos_monarquistas = [models.SIM, models.AUSENTE, models.SIM]
+        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+
+    def _new_votation7(self):
 
         NUM = '7'
         DESCRICAO = 'Aumento do efetivo militar'
-        prop = self._gera_proposicao(NUM, DESCRICAO)
-        votacao = self._gera_votacao(
-            NUM, DESCRICAO, DATA_NO_SEGUNDO_SEMESTRE, prop)
+        prop = self._new_proposition(NUM, DESCRICAO)
+        votacao = self._new_votation(
+            NUM, DESCRICAO, BEGIN_SECOND_SEMESTER, prop)
 
-        votos_girondinos = [models.SIM, models.SIM, models.ABSTENCAO]
-        self._gera_votos(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes5(votacao)
 
-        votos_jacobinos = [models.SIM, models.SIM, models.SIM]
-        self._gera_votos(votacao, JACOBINOS, votos_jacobinos)
+        self.jaconbine_votes(votacao)
 
-        votos_monarquistas = [models.SIM, models.AUSENTE, models.SIM]
-        self._gera_votos(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes7(votacao)
 
     # Voting with different attributes for test
-    def _gera_votacao8(self):
+    def jacobine_votes8(self, votacao):
+        votos_jacobinos = [models.ABSTENCAO, models.NAO, models.NAO]
+        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+
+    def _new_votation8(self):
 
         NUM = '8'
         DESCRICAO = 'Guerra contra a Inglaterra'
@@ -262,31 +334,28 @@ class ImportadorConvencao:
         prop.casa_legislativa = self.casa
         prop.indexacao = 'bombas, efeitos, destruições'
         prop.save()
-        votacao = self._gera_votacao(
-            NUM, DESCRICAO, DATA_NO_SEGUNDO_SEMESTRE, prop)
+        votacao = self._new_votation(
+            NUM, DESCRICAO, BEGIN_SECOND_SEMESTER, prop)
 
-        votos_girondinos = [models.NAO, models.NAO, models.NAO]
-        self._gera_votos(votacao, GIRONDINOS, votos_girondinos)
+        self.girondine_votes2(votacao)
 
-        votos_jacobinos = [models.ABSTENCAO, models.NAO, models.NAO]
-        self._gera_votos(votacao, JACOBINOS, votos_jacobinos)
+        self.jacobine_votes8(votacao)
 
-        votos_monarquistas = [models.SIM, models.AUSENTE, models.SIM]
-        self._gera_votos(votacao, MONARQUISTAS, votos_monarquistas)
+        self.monarquist_votes7(votacao)
 
     def importar(self):
-        self.casa = self._gera_casa_legislativa()
-        self._gera_partidos()
-        self._gera_legislaturas()
-        self._gera_votacao1()
-        self._gera_votacao2()
-        self._gera_votacao3()
-        self._gera_votacao4()
-        self._gera_votacao5()
-        self._gera_votacao6()
-        self._gera_votacao7()
-        self._gera_votacao8()
-        self._gera_proposicao('9', 'Legalizacao da maconha')
+        self.casa = self._new_legislative_house()
+        self._new_party()
+        self._new_legislature()
+        self._new_votation1()
+        self._new_votation2()
+        self._new_votation3()
+        self._new_votation4()
+        self._new_votation5()
+        self._new_votation6()
+        self._new_votation7()
+        self._new_votation8()
+        self._new_proposition('9', 'Legalizacao da maconha')
 
 
 def main():

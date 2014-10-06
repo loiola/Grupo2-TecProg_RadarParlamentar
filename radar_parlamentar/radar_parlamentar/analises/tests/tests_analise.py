@@ -43,7 +43,7 @@ class AnalisadorPeriodoTest(TestCase):
     def setUp(self):
         self.casa_legislativa = models.CasaLegislativa.objects.get(
             nome_curto='conv')
-        self.partidos = AnalisadorPeriodoTest.importer.partidos
+        self.partidos = AnalisadorPeriodoTest.importer.parties
         self.votacoes = models.Votacao.objects.filter(
             proposicao__casa_legislativa__nome_curto='conv')
         self.legislaturas = models.Legislatura.objects.filter(
@@ -78,7 +78,7 @@ class AnalisadorPeriodoTest(TestCase):
         analise_periodo = analisador.analisa()
         tamanhos = analise_periodo.tamanhos_partidos
         tamanho_esperado = conv.PARLAMENTARES_POR_PARTIDO
-        partidos = AnalisadorPeriodoTest.importer.partidos
+        partidos = AnalisadorPeriodoTest.importer.parties
         self.assertEquals(3, len(partidos))
         for p in partidos:
             self.assertEqual(tamanhos[p], tamanho_esperado)
@@ -99,7 +99,7 @@ class MatrizesDeDadosBuilderTest(TestCase):
     def setUp(self):
         self.casa_legislativa = models.CasaLegislativa.objects.get(
             nome_curto='conv')
-        self.partidos = MatrizesDeDadosBuilderTest.importer.partidos
+        self.partidos = MatrizesDeDadosBuilderTest.importer.parties
         self.votacoes = models.Votacao.objects.filter(
             proposicao__casa_legislativa__nome_curto='conv')
         self.legislaturas = models.Legislatura.objects.filter(
@@ -167,7 +167,7 @@ class AnalisadorTemporalTest(TestCase):
     def setUp(self):
         self.casa_legislativa = models.CasaLegislativa.objects.get(
             nome_curto='conv')
-        self.partidos = AnalisadorTemporalTest.importer.partidos
+        self.partidos = AnalisadorTemporalTest.importer.parties
         self.votacoes = models.Votacao.objects.filter(
             proposicao__casa_legislativa__nome_curto='conv')
         self.legislaturas = models.Legislatura.objects.filter(
@@ -228,7 +228,7 @@ class RotacionadorTest(TestCase):
     def test_rotacao(self):
         periodosRetriever = PeriodosRetriever(
             self.casa_legislativa, models.SEMESTRE)
-        periodos = periodosRetriever.get_periodos()
+        periodos = periodosRetriever.get_periods()
         analisador1 = analise.AnalisadorPeriodo(
             self.casa_legislativa, periodo=periodos[0])
         analise_do_periodo1 = analisador1.analisa()

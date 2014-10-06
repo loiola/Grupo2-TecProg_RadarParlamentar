@@ -43,7 +43,7 @@ class AnalisadorTemporal:
     An analysis of a period is a principal component analysis of the votes 
     in a given period, for example in the year 2010 to make an animated graphic, 
     you need to do analysis of two or more consecutive periods eg 2010, 2011 and 
-    2012, and properly rotate the results for the parties globally walk as little 
+    2012, and properly rotate the results for the partidos globally walk as little
     as possible from one side to the other (see algorithm of rotation).
 
     Attributes:
@@ -59,7 +59,7 @@ class AnalisadorTemporal:
         self.casa_legislativa = casa_legislativa
         retriever = utils.PeriodosRetriever(
             self.casa_legislativa, periodicidade)
-        self.periodos = retriever.get_periodos()
+        self.periodos = retriever.get_periods()
         self.ini = self.periodos[0].ini
         self.fim = self.periodos[len(self.periodos) - 1].fim
         self.periodicidade = periodicidade
@@ -138,8 +138,8 @@ class AnalisadorPeriodo:
         self.periodo = periodo
         self.ini = periodo.ini if periodo is not None else None
         self.fim = periodo.fim if periodo is not None else None
-        self.partidos = self.casa_legislativa.partidos()
-        self.legislaturas = self.casa_legislativa.legislaturas()
+        self.partidos = self.casa_legislativa.parties()
+        self.legislaturas = self.casa_legislativa.legislatures()
         self.votacoes = votacoes
         self.palavras_chave = palavras_chave
         if not self.votacoes:
@@ -166,7 +166,7 @@ class AnalisadorPeriodo:
         # period.
         self.presencas_legislaturas = {}
 
-        # partido.nome => list of party legislatures (independent of period).
+        # partido.nome => list of party legislaturas (independent of period).
         self.legislaturas_por_partido = {}
 
         self.pca_legislaturas = None
@@ -208,7 +208,7 @@ class AnalisadorPeriodo:
         self.partido_do_parlamentar = matrizesBuilder.partido_do_parlamentar
 
     def _calcula_legislaturas_2d(self):
-        """Returns map with the coordinates of legislatures in the 2D plane formed by the 
+        """Returns map with the coordinates of legislaturas in the 2D plane formed by the
         first two principal components.
         
         The map key is the id of the legislature (int) and the value is a list of two positions 
@@ -227,7 +227,7 @@ class AnalisadorPeriodo:
                 for partido in self.coordenadas_legislaturas.keys():
                     self.coordenadas_legislaturas[partido] = numpy.array(
 
-                        # Zero votes in the period. The parties are all the same. All zero
+                        # Zero votes in the period. The partidos are all the same. All zero
                         [(self.coordenadas_legislaturas[partido])[0], 0.])
             
             else:
@@ -239,7 +239,7 @@ class AnalisadorPeriodo:
     def _pca_legislaturas(self):
         """Wheel analysis by principal components legislature.
 
-        Returns a dictionary where the keys are the ids of the legislatures and the value 
+        Returns a dictionary where the keys are the ids of the legislaturas and the value
         of each key is a vector with n dimensions of the pca analysis"""
 
         if not self.pca_legislaturas:
@@ -248,7 +248,7 @@ class AnalisadorPeriodo:
             ilnn = self._lista_de_indices_de_legislaturas_nao_nulas()
             matriz = self.vetores_votacao
 
-            # Excludes missing legislatures in all voting period
+            # Excludes missing legislaturas in all voting period
             matriz = matriz[ilnn, :]
 
             # Centralyses datas
@@ -270,7 +270,7 @@ class AnalisadorPeriodo:
         return self.vetores_presencas.sum(axis=1).nonzero()[0].tolist()
 
     def _preenche_pca_de_legislaturas_nulas(self, ilnn):
-        """Recovers missing legislatures in the period, giving NaN in all 
+        """Recovers missing legislaturas in the period, giving NaN in all
         dimensions in the space of principal components"""
 
         # Save result of pca in U2
@@ -336,16 +336,16 @@ class MatrizesDeDadosBuilder:
 
     def gera_matrizes(self):
         """Create two matrixcs:
-            matriz_votacoes -- from voting (by legislatures),
-            matriz_presencas -- presences from legislatures
+            matriz_votacoes -- from voting (by legislaturas),
+            matriz_presencas -- presences from legislaturas
 
         The possible values in voting matrix are:
         -1 (no), 0 (abteining/miss) and 1 (yes).
         The possible values in prences matrix are:
         0 (lack) e 1 (present).
         The lines index parliamentaries. The columns index the votings.
-        The ordering of the rows follows the order of self.partidos or 
-        self.legislaturas, and the ordering of the columns follows the 
+        The ordering of the rows follows the order of self.partidos or
+        self.legislaturas, and the ordering of the columns follows the
         order of self.votacoes.
         
         Returns matriz_votacoes"""
@@ -498,7 +498,7 @@ class Rotacionador:
     def espelha_ou_roda(self, por_partido=False, so_espelha=True):
         """Returns new AnalisePeriodo cwith rotated coordinates
         if por_partido == True:
-        the operation minimizes how much the parties walked
+        the operation minimizes how much the partidos walked
         if por_partido == False:
         minimizes how much the parliamentarian walked intself
         if so_espelha == True:

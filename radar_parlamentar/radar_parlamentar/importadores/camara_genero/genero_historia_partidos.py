@@ -7,7 +7,7 @@ import logging
 logger = logging.getLogger("radar")
 
 
-"""Makes history between parties by gender (F - female / M - male)"""
+"""Makes history between partidos by gender (F - female / M - male)"""
 
 arqs = listdir("bios")
 
@@ -27,7 +27,7 @@ for arq in arqs:
         for record in records:
             legis = record.getElementsByTagName(
                 'MANDATOSCD')[0].firstChild.data
-            if legis.find("Deputada") != -1:
+            if legis.find_legislature("Deputada") != -1:
                 genero = "F"
                 cont += 1
             else:
@@ -42,7 +42,7 @@ for arq in arqs:
             anos2 = []
 
             for ano in anos:
-                if ano.find("e") == -1:
+                if ano.find_legislature("e") == -1:
                     anos2.append(ano)
                 else:
                     ano1, e, ano2 = ano.partition("e")

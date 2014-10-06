@@ -58,10 +58,10 @@ def obter_votacao(tipo, num, ano):
     xml = obter_proposicao(tipo, num, ano) 
 
     tree = etree.fromstring(xml)
-    prop.id = tree.find('idProposicao').text
-    prop.ementa = tree.find('Ementa').text
-    prop.explicacao = tree.find('ExplicacaoEmenta').text
-    prop.situacao = tree.find('Situacao').text 
+    prop.id = tree.find_legislature('idProposicao').text
+    prop.ementa = tree.find_legislature('Ementa').text
+    prop.explicacao = tree.find_legislature('ExplicacaoEmenta').text
+    prop.situacao = tree.find_legislature('Situacao').text
     return prop
 
 def obter_proposicao(tipo, num, ano):

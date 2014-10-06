@@ -8,7 +8,7 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Indexadores'
+        # Adding model 'Indexers'
         db.create_table('modelagem_indexadores', (
             ('id', self.gf('django.db.models.fields.AutoField')(
                 primary_key=True)),
@@ -17,7 +17,7 @@ class Migration(SchemaMigration):
             ('principal', self.gf('django.db.models.fields.BooleanField')(
                 default=False)),
         ))
-        db.send_create_signal('modelagem', ['Indexadores'])
+        db.send_create_signal('modelagem', ['Indexers'])
 
         # Adding model 'Partido'
         db.create_table('modelagem_partido', (
@@ -37,7 +37,7 @@ class Migration(SchemaMigration):
                 primary_key=True)),
             ('nome', self.gf('django.db.models.fields.CharField')(
                 max_length=100)),
-            ('nome_curto', self.gf('django.db.models.fields.CharField')
+            ('short_name', self.gf('django.db.models.fields.CharField')
              (unique=True, max_length=50)),
             ('esfera', self.gf('django.db.models.fields.CharField')
                 (max_length=10)),
@@ -156,7 +156,7 @@ class Migration(SchemaMigration):
         db.send_create_signal('modelagem', ['Voto'])
 
     def backwards(self, orm):
-        # Deleting model 'Indexadores'
+        # Deleting model 'Indexers'
         db.delete_table('modelagem_indexadores')
 
         # Deleting model 'Partido'
@@ -196,11 +196,11 @@ class Migration(SchemaMigration):
                       {'max_length': '100'}),
             'nome': ('django.db.models.fields.CharField', [],
                      {'max_length': '100'}),
-            'nome_curto': ('django.db.models.fields.CharField', [],
+            'short_name': ('django.db.models.fields.CharField', [],
                            {'unique': 'True', 'max_length': '50'})
         },
         'modelagem.indexadores': {
-            'Meta': {'object_name': 'Indexadores'},
+            'Meta': {'object_name': 'Indexers'},
             'id': ('django.db.models.fields.AutoField', [],
                    {'primary_key': 'True'}),
             'principal': ('django.db.models.fields.BooleanField', [],

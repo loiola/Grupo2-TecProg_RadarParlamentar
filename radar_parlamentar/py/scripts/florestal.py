@@ -17,36 +17,37 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Script florestal 
-Baixa a votação do código florestal
-Mostra votos agregados por partido
-Se tiver flag -uf, mostra votos por UF
-"""
+Download voting forest code
+Shows aggregate votes by party
+If you flag -uf shows votes by UF"""
 
 from __future__ import unicode_literals
 import camaraws
 import sys
 
-# Código florestal
+# Forest Code
 # http://www.camara.gov.br/proposicoesWeb/fichadetramitacao?idProposicao=17338
-tipo = 'pl'
-num = '1876'
-ano = '1999'
-prop = camaraws.obter_votacao(tipo, num, ano) 
+type = 'pl'
+number = '1876'
+year = '1999'
+proposition = camaraws.obter_votacao(type, number, year)
 
-txt = str(prop)
+txt = str(proposition)
 print type(txt)
 
 # Print propositions
-for votacao in prop.votacoes:
+for votations in proposition.votacoes:
   print('************')
-  print(votacao)
+  print(votations)
+
   if (len(sys.argv)>1 and sys.argv[1] == '-uf'):
-    dic = votacao.por_uf()
+    dic = votations.por_uf()
   else:
-    dic = votacao.por_partido()
-  for key, voto in dic.items():
-    sim = voto.sim
-    nao = voto.nao
-    abst = voto.abstencao
-    print("%s: \t Sim: %s \t Não: %s \t Abstenções: %s" % (key, sim, nao, abst))
+    dic = votations.by_party()
+
+  for key, vote in dic.items():
+    yes = vote.sim
+    no = vote.nao
+    abstention = vote.abstencao
+    print("%s: \t Sim: %s \t Não: %s \t Abstenções: %s" % (key, yes, no, abstention))
 

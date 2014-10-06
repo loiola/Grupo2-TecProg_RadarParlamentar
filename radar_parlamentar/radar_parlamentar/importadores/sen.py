@@ -151,17 +151,17 @@ class ImportadorVotacoesSenado:
     def _find_partido(self, nome_partido):
 
         nome_partido = nome_partido.strip()
-        partido = models.Partido.from_nome(nome_partido)
+        partido = models.Partido.from_name(nome_partido)
         if partido is None:
             logger.warn('Não achou o partido %s' % nome_partido)
-            partido = models.Partido.get_sem_partido()
+            partido = models.Partido.get_no_party()
         return partido
 
     def _cria_legislatura(self, voto_parlamentar_tree, votacao):
 
-        nome = voto_parlamentar_tree.find('NomeParlamentar').text
-        codigo = voto_parlamentar_tree.find('CodigoParlamentar').text
-        sexo = voto_parlamentar_tree.find('SexoParlamentar').text
+        nome = voto_parlamentar_tree.find_legislature('NomeParlamentar').text
+        codigo = voto_parlamentar_tree.find_legislature('CodigoParlamentar').text
+        sexo = voto_parlamentar_tree.find_legislature('SexoParlamentar').text
 
         if models.Parlamentar.objects.filter(nome=nome,
                                              id_parlamentar=codigo).exists():
@@ -180,9 +180,9 @@ class ImportadorVotacoesSenado:
         ini, fim = self._periodo_arbitrario(votacao.data)
         leg.inicio = ini
         leg.fim = fim
-        sigla_partido = voto_parlamentar_tree.find('SiglaPartido').text
+        sigla_partido = voto_parlamentar_tree.find_legislature('SiglaPartido').text
         leg.partido = self._find_partido(sigla_partido)
-        leg.localidade = voto_parlamentar_tree.find('SiglaUF').text
+        leg.localidade = voto_parlamentar_tree.find_legislature('SiglaUF').text
         leg.save()
         return leg
 
@@ -192,9 +192,9 @@ class ImportadorVotacoesSenado:
 
         votos = []
         for voto_parlamentar_tree in votos_tree:
-            nome_senador = voto_parlamentar_tree.find('NomeParlamentar').text
+            nome_senador = voto_parlamentar_tree.find_legislature('NomeParlamentar').text
             try:
-                legislatura = models.Legislatura.find(
+                legislatura = models.Legislatura.find_legislature(
                     votacao.data, nome_senador)
             except ValueError, error:
                 logger.error("ValueError: %s" % error)
@@ -208,7 +208,7 @@ class ImportadorVotacoesSenado:
             voto.legislatura = legislatura
             voto.votacao = votacao
             voto.opcao = self._voto_senado_to_model(
-                voto_parlamentar_tree.find('Voto').text)
+                voto_parlamentar_tree.find_legislature('Voto').text)
             voto.save()
             votos.append(voto)
         return votos
@@ -228,9 +228,9 @@ class ImportadorVotacoesSenado:
 
     def _nome_prop_from_tree(self, votacao_tree):
 
-        sigla = votacao_tree.find('SiglaMateria').text
-        numero = votacao_tree.find('NumeroMateria').text
-        ano = votacao_tree.find('AnoMateria').text
+        sigla = votacao_tree.find_legislature('SiglaMateria').text
+        numero = votacao_tree.find_legislature('NumeroMateria').text
+        ano = votacao_tree.find_legislature('AnoMateria').text
         return '%s %s/%s' % (sigla, numero, ano)
 
     def _proposicao_from_tree(self, votacao_tree):
@@ -240,9 +240,9 @@ class ImportadorVotacoesSenado:
             prop = self.proposicoes[prop_nome]
         else:
             prop = models.Proposicao()
-            prop.sigla = votacao_tree.find('SiglaMateria').text
-            prop.numero = votacao_tree.find('NumeroMateria').text
-            prop.ano = votacao_tree.find('AnoMateria').text
+            prop.sigla = votacao_tree.find_legislature('SiglaMateria').text
+            prop.numero = votacao_tree.find_legislature('NumeroMateria').text
+            prop.ano = votacao_tree.find_legislature('AnoMateria').text
             prop.casa_legislativa = self.senado
             prop.save()
             self.proposicoes[prop_nome] = prop
@@ -258,16 +258,16 @@ class ImportadorVotacoesSenado:
 
         votacoes = []
 
-        votacoes_tree = tree.find('Votacoes')
+        votacoes_tree = tree.find_legislature('Votacoes')
         if votacoes_tree is not None:
             for votacao_tree in votacoes_tree:
 
-                votacao_secreta = votacao_tree.find('Secreta').text
+                votacao_secreta = votacao_tree.find_legislature('Secreta').text
 
                 # If voting is not secret:
                 if votacao_tree.tag == 'Votacao' and votacao_secreta == 'N':
 
-                    codigo = votacao_tree.find('CodigoSessaoVotacao').text
+                    codigo = votacao_tree.find_legislature('CodigoSessaoVotacao').text
                     votacoes_query = models.Votacao.objects.filter(
                         id_vot=codigo)
 
@@ -285,15 +285,15 @@ class ImportadorVotacoesSenado:
 
                         # To create the primary key and assign the votes
                         votacao.save()
-                        votacao.descricao = votacao_tree.find(
+                        votacao.descricao = votacao_tree.find_legislature(
                             'DescricaoVotacao').text
                         votacao.data = self._converte_data(
-                            votacao_tree.find('DataSessao').text)
-                        if votacao_tree.find('Resultado') is not None:
-                            votacao.resultado = votacao_tree.find(
+                            votacao_tree.find_legislature('DataSessao').text)
+                        if votacao_tree.find_legislature('Resultado') is not None:
+                            votacao.resultado = votacao_tree.find_legislature(
                                 'Resultado').text
                         votacao.proposicao = proposicao
-                        votos_tree = votacao_tree.find('Votos')
+                        votos_tree = votacao_tree.find_legislature('Votos')
                         if votos_tree is not None:
                             votos = self._votos_from_tree(votos_tree, votacao)
                             if not votos:
@@ -356,36 +356,36 @@ class ImportadorSenadores:
     def _find_partido(self, nome_partido):
         if nome_partido is not None:
             nome_partido = nome_partido.strip()
-        partido = models.Partido.from_nome(nome_partido)
+        partido = models.Partido.from_name(nome_partido)
         if partido is None:
             logger.warn('Não achou o partido %s' % nome_partido)
-            partido = models.Partido.get_sem_partido()
+            partido = models.Partido.get_no_party()
         return partido
 
     def _find_nome_partido(self, partidos_tree):
         """By hour, returns the last party in the list"""
 
-        # TODO in some cases a senator shows with several parties during the
+        # TODO in some cases a senator shows with several partidos during the
         # legislature. What do we have to do?
         for partido_tree in partidos_tree:
             last_partido_tree = partido_tree
-        return last_partido_tree.find('SiglaPartido').text
+        return last_partido_tree.find_legislature('SiglaPartido').text
 
     def processa_legislatura(self, leg_tree):
 
-        parlamentares_tree = leg_tree.find('Parlamentar').find('Parlamentares')
+        parlamentares_tree = leg_tree.find_legislature('Parlamentar').find_legislature('Parlamentares')
         for parlamentar_tree in parlamentares_tree:
-            codigo = parlamentar_tree.find('CodigoParlamentar').text
-            nome = parlamentar_tree.find('NomeParlamentar').text
-            uf = parlamentar_tree.find('SiglaUF').text
-            partidos_tree = parlamentar_tree.find('Partidos')
+            codigo = parlamentar_tree.find_legislature('CodigoParlamentar').text
+            nome = parlamentar_tree.find_legislature('NomeParlamentar').text
+            uf = parlamentar_tree.find_legislature('SiglaUF').text
+            partidos_tree = parlamentar_tree.find_legislature('Partidos')
             if partidos_tree is not None:
                 nome_partido = self._find_nome_partido(partidos_tree)
             else:
                 logger.warn('Senador %s não possui lista de partidos!' % nome)
                 nome_partido = None
-            ano_inicio = parlamentar_tree.find('AnoInicio').text
-            ano_fim = parlamentar_tree.find('AnoFim').text
+            ano_inicio = parlamentar_tree.find_legislature('AnoInicio').text
+            ano_fim = parlamentar_tree.find_legislature('AnoFim').text
 
             if nome_partido == 'PC DO B':
                 nome_partido = 'PCdoB'
@@ -422,7 +422,7 @@ class ImportadorSenadores:
                 leg.save()
 
     def importar_senadores(self):
-        """Create parliamentaries and legislatures in database"""
+        """Create parliamentaries and legislaturas in database"""
 
         senws = SenadoWS()
         for id_leg in ImportadorSenadores.LEGISLATURAS:

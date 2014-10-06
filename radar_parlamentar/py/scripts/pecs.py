@@ -17,9 +17,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Script pecs
-Baixa as PECs de 2011
-Mostra votos agregados por partido
-"""
+Download the PECs 2011
+Shows aggregate votes by party"""
 
 from __future__ import unicode_literals
 import camaraws
@@ -28,25 +27,27 @@ pecs = []
 
 # PEC music (tax exemption for music and Brazilian artists)
 # http://www.camara.gov.br/proposicoesWeb/fichadetramitacao?idProposicao=357094
-tipo = 'pec'
-num = '98'
-ano = '2007'
-pecs.append(camaraws.obter_votacao(tipo, num, ano))
+type = 'pec'
+number = '98'
+year = '2007'
+pecs.append(camaraws.obter_votacao(type, number, year))
 
 # Extending the validity of DRU until December 31, 2015
 # http://www.camara.gov.br/proposicoesWeb/fichadetramitacao?idProposicao=513496
-tipo = 'pec'
-num = '61'
-ano = '2011'
-pecs.append(camaraws.obter_votacao(tipo, num, ano))
+type = 'pec'
+number = '61'
+year = '2011'
+pecs.append(camaraws.obter_votacao(type, number, year))
 
 # Print propositions
-for prop in pecs:
-  print(prop)
-  for votacao in prop.votacoes:
+for propositions in pecs:
+  print(propositions)
+
+  for voting in propositions.votacoes:
     print('************')
-    print(votacao)
-    dic = votacao.por_partido()
-    for partido, voto in dic.items():
-      print("%s: \t Sim: %s \t Não: %s \t Abstenções: %s" % (partido, voto.sim, voto.nao, voto.abstencao))
+    print(voting)
+    dic = voting.by_party()
+
+    for party, vote in dic.items():
+      print("%s: \t Sim: %s \t Não: %s \t Abstenções: %s" % (party, vote.sim, vote.nao, vote.abstencao))
   print('=================================================================================')

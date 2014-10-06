@@ -27,66 +27,66 @@ import os
 MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
-def serialize_casa_legislativa(nome_curto):
+def serialize_casa_legislativa(short_name):
 
     # Identifying house:
-    casa = models.CasaLegislativa.objects.filter(nome_curto=nome_curto)
-    if len(casa) <= 0:
+    legislative_house = models.CasaLegislativa.objects.filter(nome_curto=short_name)
+    if len(legislative_house) <= 0:
         raise ValueError('Casa Legislativa não encontrada\n')
 
     reload(sys)
     sys.setdefaultencoding("utf-8")
 
-    print "\nExportando dados de %s\n" % casa[0].nome
+    print "\nExportando dados de %s\n" % legislative_house[0].nome
 
-    root = Element('CasaLegislativa', nome=casa[0].nome, nome_curto=casa[
-                   0].nome_curto, esfera=casa[0].esfera, local=casa[0].local,
-                   atualizacao=str(casa[0].atualizacao))
+    root = Element('CasaLegislativa', nome=legislative_house[0].nome, nome_curto=legislative_house[
+                   0].nome_curto, esfera=legislative_house[0].esfera, local=legislative_house[0].local,
+                   atualizacao=str(legislative_house[0].atualizacao))
 
     # Identifying propositions:
-    proposicao = models.Proposicao.objects.filter(
-        casa_legislativa_id__nome_curto=nome_curto)
+    proposition = models.Proposicao.objects.filter(
+        casa_legislativa_id__nome_curto=short_name)
 
-    for e in proposicao:
+    for proposition_aux in proposition:
         print "Exportando todas as votações e votos da Proposicao com id: "
-        print str(e.id_prop) + ", numero: " + str(e.numero)
-        proposicao_xml = Element(
-            'Proposicao', id_prop=str(e.id_prop),
-            sigla=e.sigla, numero=str(e.numero), ano=str(e.ano),
-            ementa=e.ementa, descricao=e.descricao,
-            indexacao=str(e.indexacao),
-            data_apresentacao=str(e.data_apresentacao), situacao=e.situacao)
+        print str(proposition_aux.id_prop) + ", numero: " + str(proposition_aux.numero)
+        proposition_xml = Element(
+            'Proposicao', id_prop=str(proposition_aux.id_prop),
+            sigla=proposition_aux.sigla, numero=str(proposition_aux.numero), ano=str(proposition_aux.ano),
+            ementa=proposition_aux.ementa, descricao=proposition_aux.descricao,
+            indexacao=str(proposition_aux.indexacao),
+            data_apresentacao=str(proposition_aux.data_apresentacao), situacao=proposition_aux.situacao)
 
-        votacao = models.Votacao.objects.filter(proposicao_id=e)
-        for v in votacao:
-            votacao_xml = Element('Votacao', id_vot=str(
-                v.id_vot), descricao=v.descricao, data=str(v.data),
-                resultado=v.resultado)
+        voting = models.Votacao.objects.filter(proposicao_id=proposition_aux)
+        for vote_aux in voting:
+            voting_xml = Element('Votacao', id_vot=str(
+                vote_aux.id_vot), descricao=vote_aux.descricao, data=str(vote_aux.data),
+                resultado=vote_aux.resultado)
 
             # Vote:
-            votos = models.Voto.objects.filter(votacao_id=v)
-            for voto in votos:
+            votes = models.Voto.objects.filter(votacao_id=vote_aux)
+            for vote in votes:
 
-                legislatura = voto.legislatura
-                parlamentar = legislatura.parlamentar
-                partido = legislatura.partido
+                legislature = vote.legislatura
+                parliamentary = legislature.parlamentar
+                party = legislature.partido
 
-                voto_xml = Element(
-                    'Voto', nome=parlamentar.nome, id_parlamentar=str(
-                        parlamentar.id_parlamentar), genero=parlamentar.genero,
-                    partido=partido.nome, inicio=str(legislatura.inicio),
-                    fim=str(legislatura.fim), numero=str(partido.numero),
-                    opcao=voto.opcao)
+                vote_xml = Element(
+                    'Voto', nome=parliamentary.nome, id_parlamentar=str(
+                        parliamentary.id_parlamentar), genero=parliamentary.genero,
+                    partido=party.nome, inicio=str(legislature.inicio),
+                    fim=str(legislature.fim), numero=str(party.numero),
+                    opcao=vote.opcao)
 
-                votacao_xml.append(voto_xml)
+                voting_xml.append(vote_xml)
 
-            proposicao_xml.append(votacao_xml)
+            proposition_xml.append(voting_xml)
 
-        root.append(proposicao_xml)
+        root.append(proposition_xml)
 
-    filepath = os.path.join(MODULE_DIR, 'dados/' + nome_curto + '.xml')
+    filepath = os.path.join(MODULE_DIR, 'dados/' + short_name + '.xml')
     out = open(filepath, "w")
     ElementTree(root).write(out)
     out.close()
 
-    print "Exportação realizada com sucesso"
+print "Exportação realizada com sucesso"

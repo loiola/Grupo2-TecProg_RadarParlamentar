@@ -50,6 +50,6 @@ class AnalisePeriodo:
         self.presencas_parlamentares = {} 
         # legislatura.id => [x,y]
         self.coordenadas_legislaturas = {}
-        # partido.nome => list of party legislatures (independent of period). 
+        # partido.nome => list of party legislaturas (independent of period).
         self.legislaturas_por_partido = {}
             

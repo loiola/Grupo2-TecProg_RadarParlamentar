@@ -32,89 +32,96 @@ logger = logging.getLogger("radar")
 MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 COALITION_PARTIES = ['PT', 'PCdoB', 'PSB', 'PP', 'PMDB', 'PTB']
-# PR, PDT não são coalition?
+# PR, PDT are not coalition?
+# Reference attributes "rollcall" column to be exported for analysis in R
 ROLLCALL = 'rollcall'
+# Reference to column attributes "id" (refers to the id for each attribute within the csv) to be exported for analysis in R
 VOTER_ID = 'voter_id'
+# Reference to column attributes "name" (refers to the name of politicians) to be exported for analysis in R.
 NAME = 'name'
+# Reference attributes "coalition" column to be exported for analysis in R.
 PARTY = 'party'
+# Reference to column attributes "partidos" (refers to acronyms of political partidos) to be exported for analysis in R.
 COALITION = 'coalition'
+# Reference to column attributes "vote" to be exported for analysis in R.
 VOTE = 'vote'
 
 LABELS = [ROLLCALL, VOTER_ID, NAME, PARTY, COALITION, VOTE]
 
 CSV_FILE = 'votes.csv'
 
-
 class ExportadorCSV:
 
-    def __init__(self, nome_curto_casa_legislativa, data_ini, data_fim):
-        self.nome_curto = nome_curto_casa_legislativa
-        self.ini = data_ini
-        self.fim = data_fim
+    def __init__(self, short_name_legislative_house, initial_date, finish_date):
+        self.nome_curto = short_name_legislative_house
+        self.ini = initial_date
+        self.fim = finish_date
         self.votacoes = None
         self.csv_rows = []
 
-
-    # Retrieving, transforming and writing CSV:    
+    # Retrieving, transforming and writing CSV:
     def exportar_csv(self):
         self.retrieve_votacoes()
         self.transform_data()
         self.write_csv()
 
-    
     def retrieve_votacoes(self):
-        casa = models.CasaLegislativa.objects.get(nome_curto=self.nome_curto)
+        legislative_house = models.CasaLegislativa.objects.get(nome_curto=self.nome_curto)
+
         if self.ini is None and self.fim is None:
             self.votacoes = models.Votacao.objects.filter(
-                proposicao__casa_legislativa=casa).order_by('data')
+                proposicao__casa_legislativa=legislative_house).order_by('data')
         if self.ini is None and self.fim is not None:
             self.votacoes = models.Votacao.objects.filter(
-                proposicao__casa_legislativa=casa
+                proposicao__casa_legislativa=legislative_house
             ).filter(data__lte=self.fim).order_by('data')
         if self.ini is not None and self.fim is None:
             self.votacoes = models.Votacao.objects.filter(
-                proposicao__casa_legislativa=casa
+                proposicao__casa_legislativa=legislative_house
             ).filter(data__gte=self.ini).order_by('data')
         if self.ini is not None and self.fim is not None:
             self.votacoes = models.Votacao.objects.filter(
-                proposicao__casa_legislativa=casa
+                proposicao__casa_legislativa=legislative_house
             ).filter(data__gte=self.ini, data__lte=self.fim).order_by('data')
 
     def transform_data(self):
         self.csv_rows.append(LABELS)
-        for votacao in self.votacoes:
-            votos = votacao.votos()
-            for voto in votos:
-                legislatura = voto.legislatura
-                parlamentar = legislatura.parlamentar
-                partido = legislatura.partido
+
+        for voting in self.votacoes:
+            votes = voting.votes()
+
+            for vote in votes:
+                legislature = vote.legislatura
+                parliamentary = legislature.parlamentar
+                party = legislature.partido
                 csv_row = []
-                csv_row.append(votacao.id_vot)
-                csv_row.append(legislatura.id)
-                csv_row.append(parlamentar.nome.encode('UTF-8'))
-                csv_row.append(partido.nome)
-                csv_row.append(self.coalition(partido.nome))
+                csv_row.append(voting.id_vot)
+                csv_row.append(legislature.id)
+                csv_row.append(parliamentary.nome.encode('UTF-8'))
+                csv_row.append(party.nome)
+                csv_row.append(self.coalition(party.nome))
+
                 try:
-                    csv_row.append(self.voto(voto.opcao))
+                    csv_row.append(self.voto(vote.opcao))
                     self.csv_rows.append(csv_row)
                 except:
-                    print 'Ignorando voto ', voto.opcao
-                    logger.info("Ignorando voto: %s" % voto.opcao)
+                    print 'Ignorando voto ', vote.opcao
+                    logger.info("Ignorando voto: %s" % vote.opcao)
 
-    def coalition(self, nome_partido):
-        return '1' if nome_partido in COALITION_PARTIES else '0'
+    def coalition(self, party_name):
+        return '1' if party_name in COALITION_PARTIES else '0'
 
     # Options of votes:
-    def voto(self, opcao):
-        if opcao == models.SIM:
+    def voto(self, option):
+        if option == models.SIM:
             return 1
-        elif opcao == models.NAO:
+        elif option == models.NAO:
             return -1
-        elif opcao == models.ABSTENCAO:
+        elif option == models.ABSTENCAO:
             return 0
-        elif opcao == models.OBSTRUCAO:
+        elif option == models.OBSTRUCAO:
             return 0
-        elif opcao == models.AUSENTE:
+        elif option == models.AUSENTE:
             return 0
         else:
             raise ValueError()
@@ -128,7 +135,7 @@ class ExportadorCSV:
 
 
 def main():
-    data_ini = parse_datetime('2010-06-09 0:0:0')
-    data_fim = parse_datetime('2010-06-09 23:59:0')
-    exportador = ExportadorCSV('sen', data_ini, data_fim)
-    exportador.exportar_csv()
+    initial_date = parse_datetime('2010-06-09 0:0:0')
+    finish_date = parse_datetime('2010-06-09 23:59:0')
+    exporter = ExportadorCSV('sen', initial_date, finish_date)
+    exporter.exportar_csv()

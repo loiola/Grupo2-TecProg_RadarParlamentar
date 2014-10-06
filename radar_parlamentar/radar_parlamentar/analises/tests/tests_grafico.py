@@ -48,7 +48,7 @@ class JsonAnaliseGeneratorTest(TestCase):
     def setUp(self):
 
         self.casa = models.CasaLegislativa.objects.get(nome_curto='conv')
-        for partido in JsonAnaliseGeneratorTest.importer.partidos:
+        for partido in JsonAnaliseGeneratorTest.importer.parties:
             if partido.nome == conv.GIRONDINOS:
                 self.girondinos = partido
             if partido.nome == conv.JACOBINOS:
@@ -64,10 +64,10 @@ class JsonAnaliseGeneratorTest(TestCase):
 
         ap1 = AnalisePeriodo()
         periodos_retriever = utils.PeriodosRetriever(self.casa, models.BIENIO)
-        periodos = periodos_retriever.get_periodos()
+        periodos = periodos_retriever.get_periods()
         ap1.casa_legislativa = None
         ap1.periodo = periodos[0]
-        ap1.partidos = [self.girondinos, self.jacobinos, self.monarquistas]
+        ap1.parties = [self.girondinos, self.jacobinos, self.monarquistas]
         ap1.votacoes = []
         ap1.num_votacoes = 0
         ap1.tamanhos_partidos = {
@@ -91,7 +91,7 @@ class JsonAnaliseGeneratorTest(TestCase):
         dict_analise = json.loads(generated_json)
         self.assertEquals(dict_analise['geral']['total_votacoes'], 8)
         dict_casa = dict_analise['geral']['CasaLegislativa']
-        self.assertEquals(dict_casa['nome_curto'], self.casa.nome_curto)
+        self.assertEquals(dict_casa['short_name'], self.casa.nome_curto)
         list_periodos = dict_analise['periodos']
         self.assertEquals(len(list_periodos), 1)
         dict_periodo = list_periodos[0]
@@ -166,7 +166,7 @@ class RaioPartidoCalculatorTest(TestCase):
         flush_db(cls)
 
     def setUp(self):
-        self.partidos = RaioPartidoCalculatorTest.importer.partidos
+        self.partidos = RaioPartidoCalculatorTest.importer.parties
 
     def test_raio_partidos(self):
         periodo_str = '1o Semestre'
