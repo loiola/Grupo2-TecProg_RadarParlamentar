@@ -31,10 +31,20 @@ from modelagem.models import MUNICIPAL, FEDERAL, ESTADUAL, BIENIO
 class MandatoListsTest(TestCase):
 
     def test_get_mandatos_municipais(self):
+
+        # Start date of the mandate
         mandate_initial_date = datetime.date(2008, 10, 10)
+
+        # End date of the mandate
         mandate_final_date = datetime.date(2013, 10, 10)
+
+        # Lists of mandates
         mandate_lists = utils.MandatoLists()
+
+        # Mandates that fall within a certain period (start date and end date)
+        # in some of the spheres (municipal, state or federal)
         mandates = mandate_lists.get_mandatos(MUNICIPAL, mandate_initial_date, mandate_final_date)
+
         self.assertEquals(len(mandates), 3)
         self.assertEquals(mandates[0].year, 2005)
         self.assertEquals(mandates[1].year, 2009)
@@ -44,10 +54,20 @@ class MandatoListsTest(TestCase):
             self.assertEquals(mandato.month, 1)
 
     def test_get_mandatos_municipais_soh_um(self):
+
+        # Start date of the mandate
         mandate_initial_date = parse_datetime('2009-10-10 0:0:0')
+
+        # End date of the mandate
         mandate_final_date = parse_datetime('2012-10-10 0:0:0')
+
+        # Lists of mandates
         mandate_lists = utils.MandatoLists()
+
+        # Mandates that fall within a certain period (start date and end date)
+        # in some of the spheres (municipal, state or federal)
         mandates = mandate_lists.get_mandatos(MUNICIPAL, mandate_initial_date, mandate_final_date)
+
         self.assertEquals(len(mandates), 1)
         self.assertEquals(mandates[0].year, 2009)
 
@@ -58,14 +78,25 @@ class MandatoListsTest(TestCase):
         self._test_get_mandatos_federais_ou_estaduais(ESTADUAL)
 
     def _test_get_mandatos_federais_ou_estaduais(self, esfera):
+
+        # Start date of the mandate
         mandate_initial_date = datetime.date(2008, 10, 10)
+
+        # End date of the mandate
         mandate_final_date = datetime.date(2015, 10, 10)
+
+        # Lists of mandates
         mandate_lists = utils.MandatoLists()
+
+        # Mandates that fall within a certain period (start date and end date)
+        # in some of the spheres (municipal, state or federal)
         mandates = mandate_lists.get_mandatos(esfera, mandate_initial_date, mandate_final_date)
+
         self.assertEquals(len(mandates), 3)
         self.assertEquals(mandates[0].year, 2007)
         self.assertEquals(mandates[1].year, 2011)
         self.assertEquals(mandates[2].year, 2015)
+
         for mandato in mandates:
             self.assertEquals(mandato.day, 1)
             self.assertEquals(mandato.month, 1)
@@ -75,6 +106,8 @@ class PeriodosRetrieverTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
+
+        # Importer of French Convention
         importer = conv.ImportadorConvencao()
         importer.importar()
 
@@ -86,15 +119,25 @@ class PeriodosRetrieverTest(TestCase):
         self.conv = models.CasaLegislativa.objects.get(nome_curto='conv')
 
     def test_casa_legislativa_periodos_anuais(self):
+
+        # Stores the objects of conv and the year from models
         retriever = utils.PeriodosRetriever(self.conv, models.ANO)
+
+        # Stores the retriever periods
         retriever_periods = retriever.get_periodos()
+
         self.assertEquals(len(retriever_periods), 1)
         self.assertEqual(retriever_periods[0].string, '1989')
         self.assertEqual(retriever_periods[0].quantidade_votacoes, 8)
 
     def test_casa_legislativa_periodos_mensais(self):
+
+        # Stores the objects of conv and the month from models
         retriever = utils.PeriodosRetriever(self.conv, models.MES)
+
+        # Stores the retriever periods
         retriever_periods = retriever.get_periodos()
+
         self.assertEquals(len(retriever_periods), 2)
         self.assertEqual(retriever_periods[0].string, '1989 Fev')
         self.assertEqual(retriever_periods[0].quantidade_votacoes, 4)
@@ -102,19 +145,36 @@ class PeriodosRetrieverTest(TestCase):
         self.assertEqual(retriever_periods[1].quantidade_votacoes, 4)
 
     def test_casa_legislativa_periodos_semestrais(self):
+
+        # Stores the objects of conv and the semester from models
         retriever = utils.PeriodosRetriever(self.conv, models.SEMESTRE)
+
+        # Stores the retriever periods
         retriever_periods = retriever.get_periodos()
+
         self.assertEquals(len(retriever_periods), 2)
+
+        # Temporary variable that stores the initial period of conv legislative house
         conv_period = retriever_periods[0].ini
+
         self.assertEqual(1989, conv_period.year)
         self.assertEqual(1, conv_period.month)
+
+        # Temporary variable that stores the final period of conv legislative house
         conv_period = retriever_periods[0].fim
+
         self.assertEqual(1989, conv_period.year)
         self.assertEqual(6, conv_period.month)
+
+        # Temporary variable that stores the initial period of conv legislative house
         conv_period = retriever_periods[1].ini
+
         self.assertEqual(1989, conv_period.year)
         self.assertEqual(7, conv_period.month)
+
+        # Temporary variable that stores the final period of conv legislative house
         conv_period = retriever_periods[1].fim
+
         self.assertEqual(1989, conv_period.year)
         self.assertEqual(12, conv_period.month)
         self.assertEqual(retriever_periods[0].string, '1989 1o Semestre')
@@ -143,13 +203,27 @@ class PeriodosRetrieverTest(TestCase):
 
     def _test_periodos_em_duas_datas(self, ano_ini, ano_fim, esfera,
                                      periodicidade, expected_periodos_len):
+
+        # Receives the start date for testing
         A_DATE = datetime.date(ano_ini, 02, 02)
+
+        # Receives the final date for testing
         OTHER_DATE = datetime.date(ano_fim, 10, 02)
+
+        # Receives all objects of the Voting from models
         votings = models.Votacao.objects.all()
+
+        # Receives half of the number of votes
         half_of_votings_amount = len(votings) / 2
-        original_dates = {}  # votacao.id => data
+
+        # Receives original dates of periods
+        original_dates = {}
+
+        # Receives original sphere of  conv legislative house
         original_sphere = self.conv.esfera
+
         self.conv.esfera = esfera
+
         for i in range(0, half_of_votings_amount):
             voting_list = votings[i]
             original_dates[voting_list.id] = voting_list.data
@@ -160,22 +234,35 @@ class PeriodosRetrieverTest(TestCase):
             original_dates[voting_list.id] = voting_list.data
             voting_list.data = OTHER_DATE
             voting_list.save()
+
+        # Stores the objects of conv and the periodicity
         retriever = utils.PeriodosRetriever(self.conv, periodicidade)
+
+        # Stores the retriever periods
         retriever_periods = retriever.get_periodos()
+
         self.assertEquals(len(retriever_periods), expected_periodos_len)
         self._restore(original_sphere, votings, original_dates)
 
     def _restore(self, esfera_original, votacoes, datas_originais):
         self.conv.esfera = esfera_original
         self.conv.save()
-        for v in votacoes:
-            v.data = datas_originais[v.id]
-            v.save()
+        for voting_list in votacoes:
+            voting_list.data = datas_originais[voting_list.id]
+            voting_list.save()
 
     def test_casa_legislativa_periodos_sem_lista_votacoes(self):
+
+        # Receives objects of legislative house where name is equal to casa_nova to
+        # perform home test without legislative voting list
         new_house = models.CasaLegislativa(nome="Casa Nova")
+
+        # Stores the objects of new house and the year from models
         retriever = utils.PeriodosRetriever(new_house, models.ANO)
+
+        # Stores the retriever periods
         retriever_periods = retriever.get_periodos()
+
         self.assertEquals(len(retriever_periods), 0)
 
 
@@ -183,7 +270,10 @@ class ModelsTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
+
+        # Importer of French Convention
         importer = conv.ImportadorConvencao()
+
         importer.importar()
 
     @classmethod
@@ -191,35 +281,60 @@ class ModelsTest(TestCase):
         flush_db(cls)
 
     def test_partido(self):
+
+        # Receives the objects o PT party
         pt_party = models.Partido.from_nome('PT')
+
         self.assertEquals(pt_party.numero, 13)
         self.assertEquals(pt_party.cor, '#FF0000')
+
+        # Receives the objects o PSDB party
         psdb_party = models.Partido.from_numero(45)
         self.assertEquals(psdb_party.nome, 'PSDB')
         self.assertEquals(psdb_party.cor, '#0059AB')
 
     def test_partido_from_nome_None(self):
+
+        # Receives the name of party equals none
         nome = None
+
+        # Receives the party by party name
         partido = models.Partido.from_nome(nome)
+
         self.assertIsNone(partido)
 
     def test_get_sem_partido(self):
+
+        # Receives the objects from Partido whre tha party name is equals
+        # SEM_PARTIDO
         no_party = models.Partido.get_sem_partido()
+
         self.assertEquals(no_party.nome, 'Sem partido')
         self.assertEquals(no_party.numero, 0)
         self.assertEquals(no_party.cor, '#000000')
 
     def test_casa_legislativa_partidos(self):
+
+        # Receives the objects of CasaLegislativa where the short name is conv
         conv_legislative_house = models.CasaLegislativa.objects.get(nome_curto='conv')
+
+        # Receives the parties of conv legislative house
         partidos = conv_legislative_house.partidos()
+
         self.assertEquals(len(partidos), 3)
+
+        # Receives the name of parties of conv legislative house
         conv_party_names = [p.nome for p in partidos]
+
         self.assertTrue(conv.JACOBINOS in conv_party_names)
         self.assertTrue(conv.GIRONDINOS in conv_party_names)
         self.assertTrue(conv.MONARQUISTAS in conv_party_names)
 
     def test_should_find_legislatura(self):
+
+        # Receives the results of the search of legislature by date
         search_legislature_by_date = datetime.date(1989, 07, 14)
+
         try:
             leg = models.Legislatura.find(search_legislature_by_date, 'Pierre')
             self.assertTrue(leg is not None)
@@ -227,7 +342,10 @@ class ModelsTest(TestCase):
             self.fail('Legislatura não encontrada')
 
     def test_should_not_find_legislatura(self):
+
+        # Receives the results of the search of legislature by date
         search_legislature_by_date = datetime.date(1900, 07, 14)
+
         try:
             models.Legislatura.find(search_legislature_by_date, 'Pierre')
             self.fail('Legislatura não deveria ter sido encontrada')
@@ -236,31 +354,45 @@ class ModelsTest(TestCase):
 
     def test_deleta_casa(self):
 
+        # Receives objects of Partido for inserting data to removal house test
         partyTest1 = models.Partido()
+
         partyTest1.nome = 'PA'
         partyTest1.numero = '01'
         partyTest1.cor = '#FFFAAA'
         partyTest1.save()
 
+
+        # Receives objects of Partido for inserting data to removal house test
         partyTest2 = models.Partido()
+
         partyTest2.nome = 'PB'
         partyTest2.numero = '02'
         partyTest1.cor = '#FFFFFF'
         partyTest2.save()
 
+
+        # Receives objects of Parlamentar for inserting data to removal house test
         parliamentaryTest1 = models.Parlamentar()
+
         parliamentaryTest1.id_parlamentar = ''
         parliamentaryTest1.nome = 'Pierre'
         parliamentaryTest1.genero = ''
         parliamentaryTest1.save()
 
+
+        # Receives objects of Parlamentar for inserting data to removal house test
         parliamentaryTest2 = models.Parlamentar()
+
         parliamentaryTest2.id_parlamentar = ''
         parliamentaryTest2.nome = 'Napoleao'
         parliamentaryTest2.genero = ''
         parliamentaryTest2.save()
 
+
+        # Receives objects of CasaLegislativa for inserting data to removal house test
         lesgilativeHouseTest1 = models.CasaLegislativa()
+
         lesgilativeHouseTest1.nome = 'Casa1'
         lesgilativeHouseTest1.nome_curto = 'cs1'
         lesgilativeHouseTest1.esfera = 'FEDERAL'
@@ -268,7 +400,9 @@ class ModelsTest(TestCase):
         lesgilativeHouseTest1.atualizacao = '2012-06-01'
         lesgilativeHouseTest1.save()
 
+        # Receives objects of CasaLegislativa for inserting data to removal house test
         lesgilativeHouseTest2 = models.CasaLegislativa()
+
         lesgilativeHouseTest2.nome = 'Casa2'
         lesgilativeHouseTest2.nome_curto = 'cs2'
         lesgilativeHouseTest2.esfera = 'MUNICIPAL'
@@ -276,7 +410,10 @@ class ModelsTest(TestCase):
         lesgilativeHouseTest2.atualizacao = '2012-12-31'
         lesgilativeHouseTest2.save()
 
+
+        # Receives objects of Legislature for inserting data to removal house test
         legislatureTest1 = models.Legislatura()
+
         legislatureTest1.parlamentar = parliamentaryTest1
         legislatureTest1.casa_legislativa = lesgilativeHouseTest1
         legislatureTest1.inicio = '2013-01-01'
@@ -285,7 +422,9 @@ class ModelsTest(TestCase):
         legislatureTest1.localidade = 'PB'
         legislatureTest1.save()
 
+        # Receives objects of Legislature for inserting data to removal house test
         legislatureTest2 = models.Legislatura()
+
         legislatureTest2.parlamentar = parliamentaryTest2
         legislatureTest2.casa_legislativa = lesgilativeHouseTest2
         legislatureTest2.inicio = '2013-01-02'
@@ -294,7 +433,10 @@ class ModelsTest(TestCase):
         legislatureTest2.localidade = 'PR'
         legislatureTest2.save()
 
+
+        # Receives objects of Proposicao for inserting data to removal house test
         propositionTest1 = models.Proposicao()
+
         propositionTest1.id_prop = '0001'
         propositionTest1.sigla = 'PR1'
         propositionTest1.numero = '0001'
@@ -303,7 +445,9 @@ class ModelsTest(TestCase):
         propositionTest1.casa_legislativa = lesgilativeHouseTest1
         propositionTest1.save()
 
+        # Receives objects of Proposicao for inserting data to removal house test
         propositionTest2 = models.Proposicao()
+
         propositionTest2.id_prop = '0002'
         propositionTest2.sigla = 'PR2'
         propositionTest2.numero = '0002'
@@ -312,103 +456,175 @@ class ModelsTest(TestCase):
         propositionTest2.casa_legislativa = lesgilativeHouseTest2
         propositionTest2.save()
 
+        # Receives objects of Votaçao for inserting data to removal house test
         votingTest1 = models.Votacao(
             id_vot=' 12345', descricao='Teste da votacao',
             data='1900-12-05', resultado='Teste', proposicao=propositionTest1)
+
         votingTest1.save()
 
+        # Receives objects of Votaçao for inserting data to removal house test
         voteTest1 = models.Voto(
             votacao=votingTest1, legislatura=legislatureTest1, opcao='TESTE')
+
         voteTest1.save()
 
+        # Receives all objects of Party from models before removal
         before_party_objects = models.Partido.objects.all()
+
+        # Receives all objects of Parlamentar from models before removal
         before_parliamentary_objects = models.Parlamentar.objects.all()
+
+        # Receives all objects of CasaLegislativa from models before removal
         before_house_objects = models.CasaLegislativa.objects.all()
+
+        # Receives all objects of Legislatura from models before removal
         before_legislature_objects = models.Legislatura.objects.all()
+
+        # Receives all objects of Proposicao from models before removal
         before_proposition_objects = models.Proposicao.objects.all()
+
+        # Receives all objects of Voto from models before removal
         before_vote_objects = models.Voto.objects.all()
+
+        # Receives all objects of Votacao from models before removal
         before_voting_objects = models.Votacao.objects.all()
 
+        # Receives the names of parties before removal
         party_names = [p.nome for p in before_party_objects]
+
         self.assertTrue('PA' in party_names)
         self.assertTrue('PB' in party_names)
 
+        # Receives the names of parliamentaries before removal
         parliamentary_names = [pl.nome for pl in before_parliamentary_objects]
+
         self.assertTrue('Pierre' in parliamentary_names)
         self.assertTrue('Napoleao' in parliamentary_names)
 
+        # Receives the names of houses before removal
         house_names = [c.nome for c in before_house_objects]
+
         self.assertTrue('Casa1' in house_names)
         self.assertTrue('Casa2' in house_names)
 
+
+        # Receives the names of legislatures before removal
         legislature_names = [l.localidade for l in before_legislature_objects]
+
         self.assertTrue('PB' in legislature_names)
         self.assertTrue('PR' in legislature_names)
 
+        # Receives the names of ppropositions before removal
         proposition_names = [lg.sigla for lg in before_proposition_objects]
+
         self.assertTrue('PR1' in proposition_names)
         self.assertTrue('PR2' in proposition_names)
 
+
+        # Receives the names of votes before removal
         vote_names = [v.votacao for v in before_vote_objects]
+
         self.assertTrue(votingTest1 in vote_names)
 
+        # Receives the names of voting before removal
         voting_names = [vt.id_vot for vt in before_voting_objects]
+
         self.assertTrue(' 12345' in voting_names)
 
         # Trying to delete a house that does not exist
         models.CasaLegislativa.deleta_casa('casa_qualquer')
         models.CasaLegislativa.deleta_casa('cs1')
 
+        # Receives all objects of Party from models after removal
         after_party_objects = models.Partido.objects.all()
+
+        # Receives all objects of Parlamentar from models after removal
         after_parliamentary_objects = models.Parlamentar.objects.all()
+
+        # Receives all objects of CasaLegislativa from models after removal
         after_house_objects = models.CasaLegislativa.objects.all()
+
+        # Receives all objects of Legislatura from models after removal
         after_legislature_objects = models.Legislatura.objects.all()
+
+        # Receives all objects of Propositcao from models after removal
         after_proposition_objects = models.Proposicao.objects.all()
+
+        # Receives all objects of Voto from models after removal
         after_vote_objects = models.Voto.objects.all()
+
+        # Receives all objects of Votacao from models after removal
         after_voting_objects = models.Votacao.objects.all()
 
+        # Receives the names of parties after removal
         party_names = [p.nome for p in after_party_objects]
+
         self.assertTrue('PA' in party_names)
         self.assertTrue('PB' in party_names)
 
+        # Receives the names of parliamentaries after removal
         parliamentary_names = [pl.nome for pl in after_parliamentary_objects]
+
         self.assertTrue('Pierre' in parliamentary_names)
         self.assertTrue('Napoleao' in parliamentary_names)
 
+        # Receives the names of houses after removal
         house_names = [c.nome for c in after_house_objects]
+
         self.assertFalse('Casa1' in house_names)
         self.assertTrue('Casa2' in house_names)
 
+        # Receives the names of legislatures after removal
         legislature_names = [l.localidade for l in after_legislature_objects]
+
         self.assertFalse('PB' in legislature_names)
         self.assertTrue('PR' in legislature_names)
 
+        # Receives the names of propositions after removal
         proposition_names = [lg.sigla for lg in after_proposition_objects]
+
         self.assertFalse('PR1' in proposition_names)
         self.assertTrue('PR2' in proposition_names)
 
+        # Receives the names of votes after removal
         vote_names = [v.votacao for v in after_vote_objects]
+
         self.assertFalse(votingTest1 in vote_names)
 
+        # Receives the names of voting after removal
         voting_names = [vt.id_vot for vt in after_voting_objects]
+
         self.assertFalse(' 12345' in voting_names)
 
 
 class StringUtilsTest(TestCase):
 
     def test_transforma_texto_em_lista_de_string_texto_vazio(self):
+
+        # Receives the result of transforma_texto_em_lista_de_string() method
+        # in StringUtils class to test with blank text
         string_list = utils.StringUtils.transforma_texto_em_lista_de_string(
             "")
+
         self.assertEquals(0, len(string_list))
 
     def test_transforma_texto_em_lista_de_string_texto_nulo(self):
+
+        # Receives the result of transforma_texto_em_lista_de_string() method
+        # in StringUtils class to test with none text
         string_list = utils.StringUtils.transforma_texto_em_lista_de_string(
             None)
+
         self.assertEquals(0, len(string_list))
 
     def test_transforma_texto_em_lista_de_string(self):
+
+        # Receives the result of transforma_texto_em_lista_de_string() method
+        # in StringUtils class to test with text
         string_list = utils.StringUtils.transforma_texto_em_lista_de_string(
             "educação, saúde, desmatamento")
+        
         self.assertEquals(3, len(string_list))
         self.assertEquals("educação", string_list[0])
         self.assertEquals("saúde", string_list[1])
