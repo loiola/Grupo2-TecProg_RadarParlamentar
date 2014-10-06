@@ -132,7 +132,7 @@ class FiltroVotacao():
         self.votacoes = []
 
     def filtra_votacoes(self):
-        self.votacoes = models.Votacao.por_casa_legislativa(
+        self.votacoes = models.Votacao.by_legislative_house(
             self.casa_legislativa,
             self.periodo_casa_legislativa.ini,
             self.periodo_casa_legislativa.fim)

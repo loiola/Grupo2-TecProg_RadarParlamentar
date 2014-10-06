@@ -168,8 +168,8 @@ class ImportadorInternoTest(TestCase):
 
     def test_importa_casa_legislativa(self):
 
-        models.CasaLegislativa.deleta_casa('cmsp')
-        models.CasaLegislativa.deleta_casa('cdep')
+        models.CasaLegislativa.remove_house('cmsp')
+        models.CasaLegislativa.remove_house('cdep')
 
         importador_interno.importa_casa_legislativa('cdep')
         legislative_house = models.CasaLegislativa.objects.filter(

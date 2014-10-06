@@ -234,8 +234,8 @@ class ProposicoesFinder:
         name_list = []
 
         for child in xml:
-            id_propositions = child.find('codProposicao').text.strip()
-            name_propositions = child.find('nomeProposicao').text.strip()
+            id_propositions = child.find_legislature('codProposicao').text.strip()
+            name_propositions = child.find_legislature('nomeProposicao').text.strip()
             id_propositions_list.append(id_propositions)
             name_list.append(name_propositions)
         return zip(id_propositions_list, name_list)
@@ -320,7 +320,7 @@ class ImportadorCamara:
         self.importadas = 0  
         self.partidos = {}
 
-            # Political parties cache (key is name, and value is object Partido)
+            # Political partidos cache (key is name, and value is object Partido)
         self.parlamentares = {}
 
             # Parliamentary cache (key is 'nome-partido', and value é object Parlamentar
@@ -391,13 +391,13 @@ class ImportadorCamara:
             proposition.sigla = proposition_xml.get('tipo').strip()
             proposition.numero = proposition_xml.get('numero').strip()
             proposition.ano = proposition_xml.get('ano').strip()
-            proposition.ementa = proposition_xml.find('Ementa').text.strip()
-            proposition.descricao = proposition_xml.find('ExplicacaoEmenta').text.strip()
-            proposition.indexacao = proposition_xml.find('Indexacao').text.strip()
-            proposition.autor_principal = proposition_xml.find('Autor').text.strip()
-            date_str = proposition_xml.find('DataApresentacao').text.strip()
+            proposition.ementa = proposition_xml.find_legislature('Ementa').text.strip()
+            proposition.descricao = proposition_xml.find_legislature('ExplicacaoEmenta').text.strip()
+            proposition.indexacao = proposition_xml.find_legislature('Indexacao').text.strip()
+            proposition.autor_principal = proposition_xml.find_legislature('Autor').text.strip()
+            date_str = proposition_xml.find_legislature('DataApresentacao').text.strip()
             proposition.data_apresentacao = self._converte_data(date_str)
-            proposition.situacao = proposition_xml.find('Situacao').text.strip()
+            proposition.situacao = proposition_xml.find_legislature('Situacao').text.strip()
             proposition.casa_legislativa = self.camara_dos_deputados
             proposition.save()
         return proposition
@@ -423,8 +423,8 @@ class ImportadorCamara:
             voting.proposicao = proposition
             voting.save()
 
-            if voting_xml.find('votos'):
-                for vote_xml in voting_xml.find('votos'):
+            if voting_xml.find_legislature('votos'):
+                for vote_xml in voting_xml.find_legislature('votos'):
                     self._voto_from_xml(vote_xml, voting)
             voting.save()
 
@@ -444,7 +444,7 @@ class ImportadorCamara:
 
         option_str = vote_xml.get('Voto')
     
-        if (option_str.find(" ") > -1):
+        if (option_str.find_legislature(" ") > -1):
             vote.opcao = self._opcao_xml_to_model(
                 option_str[0:option_str.index(" ")])
         else:
@@ -504,13 +504,13 @@ class ImportadorCamara:
         party = self.partidos.get(party_name)
 
         if not party:
-            party = models.Partido.from_nome(party_name)
+            party = models.Partido.from_name(party_name)
 
             if party is None:
                 logger.warning(
                     'Não achou o partido %s; Usando "sem partido"'
                     % party_name)
-                party = models.Partido.get_sem_partido()
+                party = models.Partido.get_no_party()
             else:
                 party.save()
                 self.partidos[party_name] = party

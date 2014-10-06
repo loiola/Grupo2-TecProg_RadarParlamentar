@@ -15,22 +15,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Module parties - functions for characterization and comparison of parties
+"""Module partidos - functions for characterization and comparison of partidos
 
 functions:
     vetor_votacoes - calculates the vector of voting for a party
-    similarity - calculates the similarity between two parties
+    similarity - calculates the similarity between two partidos
     semelhanca_pca - calculates similarities party generating a two-dimensional
     graph
 
 constants:
-    PARTIES: List the names of the parties."""
+    PARTIES: List the names of the partidos."""
 
 import algebralinha
 import numpy
 import pca
 
-# Constant that gets list of existing parties
+# Constant that gets list of existing partidos
 PARTIDOS = ['PT', 'PSDB', 'PV', 'PSOL', 'PCdoB', 'PP', 'PR', 'DEM', 'PMDB', 'PSC', 
 	'PTB', 'PDT', 'PSB', 'PPS', 'PRB']
 
@@ -52,7 +52,7 @@ def vetor_votacoes(partido, proposicoes):
         for votacao in prop.votacoes:
 
             # Receives the votes by party
-            dic = votacao.por_partido()
+            dic = votacao.by_party()
 
             # Receives list of vote of a particular party
             vote = dic[partido]
@@ -75,20 +75,20 @@ def semelhanca_vetores(vetor1, vetor2):
 
 def semelhanca(partido1, partido2, proposicoes):
 <<<<<<< HEAD
-    """Computes the similarity between two parties"""
+    """Computes the similarity between two partidos"""
 =======
 
-	""" Computes the similarity between two parties"""
+	""" Computes the similarity between two partidos"""
 
 >>>>>>> estilo-e-design
 
     """The similarity is implemented as the scalar product of vectors normalized polls
     arguments:
-        partido1, partido2 - names of parties (string)
+        partido1, partido2 - names of partidos (string)
         propositions - propositions containing list of polls
 
     returns:
-        A real value \ in [0,1] representing the similarity between the parties."""
+        A real value \ in [0,1] representing the similarity between the partidos."""
 
     v1 = vetor_votacoes(partido1, proposicoes)
     v2 = vetor_votacoes(partido2, proposicoes)

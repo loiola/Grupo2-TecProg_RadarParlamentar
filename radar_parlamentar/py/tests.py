@@ -151,7 +151,7 @@ class CamaraWS_Test(unittest.TestCase):
     self.assertAlmostEqual(similarity_vector_2_and_3, similarity_vector_3_and_2, 5)
 
   def test_semelhanca_partidos(self):
-    """ Tests the function of similarity for political parties."""
+    """ Tests the function of similarity for political partidos."""
 
     party1 = 'girondinos'
     party2 = 'jacobinos'

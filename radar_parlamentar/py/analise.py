@@ -20,7 +20,7 @@
 analysis, including similarity analysis and principal components. each
 instance of this class stores the results of the analysis of a subset of data,
 defined by a time interval, by type of proposition and consider the
-parties to consider."""
+partidos to consider."""
 
 import re
 import numpy
@@ -34,7 +34,7 @@ import matplotlib.colors
 
 class Analise:
     """Each instance custody analysis results in a period of time between
-    self.data_inicial and self.data_final, where the parties are considered
+    self.data_inicial and self.data_final, where the partidos are considered
     listed in self.lista_partidos and the propositions of the  listed in self.
     tipos_proposicao.
 
@@ -47,15 +47,15 @@ class Analise:
     ANLS = analise.Analise('2010-01-01','2010-30-06')
 
     If it is desired to include only a few types of proposition, using the third
-    argument, and if it is desired to include only a few parties use the room, for
+    argument, and if it is desired to include only a few partidos use the room, for
     example:
 
     ANLS2 = analise.Analise('2010-01-01','2010-30-06',['MPV','PEC'],['PT','PMDB',
     'PSDB','DEM','PSOL'])
 
-    Instead of a list of parties, the fourth argument can be an integer N to include
-    only parties with N or more deputies. For example, to use all types of
-    proposition but only parties with six or more Members:
+    Instead of a list of partidos, the fourth argument can be an integer N to include
+    only partidos with N or more deputies. For example, to use all types of
+    proposition but only partidos with six or more Members:
 
     ANLS3 = analise.Analise('2010-01-01','2010-30-06',[],6)
 
@@ -68,7 +68,7 @@ class Analise:
         ANLS.data_final : string 'aaaa-mm-dd'
         ANLS.tipos_proposicao : string list
         TODO: Replace 'lista_partidos' by 'partidos'
-        ANLS.lista_partidos : string list with P parties
+        ANLS.lista_partidos : string list with P partidos
         ANLS.partidos : objects list type Parties
         ANLS.lista_votacoes : tuple list (idProp,idVot) with V voting
         ANLS.vetores_votacao [P]x[V]: elemento ij é o voto médio do partido i na votação
@@ -78,7 +78,7 @@ class Analise:
         ANLS.vetores_tamanho [P]x[V]: ij elements is a number of deputies of party i
             present in voting j
         ANLS.vetores_presenca [P]x[V]: ij element is a fraction of deputies of party i
-            presentna in voting j (uss a.tamanho_partidos with aproximação for parties size)
+            presentna in voting j (uss a.tamanho_partidos with aproximação for partidos size)
         ANLS.tamanho_partidos [P]: List with total number of deputies, with minimal presence
             of 1 voting in period, of party i
         ANLS.vetores_votacao_uf [E]x[V]: average voting by state. 'E' is a number of UFs
@@ -89,10 +89,10 @@ class Analise:
         ANLS.pca_partido : Object of class pca.PCA analyzed by party
         ANLS.pca_uf : Object of class pca.PCA analyzed by UF
         ANLS.semelhancas_escalar [P]x[P] : symmetric matrix of values ​​between 0 and 100
-            representing the percentage of similarity between the parties i and j (calculated
+            representing the percentage of similarity between the partidos i and j (calculated
             by scalar product)
         ANLS.semelhancas_convolucao [P]x[P] : symmetric matrix of values ​​between 0 and 100
-            representing the similarity between parties i and j, calculated by the
+            representing the similarity between partidos i and j, calculated by the
             convolution method
 
        Objects of class pca.PCA has among other attributes:
@@ -115,13 +115,13 @@ class Analise:
         ANLS.tamanho_estado(siglaUF) : returns the size of the state by the acronym
         TODO: Add 'partidos_2d' and 'estados_2d' in a single method
         ANLS.partidos_2d(), a.partidos_2d(arquivo) : returns array with the coordinates of
-            parties in the first two principal components, and provided the name of a file
+            partidos in the first two principal components, and provided the name of a file
             write them upon the same
         ANLS.estados_2d(), a.estados_2d(arquivo) : analogously to PCA by states
         ANLS.sem(siglaP1,siglaP2,tipo=2) : prints and returns the similarity between
-            the two parties data by acronyms, calculated by the scalar product (type = 1) or
+            the two partidos data by acronyms, calculated by the scalar product (type = 1) or
             by the method method convolution (type = 2) (default)
-        ANLS.figura(escala=10) : presents a bubble chart of the parties with the first
+        ANLS.figura(escala=10) : presents a bubble chart of the partidos with the first
             second major component in the x axis and the y-axis proportional to the size of
             the bubble party size"""
 
@@ -136,9 +136,9 @@ class Analise:
         *The start and end dates between which should be considered votes;
         *A list of strings with the types of proposition analyze, leave empty to consider
         all types;
-        *A list of strings with the parties to include in the analysis (leave blank to include all
-        parties), or an integer N to use parties that have N or more Members in the period
-        Size analyzes of parties and UFs, principal component analysis (PCA) are made
+        *A list of strings with the partidos to include in the analysis (leave blank to include all
+        partidos), or an integer N to use partidos that have N or more Members in the period
+        Size analyzes of partidos and UFs, principal component analysis (PCA) are made
         by party and by state, and percentage similarity analysis by two methods."""
 
         self.data_inicial = data_inicial
@@ -175,7 +175,7 @@ class Analise:
                 self.tipos_proposicao.append(tipo[0])
             connection.close()
 
-        # If the list is empty, use all political parties:
+        # If the list is empty, use all political partidos:
         if not self.lista_partidos:
             fill_parties = 0
             if not self.partidos:
@@ -192,7 +192,7 @@ class Analise:
                         self.partidos.append(party)
             connection.close()
 
-        # If integer, use greater than or equal to this whole political parties:
+        # If integer, use greater than or equal to this whole political partidos:
         elif isinstance(self.lista_partidos,int):
             N = self.lista_partidos
             self.lista_partidos = partidos_expressivos(N,self.data_inicial,self.data_final,
@@ -232,7 +232,7 @@ class Analise:
 
     def _inicializa_vetores(self):
         """Creates the 'vectors' and 'Four-Vectors' aggregate voting party. for leverages
-        calculate the size of the parties, presence of Members, etc.
+        calculate the size of the partidos, presence of Members, etc.
         The 'vector' uses a number between -1 (no) and 1 (yes) to represent the global
         position of vote in each party, being in itself a vector of dimension N formed
         by the N votes.
@@ -243,7 +243,7 @@ class Analise:
         # Pick up votes in the database:
         votings = self._buscaVotacoes()
 
-        # Create dictionary with id of political parties:
+        # Create dictionary with id of political partidos:
         connection = lite.connect(Analise.db)
         table_parties = connection.execute('select numero,nome from partidos').fetchall()
         party_id = {}
@@ -312,9 +312,9 @@ class Analise:
 
 
     def _pca_partido(self):
-        """Run analysis of main components for parties.
+        """Run analysis of main components for partidos.
         Stores the result in self.pca
-        Returns a dictionary where the keys are the symbols of political parties
+        Returns a dictionary where the keys are the symbols of political partidos
         and the value of each key is a vector with n dimensions of the pca analys"""
 
         if not bool(self.pca_partido):
@@ -328,7 +328,7 @@ class Analise:
         return disctionary
 
     def _inicializa_vetores_uf(self):
-        """Analogous to _inicializa_vetores(self), but aggregated by states and not by parties."""
+        """Analogous to _inicializa_vetores(self), but aggregated by states and not by partidos."""
 
         # Pick up votes in the database:
         votings = self._buscaVotacoes()
@@ -383,7 +383,7 @@ class Analise:
     def _pca_uf(self):
         """Run the principal components analysis by UF.
         Stores the result in self.pca
-        Returns a dictionary where the keys are the symbols of political parties
+        Returns a dictionary where the keys are the symbols of political partidos
         and the value of each key is a vector with n dimensions of the pca analysis."""
 
         if not bool(self.pca_uf):
@@ -397,7 +397,7 @@ class Analise:
         return dictionary
 
     def _calcula_semelhancas(self):
-        """Calculates similarities between all parties of the analysis, two by two, according to the
+        """Calculates similarities between all partidos of the analysis, two by two, according to the
          scalar product and the method of convolution, normalized between 0 and 100 [%].
          The result is stored in self.semelhancas attributes (scalar product) and
          self.semelhancas2 (convolution)."""
@@ -431,7 +431,7 @@ class Analise:
     @staticmethod
     def _convolui(u,v):
         """Receives two integers u and v 4 tuples, representing the votes of two
-        parties in a vote. For example if u = (4,3,0,3) there were 4 yes, 3 no, 0
+        partidos in a vote. For example if u = (4,3,0,3) there were 4 yes, 3 no, 0
         and 3 abstentions obstructions party vote.
         Each tuple is normalized by dividing by the sum of the squares of the elements, and
         the function returns the dot product of two normalized tuples."""
@@ -470,7 +470,7 @@ class Analise:
             raise ValueError('Estado "%s" inválido.'%siglaEstado)
 
     def partidos_2d(self,arquivo=''):
-        """Returns array with the coordinates of the parties in the 2d plane formed by the two
+        """Returns array with the coordinates of the partidos in the 2d plane formed by the two
         first principal components.
 
         If passed as argument the name (not empty) of a file, the result of PCA
@@ -554,7 +554,7 @@ class Analise:
 
 
     def figura(self, escala=10):
-        """Presents a plot of bubbles (using matplotlib) with parties of size
+        """Presents a plot of bubbles (using matplotlib) with partidos of size
         tamanho_min greater than or equal to the first principal component in the x axis
         second y-axis."""
 
@@ -606,18 +606,18 @@ class Analise:
 
 
 def partidos_expressivos(N=1,data_inicial='2011-01-01',data_final='2011-12-31',tipos_proposicao=[]):
-    """Returns a list of parties with at least N different deputies who
+    """Returns a list of partidos with at least N different deputies who
     polls have come in between start_date and end_date dates. Consider themselves
     propositions in tipos_proposição, or if all tipos_proposicao = []."""
 
-    # Create dictionary with id of political parties:
+    # Create dictionary with id of political partidos:
     connection = lite.connect(Analise.db)
     parties_table = connection.execute('select numero,nome from partidos').fetchall()
     party_id = {}
     for table in parties_table:
         party_id[table[1]] = table[0]
 
-    # Create list of all political parties:
+    # Create list of all political partidos:
     lists_all_parties = connection.execute('SELECT nome FROM PARTIDOS').fetchall()
     connection.close()
 
@@ -635,7 +635,7 @@ def partidos_expressivos(N=1,data_inicial='2011-01-01',data_final='2011-12-31',t
         lists_all_parties[i] = lp[0]
         i += 1
 
-    # Calculate size of political parties:
+    # Calculate size of political partidos:
     ip =-1
     for p in lists_all_parties:
 
@@ -665,7 +665,7 @@ def partidos_expressivos(N=1,data_inicial='2011-01-01',data_final='2011-12-31',t
                 deputies_number.add(deputy)
         parties_size[ip] = len(deputies_number)
    
-    # Make list of major political parties than N:
+    # Make list of major political partidos than N:
     expressives = []
     ip = -1
     for p in lists_all_parties:

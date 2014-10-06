@@ -17,7 +17,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Script semelhanca_pca
-Checks the difference between the parties
+Checks the difference between the partidos
 based on the propositions voted on in 2011
 using PCA (analysis of primary components)"""
 

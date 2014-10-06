@@ -141,7 +141,7 @@ class PeriodosRetriever:
             data_final = initial_date_next_period - datetime.timedelta(days=1)
 
             # Receives total number of votes in a given period
-            votings_amount = self.casa_legislativa.num_votacao(
+            votings_amount = self.casa_legislativa.voting_number(
                 initial_date, data_final)
 
             # Receives the result of PeriodoCasaLegislativa method, passing

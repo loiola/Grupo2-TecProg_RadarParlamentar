@@ -44,7 +44,7 @@ class Migration(SchemaMigration):
         },
 <<<<<<< HEAD
         'modelagem.indexadores': {
-            'Meta': {'object_name': 'Indexadores'},
+            'Meta': {'object_name': 'Indexers'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'principal': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'termo': ('django.db.models.fields.CharField', [], {'max_length': '120'})
@@ -88,7 +88,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
 =======
         u'modelagem.indexadores': {
-            'Meta': {'object_name': 'Indexadores'},
+            'Meta': {'object_name': 'Indexers'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'principal': ('django.db.models.fields.BooleanField', [], {}),
             'termo': ('django.db.models.fields.CharField', [], {'max_length': '120'})

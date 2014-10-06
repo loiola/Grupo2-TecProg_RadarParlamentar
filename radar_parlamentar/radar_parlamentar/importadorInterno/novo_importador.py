@@ -44,7 +44,7 @@ class importador_interno:
             print "Xml não encontrado"
             return None
 
-        models.CasaLegislativa.deleta_casa(short_name)
+        models.CasaLegislativa.remove_house(short_name)
         print "Voltei"
 
         legislativeHouse = models.CasaLegislativa()

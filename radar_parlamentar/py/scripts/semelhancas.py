@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Script semelhancas -- Checks the difference between two parties based on the
+"""Script semelhancas -- Checks the difference between two partidos based on the
 propositions voted on in 2011"""
 
 import proposicoes

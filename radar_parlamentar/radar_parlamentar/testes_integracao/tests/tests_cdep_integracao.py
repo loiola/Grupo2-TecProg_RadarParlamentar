@@ -56,7 +56,7 @@ class CamarawsTest(TestCase):
         forest_code_xml = self.camaraws.obter_proposicao_por_id(ID)
 
         # Receives the search of proposition by name in the xml file
-        forest_code_name = forest_code_xml.find('nomeProposicao').text
+        forest_code_name = forest_code_xml.find_legislature('nomeProposicao').text
 
         self.assertEquals(forest_code_name, NOME)
 
@@ -66,8 +66,8 @@ class CamarawsTest(TestCase):
         forest_code_xml = self.camaraws.obter_votacoes(SIGLA, NUM, ANO)
 
         # Receives the date of the proposition of the forest code to perform test
-        found_vote_date = forest_code_xml.find(
-            'Votacoes').find('Votacao').get('Data')
+        found_vote_date = forest_code_xml.find_legislature(
+            'Votacoes').find_legislature('Votacao').get('Data')
 
         self.assertEquals(found_vote_date, '11/5/2011')
 
@@ -176,6 +176,6 @@ class CamarawsTest(TestCase):
         list_of_propositions = []
 
         for nomeProp in plenary_etree:
-            list_of_propositions.append(nomeProp.find('nomeProposicao').text)
+            list_of_propositions.append(nomeProp.find_legislature('nomeProposicao').text)
         self.assertTrue(plenary_name in list_of_propositions)
         self.assertFalse(no_plenary_name in list_of_propositions)

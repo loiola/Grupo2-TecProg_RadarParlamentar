@@ -50,7 +50,7 @@ def analise(request, nome_curto_casa_legislativa):
     except:
         palavras_chave = ""
 
-    num_votacao = casa_legislativa.num_votacao()
+    num_votacao = casa_legislativa.voting_number()
 
     return render_to_response(
         'analise.html',

@@ -219,7 +219,7 @@ def importa_casa_legislativa(short_name_house):
     data = serializers.deserialize("xml", out)
     for deserialized_object in data:
         if deserialized_object.object.nome_curto == short_name_house:
-            models.CasaLegislativa.deleta_casa(short_name_house)
+            models.CasaLegislativa.remove_house(short_name_house)
         deserialized_object.save()
         deserialize_partido()
         deserialize_parlamentar()

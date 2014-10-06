@@ -131,10 +131,10 @@ class XmlCMSP:
 
     def partido(self, ver_tree):
         nome_partido = ver_tree.get('Partido').strip()
-        partido = models.Partido.from_nome(nome_partido)
+        partido = models.Partido.from_name(nome_partido)
         if partido is None:
             print 'Nao achou o partido %s' % nome_partido
-            partido = models.Partido.get_sem_partido()
+            partido = models.Partido.get_no_party()
         return partido
 
     def votante(self, ver_tree):
@@ -163,7 +163,7 @@ class XmlCMSP:
         legs = models.Legislatura.objects.filter(
             parlamentar=votante, partido=partido, casa_legislativa=self.cmsp)
        
-       # TODO this period should be further refined to support guys who switch parties
+       # TODO this period should be further refined to support guys who switch partidos
         if legs:
             leg = legs[0]
         else:

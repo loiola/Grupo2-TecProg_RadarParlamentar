@@ -94,7 +94,7 @@ class ImportadorConvencao:
 
     def _new_legislature(self):
 
-        # Name partido => list of party legislatures
+        # Name partido => list of party legislaturas
         self.legs = {}  
         for p in self.partidos:
             self.legs[p.nome] = []

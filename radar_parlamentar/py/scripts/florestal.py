@@ -43,7 +43,7 @@ for votations in proposition.votacoes:
   if (len(sys.argv)>1 and sys.argv[1] == '-uf'):
     dic = votations.por_uf()
   else:
-    dic = votations.por_partido()
+    dic = votations.by_party()
 
   for key, vote in dic.items():
     yes = vote.sim

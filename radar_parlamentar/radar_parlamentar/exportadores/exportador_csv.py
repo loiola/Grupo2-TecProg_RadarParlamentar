@@ -41,7 +41,7 @@ VOTER_ID = 'voter_id'
 NAME = 'name'
 # Reference attributes "coalition" column to be exported for analysis in R.
 PARTY = 'party'
-# Reference to column attributes "parties" (refers to acronyms of political parties) to be exported for analysis in R.
+# Reference to column attributes "partidos" (refers to acronyms of political partidos) to be exported for analysis in R.
 COALITION = 'coalition'
 # Reference to column attributes "vote" to be exported for analysis in R.
 VOTE = 'vote'
@@ -88,7 +88,7 @@ class ExportadorCSV:
         self.csv_rows.append(LABELS)
 
         for voting in self.votacoes:
-            votes = voting.votos()
+            votes = voting.votes()
 
             for vote in votes:
                 legislature = vote.legislatura

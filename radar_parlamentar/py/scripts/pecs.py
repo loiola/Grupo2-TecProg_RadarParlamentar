@@ -46,7 +46,7 @@ for propositions in pecs:
   for voting in propositions.votacoes:
     print('************')
     print(voting)
-    dic = voting.por_partido()
+    dic = voting.by_party()
 
     for party, vote in dic.items():
       print("%s: \t Sim: %s \t Não: %s \t Abstenções: %s" % (party, vote.sim, vote.nao, vote.abstencao))

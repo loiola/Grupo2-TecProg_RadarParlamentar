@@ -85,7 +85,7 @@ distribution (with or without modification), making available to the
 public, and in some countries other activities as well.
 
   To "convey" a work means any kind of propagation that enables other
-parties to make or receive copies.  Mere interaction with a user through
+partidos to make or receive copies.  Mere interaction with a user through
 a computer network, with no transfer of a copy, is not conveying.
 
   An interactive user interface displays "Appropriate Legal Notices"
@@ -177,7 +177,7 @@ circumvention of technological measures to the extent such circumvention
 is effected by exercising rights under this License with respect to
 the covered work, and you disclaim any intention to limit operation or
 modification of the work as a means of enforcing, against the work's
-users, your or third parties' legal rights to forbid circumvention of
+users, your or third partidos' legal rights to forbid circumvention of
 technological measures.
 
   4. Conveying Verbatim Copies.
@@ -415,7 +415,7 @@ copyright holder, and you cure the violation prior to 30 days after
 your receipt of the notice.
 
   Termination of your rights under this section does not terminate the
-licenses of parties who have received copies or rights from you under
+licenses of partidos who have received copies or rights from you under
 this License.  If your rights have been terminated and not permanently
 reinstated, you do not qualify to receive new licenses for the same
 material under section 10.
@@ -436,7 +436,7 @@ covered work, you indicate your acceptance of this License to do so.
   Each time you convey a covered work, the recipient automatically
 receives a license from the original licensors, to run, modify and
 propagate that work, subject to this License.  You are not responsible
-for enforcing compliance by third parties with this License.
+for enforcing compliance by third partidos with this License.
 
   An "entity transaction" is a transaction transferring control of an
 organization, or substantially all assets of one, or subdividing an
@@ -500,7 +500,7 @@ country that you have reason to believe are valid.
 
   If, pursuant to or in connection with a single transaction or
 arrangement, you convey, or propagate by procuring conveyance of, a
-covered work, and grant a patent license to some of the parties
+covered work, and grant a patent license to some of the partidos
 receiving the covered work authorizing them to use, propagate, modify
 or convey a specific copy of the covered work, then the patent license
 you grant is automatically extended to all recipients of the covered
@@ -514,7 +514,7 @@ work if you are a party to an arrangement with a third party that is
 in the business of distributing software, under which you make payment
 to the third party based on the extent of your activity of conveying
 the work, and under which the third party grants, to any of the
-parties who would receive the covered work from you, a discriminatory
+partidos who would receive the covered work from you, a discriminatory
 patent license (a) in connection with copies of the covered work
 conveyed by you (or copies made from those copies), or (b) primarily
 for and in connection with specific products or compilations that

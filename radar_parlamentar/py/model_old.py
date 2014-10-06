@@ -87,10 +87,10 @@ class Proposicao:
 
         tree = etree.fromstring(xml)
         prop = Proposicao()
-        prop.sigla = tree.find('Sigla').text
-        prop.numero = tree.find('Numero').text
-        prop.ano = tree.find('Ano').text
-        for child in tree.find('Votacoes'):
+        prop.sigla = tree.find_legislature('Sigla').text
+        prop.numero = tree.find_legislature('Numero').text
+        prop.ano = tree.find_legislature('Ano').text
+        for child in tree.find_legislature('Votacoes'):
           vot = Votacao.fromtree(child)
           prop.votacoes.append(vot)
         return prop
@@ -107,7 +107,7 @@ class Proposicao:
          string like "acronym number / year", eg fromxmlid (513 512) returns "540/2011 MPV."""
 
         tree = etree.fromstring(xml)
-        nome = tree.find('nomeProposicao').text
+        nome = tree.find_legislature('nomeProposicao').text
         return nome
 
 
@@ -259,8 +259,8 @@ describes the vote of a member
 
     """Reads the database 'results / camaraws.db' PARTIES the table,
 	if present, to initialize the variable with Deputado.dicpartidos 
-	parties that appear there. Deputado.dicpartidos is a dictionary whose 
-	key acronyms of parties and how the value idPartido (internal unique 
+	partidos that appear there. Deputado.dicpartidos is a dictionary whose
+	key acronyms of partidos and how the value idPartido (internal unique
 	identifier, not necessarily equal to the electoral number).
 
     Then reads the listapartidos.txt file that contains lines like 'PV 88'
@@ -563,11 +563,11 @@ class Proposicao:
 
         tree = etree.fromstring(xml)
         prop = Proposicao()
-        prop.sigla = tree.find('Sigla').text
-        prop.numero = tree.find('Numero').text
-        prop.ano = tree.find('Ano').text
+        prop.sigla = tree.find_legislature('Sigla').text
+        prop.numero = tree.find_legislature('Numero').text
+        prop.ano = tree.find_legislature('Ano').text
 
-        for child in tree.find('Votacoes'):
+        for child in tree.find_legislature('Votacoes'):
           vot = Votacao.fromtree(child)
           prop.votacoes.append(vot)
         return prop
@@ -582,7 +582,7 @@ class Proposicao:
         string like "acronym number / year", eg fromxmlid (513 512) returns "540/2011 MPV."""
 
         tree = etree.fromstring(xml)
-        nome = tree.find('nomeProposicao').text
+        nome = tree.find_legislature('nomeProposicao').text
         return nome
 
 
@@ -717,8 +717,8 @@ class Deputado:
     @staticmethod
     def inicializar_dicpartidos(bd='resultados/camara.db'):
         """Reads the database 'results / camaraws.db' PARTIES the table, if present, to
-        initialize the variable with Deputado.dicpartidos parties that appear there.
-        Deputado.dicpartidos is a dictionary whose key acronyms of parties and
+        initialize the variable with Deputado.dicpartidos partidos that appear there.
+        Deputado.dicpartidos is a dictionary whose key acronyms of partidos and
         how the value idPartido (internal unique identifier, not necessarily equal to
         the electoral number).
 

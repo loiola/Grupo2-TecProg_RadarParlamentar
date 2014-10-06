@@ -283,13 +283,13 @@ class ModelsTest(TestCase):
     def test_partido(self):
 
         # Receives the objects o PT party
-        pt_party = models.Partido.from_nome('PT')
+        pt_party = models.Partido.from_name('PT')
 
         self.assertEquals(pt_party.numero, 13)
         self.assertEquals(pt_party.cor, '#FF0000')
 
         # Receives the objects o PSDB party
-        psdb_party = models.Partido.from_numero(45)
+        psdb_party = models.Partido.from_number(45)
         self.assertEquals(psdb_party.nome, 'PSDB')
         self.assertEquals(psdb_party.cor, '#0059AB')
 
@@ -299,7 +299,7 @@ class ModelsTest(TestCase):
         nome = None
 
         # Receives the party by party name
-        partido = models.Partido.from_nome(nome)
+        partido = models.Partido.from_name(nome)
 
         self.assertIsNone(partido)
 
@@ -307,7 +307,7 @@ class ModelsTest(TestCase):
 
         # Receives the objects from Partido whre tha party name is equals
         # SEM_PARTIDO
-        no_party = models.Partido.get_sem_partido()
+        no_party = models.Partido.get_no_party()
 
         self.assertEquals(no_party.nome, 'Sem partido')
         self.assertEquals(no_party.numero, 0)
@@ -318,12 +318,12 @@ class ModelsTest(TestCase):
         # Receives the objects of CasaLegislativa where the short name is conv
         conv_legislative_house = models.CasaLegislativa.objects.get(nome_curto='conv')
 
-        # Receives the parties of conv legislative house
-        partidos = conv_legislative_house.partidos()
+        # Receives the partidos of conv legislative house
+        partidos = conv_legislative_house.parties()
 
         self.assertEquals(len(partidos), 3)
 
-        # Receives the name of parties of conv legislative house
+        # Receives the name of partidos of conv legislative house
         conv_party_names = [p.nome for p in partidos]
 
         self.assertTrue(conv.JACOBINOS in conv_party_names)
@@ -336,7 +336,7 @@ class ModelsTest(TestCase):
         search_legislature_by_date = datetime.date(1989, 07, 14)
 
         try:
-            leg = models.Legislatura.find(search_legislature_by_date, 'Pierre')
+            leg = models.Legislatura.find_legislature(search_legislature_by_date, 'Pierre')
             self.assertTrue(leg is not None)
         except ValueError:
             self.fail('Legislatura não encontrada')
@@ -347,7 +347,7 @@ class ModelsTest(TestCase):
         search_legislature_by_date = datetime.date(1900, 07, 14)
 
         try:
-            models.Legislatura.find(search_legislature_by_date, 'Pierre')
+            models.Legislatura.find_legislature(search_legislature_by_date, 'Pierre')
             self.fail('Legislatura não deveria ter sido encontrada')
         except:
             self.assertTrue(True)
@@ -469,7 +469,7 @@ class ModelsTest(TestCase):
 
         voteTest1.save()
 
-        # Receives all objects of Party from models before removal
+        # Receives all objects of Partido from models before removal
         before_party_objects = models.Partido.objects.all()
 
         # Receives all objects of Parlamentar from models before removal
@@ -490,7 +490,7 @@ class ModelsTest(TestCase):
         # Receives all objects of Votacao from models before removal
         before_voting_objects = models.Votacao.objects.all()
 
-        # Receives the names of parties before removal
+        # Receives the names of partidos before removal
         party_names = [p.nome for p in before_party_objects]
 
         self.assertTrue('PA' in party_names)
@@ -509,7 +509,7 @@ class ModelsTest(TestCase):
         self.assertTrue('Casa2' in house_names)
 
 
-        # Receives the names of legislatures before removal
+        # Receives the names of legislaturas before removal
         legislature_names = [l.localidade for l in before_legislature_objects]
 
         self.assertTrue('PB' in legislature_names)
@@ -533,10 +533,10 @@ class ModelsTest(TestCase):
         self.assertTrue(' 12345' in voting_names)
 
         # Trying to delete a house that does not exist
-        models.CasaLegislativa.deleta_casa('casa_qualquer')
-        models.CasaLegislativa.deleta_casa('cs1')
+        models.CasaLegislativa.remove_house('casa_qualquer')
+        models.CasaLegislativa.remove_house('cs1')
 
-        # Receives all objects of Party from models after removal
+        # Receives all objects of Partido from models after removal
         after_party_objects = models.Partido.objects.all()
 
         # Receives all objects of Parlamentar from models after removal
@@ -557,7 +557,7 @@ class ModelsTest(TestCase):
         # Receives all objects of Votacao from models after removal
         after_voting_objects = models.Votacao.objects.all()
 
-        # Receives the names of parties after removal
+        # Receives the names of partidos after removal
         party_names = [p.nome for p in after_party_objects]
 
         self.assertTrue('PA' in party_names)
@@ -575,7 +575,7 @@ class ModelsTest(TestCase):
         self.assertFalse('Casa1' in house_names)
         self.assertTrue('Casa2' in house_names)
 
-        # Receives the names of legislatures after removal
+        # Receives the names of legislaturas after removal
         legislature_names = [l.localidade for l in after_legislature_objects]
 
         self.assertFalse('PB' in legislature_names)

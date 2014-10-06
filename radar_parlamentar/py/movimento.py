@@ -23,9 +23,9 @@ import sys
 
 
 # Modifiable parameters
-# Political parties to be included in the analyzes
+# Political partidos to be included in the analyzes
 #
-# Receives the list of political parties to be included in the analysis
+# Receives the list of political partidos to be included in the analysis
 parties = [u'PMDB', u'PTB', u'PDT', u'PT', u'DEM', u'PCdoB', u'PSB', u'PSDB',
 	u'PSC', u'PMN', u'PPS', u'PV', u'PTdoB', u'PP', u'PHS', u'PRB', u'PSOL', 
 	u'PR', u'PSD']
