@@ -34,7 +34,7 @@ import pca
 PARTIDOS = ['PT', 'PSDB', 'PV', 'PSOL', 'PCdoB', 'PP', 'PR', 'DEM', 'PMDB', 'PSC', 
 	'PTB', 'PDT', 'PSB', 'PPS', 'PRB']
 
-def vetor_votacoes(partido, proposicoes):
+def votings_vector(partido, proposicoes):
     """Calculates the vector of voting for a party
     arguments:
         party - party name (string)
@@ -63,7 +63,7 @@ def vetor_votacoes(partido, proposicoes):
             vector.append(vi)
     return vector
 
-def semelhanca_vetores(vetor1, vetor2):
+def vectors_similarity(vetor1, vetor2):
 
     # Receives the result of normalizing the vector 1
     nv1 = algebra.normaliza(vetor1)
@@ -73,7 +73,7 @@ def semelhanca_vetores(vetor1, vetor2):
 
     return algebra.prod_escalar(nv1, nv2)
 
-def semelhanca(partido1, partido2, proposicoes):
+def similarity(partido1, partido2, proposicoes):
 <<<<<<< HEAD
     """Computes the similarity between two partidos"""
 =======
@@ -90,15 +90,15 @@ def semelhanca(partido1, partido2, proposicoes):
     returns:
         A real value \ in [0,1] representing the similarity between the partidos."""
 
-    v1 = vetor_votacoes(partido1, proposicoes)
-    v2 = vetor_votacoes(partido2, proposicoes)
+    v1 = votings_vector(partido1, proposicoes)
+    v2 = votings_vector(partido2, proposicoes)
 
     # Receives similarity between vectors 1 and 2
-    sem = semelhanca_vetores(v1, v2)
+    sem = vectors_similarity(v1, v2)
 
     return (sem+1)/2.0
 
-def semelhanca_pca(vetores):
+def similarity_pca(vetores):
     """Calculates similarities party generating a two-dimensional graph
     This is done with the Principal Component Analysis (PCA)
     arguments:

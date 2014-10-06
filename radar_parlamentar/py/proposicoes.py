@@ -101,7 +101,7 @@ def parse():
 
     return propositions
 
-def com_votacao(proposicoes): 
+def with_vote(proposicoes):
     """Checks which propositions have votes in the chamber web service
      It is only on those propositions we will do our analyzes
      This check is done by invoking the web service camera
@@ -127,7 +127,7 @@ def com_votacao(proposicoes):
             voted.append(proposition)
     return voted
 
-def proposicoes_com_votacao():
+def propositions_with_vote():
     """Returns the list of propositions for which it is possible to get the xml
     of the vote
      This list is taken from the results / votadas.txt file
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     propositions = parse_html()
 
     # Receives the com_votacao() method that pass the propositions as parameter
-    voted = com_votacao(propositions)
+    voted = with_vote(propositions)
 
     print("# Documento entregue pela câmara continha %d proposições votadas em 2011" %
           len(propositions))

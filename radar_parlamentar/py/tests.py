@@ -68,7 +68,7 @@ class CamaraWS_Test(unittest.TestCase):
     propositions = [proposition]
   
     # Tested by invoking the function:
-    vector = partidos.vetor_votacoes(party, propositions)
+    vector = partidos.votings_vector(party, propositions)
 
     # If testing is right:
     expected = [1, -0.88889, 0.66667, 0]
@@ -128,9 +128,9 @@ class CamaraWS_Test(unittest.TestCase):
     vector_test3 = [0, 0.2, 0.8, 0.2]
 
     # Results obtained:
-    similarity_vector_1_and_2 = partidos.semelhanca_vetores(vector_test1,vector_test2)
-    similarity_vector_1_and_3 = partidos.semelhanca_vetores(vector_test1,vector_test3)
-    similarity_vector_2_and_3 = partidos.semelhanca_vetores(vector_test2,vector_test3)
+    similarity_vector_1_and_2 = partidos.vectors_similarity(vector_test1,vector_test2)
+    similarity_vector_1_and_3 = partidos.vectors_similarity(vector_test1,vector_test3)
+    similarity_vector_2_and_3 = partidos.vectors_similarity(vector_test2,vector_test3)
 
     # Expected results:
     expected_result_1_2 = 0.99225369
@@ -143,9 +143,9 @@ class CamaraWS_Test(unittest.TestCase):
     self.assertAlmostEqual(expected_result_2_3, similarity_vector_2_and_3, 5)
 
     # The resemblance is commutative:
-    similarity_vector_2_and_1 = partidos.semelhanca_vetores(vector_test2,vector_test1)
-    similarity_vector_3_and_1 = partidos.semelhanca_vetores(vector_test3,vector_test1)
-    similarity_vector_3_and_2 = partidos.semelhanca_vetores(vector_test3,vector_test2)
+    similarity_vector_2_and_1 = partidos.vectors_similarity(vector_test2,vector_test1)
+    similarity_vector_3_and_1 = partidos.vectors_similarity(vector_test3,vector_test1)
+    similarity_vector_3_and_2 = partidos.vectors_similarity(vector_test3,vector_test2)
     self.assertAlmostEqual(similarity_vector_1_and_2, similarity_vector_2_and_1, 5)
     self.assertAlmostEqual(similarity_vector_1_and_3, similarity_vector_3_and_1, 5)
     self.assertAlmostEqual(similarity_vector_2_and_3, similarity_vector_3_and_2, 5)
@@ -216,7 +216,7 @@ class CamaraWS_Test(unittest.TestCase):
     propositions = [proposition]
 
     # Tested by invoking the function:
-    s = partidos.semelhanca(party1, party2, propositions)
+    s = partidos.similarity(party1, party2, propositions)
 
     # If testing is right;
     # Calculating on hand:
