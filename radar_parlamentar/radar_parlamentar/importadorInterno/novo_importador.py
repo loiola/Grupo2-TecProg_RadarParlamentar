@@ -34,17 +34,17 @@ class importador_interno:
         self.verifica_voto = False
         self.verifica_votacao = False
 
-    def carrega_xml(self, nome_curto):
-        directory = RESOURCES_FOLDER + nome_curto + '.xml'
+    def carrega_xml(self, short_name):
+        directory = RESOURCES_FOLDER + short_name + '.xml'
         try:
             tree = etree.parse(directory)
             root = tree.getroot()
         except Exception:
-            logger.error("Arquivo não encontrado: %s.xml" % nome_curto)
+            logger.error("Arquivo não encontrado: %s.xml" % short_name)
             print "Xml não encontrado"
             return None
 
-        models.CasaLegislativa.deleta_casa(nome_curto)
+        models.CasaLegislativa.deleta_casa(short_name)
         print "Voltei"
 
         legislativeHouse = models.CasaLegislativa()
@@ -148,6 +148,6 @@ class importador_interno:
                     vote.save()
 
 
-def main(nome_curto):
+def main(short_name):
     x = importador_interno()
-    x.carrega_xml(nome_curto)
+    x.carrega_xml(short_name)
