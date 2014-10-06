@@ -38,9 +38,17 @@ def main():
     serialize_voto()
 
 def serialize_partido():
+    # receives the result of the serialization of XMLs.
     XMLSerializer = serializers.get_serializer("xml")
+    
+    # receives the values ​​of the variable XMLSerializer.
     xml_serializer = XMLSerializer()
+    
+    # receives a reference to the absolute path of the XML file to open.
     filepath = os.path.join(MODULE_DIR, 'dados/partido.xml')
+    
+    """receives a reference to the objects of the type file concerning xmls 
+    (casa_legislativa.xml, legislatura.xml, proposicao.xml, votacao.xml e voto.xml)"""
     out = open(filepath, "w")
     xml_serializer.serialize(models.Partido.objects.all(), stream=out)
 
