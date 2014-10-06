@@ -624,7 +624,7 @@ class StringUtilsTest(TestCase):
         # in StringUtils class to test with text
         string_list = utils.StringUtils.transforma_texto_em_lista_de_string(
             "educação, saúde, desmatamento")
-        
+
         self.assertEquals(3, len(string_list))
         self.assertEquals("educação", string_list[0])
         self.assertEquals("saúde", string_list[1])
