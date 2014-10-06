@@ -30,5 +30,5 @@ class SmartUpdateCacheMiddleware(UpdateCacheMiddleware):
 
         # Store cookies
         cookie = self.STRIP_RE.sub('', request.META.get('HTTP_COOKIE', ''))
-        
+
         request.META['HTTP_COOKIE'] = cookie

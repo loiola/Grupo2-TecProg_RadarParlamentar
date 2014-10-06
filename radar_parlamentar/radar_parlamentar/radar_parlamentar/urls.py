@@ -9,8 +9,10 @@ from django.views.generic.simple import redirect_to
 # from django.contrib import admin
 # admin.autodiscover()
 
+# Receives the patterns() method
 urlpatterns = patterns(
     '',
+
     # Examples:
     # url(r'^$',
     #     'radar_parlamentar.views.home', name='home'),
@@ -36,7 +38,7 @@ urlpatterns = patterns(
     url(r'^dados/(?P<dado_solicitado>\w*)/$',
         'exportadores.views.download_dados'),
 
-    # Pages Project Gender Hackathon House of Representatives in 2013
+    # Pages Project Gender Hackathon House of Representatives in 2013.
     url(r'^genero/$', 'radar_parlamentar.views.genero'),
     url(r'^genero/tematica/partido/$',
         'radar_parlamentar.views.genero_matriz'),
@@ -53,7 +55,7 @@ urlpatterns = patterns(
     url(r'^genero/tematica/nuvem/$',
         'radar_parlamentar.views.genero_termos_nuvem'),
 
-    # Ports Supported returning content to plot the map
+    # Ports Supported returning content to plot the map.
     url(r'^analises/analise/(?P<nome_curto_casa_legislativa>\w*)/$',
         'analises.views.analise'),
     url(r'^analises/json_analise/(?P<nome_curto_casa_legislativa>\w*)/'
@@ -72,9 +74,13 @@ urlpatterns = patterns(
     url(r'^analises/lista_de_votacoes_filtradas/(?P<nome_curto_casa_legislativa>\w*)/'
         r'(?P<periodicidade>\w*)/(?P<palavras_chave>.*)/$', 'analises.views.lista_de_votacoes_filtradas')
 
+
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+
+
 )
