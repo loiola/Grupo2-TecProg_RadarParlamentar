@@ -30,7 +30,7 @@ from modelagem.models import MUNICIPAL, FEDERAL, ESTADUAL, BIENIO
 
 class MandatoListsTest(TestCase):
 
-    def test_get_mandatos_municipais(self):
+    def test_get_municipal_mandates(self):
 
         # Start date of the mandate
         mandate_initial_date = datetime.date(2008, 10, 10)
@@ -53,7 +53,7 @@ class MandatoListsTest(TestCase):
             self.assertEquals(mandato.day, 1)
             self.assertEquals(mandato.month, 1)
 
-    def test_get_mandatos_municipais_soh_um(self):
+    def test_get_just_one_municipal_mandate(self):
 
         # Start date of the mandate
         mandate_initial_date = parse_datetime('2009-10-10 0:0:0')
@@ -71,13 +71,13 @@ class MandatoListsTest(TestCase):
         self.assertEquals(len(mandates), 1)
         self.assertEquals(mandates[0].year, 2009)
 
-    def test_get_mandatos_federais(self):
-        self._test_get_mandatos_federais_ou_estaduais(FEDERAL)
+    def test_get_federal_mandates(self):
+        self._test_get_federal_or_state_mandates(FEDERAL)
 
-    def test_get_mandatos_estaduais(self):
-        self._test_get_mandatos_federais_ou_estaduais(ESTADUAL)
+    def test_get_state_mandates(self):
+        self._test_get_federal_or_state_mandates(ESTADUAL)
 
-    def _test_get_mandatos_federais_ou_estaduais(self, esfera):
+    def _test_get_federal_or_state_mandates(self, esfera):
 
         # Start date of the mandate
         mandate_initial_date = datetime.date(2008, 10, 10)
@@ -118,7 +118,7 @@ class PeriodosRetrieverTest(TestCase):
     def setUp(self):
         self.conv = models.CasaLegislativa.objects.get(nome_curto='conv')
 
-    def test_casa_legislativa_periodos_anuais(self):
+    def test_legislative_house_annual_periods(self):
 
         # Stores the objects of conv and the year from models
         retriever = utils.PeriodosRetriever(self.conv, models.ANO)
@@ -130,7 +130,7 @@ class PeriodosRetrieverTest(TestCase):
         self.assertEqual(retriever_periods[0].string, '1989')
         self.assertEqual(retriever_periods[0].quantidade_votacoes, 8)
 
-    def test_casa_legislativa_periodos_mensais(self):
+    def test_legislative_house_monthly_periods(self):
 
         # Stores the objects of conv and the month from models
         retriever = utils.PeriodosRetriever(self.conv, models.MES)
@@ -144,7 +144,7 @@ class PeriodosRetrieverTest(TestCase):
         self.assertEqual(retriever_periods[1].string, '1989 Out')
         self.assertEqual(retriever_periods[1].quantidade_votacoes, 4)
 
-    def test_casa_legislativa_periodos_semestrais(self):
+    def test_legislative_house_semiannual_periods(self):
 
         # Stores the objects of conv and the semester from models
         retriever = utils.PeriodosRetriever(self.conv, models.SEMESTRE)
@@ -180,28 +180,28 @@ class PeriodosRetrieverTest(TestCase):
         self.assertEqual(retriever_periods[0].string, '1989 1o Semestre')
         self.assertEqual(retriever_periods[1].string, '1989 2o Semestre')
 
-    def test_periodo_municipal_nao_deve_conter_votacoes_de_dois_mandatos(self):
-        self._test_periodos_em_duas_datas(2008, 2009, MUNICIPAL, BIENIO, 2)
+    def test_municipal_period_polls_must_not_contain_two_mandates(self):
+        self._test_periods_in_two_dates(2008, 2009, MUNICIPAL, BIENIO, 2)
 
-    def test_periodo_municipal_deve_estar_em_um_mandato(self):
-        self._test_periodos_em_duas_datas(2009, 2010, MUNICIPAL, BIENIO, 1)
+    def test_municipal_period_must_be_in_a_mandate(self):
+        self._test_periods_in_two_dates(2009, 2010, MUNICIPAL, BIENIO, 1)
 
-    def test_inicio_de_periodo_municipal_deve_coincidir_com_inicio_mandato(self):
-        self._test_periodos_em_duas_datas(2010, 2011, MUNICIPAL, BIENIO, 2)
+    def test_begin_of_municipal_period_must_match_begin_of_mandate(self):
+        self._test_periods_in_two_dates(2010, 2011, MUNICIPAL, BIENIO, 2)
 
-    def test_periodo_federal_nao_deve_conter_votacoes_de_dois_mandatos(self):
-        self._test_periodos_em_duas_datas(2010, 2011, FEDERAL, BIENIO, 2)
+    def test_federal_period_must_not_contain_votes_of_two_mandates(self):
+        self._test_periods_in_two_dates(2010, 2011, FEDERAL, BIENIO, 2)
 
-    def test_periodo_estadual_nao_deve_conter_votacoes_de_dois_mandatos(self):
-        self._test_periodos_em_duas_datas(2010, 2011, ESTADUAL, BIENIO, 2)
+    def test_state_period_must_not_contain_votes_of_two_mandates(self):
+        self._test_periods_in_two_dates(2010, 2011, ESTADUAL, BIENIO, 2)
 
-    def test_periodo_federal_deve_estar_em_um_mandato(self):
-        self._test_periodos_em_duas_datas(2011, 2012, FEDERAL, BIENIO, 1)
+    def test_federal_period_must_be_ia_a_mandate(self):
+        self._test_periods_in_two_dates(2011, 2012, FEDERAL, BIENIO, 1)
 
-    def test_inicio_de_periodo_federal_deve_coincidir_com_inicio_mandato(self):
-        self._test_periodos_em_duas_datas(2012, 2013, FEDERAL, BIENIO, 2)
+    def test_begin_of_federal_period_must_match_begin_mandate(self):
+        self._test_periods_in_two_dates(2012, 2013, FEDERAL, BIENIO, 2)
 
-    def _test_periodos_em_duas_datas(self, ano_ini, ano_fim, esfera,
+    def _test_periods_in_two_dates(self, ano_ini, ano_fim, esfera,
                                      periodicidade, expected_periodos_len):
 
         # Receives the start date for testing
@@ -251,7 +251,7 @@ class PeriodosRetrieverTest(TestCase):
             voting_list.data = datas_originais[voting_list.id]
             voting_list.save()
 
-    def test_casa_legislativa_periodos_sem_lista_votacoes(self):
+    def test_legislative_house_periods_with_no_votes_list(self):
 
         # Receives objects of legislative house where name is equal to casa_nova to
         # perform home test without legislative voting list
@@ -280,7 +280,7 @@ class ModelsTest(TestCase):
     def tearDownClass(cls):
         flush_db(cls)
 
-    def test_partido(self):
+    def test_party(self):
 
         # Receives the objects o PT party
         pt_party = models.Partido.from_name('PT')
@@ -293,7 +293,7 @@ class ModelsTest(TestCase):
         self.assertEquals(psdb_party.nome, 'PSDB')
         self.assertEquals(psdb_party.cor, '#0059AB')
 
-    def test_partido_from_nome_None(self):
+    def test_party_from_None_name(self):
 
         # Receives the name of party equals none
         nome = None
@@ -303,7 +303,7 @@ class ModelsTest(TestCase):
 
         self.assertIsNone(partido)
 
-    def test_get_sem_partido(self):
+    def test_get_no_party(self):
 
         # Receives the objects from Partido whre tha party name is equals
         # SEM_PARTIDO
@@ -313,7 +313,7 @@ class ModelsTest(TestCase):
         self.assertEquals(no_party.numero, 0)
         self.assertEquals(no_party.cor, '#000000')
 
-    def test_casa_legislativa_partidos(self):
+    def test_legislative_house_parties(self):
 
         # Receives the objects of CasaLegislativa where the short name is conv
         conv_legislative_house = models.CasaLegislativa.objects.get(nome_curto='conv')
@@ -330,7 +330,7 @@ class ModelsTest(TestCase):
         self.assertTrue(conv.GIRONDINOS in conv_party_names)
         self.assertTrue(conv.MONARQUISTAS in conv_party_names)
 
-    def test_should_find_legislatura(self):
+    def test_should_find_legislature(self):
 
         # Receives the results of the search of legislature by date
         search_legislature_by_date = datetime.date(1989, 07, 14)
@@ -341,7 +341,7 @@ class ModelsTest(TestCase):
         except ValueError:
             self.fail('Legislatura não encontrada')
 
-    def test_should_not_find_legislatura(self):
+    def test_should_not_find_legislature(self):
 
         # Receives the results of the search of legislature by date
         search_legislature_by_date = datetime.date(1900, 07, 14)
@@ -352,7 +352,7 @@ class ModelsTest(TestCase):
         except:
             self.assertTrue(True)
 
-    def test_deleta_casa(self):
+    def test_remove_house(self):
 
         # Receives objects of Partido for inserting data to removal house test
         partyTest1 = models.Partido()
@@ -600,7 +600,7 @@ class ModelsTest(TestCase):
 
 class StringUtilsTest(TestCase):
 
-    def test_transforma_texto_em_lista_de_string_texto_vazio(self):
+    def test_transforms_text_in_a_string_list_empty_text_case(self):
 
         # Receives the result of transforma_texto_em_lista_de_string() method
         # in StringUtils class to test with blank text
@@ -609,7 +609,7 @@ class StringUtilsTest(TestCase):
 
         self.assertEquals(0, len(string_list))
 
-    def test_transforma_texto_em_lista_de_string_texto_nulo(self):
+    def test_transforms_text_in_a_string_list_null_text_case(self):
 
         # Receives the result of transforma_texto_em_lista_de_string() method
         # in StringUtils class to test with none text
@@ -618,7 +618,7 @@ class StringUtilsTest(TestCase):
 
         self.assertEquals(0, len(string_list))
 
-    def test_transforma_texto_em_lista_de_string(self):
+    def test_transforms_text_in_a_string_list_with_text_case(self):
 
         # Receives the result of transforma_texto_em_lista_de_string() method
         # in StringUtils class to test with text
