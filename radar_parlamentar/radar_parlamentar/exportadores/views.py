@@ -51,4 +51,6 @@ def download_dados(request, requested_data):
     response['Content-Transfer-Encoding'] = 'binary'
     response['Content-Length'] = str(os.path.getsize(file))
 
+    # receives the variable reference file to be opened in read mode
     return response
+
