@@ -228,7 +228,7 @@ class RotacionadorTest(TestCase):
     def test_rotacao(self):
         periodosRetriever = PeriodosRetriever(
             self.casa_legislativa, models.SEMESTRE)
-        periodos = periodosRetriever.get_periodos()
+        periodos = periodosRetriever.get_periods()
         analisador1 = analise.AnalisadorPeriodo(
             self.casa_legislativa, periodo=periodos[0])
         analise_do_periodo1 = analisador1.analisa()

@@ -43,7 +43,7 @@ class MandatoListsTest(TestCase):
 
         # Mandates that fall within a certain period (start date and end date)
         # in some of the spheres (municipal, state or federal)
-        mandates = mandate_lists.get_mandatos(MUNICIPAL, mandate_initial_date, mandate_final_date)
+        mandates = mandate_lists.get_mandates(MUNICIPAL, mandate_initial_date, mandate_final_date)
 
         self.assertEquals(len(mandates), 3)
         self.assertEquals(mandates[0].year, 2005)
@@ -66,7 +66,7 @@ class MandatoListsTest(TestCase):
 
         # Mandates that fall within a certain period (start date and end date)
         # in some of the spheres (municipal, state or federal)
-        mandates = mandate_lists.get_mandatos(MUNICIPAL, mandate_initial_date, mandate_final_date)
+        mandates = mandate_lists.get_mandates(MUNICIPAL, mandate_initial_date, mandate_final_date)
 
         self.assertEquals(len(mandates), 1)
         self.assertEquals(mandates[0].year, 2009)
@@ -90,7 +90,7 @@ class MandatoListsTest(TestCase):
 
         # Mandates that fall within a certain period (start date and end date)
         # in some of the spheres (municipal, state or federal)
-        mandates = mandate_lists.get_mandatos(esfera, mandate_initial_date, mandate_final_date)
+        mandates = mandate_lists.get_mandates(esfera, mandate_initial_date, mandate_final_date)
 
         self.assertEquals(len(mandates), 3)
         self.assertEquals(mandates[0].year, 2007)
@@ -124,7 +124,7 @@ class PeriodosRetrieverTest(TestCase):
         retriever = utils.PeriodosRetriever(self.conv, models.ANO)
 
         # Stores the retriever periods
-        retriever_periods = retriever.get_periodos()
+        retriever_periods = retriever.get_periods()
 
         self.assertEquals(len(retriever_periods), 1)
         self.assertEqual(retriever_periods[0].string, '1989')
@@ -136,7 +136,7 @@ class PeriodosRetrieverTest(TestCase):
         retriever = utils.PeriodosRetriever(self.conv, models.MES)
 
         # Stores the retriever periods
-        retriever_periods = retriever.get_periodos()
+        retriever_periods = retriever.get_periods()
 
         self.assertEquals(len(retriever_periods), 2)
         self.assertEqual(retriever_periods[0].string, '1989 Fev')
@@ -150,7 +150,7 @@ class PeriodosRetrieverTest(TestCase):
         retriever = utils.PeriodosRetriever(self.conv, models.SEMESTRE)
 
         # Stores the retriever periods
-        retriever_periods = retriever.get_periodos()
+        retriever_periods = retriever.get_periods()
 
         self.assertEquals(len(retriever_periods), 2)
 
@@ -239,7 +239,7 @@ class PeriodosRetrieverTest(TestCase):
         retriever = utils.PeriodosRetriever(self.conv, periodicidade)
 
         # Stores the retriever periods
-        retriever_periods = retriever.get_periodos()
+        retriever_periods = retriever.get_periods()
 
         self.assertEquals(len(retriever_periods), expected_periodos_len)
         self._restore(original_sphere, votings, original_dates)
@@ -261,7 +261,7 @@ class PeriodosRetrieverTest(TestCase):
         retriever = utils.PeriodosRetriever(new_house, models.ANO)
 
         # Stores the retriever periods
-        retriever_periods = retriever.get_periodos()
+        retriever_periods = retriever.get_periods()
 
         self.assertEquals(len(retriever_periods), 0)
 
@@ -604,7 +604,7 @@ class StringUtilsTest(TestCase):
 
         # Receives the result of transforma_texto_em_lista_de_string() method
         # in StringUtils class to test with blank text
-        string_list = utils.StringUtils.transforma_texto_em_lista_de_string(
+        string_list = utils.StringUtils.transforms_text_in_string_list(
             "")
 
         self.assertEquals(0, len(string_list))
@@ -613,7 +613,7 @@ class StringUtilsTest(TestCase):
 
         # Receives the result of transforma_texto_em_lista_de_string() method
         # in StringUtils class to test with none text
-        string_list = utils.StringUtils.transforma_texto_em_lista_de_string(
+        string_list = utils.StringUtils.transforms_text_in_string_list(
             None)
 
         self.assertEquals(0, len(string_list))
@@ -622,7 +622,7 @@ class StringUtilsTest(TestCase):
 
         # Receives the result of transforma_texto_em_lista_de_string() method
         # in StringUtils class to test with text
-        string_list = utils.StringUtils.transforma_texto_em_lista_de_string(
+        string_list = utils.StringUtils.transforms_text_in_string_list(
             "educação, saúde, desmatamento")
 
         self.assertEquals(3, len(string_list))

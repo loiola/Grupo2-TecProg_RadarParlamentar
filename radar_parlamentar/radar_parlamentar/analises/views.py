@@ -69,7 +69,7 @@ def json_analise(request, nome_curto_casa_legislativa,
 
     casa_legislativa = get_object_or_404(
         models.CasaLegislativa, nome_curto=nome_curto_casa_legislativa)
-    lista_de_palavras_chave = utils.StringUtils.transforma_texto_em_lista_de_string(
+    lista_de_palavras_chave = utils.StringUtils.transforms_text_in_string_list(
         palavras_chave)
     analisador = AnalisadorTemporal(
         casa_legislativa, periodicidade, lista_de_palavras_chave)
@@ -85,7 +85,7 @@ def lista_de_votacoes_filtradas(request, nome_curto_casa_legislativa,
 
     casa_legislativa = get_object_or_404(
         models.CasaLegislativa,nome_curto=nome_curto_casa_legislativa)
-    lista_de_palavras_chave = utils.StringUtils.transforma_texto_em_lista_de_string(palavras_chave)
+    lista_de_palavras_chave = utils.StringUtils.transforms_text_in_string_list(palavras_chave)
     analisador = AnalisadorTemporal(casa_legislativa, periodicidade, 
         lista_de_palavras_chave)
     analise_temporal = analisador.votacoes_com_filtro()

@@ -59,7 +59,7 @@ class AnalisadorTemporal:
         self.casa_legislativa = casa_legislativa
         retriever = utils.PeriodosRetriever(
             self.casa_legislativa, periodicidade)
-        self.periodos = retriever.get_periodos()
+        self.periodos = retriever.get_periods()
         self.ini = self.periodos[0].ini
         self.fim = self.periodos[len(self.periodos) - 1].fim
         self.periodicidade = periodicidade

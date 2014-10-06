@@ -64,7 +64,7 @@ class JsonAnaliseGeneratorTest(TestCase):
 
         ap1 = AnalisePeriodo()
         periodos_retriever = utils.PeriodosRetriever(self.casa, models.BIENIO)
-        periodos = periodos_retriever.get_periodos()
+        periodos = periodos_retriever.get_periods()
         ap1.casa_legislativa = None
         ap1.periodo = periodos[0]
         ap1.parties = [self.girondinos, self.jacobinos, self.monarquistas]

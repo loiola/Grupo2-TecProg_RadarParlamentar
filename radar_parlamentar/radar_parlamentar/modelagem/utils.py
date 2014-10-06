@@ -26,7 +26,7 @@ import datetime
 
 class MandatoLists:
 
-    def get_mandatos(self, esfera, ini_date, end_date):
+    def get_mandates(self, esfera, ini_date, end_date):
         """Return dates for the start of each term in the period
              between ini_date and end_date
              arguments:
@@ -36,11 +36,11 @@ class MandatoLists:
              Note: beginning of each term is always on January 1st"""
 
         if esfera == MUNICIPAL:
-            return self._get_mandatos(ini_date, end_date, 2009)
+            return self._get_mandates(ini_date, end_date, 2009)
         elif esfera in [ESTADUAL, FEDERAL]:
-            return self._get_mandatos(ini_date, end_date, 2011)
+            return self._get_mandates(ini_date, end_date, 2011)
 
-    def _get_mandatos(self, ini_date, end_date, ano_inicio_de_algum_mandato):
+    def _get_mandates(self, ini_date, end_date, ano_inicio_de_algum_mandato):
 
         # Receives a reference year sufficiently in the past
         past_reference_year = ano_inicio_de_algum_mandato - \
@@ -110,7 +110,7 @@ class PeriodosRetriever:
         # Receives the minimum number of votes a period, being default equal to 1
         self.numero_minimo_de_votacoes = numero_minimo_de_votacoes
 
-    def get_periodos(self):
+    def get_periods(self):
         if (self.data_da_primeira_votacao is None):
 
             # Receives the object filter (dates) Voting of a legislative house
@@ -127,14 +127,14 @@ class PeriodosRetriever:
             self.data_da_ultima_votacao = max(voting_dates)
 
         # Receives the result of inicio_primeiro_periodo() method
-        initial_date = self._inicio_primeiro_periodo()
+        initial_date = self._begin_first_period()
 
         # Receives the result of PeriodoCasaLegislativa method that
         # pass as a parameter initial_date, data_final and quantidade_votacoes
         candidate_period = []
 
         while initial_date < self.data_da_ultima_votacao:
-            initial_date_next_period = self._data_inicio_prox_periodo(
+            initial_date_next_period = self._begin_date_of_next_period(
                 initial_date)
 
             # Receives the final date of a period of voting on a legislative house
@@ -156,11 +156,11 @@ class PeriodosRetriever:
 
         # Receives the result of _filtra_periodo_com_minimo_de_votos() method, that
         # pass as a parameter the list of periodos_candidatos
-        accepted_period = self._filtra_periodos_com_minimo_de_votos(candidate_period)
+        accepted_period = self._filters_periods_with_minimum_of_votes(candidate_period)
 
         return accepted_period
 
-    def _filtra_periodos_com_minimo_de_votos(self, periodos_candidatos):
+    def _filters_periods_with_minimum_of_votes(self, periodos_candidatos):
 
         # min_votes_period: temporary variable loop _filtra_periodos_com_minimo_de_votos()
         # method
@@ -168,7 +168,7 @@ class PeriodosRetriever:
                 if min_votes_period.quantidade_votacoes >=
                 self.numero_minimo_de_votacoes]
 
-    def _inicio_primeiro_periodo(self):
+    def _begin_first_period(self):
         # Is the first day of the month of the date of the initial period
         # Default is 1
         initial_day = 1
@@ -201,7 +201,7 @@ class PeriodosRetriever:
 
         # Receives the mandates in a sphere by the date of first vote and the day
         # of last vote
-        mandates = mandates_lists.get_mandatos(
+        mandates = mandates_lists.get_mandates(
             sphere, self.data_da_primeira_votacao, self.data_da_ultima_votacao)
 
         # Temporary variable loop _inicio_primeiro_periodo() method
@@ -216,7 +216,7 @@ class PeriodosRetriever:
 
         return inicio_primeiro_periodo
 
-    def _data_inicio_prox_periodo(self, data_inicio_periodo):
+    def _begin_date_of_next_period(self, data_inicio_periodo):
         # Day
         initial_day = 1
 
@@ -260,7 +260,7 @@ class PeriodosRetriever:
 
 class StringUtils():
     @staticmethod
-    def transforma_texto_em_lista_de_string(texto):
+    def transforms_text_in_string_list(texto):
 
         # Receives a list of strings transforma_texto_em_lista_de_string() method
         string_list = []
