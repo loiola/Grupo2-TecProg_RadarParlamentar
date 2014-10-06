@@ -26,7 +26,7 @@ from importadores import sen
 
 class SenadoWSTest(TestCase):
 
-    def test_obter_senadores_from_legislatura(self):
+    def test_obtain_senators_from_legislature(self):
 
         # Receives a legislature by id (52)
         legislature_id = '52'
