@@ -34,7 +34,7 @@ class SenadoWSTest(TestCase):
         # Receives SenadoWS() method
         senws = sen.SenadoWS()
 
-        # Receives the obter_senadores_from_legislature() method by legislature id
+        # Receives the senators of the legislature whose identifier is number 52
         tree = senws.obter_senadores_from_legislatura(legislature_id)
 
         self.assertIsNotNone(tree)
