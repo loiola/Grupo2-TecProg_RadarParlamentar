@@ -159,14 +159,14 @@ class AnalisadorPeriodo:
         self.tamanhos_partidos = {}
         self.coordenadas_partidos = {}
 
-        # Array of partido.nome's, one by por legislature
+        # Array of search_political_party.nome's, one by por legislature
         self.partido_do_parlamentar = []
 
         # legislatura.id => {True,False}, being True if was present in
         # period.
         self.presencas_legislaturas = {}
 
-        # partido.nome => list of party legislaturas (independent of period).
+        # search_political_party.nome => list of party legislaturas (independent of period).
         self.legislaturas_por_partido = {}
 
         self.pca_legislaturas = None
@@ -325,7 +325,7 @@ class MatrizesDeDadosBuilder:
         self.matriz_presencas = numpy.zeros(
             (len(self.legislaturas), len(self.votacoes)))
 
-        # Array of partido.nome's, one by legislature
+        # Array of search_political_party.nome's, one by legislature
         self.partido_do_parlamentar = []
 
         # Key is the name of party, and value is VotoPartido
@@ -408,9 +408,9 @@ class AnalisadorPartidos:
 
     def analisa_partidos(self):
         """Generate the following outputs:
-            self.coordenadas_partido # partido => [x,y]
-            self.tamanhos_partidos # partido => int
-            self.legislaturas_por_partido # partido => legislaturas"""
+            self.coordenadas_partido # search_political_party => [x,y]
+            self.tamanhos_partidos # search_political_party => int
+            self.legislaturas_por_partido # search_political_party => legislaturas"""
 
         for ip in range(0, len(self.partidos)):
             indices_deste_partido = []

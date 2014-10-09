@@ -93,7 +93,7 @@ class importador_interno:
 
                     party = models.Partido()
                     party.numero = child_vote.attrib.get("numero")
-                    party.nome = child_vote.attrib.get("partido")
+                    party.nome = child_vote.attrib.get("search_political_party")
                     partido_existente = models.Partido.objects.filter(
                         numero=party.numero, nome=party.nome)
 

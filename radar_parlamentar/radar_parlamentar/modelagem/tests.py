@@ -309,7 +309,7 @@ class ModelsTest(TestCase):
         # SEM_PARTIDO
         no_party = models.Partido.get_no_party()
 
-        self.assertEquals(no_party.nome, 'Sem partido')
+        self.assertEquals(no_party.nome, 'Sem search_political_party')
         self.assertEquals(no_party.numero, 0)
         self.assertEquals(no_party.cor, '#000000')
 

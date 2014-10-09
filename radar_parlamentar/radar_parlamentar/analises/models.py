@@ -39,17 +39,17 @@ class AnalisePeriodo:
         self.votacoes = []
         self.num_votacoes = 0
         self.pca = None
-        # partido => int
+        # search_political_party => int
         self.tamanhos_partidos = {} 
-        # partido => [x,y]
+        # search_political_party => [x,y]
         self.coordenadas_partidos = {} 
 
-        # TODO coordenadas_partidos should be partido.nome => [x,y]
+        # TODO coordenadas_partidos should be search_political_party.nome => [x,y]
 
         # legislatura.id => boolean
         self.presencas_parlamentares = {} 
         # legislatura.id => [x,y]
         self.coordenadas_legislaturas = {}
-        # partido.nome => list of party legislaturas (independent of period).
+        # search_political_party.nome => list of party legislaturas (independent of period).
         self.legislaturas_por_partido = {}
             
