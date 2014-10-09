@@ -153,7 +153,7 @@ class ImportadorVotacoesSenado:
         nome_partido = nome_partido.strip()
         partido = models.Partido.from_name(nome_partido)
         if partido is None:
-            logger.warn('Não achou o search_political_party %s' % nome_partido)
+            logger.warn('Não achou o partido %s' % nome_partido)
             partido = models.Partido.get_no_party()
         return partido
 
@@ -358,7 +358,7 @@ class ImportadorSenadores:
             nome_partido = nome_partido.strip()
         partido = models.Partido.from_name(nome_partido)
         if partido is None:
-            logger.warn('Não achou o search_political_party %s' % nome_partido)
+            logger.warn('Não achou o partido %s' % nome_partido)
             partido = models.Partido.get_no_party()
         return partido
 

@@ -57,7 +57,7 @@ class Migration(SchemaMigration):
                            {'max_length': '100', 'blank': 'True'}),
             'parlamentar': ('django.db.models.fields.related.ForeignKey', [],
                             {'to': "orm['modelagem.Parlamentar']"}),
-            'search_political_party': ('django.db.models.fields.related.ForeignKey', [],
+            'partido': ('django.db.models.fields.related.ForeignKey', [],
                 {'to': "orm['modelagem.Partido']"})
         },
         'modelagem.parlamentar': {
@@ -71,7 +71,7 @@ class Migration(SchemaMigration):
             'nome': ('django.db.models.fields.CharField', [],
                      {'max_length': '100'})
         },
-        'modelagem.search_political_party': {
+        'modelagem.partido': {
             'Meta': {'object_name': 'Partido'},
             'cor': ('django.db.models.fields.CharField', [],
                     {'max_length': '7'}),

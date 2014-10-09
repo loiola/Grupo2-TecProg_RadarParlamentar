@@ -226,7 +226,7 @@ class JsonAnaliseGenerator:
 
         dict_partido["parlamentares"] = []
 
-        # Legislatures = self.analise_temporal.analises_periodo[0].legislaturas_por_partido[search_political_party.nome]
+        # Legislatures = self.analise_temporal.analises_periodo[0].legislaturas_por_partido[partido.nome]
         legislaturas = self.analise_temporal.casa_legislativa.legislatures().filter(
             partido=partido).select_related('id', 'localidade', 'partido__nome', 'parlamentar__nome')
 
@@ -321,7 +321,7 @@ class RaioPartidoCalculator():
     def __init__(self, tamanhos_dos_partidos_por_periodo):
         """Argument:
         tamanhos_dos_partidos_por_periodo:
-            string_periodo => (search_political_party => int)
+            string_periodo => (partido => int)
         where string_periodo is a string that represents univocally a period
         generated with str(periodo), where period is from PeriodoCasaLegislativa type"""
 

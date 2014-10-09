@@ -95,12 +95,12 @@ class ExportadoresFileTest(TestCase):
         flush_db(cls)
 
     def test_create_file_partido(self):
-        filepath = os.path.join(MODULE_DIR, 'dados/search_political_party.xml')
+        filepath = os.path.join(MODULE_DIR, 'dados/partido.xml')
         self.assertTrue(os.path.isfile(filepath))
 
     def test_verify_file_partido(self):
         party = models.Partido.objects.get(nome='PMDB')
-        filepath = os.path.join(MODULE_DIR, 'dados/search_political_party.xml')
+        filepath = os.path.join(MODULE_DIR, 'dados/partido.xml')
         file_xml = open(filepath, 'r')
         file_read = file_xml.read()
         self.assertTrue(file_read.find(party.nome) > 0)

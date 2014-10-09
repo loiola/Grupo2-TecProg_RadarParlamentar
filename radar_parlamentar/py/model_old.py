@@ -48,7 +48,7 @@ class Partido:
     numero -- ex: '13' [string]."""
 
 # Attributes to be implemented in the future:
-# tamanho [int], search_political_party do governo (executivo)?[booleano],
+# tamanho [int], partido do governo (executivo)?[booleano], 
 # cargos_indicados (amount of executive positions indication that this political party has)
 # as size, ruling party and other variables are characteristics of the party, perhaps best
 # SituacaoPartido they belong to a class, which would have attributes like: party, period
@@ -359,7 +359,7 @@ describes the vote of a member
             # If it is here, found new political party.
             idpartido = max(Deputado.dicpartidos.values()+[0]) + 1
             Deputado.dicpartidos[siglapartido] = idpartido
-            print "Novo search_political_party '%s' encontrado. Atribuido idPartido %d" % (siglapartido,idpartido)
+            print "Novo partido '%s' encontrado. Atribuido idPartido %d" % (siglapartido,idpartido)
 
             # Put on database:
             con = lite.connect(bd)
@@ -525,7 +525,7 @@ class Partido:
     numero -- ex: '13' [string]."""
 
 # Attributes to be implemented in the future:
-# tamanho [int], search_political_party do governo (executivo)?[booleano],
+# tamanho [int], partido do governo (executivo)?[booleano], 
 # cargos_indicados (amount of executive positions indication that this political party has)
 # as size, ruling party and other variables are characteristics of the party, perhaps best
 # SituacaoPartido they belong to a class, which would have attributes like: party, period
@@ -813,7 +813,7 @@ class Deputado:
             # If it is here, found new political party.
             idpartido = max(Deputado.dicpartidos.values()+[0]) + 1
             Deputado.dicpartidos[siglapartido] = idpartido
-            print "Novo search_political_party '%s' encontrado. Atribuido idPartido %d" % (siglapartido,idpartido)
+            print "Novo partido '%s' encontrado. Atribuido idPartido %d" % (siglapartido,idpartido)
 
             # Put on database:
             con = lite.connect(bd)

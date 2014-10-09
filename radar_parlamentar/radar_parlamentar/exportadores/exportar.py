@@ -45,7 +45,7 @@ def serialize_partido():
     xml_serializer = XMLSerializer()
     
     # receives a reference to the absolute path of the XML file to open.
-    filepath = os.path.join(MODULE_DIR, 'dados/search_political_party.xml')
+    filepath = os.path.join(MODULE_DIR, 'dados/partido.xml')
     
     """receives a reference to the objects of the type file concerning xmls 
     (casa_legislativa.xml, legislatura.xml, proposicao.xml, votacao.xml e voto.xml)"""

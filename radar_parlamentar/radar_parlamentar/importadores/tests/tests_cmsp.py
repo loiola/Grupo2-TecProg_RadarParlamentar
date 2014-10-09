@@ -59,21 +59,21 @@ class AprendizadoEtreeCase(TestCase):
 class GeradorCMSPCase(TestCase):
 
     def test_gera_a_casa(self):
-        casa = GeradorCasaLegislativa().generate_cmsp()
+        casa = GeradorCasaLegislativa().gerar_cmsp()
         self.assertEquals(casa.nome_curto, 'cmsp')
 
     def test_recupera_a_casa_existente(self):
-        casa1 = GeradorCasaLegislativa().generate_cmsp()
-        casa2 = GeradorCasaLegislativa().generate_cmsp()
+        casa1 = GeradorCasaLegislativa().gerar_cmsp()
+        casa2 = GeradorCasaLegislativa().gerar_cmsp()
         self.assertEquals(casa1.pk, casa2.pk)
 
 
 class ImportadorCMSPCase(TestCase):
 
     def setUp(self):
-        casa = GeradorCasaLegislativa().generate_cmsp()
+        casa = GeradorCasaLegislativa().gerar_cmsp()
         importer = ImportadorCMSP(casa, True)
-        self.votacao = importer.import_from(XML_TEST)[0]
+        self.votacao = importer.importar_de(XML_TEST)[0]
 
     def test_votacao_importada(self):
         self.assertEquals(self.votacao.id_vot, '1')
@@ -87,46 +87,46 @@ class EstaticosCMSPCase(TestCase):
     """Test case os static methods of XmlCMSP"""
 
     def setUp(self):
-        casa = GeradorCasaLegislativa().generate_cmsp()
+        casa = GeradorCasaLegislativa().gerar_cmsp()
         self.xmlCMSP = XmlCMSP(casa, True)
 
     def test_converte_data_valida(self):
         from django.utils.dateparse import parse_datetime
-        data = self.xmlCMSP.convert_data("1/1/1000")
+        data = self.xmlCMSP.converte_data("1/1/1000")
         self.assertEquals(data, parse_datetime("1000-1-1 0:0:0"))
 
     def test_converte_data_invalida(self):
-        data = self.xmlCMSP.convert_data("1000")
+        data = self.xmlCMSP.converte_data("1000")
         self.assertEquals(data, None)
 
     def test_prop_nome_valido(self):
         texto = "encontra Proposicoes como PL 1 /1000 no texto"
-        pl = self.xmlCMSP.search_propostition_by_name(texto)
+        pl = self.xmlCMSP.prop_nome(texto)
         self.assertEquals(pl, "PL 1 /1000")
 
     def test_prop_nome_invalido(self):
         texto = "n encontra proposicoes no texto"
-        pl = self.xmlCMSP.search_propostition_by_name(texto)
+        pl = self.xmlCMSP.prop_nome(texto)
         self.assertEquals(pl, None)
 
     def test_tipo_num_ano_de_prop_nome_valido(self):
         prop_nome = "PL 1 /1000"
-        num_ano = self.xmlCMSP.extract_year_from_num_and_year(prop_nome)
+        num_ano = self.xmlCMSP.tipo_num_anoDePropNome(prop_nome)
         self.assertEquals(num_ano, ("PL", "1", "1000"))
 
     def test_tipo_num_ano_de_prop_nome_invalido(self):
         prop_nome = "nao e proposicao valida"
-        num_ano = self.xmlCMSP.extract_year_from_num_and_year(prop_nome)
+        num_ano = self.xmlCMSP.tipo_num_anoDePropNome(prop_nome)
         self.assertEquals(num_ano, (None, None, None))
 
     def test_voto_cmsp_mapeado(self):
         voto = "Sim"
-        modelo_voto = self.xmlCMSP.interpret_vote(voto)
+        modelo_voto = self.xmlCMSP.voto_cmsp_to_model(voto)
         self.assertEquals(modelo_voto, models.SIM)
 
     def test_voto_cmsp_nao_mapeado(self):
         voto = "voto nao mapeado"
-        modelo_voto = self.xmlCMSP.interpret_vote(voto)
+        modelo_voto = self.xmlCMSP.voto_cmsp_to_model(voto)
         self.assertEquals(modelo_voto, models.ABSTENCAO)
 
 
@@ -134,7 +134,7 @@ class ModelCMSPCase(TestCase):
     """Test Case of methods that use model objects in XmlCMSP"""
 
     def setUp(self):
-        casa = GeradorCasaLegislativa().generate_cmsp()
+        casa = GeradorCasaLegislativa().gerar_cmsp()
         self.xmlCMSP = XmlCMSP(casa, True)
         type(self).preencher_banco(casa)
 
@@ -151,7 +151,7 @@ class ModelCMSPCase(TestCase):
 
     def test_vereador_sem_partido(self):
         xml_vereador = etree.fromstring(
-            "<Vereador Partido=\"nao tem search_political_party\"/>")
+            "<Vereador Partido=\"nao tem partido\"/>")
         partido = self.xmlCMSP.partido(xml_vereador)
         self.assertEquals(
             partido, models.Partido.objects.get(nome=models.SEM_PARTIDO))
@@ -173,7 +173,7 @@ class ModelCMSPCase(TestCase):
     def test_salva_vereador_inexistente(self):
         xml_vereador = etree.fromstring(
             "<Vereador IDParlamentar=\"999\" NomeParlamentar=\"Nao_consta\"/>")
-        parlamentar = self.xmlCMSP.list_parliamentary(xml_vereador)
+        parlamentar = self.xmlCMSP.votante(xml_vereador)
         self.assertEquals(
             parlamentar, models.Parlamentar.objects.get(id_parlamentar=999))
 
@@ -199,11 +199,11 @@ class IdempotenciaCMSPCase(TestCase):
 
     def test_idempotencia_cmsp(self):
 
-        casa = GeradorCasaLegislativa().generate_cmsp()
+        casa = GeradorCasaLegislativa().gerar_cmsp()
         importer = ImportadorCMSP(casa, False)
 
         # Import to the first time
-        votacoes = importer.import_from(XML_TEST)
+        votacoes = importer.importar_de(XML_TEST)
         self.votacao = votacoes[0]
 
         num_casas_antes = models.CasaLegislativa.objects.filter(
@@ -215,7 +215,7 @@ class IdempotenciaCMSPCase(TestCase):
         num_parlamentares_antes = models.Parlamentar.objects.all().count()
 
         # Import again
-        self.votacao = importer.import_from(XML_TEST)[0]
+        self.votacao = importer.importar_de(XML_TEST)[0]
 
         num_casas_depois = models.CasaLegislativa.objects.filter(
             nome_curto='cmsp').count()

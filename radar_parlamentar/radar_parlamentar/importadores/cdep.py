@@ -323,7 +323,7 @@ class ImportadorCamara:
             # Political partidos cache (key is name, and value is object Partido)
         self.parlamentares = {}
 
-            # Parliamentary cache (key is 'nome-search_political_party', and value é object Parlamentar
+            # Parliamentary cache (key is 'nome-partido', and value é object Parlamentar
 
 
     def _converte_data(self, data_string, hour_string='00:00'):
@@ -508,7 +508,7 @@ class ImportadorCamara:
 
             if party is None:
                 logger.warning(
-                    'Não achou o search_political_party %s; Usando "sem search_political_party"'
+                    'Não achou o partido %s; Usando "sem partido"'
                     % party_name)
                 party = models.Partido.get_no_party()
             else:
