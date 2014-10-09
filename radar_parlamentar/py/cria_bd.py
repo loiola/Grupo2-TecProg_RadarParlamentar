@@ -94,7 +94,7 @@ class GeradorBD:
             # Create table if not exists TableName.
             # Test if table exist: SELECT name FROM sqlite_master WHERE type='table' AND name='table_name';
             cur.execute("CREATE TABLE if not exists  PROPOSICOES(idProp INT, tipo TEXT, num TEXT, ano TEXT, ementa TEXT, explicacao TEXT, situacao TEXT, num_votacoes INT)")
-            cur.execute("CREATE TABLE if not exists PARLAMENTARES(id INT, nome TEXT, partido TEXT, uf TEXT)")
+            cur.execute("CREATE TABLE if not exists PARLAMENTARES(id INT, nome TEXT, search_political_party TEXT, uf TEXT)")
             cur.execute("CREATE TABLE if not exists VOTACOES(idProp INT, idVot INT, resumo TEXT, data TEXT, hora TEXT, sim TEXT, nao TEXT, abstencao TEXT, obstrucao TEXT)")
             cur.execute("CREATE TABLE if not exists PARTIDOS(numero INT, nome TEXT)")
         con.close()
