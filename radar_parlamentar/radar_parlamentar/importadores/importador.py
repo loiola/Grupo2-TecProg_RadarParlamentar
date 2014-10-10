@@ -1,29 +1,29 @@
 # -*- coding: utf-8 -*-
-def main(lista_casas_legislativas):
+def main(list_legislative_houses):
     """Assigns importers to legislative houses and calls the function 
     that imports the data"""
 
-    for casa_legislativa in lista_casas_legislativas:
+    for legislative_house in list_legislative_houses:
 
-        if casa_legislativa == 'conv':
+        if legislative_house == 'conv':
             from importadores import conv as importador_convencao
 
             importador_convencao.main()
 
-        elif casa_legislativa == 'cmsp':
+        elif legislative_house == 'cmsp':
             from importadores import cmsp as importador_cmsp
 
             importador_cmsp.main()
 
-        elif casa_legislativa == 'sen':
+        elif legislative_house == 'sen':
             from importadores import sen as importador_senado
 
             importador_senado.main()
 
-        elif casa_legislativa == 'cdep':
+        elif legislative_house == 'cdep':
             from importadores import cdep as importador_camara
 
             importador_camara.main()
 
         else:
-            print "Casa %s não encontrada" % casa_legislativa
+            print "Casa %s não encontrada" % legislative_house
