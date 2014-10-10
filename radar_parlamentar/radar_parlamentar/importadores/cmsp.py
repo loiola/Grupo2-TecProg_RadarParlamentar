@@ -28,6 +28,19 @@ import sys
 import os
 import xml.etree.ElementTree as etree
 
+
+def main():
+    """Imports all data from XML by importer"""
+
+    print 'IMPORTANDO DADOS DA CAMARA MUNICIPAL DE SAO PAULO (CMSP)'
+    gerador_casa = GeradorCasaLegislativa()
+    cmsp = gerador_casa.generate_cmsp()
+    importer = importerCMSP(cmsp)
+    for xml in [XML2010, XML2011, XML2012, XML2013, XML2014]:
+        importer.import_from(xml)
+    print 'Importacao dos dados da Camara Municipal de Sao Paulo (CMSP) terminada'
+
+
 # Date on which the XML files were updated
 ULTIMA_ATUALIZACAO = parse_datetime('2012-12-31 0:0:0')
 
@@ -312,16 +325,3 @@ class importerCMSP:
     # f.close()
     # return etree.fromstring(xml)
         return etree.parse(xml_file).getroot()
-
-
-
-def main():
-    """Imports all data from XML by importer"""
-    
-    print 'IMPORTANDO DADOS DA CAMARA MUNICIPAL DE SAO PAULO (CMSP)'
-    gerador_casa = GeradorCasaLegislativa()
-    cmsp = gerador_casa.generate_cmsp()
-    importer = importerCMSP(cmsp)
-    for xml in [XML2010, XML2011, XML2012, XML2013, XML2014]:
-        importer.import_from(xml)
-    print 'Importacao dos dados da Camara Municipal de Sao Paulo (CMSP) terminada'
