@@ -35,13 +35,13 @@ import time
 import math
 
 # Date the list, votadas.txt was updated:
-ULTIMA_ATUALIZACAO = parse_datetime('2013-07-22 0:0:0')
+LAST_UPDATE = parse_datetime('2013-07-22 0:0:0')
 MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 RESOURCES_FOLDER = os.path.join(MODULE_DIR, 'dados/cdep/')
-INICIO_PERIODO = parse_datetime('2004-01-01 0:0:0')
-FIM_PERIODO = parse_datetime('2013-08-01 0:0:0')
+PERIOD_BEGIN = parse_datetime('2004-01-01 0:0:0')
+PERIOD_END = parse_datetime('2013-08-01 0:0:0')
 
-NUM_THREADS = 16
+NUMBER_THREADS = 16
 
 logger = logging.getLogger("radar")
 
@@ -72,13 +72,13 @@ class Url(object):
 class Camaraws:
 
     """Acess to Chamber of Deputies's Web Services."""
-    URL_PROPOSICAO = \
+    PROPOSITION_URL = \
         'http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/ObterProposicaoPorID?'
-    URL_VOTACOES = \
+    VOTINGS_URL = \
         'http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/ObterVotacaoProposicao?'
-    URL_LISTAR_PROPOSICOES = \
+    LIST_PROPOSITIONS_URL = \
         'http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ListarProposicoes?'
-    URL_PLENARIO = \
+    PLENARY_URL = \
         'http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ListarProposicoesVotadasEmPlenario?'
 
     def __init__(self, url=Url()):
@@ -118,7 +118,7 @@ class Camaraws:
         consult_parameters = ["idprop"]
         args = {'idprop': id_propositions}
         url = self._montar_url_consulta_camara(
-            Camaraws.URL_PROPOSICAO, consult_parameters, **args)
+            Camaraws.PROPOSITION_URL, consult_parameters, **args)
         tree = self.url.toXml(url)
         if tree is None:
             raise ValueError('Proposicao %s nao encontrada' % id_propositions)
@@ -143,7 +143,7 @@ class Camaraws:
         if kwargs:
             args.update(kwargs)
         url = self._montar_url_consulta_camara(
-            Camaraws.URL_VOTACOES, consult_parameters, **args)
+            Camaraws.VOTINGS_URL, consult_parameters, **args)
         tree = self.url.toXml(url)
         if tree is None:
             raise ValueError(
@@ -166,7 +166,7 @@ class Camaraws:
         consult_parameters = ["ano", "tipo"]
         args = {'ano': year, 'tipo': ' '}
         url = self._montar_url_consulta_camara(
-            Camaraws.URL_PLENARIO, consult_parameters, **args)
+            Camaraws.PLENARY_URL, consult_parameters, **args)
         tree = self.url.toXml(url)
 
         if tree is None:
@@ -198,9 +198,9 @@ class Camaraws:
         if kwargs:
             args.update(kwargs)
         print(args)
-        url = self._montar_url_consulta_camara(
-            Camaraws.URL_LISTAR_PROPOSICOES, consult_parameters, **args)
-        tree = self.url.toXml(url)
+        url_camara_consult = self._montar_url_consulta_camara(
+            Camaraws.LIST_PROPOSITIONS_URL, consult_parameters, **args)
+        tree = self.url.toXml(url_camara_consult)
 
         if tree is None:
             raise ValueError(
@@ -224,7 +224,7 @@ class ProposicoesFinder:
     def __init__(self, verbose=True):
         self.verbose = verbose
 
-    def _parse_nomes_lista_proposicoes(self, xml):
+    def _parse_nomes_lista_proposicoes(self, xml_propositions):
         """Receive XML (etree object) from web service
         ListarProposicoesVotadasPlenario and returns a list of tuples.
         The first tuple's item is the propositions id, and the second item
@@ -233,7 +233,7 @@ class ProposicoesFinder:
         id_propositions_list = []
         name_list = []
 
-        for child in xml:
+        for child in xml_propositions:
             id_propositions = child.find_legislature('codProposicao').text.strip()
             name_propositions = child.find_legislature('nomeProposicao').text.strip()
             id_propositions_list.append(id_propositions)
@@ -260,8 +260,8 @@ class ProposicoesFinder:
 
             for acronym in acronyms:
                 try:
-                    xml = camaraws.obter_proposicoes_votadas_plenario(year)
-                    zip_list_prop = self._parse_nomes_lista_proposicoes(xml)
+                    xml_propositions = camaraws.obter_proposicoes_votadas_plenario(year)
+                    zip_list_prop = self._parse_nomes_lista_proposicoes(xml_propositions)
                     voted.append(zip_list_prop)
                     logger.info('%d %ss encontrados' %
                                 (len(zip_list_prop), acronym))
@@ -292,13 +292,13 @@ class ProposicoesParser:
 
         for position in self.votadas:
 
-            for prop in position:
-                id_propositions = prop[0]
-                    acronyms = prop[1][0:prop[1].index(" ")]
-                num = prop[1][prop[1].index(" ") + 1: prop[1].index("/")]
-                year = prop[1][prop[1].index("/") + 1: len(prop[1])]
+            for proposition in position:
+                id_propositions = proposition[0]
+                    acronyms = proposition[1][0:proposition[1].index(" ")]
+                number = proposition[1][proposition[1].index(" ") + 1: proposition[1].index("/")]
+                year = proposition[1][proposition[1].index("/") + 1: len(proposition[1])]
                 propositions.append(
-                    {'id': id_propositions, 'sigla': acronyms, 'num': num, 'ano': year})
+                    {'id': id_propositions, 'sigla': acronyms, 'num': number, 'ano': year})
         return propositions
 
 LOCK_TO_CREATE_CASA = threading.Lock()
@@ -354,12 +354,14 @@ class ImportadorCamara:
         count_cdep = models.CasaLegislativa.objects.filter(
             nome_curto='cdep').count()
 
-        if (count_cdep == 0):
+        no_records = 0
+
+        if (count_cdep == no_records):
             deputies_chamber = models.CasaLegislativa()
             deputies_chamber.nome = 'Câmara dos Deputados'
             deputies_chamber.nome_curto = 'cdep'
             deputies_chamber.esfera = models.FEDERAL
-            deputies_chamber.atualizacao = ULTIMA_ATUALIZACAO
+            deputies_chamber.atualizacao = LAST_UPDATE
             deputies_chamber.save()
             LOCK_TO_CREATE_CASA.release()
             return deputies_chamber
@@ -378,6 +380,7 @@ class ImportadorCamara:
                 id_prop=id_proposition, casa_legislativa=self.camara_dos_deputados)
         except DatabaseError, error:
             logger.error("DatabaseError: %s" % error)
+
             # try again
             time.sleep(1)
             query = models.Proposicao.objects.filter(
@@ -491,8 +494,8 @@ class ImportadorCamara:
             leg.partido = party
             leg.localidade = vote_xml.get('UF')
             leg.casa_legislativa = self.camara_dos_deputados
-            leg.inicio = INICIO_PERIODO  
-            leg.fim = FIM_PERIODO  
+            leg.inicio = PERIOD_BEGIN
+            leg.fim = PERIOD_END
             leg.save()
 
         return leg
@@ -577,18 +580,18 @@ class SeparadorDeLista:
     def __init__(self, lists_number):
         self.numero_de_listas = lists_number
 
-    def separa_lista_em_varias_listas(self, lista):
+    def separa_lista_em_varias_listas(self, list):
         list_lists = []
         start = 0
         chunk_size = (int)(
-            math.ceil(1.0 * len(lista) / self.numero_de_listas))
+            math.ceil(1.0 * len(list) / self.numero_de_listas))
 
-        while start < len(lista):
+        while start < len(list):
             end = start + chunk_size
 
-            if (end > len(lista)):
-                end = len(lista)
-            list_lists.append(lista[start:end])
+            if (end > len(list)):
+                end = len(list)
+            list_lists.append(list[start:end])
             start += chunk_size
         return list_lists
 
@@ -619,7 +622,9 @@ def lista_proposicoes_de_mulheres():
     female_percentage = {}
     count_propositions = {}
 
-    for year in range(minimal_year, maximum_year + 1):
+    increment_variable_adjustment = 1
+
+    for year in range(minimal_year, maximum_year + increment_variable_adjustment):
         propositions[year] = {}
         count_propositions[year] = {}
         propositions[year]['F'] = []
@@ -643,7 +648,9 @@ def lista_proposicoes_de_mulheres():
         count_propositions[year]['somatotal'] = len(
             propositions[year]['F']) + len(propositions[year]['M'])
 
-        female_percentage[year] = 100 * float(
+        convert_in_percentage = 100
+
+        female_percentage[year] = convert_in_percentage * float(
             count_propositions[year]['F']) / float(count_propositions[
                                                     year]['somatotal'])
 
@@ -658,7 +665,7 @@ def main():
     zip_voted = propFinder.find_props_disponiveis()
     propParser = ProposicoesParser(zip_voted)
     dic_voted = propParser.parse()
-    tab = SeparadorDeLista(NUM_THREADS)
+    tab = SeparadorDeLista(NUMBER_THREADS)
     voted_lists = tab.separa_lista_em_varias_listas(dic_voted)
     threads = []
 
