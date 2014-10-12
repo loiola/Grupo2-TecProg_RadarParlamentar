@@ -36,16 +36,16 @@ HEADERS = [
     "qtdOrgaosComEstado", "codProposicaoPrincipal", "txtProposicaoPrincipal",
     "ideCadastro", "nomeProposicaoOrigem"]
 
-PARTIDOS = {}
-DIC_TERMOS = {}
-PALAVRAS_MAIS_MAIS = []
-DESCARTADAS = ['de', 'do', 'da', 'dos', 'das', 'e', 'para', 'com', 'a', 'A']
-FILTRADAS = [
+PARTIES = {}
+DIC_TERMS = {}
+WORDS_MORE_MORE = []
+DISCARDED = ['de', 'do', 'da', 'dos', 'das', 'e', 'para', 'com', 'a', 'A']
+FILTERED = [
     'lei', 'normas', 'obrigatoriedade', 'cria\u00e7\u00e3o', 'nacional',
     'prazo', 'fixa\u00e7\u00e3o', 'proibi\u00e7\u00e3o',
     'especial', 'pessoa', 'utiliza\u00e7\u00e3o', 'atividade', 'valor',
     'institui\u00e7\u00e3o', 'civil', 'estabelecimento', 'registro']
-LISTA_BASE_PARTIDOS = [
+BASE_LIST_PARTIES = [
     'PCB', 'PSD', 'UDN', 'SEM PARTIDO', 'PP', 'PR', 'PTB', 'PRE', 'PRF', 'PST',
     'UPF', 'AL', 'FUG', 'PSN', 'PSP', 'PRP', 'PTN', 'PDC', 'PNI', 'PL', 'PPR',
     'ARENA', 'PTR', 'PSB', 'PRR', 'PSC', 'PRD', 'LASP', 'PRM', 'PRT', 'PPS',
@@ -81,7 +81,7 @@ def proposicoes_indexadas(proposition_list):
 
     for proposition in proposition_list:
         if proposition['txtIndexacao'] and proposition['txtSiglaPartido']:
-            if proposition['txtSiglaPartido'].strip() in LISTA_BASE_PARTIDOS:
+            if proposition['txtSiglaPartido'].strip() in BASE_LIST_PARTIES:
                 indexed.append(proposition)
     return indexed
 
@@ -117,44 +117,46 @@ def partidos_das_proposicoes(propositions_list):
     for proposition in propositions_list:
         if proposition['txtSiglaPartido']:
             party = proposition['txtSiglaPartido'].strip()
-            if party not in PARTIDOS:
-                PARTIDOS[party] = {}
+            if party not in PARTIES:
+                PARTIES[party] = {}
 
 def contabiliza_termos_geral(indexed_list):
 
     for proposition in indexed_list:
 
+        increment_variable = 1
+
         for term in proposition['txtIndexacao']:
-            if term not in DESCARTADAS:
-                if term in DIC_TERMOS:
-                    DIC_TERMOS[term] += 1
+            if term not in DISCARDED:
+                if term in DIC_TERMS:
+                    DIC_TERMS[term] += increment_variable
                 else:
-                    DIC_TERMOS[term] = 1
+                    DIC_TERMS[term] = increment_variable
 
 def pega_maiores_palavras(dic_words):
     words = sorted(dic_words, key=lambda k: -dic_words[k])
     export_json(words, "lista_50_mais")
-    global PALAVRAS_MAIS_MAIS
-    PALAVRAS_MAIS_MAIS = words[0:50]
+    global WORDS_MORE_MORE
+    WORDS_MORE_MORE = words[0:50]
 
-    for term in FILTRADAS:
-        PALAVRAS_MAIS_MAIS.remove(term)
+    for term in FILTERED:
+        WORDS_MORE_MORE.remove(term)
 
 def ordena_palavras_partido():
-    for party in PARTIDOS:
-        party_words = PARTIDOS[party]
+    for party in PARTIES:
+        party_words = PARTIES[party]
         words = sorted(party_words, key=lambda k: -party_words[k])
-        PARTIDOS[party] = {}
+        PARTIES[party] = {}
 
         for term in words:
-            PARTIDOS[party][term] = party_words[term]
+            PARTIES[party][term] = party_words[term]
 
 def soma_palavras_no_partido(party, words_list):
     for word in words_list:
-        if word not in PARTIDOS[party.strip()]:
-            PARTIDOS[party.strip()][word] = 1
+        if word not in PARTIES[party.strip()]:
+            PARTIES[party.strip()][word] = 1
         else:
-            PARTIDOS[party.strip()][word] += 1
+            PARTIES[party.strip()][word] += 1
 
 def export_json(data, filename):
     with open(filename, 'w') as outFile:
@@ -164,7 +166,7 @@ def jsonMatrix_gera_partidos():
     i = 0
     parties_list = []
 
-    for party in PARTIDOS:
+    for party in PARTIES:
         parties_list.append({'name': party, 'group': 1, 'id': i})
         i += 1
     global matrix
@@ -176,7 +178,7 @@ def jsonMatrix_gera_termos_mais_mais():
     global matrix
     matrix['termos'] = []
 
-    for term in PALAVRAS_MAIS_MAIS:
+    for term in WORDS_MORE_MORE:
         print(term, i)
         term_list.append({'name': term, 'group': 1, 'id': i})
         i += 1
@@ -193,9 +195,9 @@ def jsonMatrix_gera_links_partidos_termos():
         for t in range(len(matrix['termos'])):
             termName = matrix['termos'][t]['name']
 
-            if termName in PARTIDOS[partyName]:
+            if termName in PARTIES[partyName]:
                 matrix['links'].append(
-                    {'source': t, 'target': p, 'value': PARTIDOS[
+                    {'source': t, 'target': p, 'value': PARTIES[
                      partyName][termName]})
 
 
@@ -208,7 +210,7 @@ def principal(font=None):
     partidos_das_proposicoes(propositions_list)
     propositions_list = parsear_indexacoes_de_proposicoes(propositions_list)
     contabiliza_termos_geral(propositions_list)
-    pega_maiores_palavras(DIC_TERMOS)
+    pega_maiores_palavras(DIC_TERMS)
 
     # ordena_palavras_partido()
     jsonMatrix_gera_partidos()
@@ -218,11 +220,11 @@ def principal(font=None):
     with open('matrix.json', 'w') as arqMatrix:
         arqMatrix.write(json.dumps(matrix, indent=4))
 
-    returnVariable = {'partidos': PARTIDOS, 'dic_termos':
-               DIC_TERMOS, 'lista_proposicoes': propositions_list}
+    returnVariable = {'partidos': PARTIES, 'dic_termos':
+               DIC_TERMS, 'lista_proposicoes': propositions_list}
 
     #export_json(PARTIDOS, 'partidospropositores.json')
     #export_json(lista_proposicoes, 'lista_proposicoes.json')
-    export_json(DIC_TERMOS, 'dic_termos.json')
+    export_json(DIC_TERMS, 'dic_termos.json')
 
     return returnVariable
