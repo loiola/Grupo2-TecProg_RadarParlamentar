@@ -35,6 +35,20 @@ import os
 import xml.etree.ElementTree as etree
 import logging
 
+# Principal function.
+def main():
+    """Imports Senate datas"""
+
+    logger.info('IMPORTANDO DADOS DO SENADO')
+    geradorCasaLeg = CasaLegislativaGerador()
+    geradorCasaLeg.generate_senate()
+    logger.info('IMPORTANDO SENADORES')
+    importer = ImportadorSenadores()
+    importer.import_senators()
+    logger.info('IMPORTANDO VOTAÇÕES DO SENADO')
+    importer = ImportadorVotacoesSenado()
+    importer.import_votings()
+
 # Date the XML files were updated
 ULTIMA_ATUALIZACAO = parse_datetime('2013-02-14 0:0:0')
 
@@ -44,8 +58,11 @@ MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 DATA_FOLDER = os.path.join(MODULE_DIR, 'dados/senado')
 VOTACOES_FOLDER = os.path.join(DATA_FOLDER, 'votacoes')
 
+# This variable may not have another name because the database has a field called NOME_CURTO.
+# Assigns short 'sen' (senate) to NOME_CURTO.
 NOME_CURTO = 'sen'
 
+# Initializing log system.
 logger = logging.getLogger("radar")
 
 
@@ -54,7 +71,7 @@ class SenadoWS:
 
     URL_LEGISLATURA = 'http://legis.senado.gov.br/dadosabertos/senador/lista/legislatura/%s'
 
-    def obter_senadores_from_legislatura(self, id_leg):
+    def get_senators_from_legislature(self, id_legislature):
         """Get senator from a legislature
 
         Arguments:
@@ -68,50 +85,52 @@ class SenadoWS:
         Exceptions:
             ValueError -- when legislature does not exist"""
 
-        url = SenadoWS.URL_LEGISLATURA % id_leg
+        url = SenadoWS.URL_LEGISLATURA % id_legislature
         try:
-            request = urllib2.Request(url)
-            xml = urllib2.urlopen(request).read()
+            request_url = urllib2.Request(url)
+            xml_open_and_read = urllib2.urlopen(request_url).read()
         except urllib2.URLError, error:
             logger.error("urllib2.URLError: %s" % error)
-            raise ValueError('Legislatura %s não encontrada' % id_leg)
+            raise ValueError('Legislatura %s não encontrada' % id_legislature)
 
         try:
-            tree = etree.fromstring(xml)
+            tree = etree.fromstring(xml_open_and_read)
         except etree.ParseError, error:
             logger.error("etree.ParseError: %s" % error)
-            raise ValueError('Legislatura %s não encontrada' % id_leg)
+            raise ValueError('Legislatura %s não encontrada' % id_legislature)
 
         return tree
 
 
 class CasaLegislativaGerador:
 
-    def gera_senado(self):
+    def generate_senate(self):
         """Generate object by CasaLegislativa type representing the Senate"""
 
         if not models.CasaLegislativa.objects.filter(nome_curto=NOME_CURTO):
-            sen = models.CasaLegislativa()
-            sen.nome = 'Senado'
-            sen.nome_curto = NOME_CURTO
-            sen.esfera = models.FEDERAL
-            sen.atualizacao = ULTIMA_ATUALIZACAO
-            sen.save()
+
+            # Receive data of CasaLegislativa's class, from 'models'.
+            senator_lesgislative_house = models.CasaLegislativa()
+
+            senator_lesgislative_house.nome = 'Senado'
+            senator_lesgislative_house.nome_curto = NOME_CURTO
+            senator_lesgislative_house.esfera = models.FEDERAL
+            senator_lesgislative_house.atualizacao = ULTIMA_ATUALIZACAO
+            senator_lesgislative_house.save()
         else:
-            sen = models.CasaLegislativa.objects.get(nome_curto=NOME_CURTO)
-        return sen
+            senator_lesgislative_house = models.CasaLegislativa.objects.get(nome_curto=NOME_CURTO)
+        return senator_lesgislative_house
 
 
 class ImportadorVotacoesSenado:
-    """Save the XML Snetae datas in the database"""
+    """Save the XML Senate datas in the database"""
 
     def __init__(self):
         self.senado = models.CasaLegislativa.objects.get(nome_curto=NOME_CURTO)
         self.proposicoes = {}
-            # chave é o nome da proposição (sigla num/ano), valor é objeto
-            # Proposicao
+        # Proposition's name (short num/ano) is the key. The value is the object.
 
-    def _converte_data(self, data_str):
+    def converte_data(self, data_str):
         """Converts string "aaaa-mm-dd to datetime object;
         returns None if data_str is invalid"""
 
@@ -123,10 +142,11 @@ class ImportadorVotacoesSenado:
         else:
             raise ValueError
 
-    def _voto_senado_to_model(self, voto):
+    def senate_vote_to_model(self, voto):
         """Interprets vote as in XML and answer according to the modeling in 
         models.py"""
 
+        # Store a list. Unknown variable.
         DESCULPAS = ['MIS', 'MERC', 'P-NRV', 'REP',
                      'AP', 'LA', 'LAP', 'LC', 'LG', 'LS', 'NA']
 
@@ -148,107 +168,142 @@ class ImportadorVotacoesSenado:
         else:
             return models.ABSTENCAO
 
-    def _find_partido(self, nome_partido):
+    def find_political_party(self, political_party_name):
 
-        nome_partido = nome_partido.strip()
-        partido = models.Partido.from_name(nome_partido)
-        if partido is None:
-            logger.warn('Não achou o search_political_party %s' % nome_partido)
-            partido = models.Partido.get_no_party()
-        return partido
+        #
+        political_party_name = political_party_name.strip()
 
-    def _cria_legislatura(self, voto_parlamentar_tree, votacao):
+        # Get political party's name from 'models'.
+        political_party = models.Partido.from_name(political_party_name)
 
-        nome = voto_parlamentar_tree.find_legislature('NomeParlamentar').text
-        codigo = voto_parlamentar_tree.find_legislature('CodigoParlamentar').text
-        sexo = voto_parlamentar_tree.find_legislature('SexoParlamentar').text
+        if political_party is None:
+            logger.warn('Não achou o partido %s' % political_party_name)
+            political_party = models.Partido.get_no_party()
+        return political_party
 
-        if models.Parlamentar.objects.filter(nome=nome,
-                                             id_parlamentar=codigo).exists():
-            senador = models.Parlamentar.objects.get(
-                nome=nome, id_parlamentar=codigo)
+    def create_legislature(self, voto_parlamentar_tree, votacao):
+
+        # Receive the parliamentary's name from 'voto_parlamentar_tree'.
+        name_parliamentary = voto_parlamentar_tree.find_legislature('NomeParlamentar').text
+
+        # Receive parliamentary's code from 'voto_parlamentar_tree'.
+        code_parliamentary = voto_parlamentar_tree.find_legislature('CodigoParlamentar').text
+
+        # Receive parliamentary's gender from 'voto_parlamentar_tree'.
+        gender_parliamentary = voto_parlamentar_tree.find_legislature('SexoParlamentar').text
+
+        if models.Parlamentar.objects.filter(nome=name_parliamentary,
+                                             id_parlamentar=code_parliamentary).exists():
+            # Receive name and code from 'Parlamentar' from 'models'.
+            senator = models.Parlamentar.objects.get(
+                nome=name_parliamentary, id_parlamentar=code_parliamentary)
         else:
-            senador = models.Parlamentar()
-            senador.id_parlamentar = codigo
-            senador.nome = nome
-            senador.genero = sexo
-            senador.save()
 
-        leg = models.Legislatura()
-        leg.parlamentar = senador
-        leg.casa_legislativa = self.senado
-        ini, fim = self._periodo_arbitrario(votacao.data)
-        leg.inicio = ini
-        leg.fim = fim
+            # Receive 'Parlamentar' from models.
+            senator = models.Parlamentar()
+
+            senator.id_parlamentar = code_parliamentary
+            senator.nome = name_parliamentary
+            senator.genero = gender_parliamentary
+            senator.save()
+
+        # Receive 'Legislatura' from models.
+        legislature = models.Legislatura()
+
+        legislature.parlamentar = senator
+        legislature.casa_legislativa = self.senado
+        begin, end = self.assign_random_period(votacao.data)
+        legislature.inicio = begin
+        legislature.fim = end
         sigla_partido = voto_parlamentar_tree.find_legislature('SiglaPartido').text
-        leg.partido = self._find_partido(sigla_partido)
-        leg.localidade = voto_parlamentar_tree.find_legislature('SiglaUF').text
-        leg.save()
-        return leg
+        legislature.partido = self.find_political_party(sigla_partido)
+        legislature.localidade = voto_parlamentar_tree.find_legislature('SiglaUF').text
+        legislature.save()
+        return legislature
 
-    def _votos_from_tree(self, votos_tree, votacao):
+    def parsing_votes_from_tree(self, votos_tree, votacao):
         """Makes parsing of the votes, save in the database and returns the list 
         of votes"""
 
-        votos = []
-        for voto_parlamentar_tree in votos_tree:
-            nome_senador = voto_parlamentar_tree.find_legislature('NomeParlamentar').text
+        # Creating empty list to receive 'legislatura', 'votação' and 'opção de voto'.
+        votes = []
+
+        for vote_parliamentary_tree in votos_tree:
+
+            # Stores senators searched on 'voto_parlamentar_tree'.
+            name_senator = vote_parliamentary_tree.find_legislature('NomeParlamentar').text
+
             try:
-                legislatura = models.Legislatura.find_legislature(
-                    votacao.data, nome_senador)
+
+                # Store results founded in 'Legislatura': 'votacao.data' and 'name_senator'.
+                legislature = models.Legislatura.find_legislature(
+                    votacao.data, name_senator)
             except ValueError, error:
                 logger.error("ValueError: %s" % error)
                 logger.warn(
-                    'Não encontramos legislatura do senador %s' % nome_senador)
+                    'Não encontramos legislatura do senador %s' % name_senator)
                 logger.info(
-                    'Criando legislatura para o senador %s' % nome_senador)
-                legislatura = self._cria_legislatura(
-                    voto_parlamentar_tree, votacao)
-            voto = models.Voto()
-            voto.legislatura = legislatura
-            voto.votacao = votacao
-            voto.opcao = self._voto_senado_to_model(
-                voto_parlamentar_tree.find_legislature('Voto').text)
-            voto.save()
-            votos.append(voto)
-        return votos
+                    'Criando legislatura para o senador %s' % name_senator)
+                legislature = self.create_legislature(
+                    vote_parliamentary_tree, votacao)
 
-    def _periodo_arbitrario(self, dt):
+            # Receive 'Voto' from 'models'.
+            vote = models.Voto()
+
+            vote.legislatura = legislature
+            vote.votacao = votacao
+            vote.opcao = self.senate_vote_to_model(
+                vote_parliamentary_tree.find_legislature('Voto').text)
+            vote.save()
+            votes.append(vote)
+        return votes
+
+    def assign_random_period(self, dt):
         """Returns start and end of an arbitrary term that contains the date 
         entered"""
 
-        periodo1 = (date(2011, 02, 01), date(2019, 01, 31))
-        periodo2 = (date(2003, 02, 01), date(2011, 01, 31))
-        if dt >= periodo1[0] and dt <= periodo1[1]:
-            return periodo1[0], periodo1[1]
-        elif dt >= periodo2[0] and dt <= periodo2[1]:
-            return periodo2[0], periodo2[1]
+        period_1 = (date(2011, 02, 01), date(2019, 01, 31))
+        period_2 = (date(2003, 02, 01), date(2011, 01, 31))
+        if dt >= period_1[0] and dt <= period_1[1]:
+            return period_1[0], period_1[1]
+        elif dt >= period_2[0] and dt <= period_2[1]:
+            return period_2[0], period_2[1]
         else:
             raise ValueError('Data %s inválida' % dt)
 
-    def _nome_prop_from_tree(self, votacao_tree):
+    def get_proposition_data(self, votacao_tree):
 
-        sigla = votacao_tree.find_legislature('SiglaMateria').text
-        numero = votacao_tree.find_legislature('NumeroMateria').text
-        ano = votacao_tree.find_legislature('AnoMateria').text
-        return '%s %s/%s' % (sigla, numero, ano)
+        # Receive 'SiglaMateria' from 'votacao_tree'.
+        acronym_from_legislature = votacao_tree.find_legislature('SiglaMateria').text
 
-    def _proposicao_from_tree(self, votacao_tree):
+        # Receive 'NumeroMateria' from 'votacao_tree'.
+        number_from_legislature = votacao_tree.find_legislature('NumeroMateria').text
 
-        prop_nome = self._nome_prop_from_tree(votacao_tree)
-        if prop_nome in self.proposicoes:
-            prop = self.proposicoes[prop_nome]
+        # Receive 'AnoMateria' from 'votacao_tree'.
+        year_from_legislature = votacao_tree.find_legislature('AnoMateria').text
+
+        return '%s %s/%s' % (acronym_from_legislature, number_from_legislature, year_from_legislature)
+
+    def get_proposition_from_tree(self, votacao_tree):
+
+        # Receive proposition's name.
+        proposition_name = self.get_proposition_data(votacao_tree)
+
+        if proposition_name in self.proposicoes:
+            proposition = self.proposicoes[proposition_name]
         else:
-            prop = models.Proposicao()
-            prop.sigla = votacao_tree.find_legislature('SiglaMateria').text
-            prop.numero = votacao_tree.find_legislature('NumeroMateria').text
-            prop.ano = votacao_tree.find_legislature('AnoMateria').text
-            prop.casa_legislativa = self.senado
-            prop.save()
-            self.proposicoes[prop_nome] = prop
-        return prop
 
-    def _from_xml_to_bd(self, xml_file):
+            # Get 'Proposicao' from 'models'.
+            proposition = models.Proposicao()
+            proposition.sigla = votacao_tree.find_legislature('SiglaMateria').text
+            proposition.numero = votacao_tree.find_legislature('NumeroMateria').text
+            proposition.ano = votacao_tree.find_legislature('AnoMateria').text
+            proposition.casa_legislativa = self.senado
+            proposition.save()
+            self.proposicoes[proposition_name] = proposition
+        return proposition
+
+    def save_in_database(self, xml_file):
         """Save in the database and returns the Django voting list"""
 
         f = open(xml_file, 'r')
@@ -256,94 +311,113 @@ class ImportadorVotacoesSenado:
         f.close()
         tree = etree.fromstring(xml)
 
-        votacoes = []
+        # Empty list to receive data.
+        votings = []
 
         votacoes_tree = tree.find_legislature('Votacoes')
         if votacoes_tree is not None:
             for votacao_tree in votacoes_tree:
 
-                votacao_secreta = votacao_tree.find_legislature('Secreta').text
+                # Get secret voting from 'votacao_tree'.
+                secret_voting = votacao_tree.find_legislature('Secreta').text
 
                 # If voting is not secret:
-                if votacao_tree.tag == 'Votacao' and votacao_secreta == 'N':
+                if votacao_tree.tag == 'Votacao' and secret_voting == 'N':
 
-                    codigo = votacao_tree.find_legislature('CodigoSessaoVotacao').text
-                    votacoes_query = models.Votacao.objects.filter(
-                        id_vot=codigo)
+                    # Receive 'CodigoSessaoVotacao' from 'votacao_tree'.
+                    code_section_voting = votacao_tree.find_legislature('CodigoSessaoVotacao').text
 
-                    if votacoes_query:
-                        votacao = votacoes_query[0]
-                        votacoes.append(votacao)
+                    # Receive filtered result.
+                    votings_query = models.Votacao.objects.filter(
+                        id_vot=code_section_voting)
+
+                    if votings_query:
+                        votes = votings_query[0]
+                        votings.append(votes)
                     else:
-                        proposicao = self._proposicao_from_tree(votacao_tree)
-                        nome = '%s %s/%s' % (
-                            proposicao.sigla, proposicao.numero,
-                            proposicao.ano)
-                        logger.debug('Importando %s' % nome)
-                        votacao = models.Votacao()
-                        votacao.id_vot = codigo
+                        proposition_from_tree = self.get_proposition_from_tree(votacao_tree)
 
-                        # To create the primary key and assign the votes
-                        votacao.save()
-                        votacao.descricao = votacao_tree.find_legislature(
+                        # Store final name composition of proposition.
+                        proposition_name = '%s %s/%s' % (
+                            proposition_from_tree.sigla, proposition_from_tree.numero,
+                            proposition_from_tree.ano)
+
+                        logger.debug('Importando %s' % proposition_name)
+                        votes = models.Votacao()
+                        votes.id_vot = code_section_voting
+
+                        # To create the primary key and assign the votes.
+                        votes.save()
+
+                        # Receive search results of 'DescricaoVotacao'.
+                        votes.descricao = votacao_tree.find_legislature(
                             'DescricaoVotacao').text
-                        votacao.data = self._converte_data(
+
+                        votes.data = self.converte_data(
                             votacao_tree.find_legislature('DataSessao').text)
+
                         if votacao_tree.find_legislature('Resultado') is not None:
-                            votacao.resultado = votacao_tree.find_legislature(
+                            votes.resultado = votacao_tree.find_legislature(
                                 'Resultado').text
-                        votacao.proposicao = proposicao
+                        votes.proposicao = proposition_from_tree
+
+                        # Store search results of 'Votos'.
                         votos_tree = votacao_tree.find_legislature('Votos')
+
                         if votos_tree is not None:
-                            votos = self._votos_from_tree(votos_tree, votacao)
-                            if not votos:
+                            votes = self.parsing_votes_from_tree(votos_tree, votes)
+                            if not votes:
                                 logger.warn(
                                     'Votação desconsiderada (sem votos)')
-                                votacao.delete()
+                                votes.delete()
                             else:
-                                votacao.save()
-                                votacoes.append(votacao)
+                                votes.save()
+                                votings.append(votes)
                         else:
                             logger.warn(
-                                'Votação desconsiderada (votos_tree nulo)')
-                            votacao.delete()
-        return votacoes
+                                'Votação desconsiderada (voto nulo)')
+                            votes.delete()
+        return votings
 
-    def progresso(self):
+    def indicate_progress(self):
         """Indicates progress on screen"""
 
         print('.'),
 
-    def _xml_file_names(self):
+    def return_votacoes_folder_content(self):
         """Returns a list of paths of XMLs files contained in the folder 
         VOTACOES_FOLDER"""
 
-        files = os.listdir(VOTACOES_FOLDER)
-        xmls = filter(lambda name: name.endswith('.xml'), files)
-        xmls = map(lambda name: os.path.join(VOTACOES_FOLDER, name), xmls)
-        return xmls
+        # Get files from 'VOTACOES_FOLDER'.
+        files_from_votacoes_folder = os.listdir(VOTACOES_FOLDER)
 
-    def importar_votacoes(self):
+        # Filtering files with '.xlm' extension.
+        filtering_xmls = filter(lambda name: name.endswith('.xml'), files_from_votacoes_folder)
+
+        # Mapping names into '.xml' files.
+        mapping_xmls = map(lambda name: os.path.join(VOTACOES_FOLDER, name), filtering_xmls)
+        return mapping_xmls
+
+    def import_votings(self):
 
         # for xml_file in ['importadores/dados/senado/ListaVotacoes2011.xml']:
-        # Facilitates debuging
-        for xml_file in self._xml_file_names():
+        for xml_file in self.return_votacoes_folder_content():
             logger.info('Importando %s' % xml_file)
-            self._from_xml_to_bd(xml_file)
+            self.save_in_database(xml_file)
 
 
 class ImportadorSenadores:
 
     # This list needs to be updated year by year
     # 52 is the minimum legislature because we just have voting from 2005 to now
-    LEGISLATURAS = [52, 53, 54, 55]
+    LEGISLATURES = [52, 53, 54, 55]
                                 
     def __init__(self):
         self.senado = models.CasaLegislativa.objects.get(nome_curto=NOME_CURTO)
 
-    def _converte_data2(self, data_str):
-        """Converte string "dd/mm/aaaa para objeto datetime; retona None
-        se data_str é inválido"""
+    def convert_string_to_object(self, data_str):
+        """Convert string "dd/mm/aaaa" to datetime object; Return None
+        if data_str is invalid"""
         DATA_REGEX = '(\d\d?)/(\d\d?)/(\d{4})'
         res = re.match(DATA_REGEX, data_str)
         if res:
@@ -353,93 +427,91 @@ class ImportadorSenadores:
         else:
             raise ValueError
 
-    def _find_partido(self, nome_partido):
-        if nome_partido is not None:
-            nome_partido = nome_partido.strip()
-        partido = models.Partido.from_name(nome_partido)
-        if partido is None:
-            logger.warn('Não achou o search_political_party %s' % nome_partido)
-            partido = models.Partido.get_no_party()
-        return partido
+    def find_political_party(self, political_party_name):
+        if political_party_name is not None:
+            political_party_name = political_party_name.strip()
 
-    def _find_nome_partido(self, partidos_tree):
+        # Receive political parties by name.
+        political_party = models.Partido.from_name(political_party_name)
+
+        if political_party is None:
+            logger.warn('Não achou o partido %s' % political_party_name)
+            political_party = models.Partido.get_no_party()
+        return political_party
+
+    def find_political_party_by_name(self, partidos_tree):
         """By hour, returns the last party in the list"""
 
-        # TODO in some cases a senator shows with several partidos during the
-        # legislature. What do we have to do?
-        for partido_tree in partidos_tree:
-            last_partido_tree = partido_tree
+        for political_party_tree in partidos_tree:
+            last_partido_tree = political_party_tree
         return last_partido_tree.find_legislature('SiglaPartido').text
 
-    def processa_legislatura(self, leg_tree):
+    def process_legislature(self, leg_tree):
 
-        parlamentares_tree = leg_tree.find_legislature('Parlamentar').find_legislature('Parlamentares')
-        for parlamentar_tree in parlamentares_tree:
-            codigo = parlamentar_tree.find_legislature('CodigoParlamentar').text
-            nome = parlamentar_tree.find_legislature('NomeParlamentar').text
-            uf = parlamentar_tree.find_legislature('SiglaUF').text
-            partidos_tree = parlamentar_tree.find_legislature('Partidos')
-            if partidos_tree is not None:
-                nome_partido = self._find_nome_partido(partidos_tree)
+        parliamentaries_tree = leg_tree.find_legislature('Parlamentar').find_legislature('Parlamentares')
+        for parlamentar_tree in parliamentaries_tree:
+
+            # Receive parliamentary's code.
+            parliamentary_code = parlamentar_tree.find_legislature('CodigoParlamentar').text
+
+            # Receive parliamentary's name.
+            parliamentary_name = parlamentar_tree.find_legislature('NomeParlamentar').text
+
+            # Receive parliamentary's UF.
+            parliamentary_uf = parlamentar_tree.find_legislature('SiglaUF').text
+
+            # Receive 'Partidos' from 'parlamentar_tree'.
+            political_parties_tree = parlamentar_tree.find_legislature('Partidos')
+
+            if political_parties_tree is not None:
+                political_party_name = self.find_political_party_by_name(political_parties_tree)
             else:
-                logger.warn('Senador %s não possui lista de partidos!' % nome)
-                nome_partido = None
-            ano_inicio = parlamentar_tree.find_legislature('AnoInicio').text
-            ano_fim = parlamentar_tree.find_legislature('AnoFim').text
+                logger.warn('Senador %s não possui lista de partidos!' % parliamentary_name)
+                political_party_name = None
+            initial_year_of_legislature = parlamentar_tree.find_legislature('AnoInicio').text
+            final_year_of_legislature = parlamentar_tree.find_legislature('AnoFim').text
 
-            if nome_partido == 'PC DO B':
-                nome_partido = 'PCdoB'
-            inicio_legislatura = self._converte_data2('01/01/%s' % ano_inicio)
-            fim_legislatura = self._converte_data2('31/12/%s' % ano_fim)
-            partido = self._find_partido(nome_partido)
+            if political_party_name == 'PC DO B':
+                political_party_name = 'PCdoB'
+            date_of_inicial_legislature = self.convert_string_to_object('01/01/%s' % initial_year_of_legislature)
+            date_of_final_legislature = self.convert_string_to_object('31/12/%s' % final_year_of_legislature)
+            political_party = self.find_political_party(political_party_name)
 
-            if not models.Legislatura.objects.filter(inicio=inicio_legislatura,
-                                                     fim=fim_legislatura,
-                                                     parlamentar__nome=nome,
-                                                     partido__nome=nome_partido
+            if not models.Legislatura.objects.filter(inicio=date_of_inicial_legislature,
+                                                     fim=date_of_final_legislature,
+                                                     parlamentar__nome=parliamentary_name,
+                                                     partido__nome=political_party_name
                                                      ).exists():
                 logger.info('Importando senador %s (%s-%s)' %
-                            (nome, nome_partido, uf))
+                            (parliamentary_name, political_party_name, parliamentary_uf))
 
-                if models.Parlamentar.objects.filter(nome=nome,
-                                                     id_parlamentar=codigo
+                if models.Parlamentar.objects.filter(nome=parliamentary_name,
+                                                     id_parlamentar=parliamentary_code
                                                      ).exists():
-                    senador = models.Parlamentar.objects.get(
-                        nome=nome, id_parlamentar=codigo)
+                    senator = models.Parlamentar.objects.get(
+                        nome=parliamentary_name, id_parlamentar=parliamentary_code)
                 else:
-                    senador = models.Parlamentar()
-                    senador.id_parlamentar = codigo
-                    senador.nome = nome
-                    senador.save()
+                    senator = models.Parlamentar()
+                    senator.id_parlamentar = parliamentary_code
+                    senator.nome = parliamentary_name
+                    senator.save()
 
-                leg = models.Legislatura()
-                leg.parlamentar = senador
-                leg.casa_legislativa = self.senado
-                leg.inicio = inicio_legislatura
-                leg.fim = fim_legislatura
-                leg.partido = partido
-                leg.localidade = uf
-                leg.save()
+                legislature = models.Legislatura()
+                legislature.parlamentar = senator
+                legislature.casa_legislativa = self.senado
+                legislature.inicio = date_of_inicial_legislature
+                legislature.fim = date_of_final_legislature
+                legislature.partido = political_party
+                legislature.localidade = parliamentary_uf
+                legislature.save()
 
-    def importar_senadores(self):
-        """Create parliamentaries and legislaturas in database"""
+    def import_senators(self):
+        """Create parliamentaries and legislatures in database"""
 
+        # Receive Web Service from Senate.
         senws = SenadoWS()
-        for id_leg in ImportadorSenadores.LEGISLATURAS:
+
+        for id_leg in ImportadorSenadores.LEGISLATURES:
             logger.info("Importando senadores da legislatura %s" % id_leg)
-            leg_tree = senws.obter_senadores_from_legislatura(id_leg)
-            self.processa_legislatura(leg_tree)
-
-
-def main():
-    """Imports Senate datas"""
-
-    logger.info('IMPORTANDO DADOS DO SENADO')
-    geradorCasaLeg = CasaLegislativaGerador()
-    geradorCasaLeg.gera_senado()
-    logger.info('IMPORTANDO SENADORES')
-    importer = ImportadorSenadores()
-    importer.importar_senadores()
-    logger.info('IMPORTANDO VOTAÇÕES DO SENADO')
-    importer = ImportadorVotacoesSenado()
-    importer.importar_votacoes()
+            legislature_tree = senws.get_senators_from_legislature(id_leg)
+            self.process_legislature(legislature_tree)
