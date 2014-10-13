@@ -131,7 +131,7 @@ class CamaraTest(TestCase):
         votadasParser = cdep.ProposicoesParser(test_votadas)
         votadas = votadasParser.parse()
         importer = cdep.ImportadorCamara(votadas)
-        data = importer._converte_data('19/10/1999')
+        data = importer.converte_data('19/10/1999')
         prop_cod_flor = models.Proposicao.objects.get(id_prop=ID)
         self.assertEquals(prop_cod_flor.nome(), NOME)
         self.assertEquals(
@@ -152,7 +152,7 @@ class CamaraTest(TestCase):
         self.assertTrue('REQUERIMENTO DE RETIRADA DE PAUTA' in vot.descricao)
 
         importer = cdep.ImportadorCamara(votacoes)
-        data = importer._converte_data('24/5/2011')
+        data = importer.converte_data('24/5/2011')
         vot = votacoes[1]
         self.assertEquals(vot.data.day, data.day)
         self.assertEquals(vot.data.month, data.month)
