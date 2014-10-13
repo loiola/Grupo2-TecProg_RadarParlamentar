@@ -35,7 +35,7 @@ class SenadoWSTest(TestCase):
         senws = sen.SenadoWS()
 
         # Receives the senators of the legislature whose identifier is number 52
-        tree = senws.obter_senadores_from_legislatura(legislature_id)
+        tree = senws.get_senators_from_legislature(legislature_id)
 
         self.assertIsNotNone(tree)
         self.assertTrue(len(tree.findall('Metadados')) == 1)
