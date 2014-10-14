@@ -47,5 +47,6 @@ for propositions in voted:
 
 similarity = partidos.semelhanca(party1, party2, proposicoes)
 
-print('Semelhança entre %s e %s = %.2f%s, baseado em %s votações de 2011' % (party1, party2, similarity*100, '%', votes_number))
+convert_to_percentage = 100
+print('Semelhança entre %s e %s = %.2f%s, baseado em %s votações de 2011' % (party1, party2, similarity*convert_to_percentage, '%', votes_number))
 

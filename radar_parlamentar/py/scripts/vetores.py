@@ -35,14 +35,14 @@ voted = proposicoes.parse()
 proposicoes = []
 
 # Total analyzed votes
-n_vot = 0
+n_votes = 0
 for propositions in voted:
     print('Analisando proposição ' + propositions['id'])
 
     # get voting web service
-    prop_vot = camaraws.obter_votacao(propositions['tipo'], propositions['num'], propositions['ano'])
-    n_vot += len(prop_vot.votacoes)
-    proposicoes.append(prop_vot)
+    votes_propositions = camaraws.obter_votacao(propositions['tipo'], propositions['num'], propositions['ano'])
+    n_votes += len(votes_propositions.votacoes)
+    proposicoes.append(votes_propositions)
 
 for p in PARTIDOS:
     v = partidos.vetor_votacoes(p, proposicoes)
