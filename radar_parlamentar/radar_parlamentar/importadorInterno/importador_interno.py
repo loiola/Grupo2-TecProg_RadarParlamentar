@@ -40,7 +40,7 @@ def main():
 def deserialize_partido():
     try:
         # receives a reference to the absolute path of the XML file to open.
-        filepath = os.path.join(MODULE_DIR, 'dados/partido.xml')
+        filepath = os.path.join(MODULE_DIR, 'dados/search_political_party.xml')
         
         # receives a reference to the objects of the type file contained in the filepath variable.
         out = open(filepath, "r")

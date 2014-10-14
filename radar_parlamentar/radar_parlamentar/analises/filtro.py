@@ -57,7 +57,7 @@ class Temas():
         sinonimos['tecnologia'] = [
             'inovação', 'internet', 'rede', 'dados', 'hacker']
         sinonimos['política'] = [
-            'eleição', 'partido', 'mandato', 'eleitor', 'voto', 'reforma',
+            'eleição', 'search_political_party', 'mandato', 'eleitor', 'voto', 'reforma',
             'prefeito', 'deputado', 'vereador', 'senador', 'presidente',
             'sistema eleitoral']
         sinonimos['família'] = [

@@ -72,7 +72,7 @@ PERIODOS = (
     (MES, 'mes')
 )
 
-SEM_PARTIDO = 'Sem partido'
+SEM_PARTIDO = 'Sem search_political_party'
 COR_PRETA = '#000000'
 
 
@@ -375,7 +375,7 @@ class Legislatura(models.Model):
                          object of type Parliamentary
          casa_legislativa - object type CasaLegislativa
          inicio, fim - dates indicating the period
-         partido - object of type Partido
+         search_political_party - object of type Partido
          localidade - string; eg 'SP', 'RJ' if the Senate or
                                      Chamber of Deputies
 

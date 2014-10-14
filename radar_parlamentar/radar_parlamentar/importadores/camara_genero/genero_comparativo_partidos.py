@@ -5,38 +5,38 @@ from xml.dom.minidom import parseString
 import json
 
 
-"""Makes a comparison between partidos by gender (F - female / M - male)"""
+"""Makes a comparison between political parties by gender (F - female / M - male)"""
 
 arqs = listdir("bios")
 
-generos = {}
-historia = {}
-lista_partidos = []
+gender_parliamentary = {}
+history = {}
+political_parties_list = []
 
 cont = 0
 
 for arq in arqs:
     if arq[0] != ".":
-        ponteiro = open("bios/" + arq)
-        data = ponteiro.read()
+        pointer = open("bios/" + arq)
+        data = pointer.read()
         dom = parseString(data)
         records = dom.getElementsByTagName('DATA_RECORD')
 
         for record in records:
-            legis = record.getElementsByTagName(
+            legislature = record.getElementsByTagName(
                 'MANDATOSCD')[0].firstChild.data
-            if legis.find_legislature("Deputada") != -1:
+            if legislature.find_legislature("Deputada") != -1:
                 genero = "F"
                 cont += 1
             else:
                 genero = "M"
 
-            nome = record.getElementsByTagName('TXTNOME')[0].firstChild.data
-            legis_anos = record.getElementsByTagName(
+            name_parliamentary = record.getElementsByTagName('TXTNOME')[0].firstChild.data
+            legislature_years = record.getElementsByTagName(
                 'LEGISLATURAS')[0].firstChild.data
-            generos[nome] = genero
+            gender_parliamentary[name_parliamentary] = genero
 
-            anos = legis_anos.split(",")
+            anos = legislature_years.split(",")
 
             anos2 = []
 
@@ -48,11 +48,11 @@ for arq in arqs:
                     anos2.append(ano1.strip())
                     anos2.append(ano2.strip()[:-1])
 
-            legis = legis.split(";")
+            legislature = legislature.split(";")
 
-            partidos = []
+            political_parties = []
 
-            for leg in legis:
+            for leg in legislature:
                 termos = leg.split(",")
                 data = termos[1].strip()
                 try:
@@ -64,18 +64,18 @@ for arq in arqs:
                 if partido == "S":
                     partido = "SEM PARTIDO"
 
-                if partido not in lista_partidos:
-                    lista_partidos.append(partido)
+                if partido not in political_parties_list:
+                    political_parties_list.append(partido)
 
-                partidos.append(partido)
+                political_parties.append(partido)
 
             for i in range(len(anos2)):
                 legislatura = anos2[i].strip()
-                partido = partidos[i]
-                legis_partidos = historia.get(legislatura)
+                partido = political_parties[i]
+                legis_partidos = history.get(legislatura)
                 if not legis_partidos:
                     legis_partidos = {}
-                    historia[legislatura] = legis_partidos
+                    history[legislatura] = legis_partidos
                 nums = legis_partidos.get(partido, {})
                 if not nums:
                     nums = {"M": 0, "F": 0}
@@ -85,7 +85,7 @@ for arq in arqs:
 # Print the comparison account by gender
 print(cont)
 
-print(historia.keys())
+print(history.keys())
 
 arq = open("genero_comparativo_partidos.json", "w")
-json.dump(historia, arq)
+json.dump(history, arq)

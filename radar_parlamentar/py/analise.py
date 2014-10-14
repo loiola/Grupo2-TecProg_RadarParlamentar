@@ -84,7 +84,7 @@ class Analise:
         ANLS.lista_partidos : string list with P partidos
         ANLS.partidos : objects list type Parties
         ANLS.lista_votacoes : tuple list (idProp,idVot) with V voting
-        ANLS.vetores_votacao [P]x[V]: elemento ij é o voto médio do partido i na votação
+        ANLS.vetores_votacao [P]x[V]: elemento ij é o voto médio do search_political_party i na votação
             j, entre -1(não) e 1(sim)
         ANLS.quadrivet_vot [P]x[V]: ij element is a tuple of four elements representing
             the number of votes yes, no, abst. and obstr. of party i in voting j
@@ -694,7 +694,7 @@ class Analise:
         else:
             fo = sys.stdout
         ip = -1
-        fo.write('Análise PCA - por partido\n')
+        fo.write('Análise PCA - por search_political_party\n')
         fo.write('de %s a %s (ano-mês-dia)\n\n' % (self.data_inicial,self.data_final))
         fo.write('Fração da variância explicada pelas dimensões:\n')
         fo.write('%f\n' % (self.pca_partido.eigen[0]/self.pca_partido.eigen.sum()))

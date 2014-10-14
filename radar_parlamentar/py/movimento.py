@@ -64,7 +64,7 @@ for annual in annual_list:
 
 
 # Auxiliary functions:
-def quantidade_movimento(i,graus=0,espelho=0):
+def movement_amount(i,graus=0,espelho=0):
 <<<<<<< HEAD
     """Calculates the amount of movement between the instant i (corresponding
     to the year years [i]) and the time i + 1.
@@ -98,7 +98,7 @@ def quantidade_movimento(i,graus=0,espelho=0):
                                      after[j,:] ) ) * annual_list[index+1].tamanho_partido[j]
     return moviment_amount
 
-def matrot(graus):
+def matematic_rotation(graus):
 <<<<<<< HEAD
    """Returns 2x2 rotation that rotates the axes in degrees (0-360) in
    counterclockwise array (as if the points spun clockwise around fixed axes)."""

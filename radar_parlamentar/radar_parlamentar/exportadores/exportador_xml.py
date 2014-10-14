@@ -31,7 +31,8 @@ def serialize_casa_legislativa(short_name):
 
     # Identifying house:
     legislative_house = models.CasaLegislativa.objects.filter(nome_curto=short_name)
-    if len(legislative_house) <= 0:
+    without_legislative_houses = 0
+    if len(legislative_house) <= without_legislative_houses:
         raise ValueError('Casa Legislativa não encontrada\n')
 
     reload(sys)
