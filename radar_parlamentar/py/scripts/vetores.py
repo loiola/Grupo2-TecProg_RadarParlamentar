@@ -40,7 +40,8 @@ for propositions in voted:
     print('Analisando proposição ' + propositions['id'])
 
     # get voting web service
-    votes_propositions = camaraws.obter_votacao(propositions['tipo'], propositions['num'], propositions['ano'])
+    votes_propositions = camaraws.obter_votacao(propositions['tipo'],
+                                                propositions['num'], propositions['ano'])
     n_votes += len(votes_propositions.votacoes)
     proposicoes.append(votes_propositions)
 

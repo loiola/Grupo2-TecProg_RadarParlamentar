@@ -40,8 +40,9 @@ def serialize_casa_legislativa(short_name):
 
     print "\nExportando dados de %s\n" % legislative_house[0].nome
 
-    root = Element('CasaLegislativa', nome=legislative_house[0].nome, nome_curto=legislative_house[
-                   0].nome_curto, esfera=legislative_house[0].esfera, local=legislative_house[0].local,
+    root = Element('CasaLegislativa', nome=legislative_house[0].nome,
+                   nome_curto=legislative_house[0].nome_curto, esfera=legislative_house[0].esfera,
+                   local=legislative_house[0].local,
                    atualizacao=str(legislative_house[0].atualizacao))
 
     # Identifying propositions:
@@ -53,10 +54,11 @@ def serialize_casa_legislativa(short_name):
         print str(proposition_aux.id_prop) + ", numero: " + str(proposition_aux.numero)
         proposition_xml = Element(
             'Proposicao', id_prop=str(proposition_aux.id_prop),
-            sigla=proposition_aux.sigla, numero=str(proposition_aux.numero), ano=str(proposition_aux.ano),
-            ementa=proposition_aux.ementa, descricao=proposition_aux.descricao,
-            indexacao=str(proposition_aux.indexacao),
-            data_apresentacao=str(proposition_aux.data_apresentacao), situacao=proposition_aux.situacao)
+            sigla=proposition_aux.sigla, numero=str(proposition_aux.numero),
+            ano=str(proposition_aux.ano), ementa=proposition_aux.ementa,
+            descricao=proposition_aux.descricao, indexacao=str(proposition_aux.indexacao),
+            data_apresentacao=str(proposition_aux.data_apresentacao),
+            situacao=proposition_aux.situacao)
 
         voting = models.Votacao.objects.filter(proposicao_id=proposition_aux)
         for vote_aux in voting:

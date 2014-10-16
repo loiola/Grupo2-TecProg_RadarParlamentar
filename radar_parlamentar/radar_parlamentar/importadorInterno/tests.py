@@ -118,27 +118,27 @@ class ImportadorInternoTest(TestCase):
         from util_test import flush_db
         flush_db(cls)
 
-    def test_deserialize_partido(self):
+    def test_deserialize_party(self):
 
         importador_interno.deserialize_partido()
         partyPMDB = models.Partido.objects.filter(nome='PMDB')
         self.assertEquals(partyPMDB[0].numero, 40)
 
-    def test_deserialize_parlamentar(self):
+    def test_deserialize_parliamentary(self):
 
         importador_interno.deserialize_parlamentar()
         parliamentarian = models.Parlamentar.objects.filter(
             nome='Ivandro Cunha Lima')
         self.assertEquals(parliamentarian[0].nome, 'Ivandro Cunha Lima')
 
-    def test_deserialize_casa_legislativa(self):
+    def test_deserialize_legislative_house(self):
 
         importador_interno.deserialize_casa_legislativa()
         legislative_house = models.CasaLegislativa.objects.filter(
             nome_curto='cdep')
         self.assertEquals(legislative_house[0].nome, 'Camara dos Deputados')
 
-    def test_deserialize_legislatura(self):
+    def test_deserialize_legislature(self):
 
         importador_interno.main()
         parliamentarian = models.Parlamentar.objects.filter(
@@ -148,25 +148,25 @@ class ImportadorInternoTest(TestCase):
         self.assertEquals(
             legislature[0].parlamentar.nome, 'Ivandro Cunha Lima')
 
-    def test_deserialize_proposicao(self):
+    def test_deserialize_proposition(self):
 
         importador_interno.main()
         propostion = models.Proposicao.objects.filter(numero='4520')
         self.assertEquals(propostion[0].sigla, 'PL')
 
-    def test_deserialize_votacao(self):
+    def test_deserialize_voting(self):
 
         importador_interno.main()
         voting = models.Votacao.objects.filter(id_vot='12345')
         self.assertEquals(str(voting[0].data), '1900-12-05')
 
-    def test_deserialize_voto(self):
+    def test_deserialize_vote(self):
 
         importador_interno.main()
         vote = models.Voto.objects.filter(opcao='TESTE')
         self.assertEquals(vote[0].opcao, 'TESTE')
 
-    def test_importa_casa_legislativa(self):
+    def test_importa_legislative_house(self):
 
         models.CasaLegislativa.remove_house('cmsp')
         models.CasaLegislativa.remove_house('cdep')

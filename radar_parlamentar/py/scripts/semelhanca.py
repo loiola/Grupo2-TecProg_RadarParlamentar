@@ -41,12 +41,14 @@ for propositions in voted:
   print('Analisando proposição ' + propositions['id'])
 
   # Get voting web service
-  votes_propositions = camaraws.obter_votacao(propositions['tipo'], propositions['num'], propositions['ano'])
+  votes_propositions = camaraws.obter_votacao(propositions['tipo'],
+                                              propositions['num'], propositions['ano'])
   votes_number += len(votes_propositions.votacoes)
   proposicoes.append(votes_propositions)
 
 similarity = partidos.semelhanca(party1, party2, proposicoes)
 
 convert_to_percentage = 100
-print('Semelhança entre %s e %s = %.2f%s, baseado em %s votações de 2011' % (party1, party2, similarity*convert_to_percentage, '%', votes_number))
+print('Semelhança entre %s e %s = %.2f%s, baseado em %s votações de 2011' % (
+    party1, party2, similarity*convert_to_percentage, '%', votes_number))
 

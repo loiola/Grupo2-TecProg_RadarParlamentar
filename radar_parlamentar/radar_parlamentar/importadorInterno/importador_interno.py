@@ -192,7 +192,8 @@ def _importa_votacao(short_name_house):
     data = serializers.deserialize("xml", out)
 
     for deserialized_object in data:
-        if deserialized_object.object.proposicao.casa_legislativa.nome_curto == short_name_house:
+        if deserialized_object.object.proposicao.casa_legislativa.nome_curto == \
+                short_name_house:
             deserialized_object.save()
 
 def _importa_voto(short_name_house):
@@ -208,7 +209,8 @@ def _importa_voto(short_name_house):
     data = serializers.deserialize("xml", out)
 
     for deserialized_object in data:
-        if deserialized_object.object.votacao.proposicao.casa_legislativa.nome_curto == short_name_house:
+        if deserialized_object.object.votacao.proposicao.casa_legislativa.nome_curto == \
+                short_name_house:
             deserialized_object.save()
 
 def importa_casa_legislativa(short_name_house):

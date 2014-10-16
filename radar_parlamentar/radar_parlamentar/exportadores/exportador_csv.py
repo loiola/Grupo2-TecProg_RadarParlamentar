@@ -61,11 +61,11 @@ class ExportadorCSV:
 
     # Retrieving, transforming and writing CSV:
     def exportar_csv(self):
-        self.retrieve_votacoes()
+        self.retrieve_votings()
         self.transform_data()
         self.write_csv()
 
-    def retrieve_votacoes(self):
+    def retrieve_votings(self):
         legislative_house = models.CasaLegislativa.objects.get(nome_curto=self.nome_curto)
 
         if self.ini is None and self.fim is None:
