@@ -35,6 +35,8 @@ class ExportadoresFileTest(TestCase):
         """Method to set responsible for what is needed to run the tests. 
         In this case, the creation of objects in the test bank."""
 
+
+
         testParty1 = models.Partido(nome='PMDB', numero='40')
         testParty2 = models.Partido(nome='PT', numero='13')
         partyTest3 = models.Partido(nome='PSDB', numero='23')
@@ -94,23 +96,25 @@ class ExportadoresFileTest(TestCase):
         from util_test import flush_db
         flush_db(cls)
 
-    def test_create_file_partido(self):
+    def test_create_file_party(self):
         filepath = os.path.join(MODULE_DIR, 'dados/search_political_party.xml')
         self.assertTrue(os.path.isfile(filepath))
 
-    def test_verify_file_partido(self):
+    def test_verify_file_party(self):
+        invalid_value = 0
         party = models.Partido.objects.get(nome='PMDB')
         filepath = os.path.join(MODULE_DIR, 'dados/search_political_party.xml')
         file_xml = open(filepath, 'r')
         file_read = file_xml.read()
-        self.assertTrue(file_read.find(party.nome) > 0)
-        self.assertTrue(file_read.find(str(party.numero)) > 0)
+        self.assertTrue(file_read.find(party.nome) > invalid_value)
+        self.assertTrue(file_read.find(str(party.numero)) > invalid_value)
 
-    def test_create_file_casa_legislativa(self):
+    def test_create_file_legislative_house(self):
         filepath = os.path.join(MODULE_DIR, 'dados/casa_legislativa.xml')
         self.assertTrue(os.path.isfile(filepath))
 
-    def test_verify_file_casa_legislativa(self):
+    def test_verify_file_legislative_house(self):
+        invalid_value = 0
         legislative_house = models.CasaLegislativa.objects.get(
             atualizacao='2012-12-31')
         filepath = os.path.join(MODULE_DIR, 'dados/casa_legislativa.xml')
@@ -119,68 +123,73 @@ class ExportadoresFileTest(TestCase):
         # Transforms the xml file into a string
         file_read = file_xml.read()
         self.assertTrue(
-            file_read.find(legislative_house.nome.decode("utf-8")) > 0)
-        self.assertTrue(file_read.find(legislative_house.nome_curto) > 0)
-        self.assertTrue(file_read.find(legislative_house.esfera) > 0)
+            file_read.find(legislative_house.nome.decode("utf-8")) > invalid_value)
+        self.assertTrue(file_read.find(legislative_house.nome_curto) > invalid_value)
+        self.assertTrue(file_read.find(legislative_house.esfera) > invalid_value)
 
         # Case is less than zero the word does not exist in the string
-        self.assertTrue(file_read.find('cdeb') < 0)
+        self.assertTrue(file_read.find('cdeb') < invalid_value)
 
-    def test_create_file_parlamentar(self):
+    def test_create_file_parliamentary(self):
         filepath = os.path.join(MODULE_DIR, 'dados/parlamentar.xml')
         self.assertTrue(os.path.isfile(filepath))
 
     def test_verify_file_parlamentar(self):
+        invalid_value = 0
         parlamentar = models.Parlamentar.objects.get(nome='Humberto Costa')
         filepath = os.path.join(MODULE_DIR, 'dados/parlamentar.xml')
         file_xml = open(filepath, 'r')
         file_read = file_xml.read()
-        self.assertTrue(file_read.find(parlamentar.nome) > 0)
+        self.assertTrue(file_read.find(parlamentar.nome) > invalid_value)
 
-    def test_create_file_legislatura(self):
+    def test_create_file_legislature(self):
         filepath = os.path.join(MODULE_DIR, 'dados/legislatura.xml')
         self.assertTrue(os.path.isfile(filepath))
 
-    def test_verify_file_legislatura(self):
+    def test_verify_file_legislature(self):
+        invalid_value = 0
         legislature = models.Legislatura.objects.get(inicio='2004-01-01')
         filepath = os.path.join(MODULE_DIR, 'dados/legislatura.xml')
         file_xml = open(filepath, 'r')
         file_read = file_xml.read()
-        self.assertTrue(file_read.find(legislature.localidade) > 0)
-        self.assertTrue(file_read.find(str(legislature.inicio)) > 0)
-        self.assertTrue(file_read.find(str(legislature.fim)) > 0)
+        self.assertTrue(file_read.find(legislature.localidade) > invalid_value)
+        self.assertTrue(file_read.find(str(legislature.inicio)) > invalid_value)
+        self.assertTrue(file_read.find(str(legislature.fim)) > invalid_value)
 
-    def test_create_file_proposicao(self):
+    def test_create_file_proposition(self):
         filepath = os.path.join(MODULE_DIR, 'dados/proposicao.xml')
         self.assertTrue(os.path.isfile(filepath))
 
-    def teste_verify_file_proposicao(self):
+    def teste_verify_file_proposition(self):
+        invalid_value = 0
         proposition = models.Proposicao.objects.get(sigla='PL')
         filepath = os.path.join(MODULE_DIR, 'dados/proposicao.xml')
         file_xml = open(filepath, 'r')
         file_read = file_xml.read()
-        self.assertTrue(file_read.find(proposition.numero) > 0)
-        self.assertTrue(file_read.find(proposition.id_prop) > 0)
+        self.assertTrue(file_read.find(proposition.numero) > invalid_value)
+        self.assertTrue(file_read.find(proposition.id_prop) > invalid_value)
 
-    def test_create_file_votacao(self):
+    def test_create_file_voting(self):
         filepath = os.path.join(MODULE_DIR, 'dados/votacao.xml')
         self.assertTrue(os.path.isfile(filepath))
 
-    def test_verify_file_votacao(self):
+    def test_verify_file_voting(self):
+        invalid_value = 0
         voting = models.Votacao.objects.get(resultado='Teste')
         filepath = os.path.join(MODULE_DIR, 'dados/votacao.xml')
         file_xml = open(filepath, 'r')
         file_read = file_xml.read()
-        self.assertTrue(file_read.find(voting.descricao) > 0)
-        self.assertTrue(file_read.find(str(voting.data)) > 0)
+        self.assertTrue(file_read.find(voting.descricao) > invalid_value)
+        self.assertTrue(file_read.find(str(voting.data)) > invalid_value)
 
-    def test_verify_file_voto(self):
+    def test_verify_file_vote(self):
+        invalid_value = 0
         vote = models.Voto.objects.get(opcao='TESTE')
         filepath = os.path.join(MODULE_DIR, 'dados/voto.xml')
         file_xml = open(filepath, 'r')
         file_read = file_xml.read()
-        self.assertTrue(file_read.find(vote.opcao) > 0)
+        self.assertTrue(file_read.find(vote.opcao) > invalid_value)
 
-    def test_create_file_voto(self):
+    def test_create_file_vote(self):
         filepath = os.path.join(MODULE_DIR, 'dados/voto.xml')
         self.assertTrue(os.path.isfile(filepath))
