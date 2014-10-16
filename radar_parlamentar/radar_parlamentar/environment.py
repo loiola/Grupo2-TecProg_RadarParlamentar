@@ -9,7 +9,7 @@ class XMLWriter:
 
     """ Helper class to write out an xml file"""
 
-    def __init__(self, pretty=True):
+    def __init__(self, pretty = True):
         
         """ Set pretty to True if you want an indented XML file"""
         self.output = ""
@@ -34,6 +34,7 @@ class XMLWriter:
         if self.pretty:
             self.output += "\n" + "  " * (len(self.stack) - 1)
         tag = self.stack.pop()
+
         self.output += "</" + tag + ">"
 
         if self.pretty:
@@ -56,9 +57,9 @@ class XMLWriter:
 
         """ Save the data to a file"""
         self.closeAll()
-        fp = open(filename, "w")
-        fp.write(self.output)
-        fp.close()
+        file = open(filename, "w")
+        file.write(self.output)
+        file.close()
 
 
 writer = XMLWriter(pretty=False)

@@ -44,6 +44,6 @@ for propositions in voted:
     n_votes += len(votes_propositions.votacoes)
     proposicoes.append(votes_propositions)
 
-for p in PARTIDOS:
-    v = partidos.vetor_votacoes(p, proposicoes)
-    print("%s\n%s" % (p, v))
+for party in PARTIDOS:
+    party_vector = partidos.vetor_votacoes(party, proposicoes)
+    print("%s\n%s" % (party, party_vector))
