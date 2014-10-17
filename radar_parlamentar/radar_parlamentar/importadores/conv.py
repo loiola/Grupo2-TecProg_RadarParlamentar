@@ -26,7 +26,7 @@ Classes:
 
 from __future__ import unicode_literals
 from django.utils.dateparse import parse_datetime
-from modelagem import models
+from models import models
 #last_refresh => date of last refresh on data
 
 LAST_REFRESH = parse_datetime('2012-06-01 0:0:0')
