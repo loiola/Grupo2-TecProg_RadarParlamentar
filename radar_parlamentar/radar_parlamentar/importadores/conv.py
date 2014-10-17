@@ -142,14 +142,14 @@ class ImportadorConvencao:
 
     #new_vote => get instance the new vote
 
-    def _new_votes(self, votacao, nome_partido, opcoes):
+    def _new_votes(self, votation, name_party, options):
 
-        # opcoes is an options list (YES, NO...)
+        # options is an options list (YES, NO...)
         for i in range(0, PARLAMENTS_PER_PARTY):
             voto = models.Voto()
-            voto.legislatura = self.legs[nome_partido][i]
-            voto.opcao = opcoes[i]
-            voto.votacao = votacao
+            voto.legislatura = self.legs[name_party][i]
+            voto.opcao = options[i]
+            voto.votacao = votation
             voto.save()
 
     #new_votation1 => get instance the new votation
