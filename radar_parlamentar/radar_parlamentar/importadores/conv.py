@@ -49,9 +49,9 @@ BEGIN_SECOND_SEMESTER = parse_datetime('1989-10-10 0:0:0')
 
 PARLAMENTS_PER_PARTY = 3
 
-GIRONDINOS = 'Girondinos'
-JACOBINOS = 'Jacobinos'
-MONARQUISTAS = 'Monarquistas'
+GIRONDINES = 'Girondinos'
+JACOBINES = 'Jacobinos'
+MONARQUIST = 'Monarquistas'
 
 
 class ImportadorConvencao:
@@ -74,17 +74,17 @@ class ImportadorConvencao:
     def _new_party(self):
 
         girondinos = models.Partido()
-        girondinos.nome = GIRONDINOS
+        girondinos.nome = GIRONDINES
         girondinos.numero = 27
         girondinos.cor = '#008000'
         girondinos.save()
         jacobinos = models.Partido()
-        jacobinos.nome = JACOBINOS
+        jacobinos.nome = JACOBINES
         jacobinos.numero = 42
         jacobinos.cor = '#FF0000'
         jacobinos.save()
         monarquistas = models.Partido()
-        monarquistas.nome = MONARQUISTAS
+        monarquistas.nome = MONARQUIST
         monarquistas.numero = 79
         monarquistas.cor = '#800080'
         monarquistas.save()
@@ -116,27 +116,27 @@ class ImportadorConvencao:
 
     #new_proposition => get instance the new proposition
 
-    def _new_proposition(self, num, descricao):
+    def _new_proposition(self, number, descripcion):
 
         prop = models.Proposicao()
-        prop.id_prop = num
+        prop.id_prop = number
         prop.sigla = 'PL'
-        prop.numero = num
-        prop.ementa = descricao
-        prop.descricao = descricao
+        prop.numero = number
+        prop.ementa = descripcion
+        prop.descricao = descripcion
         prop.casa_legislativa = self.casa
         prop.save()
         return prop
 
     #new_votation => get instance the new votation
 
-    def _new_votation(self, num, descricao, data, prop):
+    def _new_votation(self, number, description, data, proposition):
 
         votacao = models.Votacao()
-        votacao.id_vot = num
-        votacao.descricao = descricao
+        votacao.id_vot = number
+        votacao.descricao = description
         votacao.data = data
-        votacao.proposicao = prop
+        votacao.proposicao = proposition
         votacao.save()
         return votacao
 
@@ -156,15 +156,15 @@ class ImportadorConvencao:
 
     def girondine_votes(self, votacao):
         votos_girondinos = [models.SIM, models.ABSTENCAO, models.NAO]
-        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+        self._new_votes(votacao, GIRONDINES, votos_girondinos)
 
     def jaconbine_votes(self, votacao):
         votos_jacobinos = [models.SIM, models.SIM, models.SIM]
-        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+        self._new_votes(votacao, JACOBINES, votos_jacobinos)
 
     def monarquist_votes(self, votacao):
         votos_monarquistas = [models.NAO, models.NAO, models.NAO]
-        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+        self._new_votes(votacao, MONARQUIST, votos_monarquistas)
 
     def _new_votation1(self):
 
@@ -184,15 +184,15 @@ class ImportadorConvencao:
 
     def girondine_votes2(self, votacao):
         votos_girondinos = [models.NAO, models.NAO, models.NAO]
-        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+        self._new_votes(votacao, GIRONDINES, votos_girondinos)
 
     def jaconbine_votes2(self, votacao):
         votos_jacobinos = [models.NAO, models.NAO, models.NAO]
-        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+        self._new_votes(votacao, JACOBINES, votos_jacobinos)
 
     def monarquist_votes2(self, votacao):
         votos_monarquistas = [models.SIM, models.SIM, models.SIM]
-        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+        self._new_votes(votacao, MONARQUIST, votos_monarquistas)
 
     def _new_votation2(self):
 
@@ -212,7 +212,7 @@ class ImportadorConvencao:
 
     def girondine_votes3(self, votacao):
         votos_girondinos = [models.NAO, models.NAO, models.SIM]
-        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+        self._new_votes(votacao, GIRONDINES, votos_girondinos)
 
     def _new_votation3(self):
 
@@ -232,15 +232,15 @@ class ImportadorConvencao:
 
     def girondine_votes4(self, votacao):
         votos_girondinos = [models.SIM, models.SIM, models.SIM]
-        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+        self._new_votes(votacao, GIRONDINES, votos_girondinos)
 
     def jacobine_votes4(self, votacao):
         votos_jacobinos = [models.SIM, models.ABSTENCAO, models.NAO]
-        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+        self._new_votes(votacao, JACOBINES, votos_jacobinos)
 
     def monarquist_votes4(self, votacao):
         votos_monarquistas = [models.SIM, models.NAO, models.AUSENTE]
-        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+        self._new_votes(votacao, MONARQUIST, votos_monarquistas)
 
     def _new_votation4(self):
 
@@ -260,7 +260,7 @@ class ImportadorConvencao:
 
     def girondine_votes5(self, votacao):
         votos_girondinos = [models.SIM, models.SIM, models.ABSTENCAO]
-        self._new_votes(votacao, GIRONDINOS, votos_girondinos)
+        self._new_votes(votacao, GIRONDINES, votos_girondinos)
 
     def _new_votation5(self):
 
@@ -280,7 +280,7 @@ class ImportadorConvencao:
 
     def monarquist_votes6(self, votacao):
         votos_monarquistas = [models.AUSENTE, models.SIM, models.SIM]
-        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+        self._new_votes(votacao, MONARQUIST, votos_monarquistas)
 
     def _new_votation6(self):
 
@@ -300,7 +300,7 @@ class ImportadorConvencao:
 
     def monarquist_votes7(self, votacao):
         votos_monarquistas = [models.SIM, models.AUSENTE, models.SIM]
-        self._new_votes(votacao, MONARQUISTAS, votos_monarquistas)
+        self._new_votes(votacao, MONARQUIST, votos_monarquistas)
 
     def _new_votation7(self):
 
@@ -319,7 +319,7 @@ class ImportadorConvencao:
     # Voting with different attributes for test
     def jacobine_votes8(self, votacao):
         votos_jacobinos = [models.ABSTENCAO, models.NAO, models.NAO]
-        self._new_votes(votacao, JACOBINOS, votos_jacobinos)
+        self._new_votes(votacao, JACOBINES, votos_jacobinos)
 
     def _new_votation8(self):
 
