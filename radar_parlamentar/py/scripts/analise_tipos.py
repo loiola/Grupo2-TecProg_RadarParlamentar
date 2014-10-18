@@ -45,18 +45,20 @@ total = len(proposicoes)
 print('Votações na câmara em 2011')
 print('%d proposições' % total)
 
+percentage_conversion_factor = 100
+
 print('%d PLs (%d%s)' % (ordinary_law_projects,
-                         ordinary_law_projects/total*100, '%'))
+                         ordinary_law_projects/total*percentage_conversion_factor, '%'))
 
 print('%d PLPs (%d%s)' % (complementary_law_projects,
-                          complementary_law_projects/total*100, '%'))
+                          complementary_law_projects/total*percentage_conversion_factor, '%'))
 
 print('%d PDCs (%d%s)' % (legislative_decree_projects,
-                          legislative_decree_projects/total*100, '%'))
+                          legislative_decree_projects/total*percentage_conversion_factor, '%'))
 
 print('%d MPVs (%d%s)' % (provisional_measures,
-                          provisional_measures/total*100, '%'))
+                          provisional_measures/total*percentage_conversion_factor, '%'))
 
 print('%d PECs (%d%s)' % (amendment_constitution,
-                          amendment_constitution/total*100, '%'))
+                          amendment_constitution/total*percentage_conversion_factor, '%'))
 #print('Checksum: %d' % (pl+plp+pdc+mpv+pec))
