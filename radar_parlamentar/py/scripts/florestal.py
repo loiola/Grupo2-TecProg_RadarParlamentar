@@ -40,7 +40,7 @@ for votations in proposition.votacoes:
   print('************')
   print(votations)
 
-  if (len(sys.argv)>1 and sys.argv[1] == '-uf'):
+  if (len(sys.argv) > 1 and sys.argv[1] == '-uf'):
     dic = votations.por_uf()
   else:
     dic = votations.by_party()

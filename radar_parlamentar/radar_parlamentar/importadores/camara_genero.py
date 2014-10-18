@@ -88,7 +88,7 @@ def proposicoes_indexadas(proposition_list):
 def parseia_indexacoes(indexing):
     indexing1 = [term.strip()
 
-                  for term in indexing.replace('\n', '').replace('.', '').replace('_', '').split(',')]
+    for term in indexing.replace('\n', '').replace('.', '').replace('_', '').split(',')]
     indexing2 = []
 
     for term in indexing1:

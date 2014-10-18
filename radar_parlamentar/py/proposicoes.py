@@ -29,11 +29,11 @@ import re
 import codecs
 import camaraws
 
-# PL - projeto de lei
-# PLP - projeto de lei complementar
-# PDC - projeto de decreto legislativo
-# MPV - projeto de medida provisória
-# PEC - proposta de emenda à constituição
+# PL - bill
+# PLP - supplementary bill
+# PDC - draft legislative decree
+# MPV - draft provisional measure
+# PEC - proposed amendment to the constitution
 
 def parse_html():
     """Parse of the file recusrsos/proposicoes.htmll

@@ -52,7 +52,7 @@ for propositions in voted:
   proposicoes.append(propositions_voting)
 
 # analysis of the similarity
-convert_to_percentage = 100
+percentage_conversion_factor = 100
 print('Análise baseada em %d votações de %d proposições, votadas na '
       'camâra em 2011' % (n_votes, len(voted)))
 
