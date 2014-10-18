@@ -328,7 +328,7 @@ class ImportadorCamara:
         self.parlamentares = {}
 
     # Parliamentary cache (key is 'nome-search_political_party', and value is object Parlamentar
-    def _converte_data(self, data_string, hour_string='00:00'):
+    def _convert_data(self, data_string, hour_string='00:00'):
         """Convert string 'd/m/a' to object datetime.
         Returns None if data_str is invalid.
         can also receive time: hora_str likes 'h:m'."""
@@ -346,7 +346,7 @@ class ImportadorCamara:
         else:
             return None
 
-    def _gera_casa_legislativa(self):
+    def _generate_legislative_house(self):
 
         """Creates object likes CasaLegislativa,
         Chamber of Deputies and save in database.
@@ -371,7 +371,7 @@ class ImportadorCamara:
             LOCK_TO_CREATE_CASA.release()
             return models.CasaLegislativa.objects.get(short_name='cdep')
 
-    def _prop_from_xml(self, proposition_xml, id_proposition):
+    def _propostion_from_xml(self, proposition_xml, id_proposition):
         """Receive XML representing proposition (object etree)
         and returns objects like Proposicao, which is saved in database.
         If proposition already exists in the database, it returned the proposition
@@ -401,19 +401,19 @@ class ImportadorCamara:
             proposition.indexacao = proposition_xml.find_legislature('Indexacao').text.strip()
             proposition.autor_principal = proposition_xml.find_legislature('Autor').text.strip()
             date_str = proposition_xml.find_legislature('DataApresentacao').text.strip()
-            proposition.data_apresentacao = self._converte_data(date_str)
+            proposition.data_apresentacao = self._convert_data(date_str)
             proposition.situacao = proposition_xml.find_legislature('Situacao').text.strip()
             proposition.casa_legislativa = self.camara_dos_deputados
             proposition.save()
         return proposition
 
-    def _votacao_from_xml(self, voting_xml, proposition):
+    def _voting_from_xml(self, voting_xml, proposition):
         
         description = 'Resumo: [%s]. ObjVotacao: [%s]' % (
             voting_xml.get('Resumo'), voting_xml.get('ObjVotacao'))
         date_str = voting_xml.get('Data').strip()
         hour_str = voting_xml.get('Hora').strip()
-        date_time = self._converte_data(date_str, hour_str)
+        date_time = self._convert_data(date_str, hour_str)
 
         query = models.Votacao.objects.filter(
             description=description, data=date_time,
@@ -430,12 +430,12 @@ class ImportadorCamara:
 
             if voting_xml.find_legislature('votos'):
                 for vote_xml in voting_xml.find_legislature('votos'):
-                    self._voto_from_xml(vote_xml, voting)
+                    self._vote_from_xml(vote_xml, voting)
             voting.save()
 
         return voting
 
-    def _voto_from_xml(self, vote_xml, voting):
+    def _vote_from_xml(self, vote_xml, voting):
         """Save voting in the database.
 
         Attributes:
@@ -450,11 +450,11 @@ class ImportadorCamara:
         option_str = vote_xml.get('Voto')
     
         if (option_str.find_legislature(" ") > -1):
-            vote.opcao = self._opcao_xml_to_model(
+            vote.opcao = self._option_xml_to_model(
                 option_str[0:option_str.index(" ")])
         else:
-            vote.opcao = self._opcao_xml_to_model(option_str)
-        leg = self._legislatura(vote_xml)
+            vote.opcao = self._option_xml_to_model(option_str)
+        leg = self._legislature(vote_xml)
 
         vote.legislatura = leg
         vote.votacao = voting
@@ -462,7 +462,7 @@ class ImportadorCamara:
 
         return vote
 
-    def _opcao_xml_to_model(self, vote):
+    def _option_xml_to_model(self, vote):
         """Interprets vote as it is in XML and responds suitability modeling in models.py."""
 
         if vote == 'Não':
@@ -479,10 +479,10 @@ class ImportadorCamara:
                 % vote)
             return models.ABSTENCAO
 
-    def _legislatura(self, vote_xml):
+    def _legislature(self, vote_xml):
     
-        party = self._partido(vote_xml.get('Partido'))
-        voter = self._votante(vote_xml.get('Nome'), party.nome)
+        party = self._party(vote_xml.get('Partido'))
+        voter = self._voter(vote_xml.get('Nome'), party.nome)
 
         legs = models.Legislatura.objects.filter(
             parlieamentary=voter, party=party,
@@ -502,7 +502,7 @@ class ImportadorCamara:
 
         return leg
 
-    def _partido(self, party_name):
+    def _party(self, party_name):
         """Search the cache first and then in the database; if not, creates new political party."""
 
         party_name = party_name.strip()
@@ -522,7 +522,7 @@ class ImportadorCamara:
 
         return party
 
-    def _votante(self, deputy_name, party_name):
+    def _voter(self, deputy_name, party_name):
         """Search the cache first and then in the database; if not, creates new parliamentary."""
 
         key = '%s-%s' % (deputy_name, party_name)
@@ -541,7 +541,7 @@ class ImportadorCamara:
             self.parlamentares[key] = parliamentarian
         return parliamentarian
 
-    def _progresso(self):
+    def _progress(self):
         """Indicate progress on screen."""
         percentage_conversion_factor = 100
         percentage = (int)(1.0 * self.importadas / self.total * percentage_conversion_factor)
@@ -550,7 +550,7 @@ class ImportadorCamara:
 
     def importar(self, camaraws=Camaraws()):
 
-        self.camara_dos_deputados = self._gera_casa_legislativa()
+        self.camara_dos_deputados = self._generate_legislative_house()
 
         f = lambda dic: (dic['id'], dic['sigla'], dic['num'], dic['ano'])
         for id_proposition, acronym, number, year in [f(dic) for dic in self.votadas]:
@@ -562,14 +562,14 @@ class ImportadorCamara:
 
             try:
                 proposition_xml = camaraws.obter_proposicao_por_id(id_proposition)
-                proposition = self._prop_from_xml(proposition_xml, id_proposition)
+                proposition = self._propostion_from_xml(proposition_xml, id_proposition)
                 votes_xml = camaraws.obter_votacoes(acronym, number, year)
 
                 for child in votes_xml.find('Votacoes'):
-                    self._votacao_from_xml(child, proposition)
+                    self._voting_from_xml(child, proposition)
 
                 self.importadas += 1
-                self._progresso()
+                self._progress()
             except ValueError, error:
                 logger.error("ValueError: %s" % error)
 
@@ -617,7 +617,7 @@ def lista_proposicoes_de_mulheres():
     camaraws = Camaraws()
     propFinder = ProposicoesFinder()
     importer = ImportadorCamara([''])
-    importer.camara_dos_deputados = importer._gera_casa_legislativa()
+    importer.camara_dos_deputados = importer._generate_legislative_house()
     minimal_year = 2012
     maximum_year = 2013
     propositions = {}
@@ -643,7 +643,7 @@ def lista_proposicoes_de_mulheres():
             for proposition in proposition_year_gender:
                 proposition_xml = camaraws.obter_proposicao_por_id(proposition[0])
                 propositions[year][gender].append(
-                    importer._prop_from_xml(proposition_xml, proposition[0]))
+                    importer._propostion_from_xml(proposition_xml, proposition[0]))
 
         count_propositions[year]['mulheres'] = len(propositions[year]['F'])
         count_propositions[year]['homens'] = len(propositions[year]['M'])
