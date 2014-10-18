@@ -34,43 +34,40 @@ class ExportadoresFileTest(TestCase):
     def setUpClass(cls):
         """Method to set responsible for what is needed to run the tests. 
         In this case, the creation of objects in the test bank."""
-
-
-
-        testParty1 = models.Partido(nome='PMDB', numero='40')
-        testParty2 = models.Partido(nome='PT', numero='13')
-        partyTest3 = models.Partido(nome='PSDB', numero='23')
+        testParty1 = models.Partido(name='PMDB', number='40')
+        testParty2 = models.Partido(name='PT', number='13')
+        partyTest3 = models.Partido(name='PSDB', number='23')
         testParty1.save()
         testParty2.save()
         partyTest3.save()
 
         parliamentaryTest1 = models.Parlamentar(
-            id_parlamentar='', nome='Ivandro Cunha Lima', genero='')
+            id_parliamentary='', name='Ivandro Cunha Lima', gender='')
         parliamentaryTest2 = models.Parlamentar(
-            id_parlamentar='', nome='Fernando Ferro', genero='')
+            id_parliamentary='', name='Fernando Ferro', gender='')
         parliamentaryTest3 = models.Parlamentar(
-            id_parlamentar='', nome='Humberto Costa', genero='')
+            id_parliamentary='', name='Humberto Costa', gender='')
 
         parliamentaryTest1.save()
         parliamentaryTest2.save()
         parliamentaryTest3.save()
 
         legislative_houseTest1 = models.CasaLegislativa(
-            nome='Camara dos Deputados', nome_curto='cdep', esfera='FEDERAL',
-            local='', atualizacao='2012-06-01')
+            name='Camara dos Deputados', short_name='cdep', sphere='FEDERAL',
+            local='', update='2012-06-01')
 
         legislative_houseTest2 = models.CasaLegislativa(
-            nome='Camara Municipal de Sao Paulo', nome_curto='cmsp',
-            esfera='MUNICIPAL', local='Sao Paulo - SP',
-            atualizacao='2012-12-31')
+            name='Camara Municipal de Sao Paulo', short_name='cmsp',
+            sphere='MUNICIPAL', local='Sao Paulo - SP',
+            update='2012-12-31')
 
         legislative_houseTest1.save()
         legislative_houseTest2.save()
 
         legislatureTest1 = models.Legislatura(
-            parlamentar=parliamentaryTest1,
-            casa_legislativa=legislative_houseTest1, inicio='2004-01-01',
-            fim='2012-07-01', partido=testParty1, localidade='PB')
+            parliamentary=parliamentaryTest1,
+            legislative_house=legislative_houseTest1, begin='2004-01-01',
+            end='2012-07-01', party=testParty1, location='PB')
         legislatureTest1.save()
 
         propositionTest1 = models.Proposicao()
@@ -81,12 +78,12 @@ class ExportadoresFileTest(TestCase):
         propositionTest1.save()
 
         votingTest1 = models.Votacao(
-            id_vot=' 12345', descricao='Teste da votacao',
-            data='1900-12-05', resultado='Teste', proposicao=propositionTest1)
+            id_votes=' 12345', description='Teste da votacao',
+            date='1900-12-05', result='Teste', proposition=propositionTest1)
         votingTest1.save()
 
         voteTest1 = models.Voto(
-            votacao=votingTest1, legislatura=legislatureTest1, opcao='TESTE')
+            voting=votingTest1, legislature=legislatureTest1, option='TESTE')
         voteTest1.save()
 
         exportar.main()
@@ -116,7 +113,7 @@ class ExportadoresFileTest(TestCase):
     def test_verify_file_legislative_house(self):
         invalid_value = 0
         legislative_house = models.CasaLegislativa.objects.get(
-            atualizacao='2012-12-31')
+            update='2012-12-31')
         filepath = os.path.join(MODULE_DIR, 'dados/casa_legislativa.xml')
         file_xml = open(filepath, 'r')
 
