@@ -182,11 +182,16 @@ class Camaraws:
         Returns:
         Corresponding to the ElementTree XML returned by webservice.
         Exemplo:
-        http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ListarProposicoes?sigla=PL&numero=&ano=2011&datApresentacaoIni=14/11/2011&datApresentacaoFim=16/11/2011&autor=&parteNomeAutor=&siglaPartidoAutor=&siglaUFAutor=&generoAutor=&codEstado=&codOrgaoEstado=&emTramitacao=
+        http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ListarProposicoes?sigla=PL
+        &numero=&ano=2011&datApresentacaoIni=14/11/2011&datApresentacaoFim=16/1
+        1/2011&autor=&parteNomeAutor=&siglaPartidoAutor=&siglaUFAutor=&generoAutor=&codE
+        stado=&codOrgaoEstado=&emTramitacao=
+
         The return is a list of Element objects with each list item a proposition found.
 
         Exceptions:
-            ValueError -- when the web service does not return a that occurs when there are no results for the search criteria."""
+            ValueError -- when the web service does not return a that occurs when there are
+            no results for the search criteria."""
 
         consult_parameters = [
             "sigla", "numero", "ano", "datapresentacaoini",
@@ -303,16 +308,15 @@ class ProposicoesParser:
 
 LOCK_TO_CREATE_CASA = threading.Lock()
 
-
 class ImportadorCamara:
 
     """Saves the data of the web services of the Chamber of Deputies in the database."""
 
     def __init__(self, voted, verbose=False):
-        """verbose (booleano) -- enables / disables the screen prints."""
+        """verbose (boolean) -- enables / disables the screen prints."""
 
         self.verbose = verbose
-        # id/sigla/num/ano das proposições que tiveram votações
+        # id/aconym/number/year das propositions that had votings
         self.votadas = voted
         self.total = len(self.votadas)
 
@@ -320,12 +324,10 @@ class ImportadorCamara:
         self.importadas = 0  
         self.partidos = {}
 
-            # Political partidos cache (key is name, and value is object Partido)
+            # Political parties cache (key is name, and value is object Partido)
         self.parlamentares = {}
 
-            # Parliamentary cache (key is 'nome-search_political_party', and value é object Parlamentar
-
-
+    # Parliamentary cache (key is 'nome-search_political_party', and value is object Parlamentar
     def _converte_data(self, data_string, hour_string='00:00'):
         """Convert string 'd/m/a' to object datetime.
         Returns None if data_str is invalid.
@@ -352,7 +354,7 @@ class ImportadorCamara:
 
         LOCK_TO_CREATE_CASA.acquire()
         count_cdep = models.CasaLegislativa.objects.filter(
-            nome_curto='cdep').count()
+            short_name='cdep').count()
 
         no_records = 0
 
@@ -367,7 +369,7 @@ class ImportadorCamara:
             return deputies_chamber
         else:
             LOCK_TO_CREATE_CASA.release()
-            return models.CasaLegislativa.objects.get(nome_curto='cdep')
+            return models.CasaLegislativa.objects.get(short_name='cdep')
 
     def _prop_from_xml(self, proposition_xml, id_proposition):
         """Receive XML representing proposition (object etree)
@@ -377,14 +379,14 @@ class ImportadorCamara:
 
         try:
             query = models.Proposicao.objects.filter(
-                id_prop=id_proposition, casa_legislativa=self.camara_dos_deputados)
+                id_propositions=id_proposition, legislative_house=self.camara_dos_deputados)
         except DatabaseError, error:
             logger.error("DatabaseError: %s" % error)
 
             # try again
             time.sleep(1)
             query = models.Proposicao.objects.filter(
-                id_prop=id_proposition, casa_legislativa=self.camara_dos_deputados)
+                id_propositions=id_proposition, legislative_house=self.camara_dos_deputados)
 
         if query:
             proposition = query[0]
@@ -414,8 +416,8 @@ class ImportadorCamara:
         date_time = self._converte_data(date_str, hour_str)
 
         query = models.Votacao.objects.filter(
-            descricao=description, data=date_time,
-            proposicao__casa_legislativa=self.camara_dos_deputados)
+            description=description, data=date_time,
+            proposition_legislative_house=self.camara_dos_deputados)
         if query:
             voting = query[0]
         else:
@@ -483,8 +485,8 @@ class ImportadorCamara:
         voter = self._votante(vote_xml.get('Nome'), party.nome)
 
         legs = models.Legislatura.objects.filter(
-            parlamentar=voter, partido=party,
-            casa_legislativa=self.camara_dos_deputados)
+            parlieamentary=voter, party=party,
+            legislative_house=self.camara_dos_deputados)
 
         if legs:
             leg = legs[0]
@@ -541,8 +543,8 @@ class ImportadorCamara:
 
     def _progresso(self):
         """Indicate progress on screen."""
-
-        percentage = (int)(1.0 * self.importadas / self.total * 100)
+        percentage_conversion_factor = 100
+        percentage = (int)(1.0 * self.importadas / self.total * percentage_conversion_factor)
         logger.info('Progresso: %d / %d proposições (%d%%)' %
                     (self.importadas, self.total, percentage))
 
@@ -648,7 +650,7 @@ def lista_proposicoes_de_mulheres():
         count_propositions[year]['somatotal'] = len(
             propositions[year]['F']) + len(propositions[year]['M'])
 
-        convert_in_percentage = 100
+        percentage_conversion_factor = 100
 
         female_percentage[year] = convert_in_percentage * float(
             count_propositions[year]['F']) / float(count_propositions[

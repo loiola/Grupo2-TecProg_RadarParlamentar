@@ -35,14 +35,22 @@ COALITION_PARTIES = ['PT', 'PCdoB', 'PSB', 'PP', 'PMDB', 'PTB']
 # PR, PDT are not coalition?
 # Reference attributes "rollcall" column to be exported for analysis in R
 ROLLCALL = 'rollcall'
-# Reference to column attributes "id" (refers to the id for each attribute within the csv) to be exported for analysis in R
+
+# Reference to column attributes "id" (refers to the id for each attribute
+# within the csv) to be exported for analysis in R
 VOTER_ID = 'voter_id'
-# Reference to column attributes "name" (refers to the name of politicians) to be exported for analysis in R.
+
+# Reference to column attributes "name" (refers to the name of politicians) to
+# be exported for analysis in R.
 NAME = 'name'
+
 # Reference attributes "coalition" column to be exported for analysis in R.
 PARTY = 'party'
-# Reference to column attributes "partidos" (refers to acronyms of political partidos) to be exported for analysis in R.
+
+# Reference to column attributes "partidos" (refers to acronyms of political
+# parties) to be exported for analysis in R.
 COALITION = 'coalition'
+
 # Reference to column attributes "vote" to be exported for analysis in R.
 VOTE = 'vote'
 
@@ -70,14 +78,14 @@ class ExportadorCSV:
 
         if self.ini is None and self.fim is None:
             self.votacoes = models.Votacao.objects.filter(
-                proposicao__casa_legislativa=legislative_house).order_by('data')
+                proposicao__casa_legislativa = legislative_house).order_by('data')
         if self.ini is None and self.fim is not None:
             self.votacoes = models.Votacao.objects.filter(
-                proposicao__casa_legislativa=legislative_house
-            ).filter(data__lte=self.fim).order_by('data')
+                proposicao__casa_legislativa = legislative_house
+            ).filter(data__lte = self.fim).order_by('data')
         if self.ini is not None and self.fim is None:
             self.votacoes = models.Votacao.objects.filter(
-                proposicao__casa_legislativa=legislative_house
+                proposicao__casa_legislativa = legislative_house
             ).filter(data__gte=self.ini).order_by('data')
         if self.ini is not None and self.fim is not None:
             self.votacoes = models.Votacao.objects.filter(
@@ -112,6 +120,8 @@ class ExportadorCSV:
         return '1' if party_name in COALITION_PARTIES else '0'
 
     # Options of votes:
+    # Positive vote equals 1, negatives votes equals -1, abstentions, absences
+    # and obstructions equals 0
     def voto(self, option):
         if option == models.SIM:
             return 1
