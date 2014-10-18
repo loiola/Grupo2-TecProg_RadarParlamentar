@@ -147,7 +147,7 @@ def _deserialize_voto():
     for deserialized_object in data:
         deserialized_object.save()
 
-def _importa_legislatura(short_name_house):
+def _import_legislature(short_name_house):
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/legislatura.xml')
         out = open(filepath, "r")
@@ -163,7 +163,7 @@ def _importa_legislatura(short_name_house):
         if deserialized_object.object.casa_legislativa.nome_curto == short_name_house:
             deserialized_object.save()
 
-def _importa_proposicao(short_name_house):
+def _import_proposition(short_name_house):
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/proposicao.xml')
         out = open(filepath, "r")
@@ -179,7 +179,7 @@ def _importa_proposicao(short_name_house):
         if deserialized_object.object.casa_legislativa.nome_curto == short_name_house:
             deserialized_object.save()
 
-def _importa_votacao(short_name_house):
+def _import_votings(short_name_house):
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/votacao.xml')
         out = open(filepath, "r")
@@ -196,7 +196,7 @@ def _importa_votacao(short_name_house):
                 short_name_house:
             deserialized_object.save()
 
-def _importa_voto(short_name_house):
+def _import_vote(short_name_house):
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/voto.xml')
         out = open(filepath, "r")
@@ -213,7 +213,7 @@ def _importa_voto(short_name_house):
                 short_name_house:
             deserialized_object.save()
 
-def importa_casa_legislativa(short_name_house):
+def import_legislative_house(short_name_house):
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/casa_legislativa.xml')
         out = open(filepath, "r")
@@ -230,7 +230,7 @@ def importa_casa_legislativa(short_name_house):
         deserialized_object.save()
         deserialize_partido()
         deserialize_parlamentar()
-        _importa_legislatura(short_name_house)
-        _importa_proposicao(short_name_house)
-        _importa_votacao(short_name_house)
-        _importa_voto(short_name_house)
+        _import_legislature(short_name_house)
+        _import_proposition(short_name_house)
+        _import_votings(short_name_house)
+        _import_vote(short_name_house)
