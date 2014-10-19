@@ -28,70 +28,69 @@ from importadores.tests.mocks_cdep import mock_obter_proposicoes_votadas_plenari
 from mock import Mock
 from modelagem import models
 
-# constantes relativas ao código florestal
-# Alterar teste para que o mesmo utilize alguma proposicao retornada pela
-# funcionalidade do Plenário.
-# constantes relativas a emenda à consituição
+# Constants related to forestry code and the amendment of the constitution.
 
 ID = '17338'
-ANO = '1999'
-SIGLA = 'PL'
-NUM = '1876'
-NOME = 'PL 1876/1999'
+YEAR = '1999'
+ACRONYM = 'PL'
+NUMBER = '1876'
+NAME = 'PL 1876/1999'
 
 
-ID_PLENARIO = '584279'
-ANO_PLENARIO = '2013'
-SIGLA_PLENARIO = 'REQ'
-NUM_PLENARIO = '8196'
+PLENARY_ID = '584279'
+PLENARY_YEAR = '2013'
+PLENARY_ACRONYM = 'REQ'
+PLENARY_NUMBER = '8196'
 
-test_votadas = [[('17338', 'PL 1876/1999')]]
+votings_tests = [[('17338', 'PL 1876/1999')]]
 
 
 class ProposicoesParserTest(TestCase):
-    """Tests if the forest code is in the voted propositions."""
 
     def test_parse(self):
-        votadasParser = cdep.ProposicoesParser(test_votadas)
-        votadas = votadasParser.parse()
-        codigo_florestal = {'id': ID, 'sigla': SIGLA, 'num': NUM, 'ano': ANO}
-        self.assertTrue(codigo_florestal in votadas)
+
+        # Tests if the forest code is in the voted propositions.
+        parserVotings = cdep.ProposicoesParser(votings_tests)
+        votings = parserVotings.parse()
+        forestry_code = {'id': ID, 'sigla': ACRONYM, 'num': NUMBER, 'ano': YEAR}
+        self.assertTrue(forestry_code in votings)
 
 
 class SeparadorDeListaTest(TestCase):
 
-    def test_separa_lista(self):
+    def test_separate_list(self):
 
-        lista = [1, 2, 3, 4, 5, 6]
+        # Inserting tabs in list: a list is separated into several lists.
+        list = [1, 2, 3, 4, 5, 6]
 
-        separador = cdep.SeparadorDeLista(1)
-        listas = separador.separa_lista_em_varias_listas(lista)
-        self.assertEquals(len(listas), 1)
-        self.assertEquals(listas[0], lista)
+        tab = cdep.SeparadorDeLista(1)
+        lists = tab.separa_lista_em_varias_listas(list)
+        self.assertEquals(len(lists), 1)
+        self.assertEquals(lists[0], list)
 
-        separador = cdep.SeparadorDeLista(2)
-        listas = separador.separa_lista_em_varias_listas(lista)
-        self.assertEquals(len(listas), 2)
-        self.assertEquals(listas[0], [1, 2, 3])
-        self.assertEquals(listas[1], [4, 5, 6])
+        tab = cdep.SeparadorDeLista(2)
+        lists = tab.separa_lista_em_varias_listas(list)
+        self.assertEquals(len(lists), 2)
+        self.assertEquals(lists[0], [1, 2, 3])
+        self.assertEquals(lists[1], [4, 5, 6])
 
-        separador = cdep.SeparadorDeLista(3)
-        listas = separador.separa_lista_em_varias_listas(lista)
-        self.assertEquals(len(listas), 3)
-        self.assertEquals(listas[0], [1, 2])
-        self.assertEquals(listas[1], [3, 4])
-        self.assertEquals(listas[2], [5, 6])
+        tab = cdep.SeparadorDeLista(3)
+        lists = tab.separa_lista_em_varias_listas(list)
+        self.assertEquals(len(lists), 3)
+        self.assertEquals(lists[0], [1, 2])
+        self.assertEquals(lists[1], [3, 4])
+        self.assertEquals(lists[2], [5, 6])
 
-    def test_separa_lista_quando_nao_eh_multiplo(self):
+    def test_separate_list_when_it_is_not_multiple(self):
 
-        lista = [1, 2, 3, 4, 5, 6, 7]
+        list = [1, 2, 3, 4, 5, 6, 7]
 
-        separador = cdep.SeparadorDeLista(3)
-        listas = separador.separa_lista_em_varias_listas(lista)
-        self.assertEquals(len(listas), 3)
-        self.assertEquals(listas[0], [1, 2, 3])
-        self.assertEquals(listas[1], [4, 5, 6])
-        self.assertEquals(listas[2], [7])
+        tab = cdep.SeparadorDeLista(3)
+        lists = tab.separa_lista_em_varias_listas(list)
+        self.assertEquals(len(lists), 3)
+        self.assertEquals(lists[0], [1, 2, 3])
+        self.assertEquals(lists[1], [4, 5, 6])
+        self.assertEquals(lists[2], [7])
 
 
 class CamaraTest(TestCase):
@@ -99,17 +98,17 @@ class CamaraTest(TestCase):
     @classmethod
     def setUpClass(cls):
 
-        # Iporting just the votings of proposition in votadas_test.txt
-        votadasParser = cdep.ProposicoesParser(test_votadas)
-        votadas = votadasParser.parse()
-        importer = cdep.ImportadorCamara(votadas)
+        # Iporting just the votings of proposition in 'votadas_test.txt'.
+        parserVotings = cdep.ProposicoesParser(votings_tests)
+        votings = parserVotings.parse()
+        importer = cdep.ImportadorCamara(votings)
 
-        camaraWS = cdep.Camaraws()
-        camaraWS.listar_proposicoes = Mock(side_effect=mock_listar_proposicoes)
-        camaraWS.obter_proposicao_por_id = Mock(
+        camaraWebService = cdep.Camaraws()
+        camaraWebService.listar_proposicoes = Mock(side_effect=mock_listar_proposicoes)
+        camaraWebService.obter_proposicao_por_id = Mock(
             side_effect=mock_obter_proposicao)
-        camaraWS.obter_votacoes = Mock(side_effect=mock_obter_votacoes)
-        importer.importar(camaraWS)
+        camaraWebService.obter_votacoes = Mock(side_effect=mock_obter_votacoes)
+        importer.importar(camaraWebService)
 
     @classmethod
     def tearDownClass(cls):
@@ -117,93 +116,93 @@ class CamaraTest(TestCase):
         from util_test import flush_db
         flush_db(cls)
 
-    def test_casa_legislativa(self):
+    def test_legislative_house(self):
         """Certifying the short name "cdep" refers to name "Camara dos 
-        Deputados"""
+        Deputados."""
 
-        camara = models.CasaLegislativa.objects.get(nome_curto='cdep')
-        self.assertEquals(camara.nome, 'Câmara dos Deputados')
+        chamber_of_deputies = models.CasaLegislativa.objects.get(nome_curto='cdep')
+        self.assertEquals(chamber_of_deputies.nome, 'Câmara dos Deputados')
 
-    def test_prop_cod_florestal(self):
+    def test_forest_code_propositions(self):
         """Certifying if the date (day, month and year) and situation of 
-        forest code is correct"""
+        forest code is correct."""
 
-        votadasParser = cdep.ProposicoesParser(test_votadas)
-        votadas = votadasParser.parse()
-        importer = cdep.ImportadorCamara(votadas)
+        parserVotings = cdep.ProposicoesParser(votings_tests)
+        votings = parserVotings.parse()
+        importer = cdep.ImportadorCamara(votings)
         data = importer.converte_data('19/10/1999')
-        prop_cod_flor = models.Proposicao.objects.get(id_prop=ID)
-        self.assertEquals(prop_cod_flor.nome(), NOME)
+        forest_code_proposition = models.Proposicao.objects.get(id_prop=ID)
+        self.assertEquals(forest_code_proposition.nome(), NAME)
         self.assertEquals(
-            prop_cod_flor.situacao,
+            forest_code_proposition.situacao,
             'Tranformada no(a) Lei Ordinária 12651/2012')
-        self.assertEquals(prop_cod_flor.data_apresentacao.day, data.day)
-        self.assertEquals(prop_cod_flor.data_apresentacao.month, data.month)
-        self.assertEquals(prop_cod_flor.data_apresentacao.year, data.year)
+        self.assertEquals(forest_code_proposition.data_apresentacao.day, data.day)
+        self.assertEquals(forest_code_proposition.data_apresentacao.month, data.month)
+        self.assertEquals(forest_code_proposition.data_apresentacao.year, data.year)
 
-    def test_votacoes_cod_florestal(self):
+    def test_forest_code_votings(self):
         """Checks if the description of voting is the same, besides it tests 
-        if date (day, month and year) of the voting is correct"""
+        if date (day, month and year) of the voting is correct."""
 
-        votacoes = models.Votacao.objects.filter(proposicao__id_prop=ID)
-        self.assertEquals(len(votacoes), 5)
+        votings = models.Votacao.objects.filter(proposicao__id_prop=ID)
+        self.assertEquals(len(votings), 5)
 
-        vot = votacoes[0]
-        self.assertTrue('REQUERIMENTO DE RETIRADA DE PAUTA' in vot.descricao)
+        vote = votings[0]
+        self.assertTrue('REQUERIMENTO DE RETIRADA DE PAUTA' in vote.descricao)
 
-        importer = cdep.ImportadorCamara(votacoes)
-        data = importer.converte_data('24/5/2011')
-        vot = votacoes[1]
-        self.assertEquals(vot.data.day, data.day)
-        self.assertEquals(vot.data.month, data.month)
-        self.assertEquals(vot.data.year, data.year)
+        importer = cdep.ImportadorCamara(votings)
+        date = importer.converte_data('24/5/2011')
+        vote = votings[1]
+        self.assertEquals(vote.data.day, date.day)
+        self.assertEquals(vote.data.month, date.month)
+        self.assertEquals(vote.data.year, date.year)
 
-    def test_votos_cod_florestal(self):
+    def test_forest_code_votes(self):
         """Checks if the votes are correct (who voted, what he or she voted and
-            his or her party name)"""
+            his or her political party name)."""
 
-        votacao = models.Votacao.objects.filter(proposicao__id_prop=ID)[0]
-        voto1 = [
-            v for v in votacao.votes() if v.legislatura.parlamentar.nome == 'Mara Gabrilli'][0]
-        voto2 = [
-            v for v in votacao.votes() if v.legislatura.parlamentar.nome == 'Carlos Roberto'][0]
-        self.assertEquals(voto1.opcao, models.SIM)
-        self.assertEquals(voto2.opcao, models.NAO)
-        self.assertEquals(voto1.legislatura.partido.nome, 'PSDB')
-        self.assertEquals(voto2.legislatura.localidade, 'SP')
+        votings = models.Votacao.objects.filter(proposicao__id_prop=ID)[0]
+        first_vote = [
+            v for v in votings.votes() if v.legislatura.parlamentar.nome == 'Mara Gabrilli'][0]
+        seconde_vote = [
+            v for v in votings.votes() if v.legislatura.parlamentar.nome == 'Carlos Roberto'][0]
+        self.assertEquals(first_vote.opcao, models.SIM)
+        self.assertEquals(seconde_vote.opcao, models.NAO)
+        self.assertEquals(first_vote.legislatura.partido.nome, 'PSDB')
+        self.assertEquals(seconde_vote.legislatura.localidade, 'SP')
 
 
 class WsPlenarioTest(TestCase):
 
-    def test_prop_in_xml(self):
-        """Tests if the plenary proposition defined are in zip_votadas[x]"""
+    def test_proposition_in_xml(self):
+        """Tests if the plenary proposition defined are in zip_votadas[x]."""
 
-        ano_min = 2013
-        ano_max = 2013
-        camaraWS = cdep.Camaraws()
-        camaraWS.obter_proposicoes_votadas_plenario = Mock(
+        minimal_year = 2013
+        maximal_year = 2013
+        chamberWebService = cdep.Camaraws()
+        chamberWebService.obter_proposicoes_votadas_plenario = Mock(
             side_effect=mock_obter_proposicoes_votadas_plenario)
-        propFinder = cdep.ProposicoesFinder()
-        zip_votadas = propFinder.find_props_disponiveis(
-            ano_min, ano_max, camaraWS)
+        proposition_finder = cdep.ProposicoesFinder()
+        zip_votadas = proposition_finder.find_props_disponiveis(
+            minimal_year, maximal_year, chamberWebService)
         prop_test = ('14245', 'PEC 3/1999')
         for x in range(0, len(zip_votadas)):
             self.assertTrue(prop_test in zip_votadas[x])
 
-    def test_prop_in_dict(self):
+    def test_find_propositions(self):
         """Tests if the plenary proposition "id", "sigla", "num" and "year" are
-        in dict_votadas"""
+        in 'dict_votadas'."""
 
-        ano_min = 2013
-        ano_max = 2013
-        camaraWS = cdep.Camaraws()
-        camaraWS.obter_proposicoes_votadas_plenario = Mock(
+        minimal_year = 2013
+        maximal_year = 2013
+        chamberWebService = cdep.Camaraws()
+        chamberWebService.obter_proposicoes_votadas_plenario = Mock(
             side_effect=mock_obter_proposicoes_votadas_plenario)
-        propFinder = cdep.ProposicoesFinder()
-        zip_votadas = propFinder.find_props_disponiveis(
-            ano_min, ano_max, camaraWS)
-        propParser = cdep.ProposicoesParser(zip_votadas)
-        dict_votadas = propParser.parse()
-        prop_in_dict = {'id': ID_PLENARIO, 'sigla':
-                        SIGLA_PLENARIO, 'num': NUM_PLENARIO, 'ano': ANO_PLENARIO}
-        self.assertTrue(prop_in_dict in dict_votadas)
+        proposition_finder = cdep.ProposicoesFinder()
+        zip_votadas = proposition_finder.find_props_disponiveis(
+            minimal_year, maximal_year, chamberWebService)
+        proposition_parser = cdep.ProposicoesParser(zip_votadas)
+        dict_votadas = proposition_parser.parse()
+        proposition_on_dict = {'id': PLENARY_ID, 'sigla':
+                        PLENARY_ACRONYM, 'num': PLENARY_NUMBER, 'ano': PLENARY_YEAR}
+        self.assertTrue(proposition_on_dict in dict_votadas)
