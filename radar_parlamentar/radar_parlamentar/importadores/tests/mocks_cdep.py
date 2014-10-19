@@ -25,14 +25,14 @@ from importadores import cdep
 
 VOTADAS_FILE_PATH = cdep.RESOURCES_FOLDER + 'votadas_test.txt'
 MOCK_PATH = os.path.join(cdep.RESOURCES_FOLDER, 'mocks')
-MOCK_PROPOSICAO = glob.glob(os.path.join(MOCK_PATH, 'proposicao_*'))
-MOCK_PROPOSICOES = glob.glob(os.path.join(MOCK_PATH, 'proposicoes_*'))
-MOCK_VOTACOES = glob.glob(os.path.join(MOCK_PATH, 'votacoes_*'))
-MOCK_PROPOSICOES_VOTADAS = glob.glob(
+MOCK_PROPOSITION = glob.glob(os.path.join(MOCK_PATH, 'proposicao_*'))
+MOCK_PROPOSITIONS = glob.glob(os.path.join(MOCK_PATH, 'proposicoes_*'))
+MOCK_VOTINGS = glob.glob(os.path.join(MOCK_PATH, 'votacoes_*'))
+MOCK_VOTED_PROPOSITIONS = glob.glob(
     os.path.join(MOCK_PATH, 'proposicoes_votadas_*'))
 
 
-def verificar_xml(nome, lista_xmls):
+def check_xml(nome, lista_xmls):
     """Checks if there is a file with certain name, in a list of files"""
 
     for xml in lista_xmls:
@@ -42,31 +42,31 @@ def verificar_xml(nome, lista_xmls):
     raise ValueError
 
 
-def mock_obter_proposicao(id_prop):
-    """Mock of obter_proposicao method from camaraWS.
-    Gets the id of the proposition and returns verificar_xml"""
+def mock_get_proposition(id_prop):
+    """Mock of 'get_proposition' method from camaraWS (webservice).
+    Gets the id of the proposition and returns check_xml"""
 
-    return verificar_xml('proposicao_' + str(id_prop), MOCK_PROPOSICAO)
+    return check_xml('proposicao_' + str(id_prop), MOCK_PROPOSITION)
 
 
-def mock_listar_proposicoes(sigla, ano):
-    """Mock of listar_proposicoes method from camaraWS.
+def mock_list_propositions(sigla, ano):
+    """Mock of 'list_propositions' method from camaraWS (webservice).
     Receives the acronym and the year of proposition and returns a xml"""
 
-    return verificar_xml('proposicoes_' + sigla + str(ano), MOCK_PROPOSICOES)
+    return check_xml('proposicoes_' + sigla + str(ano), MOCK_PROPOSITIONS)
 
 
-def mock_obter_proposicoes_votadas_plenario(ano):
-    """Mock ob mock_obter_proposicoes_com_votacoes method frome camaraWS.
+def mock_get_voted_propositions_on_plenary(ano):
+    """Mock of 'get_voted_propositions_on_plenary' method from camaraWS (webservice).
     Receive the year of proposition and returns a xml"""
 
-    return verificar_xml('proposicoes_votadas_' + str(
-        ano), MOCK_PROPOSICOES_VOTADAS)
+    return check_xml('proposicoes_votadas_' + str(
+        ano), MOCK_VOTED_PROPOSITIONS)
 
 
-def mock_obter_votacoes(sigla, num, ano):
-    """Mock of obter_votacoes method from camaraWS.
+def mock_get_votings(sigla, num, ano):
+    """Mock of 'get_votings' method from camaraWS (webservice).
     Receives a acronym, the number and the year and returns a xml"""
 
-    return verificar_xml('votacoes_' + sigla + str(num) + str(
-        ano), MOCK_VOTACOES)
+    return check_xml('votacoes_' + sigla + str(num) + str(
+        ano), MOCK_VOTINGS)
