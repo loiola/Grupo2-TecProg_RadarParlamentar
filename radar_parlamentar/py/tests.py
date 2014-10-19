@@ -85,9 +85,9 @@ class CamaraWS_Test(unittest.TestCase):
     vector_test2 = [1, 0.7, 0.1, 0.6]
     vector_test3 = [0, 0.2, 0.8, 0.2]
     
-    self.assertAlmostEqual(1.389244399 , algebra.norma(vector_test1), 5)
-    self.assertAlmostEqual(1.36381817 , algebra.norma(vector_test2), 5)
-    self.assertAlmostEqual(0.848528137 , algebra.norma(vector_test3), 5)
+    self.assertAlmostEqual(1.389244399 , algebra.calculate_vector_size(vector_test1), 5)
+    self.assertAlmostEqual(1.36381817 , algebra.calculate_vector_size(vector_test2), 5)
+    self.assertAlmostEqual(0.848528137 , algebra.calculate_vector_size(vector_test3), 5)
 
   def test_normalizacao(self):
 
@@ -101,11 +101,11 @@ class CamaraWS_Test(unittest.TestCase):
     nv2 = [0.733235575, 0.513264902, 0.073323557, 0.439941345]
     nv3 = [0, 0.235702261, 0.942809042, 0.235702261]
 
-    for e, v in zip(nv1, algebra.normaliza(vector_test1)):
+    for e, v in zip(nv1, algebra.normalize_vector(vector_test1)):
       self.assertAlmostEqual(e, v, 5)
-    for e, v in zip(nv2, algebra.normaliza(vector_test2)):
+    for e, v in zip(nv2, algebra.normalize_vector(vector_test2)):
       self.assertAlmostEqual(e, v, 5)
-    for e, v in zip(nv3, algebra.normaliza(vector_teste3)):
+    for e, v in zip(nv3, algebra.normalize_vector(vector_teste3)):
       self.assertAlmostEqual(e, v, 5)
 
   def test_prod_escalar(self):
@@ -115,9 +115,9 @@ class CamaraWS_Test(unittest.TestCase):
     nv2 = [0.733235575, 0.513264902, 0.073323557, 0.439941345]
     nv3 = [0, 0.235702261, 0.942809042, 0.235702261]
   
-    self.assertAlmostEqual(0.99225369 , algebra.prod_escalar(nv1,nv2), 5)
-    self.assertAlmostEqual(0.356290619 , algebra.prod_escalar(nv1,nv3), 5)
-    self.assertAlmostEqual(0.29380298 , algebra.prod_escalar(nv2,nv3), 5)
+    self.assertAlmostEqual(0.99225369 , algebra.calculate_scalar_product(nv1,nv2), 5)
+    self.assertAlmostEqual(0.356290619 , algebra.calculate_scalar_product(nv1,nv3), 5)
+    self.assertAlmostEqual(0.29380298 , algebra.calculate_scalar_product(nv2,nv3), 5)
 
   def test_semelhanca_vetores(self):
     """ Testing the similarity between feature vectors."""
