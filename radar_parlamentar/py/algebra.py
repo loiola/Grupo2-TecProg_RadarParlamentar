@@ -15,51 +15,49 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Módulo algebra -- possui funcões de álgebra vetorial
+"""Algebra module: has functions of vector algebra."""
 
-Funcões: 
-norma -- calcula a norma de um vetor
-normaliza -- calcula um vetor normalizado no mesmo sentido e direcão do vetor fornecido
-prod_escalar -- calcula o produto escalar entre dois vetores         
-"""
 
 import math
 
-def norma(vetor):
-  """Calcula a norma de um vetor (também chamada de módulo ou tamanho)
-  Argumentos:
-  vetor -- uma lista contendo valores reais
+def calculate_vector_size(vetor):
+  """Calculates the norm of a vector (also called module or size).
 
-  Retorna:
-  A norma do vetor, que é a raiz quadrada da soma dos quadrados de cada elemento do vetor
+  Arguments:
+  vector: a list with real values.
+
+  Returns:
+  The vector's norm, which is the square root of the sum of the squares of each element of the vector.
   """
   sum = 0
   for v_i in vetor:
     sum += v_i*v_i
   return math.sqrt(sum)
 
-def normaliza(vetor):
-  """Calcula um vetor normalizado no mesmo sentido e direcão do vetor fornecido
-  Argumentos:
-  vetor -- uma lista contendo valores reais
+def normalize_vector(vetor):
+  """Calculates a normalized vector in the same direction and the direction vector supplied.
 
-  Retorna:
-  Uma lista representando um vetor normalizado (vn), calculado como vn_i = vetor_i / norma(vetor)  
+  Arguments:
+  vector: a list with real values.
+
+  Returns:
+  A list representing normalized vector (vn), calculated as 'vn_i = vector_i / norm(vector)'
   """
-  normalizado = []
-  n = norma(vetor)
+  normalized = []
+  n = calculate_vector_size(vetor)
   for v_i in vetor:
-    normalizado.append(v_i / n)
-  return normalizado
+    normalized.append(v_i / n)
+  return normalized
 
-def prod_escalar(vetor1, vetor2):
-  """Calcula o produto escalar entre dois vetores
-  Argumentos:
-  vetor1, vetor2 -- listas contendo valores reais
+def calculate_scalar_product(vetor1, vetor2):
+  """Calculates the dot product between two vectors.
 
-  Retorna:
-  O produto escalar vetor1.vetor2, dado pela soma dos produtos dos elementos dos vetores
-  Exemplo: v1=[a,b,c], v2=[x,y,z] => v1.v2 = a*x + b*y +c*z
+  Arguments:
+  vector1, vector2: lists with real values.
+
+  Returns:
+  the dot product vector1.vector2, which is the sum of the products of the elements of the vectors.
+  Exemple: v1=[a,b,c], v2=[x,y,z] => v1.v2 = a*x + b*y +c*z
   """
   sum = 0
   for v1, v2 in zip(vetor1, vetor2):
