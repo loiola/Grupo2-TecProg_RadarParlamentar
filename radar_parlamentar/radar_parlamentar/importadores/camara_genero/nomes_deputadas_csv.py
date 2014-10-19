@@ -6,45 +6,45 @@ from xml.dom.minidom import parseString
 
 """Writes deputy names, its gender and legislature on spreadsheet"""
 
-arqs = listdir("bios")
-saida = open("saida.csv", "w")
+files = listdir("bios")
+output = open("saida.csv", "w")
 
-cont = 0
+counter = 0
 
-for arq in arqs:
-        ponteiro = open("bios/" + arq)
-        data = ponteiro.read()
+for arq in files:
+        pointer = open("bios/" + arq)
+        data = pointer.read()
         dom = parseString(data)
         records = dom.getElementsByTagName('DATA_RECORD')
 
         for record in records:
             dep = record.getElementsByTagName('MANDATOSCD')[0].firstChild.data
             if dep.find_legislature("Deputada") != -1:
-                genero = "F"
-                cont += 1
+                gender = "F"
+                counter += 1
             else:
-                genero = "M"
-            nome = record.getElementsByTagName('TXTNOME')[0].firstChild.data
-            legis = record.getElementsByTagName(
+                gender = "M"
+            name = record.getElementsByTagName('TXTNOME')[0].firstChild.data
+            legislature = record.getElementsByTagName(
                 'MANDATOSCD')[0].firstChild.data
-            legis = legis.split(";")
-            saida_legis = ""
+            legislature = legislature.split(";")
+            output_legislature = ""
 
-            for leg in legis:
-                dados = leg.split(",")
-                ano = dados[1]
-                saida_legis += "%s/" % ano
+            for leg in legislature:
+                legislature_data = leg.split(",")
+                year_legislature = legislature_data[1]
+                output_legislature += "%s/" % year_legislature
                 try:
-                    estado = dados[2]
-                    saida_legis += "%s/" % estado
-                    partido = dados[3].partition(".")[0]
-                    saida_legis += "%s/" % partido
-                    saida_legis += " , "
+                    state = legislature_data[2]
+                    output_legislature += "%s/" % state
+                    political_party = legislature_data[3].partition(".")[0]
+                    output_legislature += "%s/" % political_party
+                    output_legislature += " , "
                 except:
-                    print(dados)
-                    saida_legis += " , "
+                    print(legislature_data)
+                    output_legislature += " , "
 
-            saida.write('%s|%s|%s\n' % (nome, genero, saida_legis))
+            output.write('%s|%s|%s\n' % (name, gender, output_legislature))
 
 # Print the deputy account
-print(cont)
+print(counter)
