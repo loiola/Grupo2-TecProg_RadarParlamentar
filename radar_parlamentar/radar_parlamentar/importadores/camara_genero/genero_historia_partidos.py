@@ -9,85 +9,85 @@ logger = logging.getLogger("radar")
 
 """Makes history between partidos by gender (F - female / M - male)"""
 
-arqs = listdir("bios")
+files = listdir("bios")
 
-generos = {}
-historia = {}
-lista_partidos = []
+gender = {}
+story = {}
+political_parties_list = []
 
 cont = 0
 
-for arq in arqs:
+for arq in files:
     if arq[0] != ".":
-        ponteiro = open("bios/" + arq)
-        data = ponteiro.read()
+        pointer = open("bios/" + arq)
+        data = pointer.read()
         dom = parseString(data)
         records = dom.getElementsByTagName('DATA_RECORD')
 
         for record in records:
-            legis = record.getElementsByTagName(
+            legislature = record.getElementsByTagName(
                 'MANDATOSCD')[0].firstChild.data
-            if legis.find_legislature("Deputada") != -1:
-                genero = "F"
+            if legislature.find_legislature("Deputada") != -1:
+                gender_parliamentary = "F"
                 cont += 1
             else:
-                genero = "M"
+                gender_parliamentary = "M"
 
-            nome = record.getElementsByTagName('TXTNOME')[0].firstChild.data
-            legis_anos = record.getElementsByTagName(
+            name = record.getElementsByTagName('TXTNOME')[0].firstChild.data
+            legislature_years = record.getElementsByTagName(
                 'LEGISLATURAS')[0].firstChild.data
-            generos[nome] = genero
+            gender[name] = gender_parliamentary
 
-            anos = legis_anos.split(",")
-            anos2 = []
+            years = legislature_years.split(",")
+            years_list = []
 
-            for ano in anos:
+            for ano in years:
                 if ano.find_legislature("e") == -1:
-                    anos2.append(ano)
+                    years_list.append(ano)
                 else:
                     ano1, e, ano2 = ano.partition("e")
-                    anos2.append(ano1.strip())
-                    anos2.append(ano2.strip()[:-1])
+                    years_list.append(ano1.strip())
+                    years_list.append(ano2.strip()[:-1])
 
-            legis = legis.split(";")
+            legislature = legislature.split(";")
 
-            partidos = []
+            political_parties = []
 
-            for leg in legis:
-                termos = leg.split(",")
-                data = termos[1].strip()
+            for leg in legislature:
+                terms = leg.split(",")
+                data = terms[1].strip()
                 try:
-                    partido = termos[-1].strip().partition(".")[0]
+                    political_party_terms = terms[-1].strip().partition(".")[0]
                 except:
-                    partido = "SEM PARTIDO"
-                if not len(partido):
-                    partido = "SEM PARTIDO"
-                if partido == "S":
-                    partido = "SEM PARTIDO"
+                    political_party_terms = "SEM PARTIDO"
+                if not len(political_party_terms):
+                    political_party_terms = "SEM PARTIDO"
+                if political_party_terms == "S":
+                    political_party_terms = "SEM PARTIDO"
 
                 # If party is not in the party list, we append it
-                if partido not in lista_partidos:
-                    lista_partidos.append(partido)
+                if political_party_terms not in political_parties_list:
+                    political_parties_list.append(political_party_terms)
 
-                partidos.append(partido)
+                political_parties.append(political_party_terms)
 
-            for i in range(len(anos2)):
-                legislatura = anos2[i].strip()
-                partido = partidos[i]
-                legis_partidos = historia.get(partido)
-                if not legis_partidos:
-                    legis_partidos = {}
-                    historia[partido] = legis_partidos
-                nums = legis_partidos.get(legislatura, {})
+            for i in range(len(years_list)):
+                legislative = years_list[i].strip()
+                political_party_terms = political_parties[i]
+                political_party_legislature = story.get(political_party_terms)
+                if not political_party_legislature:
+                    political_party_legislature = {}
+                    story[political_party_terms] = political_party_legislature
+                nums = political_party_legislature.get(legislative, {})
                 if not nums:
                     nums = {"M": 0, "F": 0}
-                    legis_partidos[legislatura] = nums
-                nums[genero] = nums.get(genero, 0) + 1
+                    political_party_legislature[legislative] = nums
+                nums[gender_parliamentary] = nums.get(gender_parliamentary, 0) + 1
 
-                ano1, e, ano2 = legislatura.partition("-")
+                ano1, e, ano2 = legislative.partition("-")
                 nums["ano"] = int(ano1)
                 nums["duracao"] = 4
-                nums["legis"] = legislatura
+                nums["legis"] = legislative
 
 
             #ordenada = []
@@ -115,16 +115,16 @@ for arq in arqs:
 # Print the history account by gender
 print(cont)
 
-ordenada = []
+ordered = []
 
-for a in historia.keys():
-    ordenada.append(a)
+for a in story.keys():
+    ordered.append(a)
 
 # Orders ordenada list
-ordenada.sort()
+ordered.sort()
 
 # Print party list
-print(lista_partidos)
+print(political_parties_list)
 
 arq = open("genero_historia_partidos.json", "w")
-json.dump(historia, arq)
+json.dump(story, arq)
