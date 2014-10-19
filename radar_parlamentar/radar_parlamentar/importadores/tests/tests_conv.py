@@ -40,49 +40,49 @@ class ConvencaoTest(TestCase):
     def setUp(self):
         self.conv = models.CasaLegislativa.objects.get(nome_curto='conv')
 
-    def test_check_len_votacoes(self):
-        """Tests if the number of conv votings is correct."""
+    def test_check_len_votings(self):
+        """Tests if the number of Franch Convention votings is correct."""
 
-        NUM_VOTACOES = 8
-        num_votacoes = len(models.Votacao.objects.filter(
+        NUMBER_OF_VOTINGS = 8
+        votings_number = len(models.Votacao.objects.filter(
             proposicao__casa_legislativa=self.conv))
-        self.assertEquals(num_votacoes, NUM_VOTACOES)
+        self.assertEquals(votings_number, NUMBER_OF_VOTINGS)
 
-    def test_check_len_votos(self):
-        """Tests if the number of conv votes is correct."""
+    def test_check_len_votes(self):
+        """Tests if the number of Franch Convention votes is correct."""
 
-        NUM_VOTOS = 8 * 3 * 3
-        num_votos = len(models.Voto.objects.filter(
+        NUMBER_OF_VOTINGS = 8 * 3 * 3
+        votings_number = len(models.Voto.objects.filter(
             votacao__proposicao__casa_legislativa=self.conv))
-        self.assertEquals(num_votos, NUM_VOTOS)
+        self.assertEquals(votings_number, NUMBER_OF_VOTINGS)
 
-    def test_check_len_votos_por_votacao(self):
-        """Tests if the number of conv votes by votings is correct."""
+    def test_check_len_votes_by_votings(self):
+        """Tests if the number Franch Convention votes by votings is correct."""
 
-        NUM_VOTOS_POR_VOTACAO = 3 * 3
-        votacoes = models.Votacao.objects.filter(
+        NUMBER_OF_VOTES_BY_VOTINGS = 3 * 3
+        votings = models.Votacao.objects.filter(
             proposicao__casa_legislativa=self.conv)
-        for votacao in votacoes:
-            num_votos = len(models.Voto.objects.filter(votacao=votacao))
-            self.assertEquals(num_votos, NUM_VOTOS_POR_VOTACAO)
+        for votacao in votings:
+            votings_number = len(models.Voto.objects.filter(votacao=votacao))
+            self.assertEquals(votings_number, NUMBER_OF_VOTES_BY_VOTINGS)
 
-    def test_check_partidos(self):
-        """Tests if the names of conv partidos are correct."""
+    def test_check_political_parties(self):
+        """Tests if the names of Franch Convention 'partidos' are correct."""
 
-        partidos = models.Partido.objects.all()
-        nomes_partidos = [p.nome for p in partidos]
-        self.assertTrue(conv.GIRONDINOS in nomes_partidos)
-        self.assertTrue(conv.JACOBINOS in nomes_partidos)
-        self.assertTrue(conv.MONARQUISTAS in nomes_partidos)
+        political_parties = models.Partido.objects.all()
+        political_parties_names = [p.nome for p in political_parties]
+        self.assertTrue(conv.GIRONDINOS in political_parties_names)
+        self.assertTrue(conv.JACOBINOS in political_parties_names)
+        self.assertTrue(conv.MONARQUISTAS in political_parties_names)
 
-    def test_check_parlamentares(self):
-        """Tests if the number of conv parliamentaries and their names are
+    def test_check_parliamentaries(self):
+        """Tests if the number of Franch Convention parliamentaries and their names are
         correct."""
 
-        NUM_PARLAMENTARES = 3 * 3
-        parlamentares = models.Parlamentar.objects.filter(
+        NUMBER_OF_PARLIAMENTARIES = 3 * 3
+        parliamentaries = models.Parlamentar.objects.filter(
             legislatura__casa_legislativa=self.conv)
-        self.assertEqual(len(parlamentares), NUM_PARLAMENTARES)
-        nomes_parlamentares = [p.nome for p in parlamentares]
+        self.assertEqual(len(parliamentaries), NUMBER_OF_PARLIAMENTARIES)
+        parliamentaries_names = [p.nome for p in parliamentaries]
         self.assertEquals(
-            nomes_parlamentares.count('Pierre'), NUM_PARLAMENTARES)
+            parliamentaries_names.count('Pierre'), NUMBER_OF_PARLIAMENTARIES)
