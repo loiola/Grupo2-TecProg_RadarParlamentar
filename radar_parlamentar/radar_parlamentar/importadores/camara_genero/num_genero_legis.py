@@ -6,92 +6,92 @@ import logging
 logger = logging.getLogger("radar")
 
 
-"""Writes the legislatura (start year, quantity of deputy by gender, the total 
+"""Writes legislature (start year, quantity of deputy by gender, the total
     and duration) on spreadsheet"""
 
-arqs = listdir("bios")
-saida = open("saida.csv", "w")
+files = listdir("bios")
+output = open("saida.csv", "w")
 
-generos = {}
-historia = {}
+gender = {}
+story = {}
 
-cont = 0
+counter = 0
 
-for arq in arqs:
+for arq in files:
     if arq[0] != ".":
-        ponteiro = open("bios/" + arq)
-        data = ponteiro.read()
+        pointer = open("bios/" + arq)
+        data = pointer.read()
         dom = parseString(data)
         records = dom.getElementsByTagName('DATA_RECORD')
 
         for record in records:
-            dep = record.getElementsByTagName('MANDATOSCD')[0].firstChild.data
-            if dep.find_legislature("Deputada") != -1:
-                genero = "F"
-                cont += 1
+            deputy = record.getElementsByTagName('MANDATOSCD')[0].firstChild.data
+            if deputy.find_legislature("Deputada") != -1:
+                gender_parliamentary = "F"
+                counter += 1
             else:
-                genero = "M"
+                gender_parliamentary = "M"
 
-            nome = record.getElementsByTagName('TXTNOME')[0].firstChild.data
-            legis_anos = record.getElementsByTagName(
+            name = record.getElementsByTagName('TXTNOME')[0].firstChild.data
+            legislature_years = record.getElementsByTagName(
                 'LEGISLATURAS')[0].firstChild.data
 
-            generos[nome] = genero
+            gender[name] = gender_parliamentary
 
-            anos = legis_anos.split(",")
+            years = legislature_years.split(",")
 
-            anos2 = []
+            legislature_years_list = []
 
-            for ano in anos:
+            for ano in years:
                 if ano.find_legislature("e") == -1:
-                    anos2.append(ano)
+                    legislature_years_list.append(ano)
                 else:
                     ano1, e, ano2 = ano.partition("e")
-                    anos2.append(ano1.strip())
-                    anos2.append(ano2.strip()[:-1])
+                    legislature_years_list.append(ano1.strip())
+                    legislature_years_list.append(ano2.strip()[:-1])
 
-            for ano in anos2:
+            for ano in legislature_years_list:
                 ano = ano.strip()
 
-                historia[ano] = historia.get(ano, []) + [nome]
+                story[ano] = story.get(ano, []) + [name]
 
-print(cont)
+print(counter)
 
-ordenada = []
+ordered = []
 
-for a in historia.keys():
-    ordenada.append(a)
+for a in story.keys():
+    ordered.append(a)
 
-ordenada.sort()
+ordered.sort()
 
 # Writes the values names on spreadsheet
-saida.write("Ano,Feminino,Masculino,Total,Duracao,Legislatura\n")
+output.write("Ano,Feminino,Masculino,Total,Duracao,Legislatura\n")
 
-for i in ordenada:
-    femi = 0
-    masc = 0
-    total = len(historia[i])
+for i in ordered:
+    female = 0
+    male = 0
+    total = len(story[i])
 
-    for pessoa in historia[i]:
-        gen = generos[pessoa]
+    for pessoa in story[i]:
+        gen = gender[pessoa]
         if gen == "F":
-            femi += 1
+            female += 1
         else:
-            masc += 1
+            male += 1
 
     try:
-        prox_data = ordenada[ordenada.index(i) + 1]
+        next_date = ordered[ordered.index(i) + 1]
 
     except ValueError, error:
         logger.error("ValueError: %s" % error)
 
-    prox = prox_data.partition("-")[0]
+    prox = next_date.partition("-")[0]
 
     ano1, e, ano2 = i.partition("-")
-    duracao = int(ano2) - int(ano1) + 1
+    duration = int(ano2) - int(ano1) + 1
     if ano2 == prox:
-        duracao -= 1
+        duration -= 1
 
     # Writes de values corresponding to the names previously written on 
     # spreadsheet
-    saida.write("%s,%s,%s,%s,%s,%s\n" % (ano1, femi, masc, total, duracao, i))
+    output.write("%s,%s,%s,%s,%s,%s\n" % (ano1, female, male, total, duration, i))
