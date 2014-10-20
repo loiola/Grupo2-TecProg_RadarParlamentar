@@ -35,11 +35,12 @@ import camaraws
 # MPV - draft provisional measure
 # PEC - proposed amendment to the constitution
 
-def parse_html():
-    """Parse of the file recusrsos/proposicoes.htmll
-    Retorns:
+def do_parse_html():
+    """Parse of the file recursos/proposicoes.html
+
+    Returns:
         A list with a identification of the propositions found in html
-        Each list position is a dicionary with key \in {id, tipo, num, ano}
+        Each list position is a dictionary with key \in {id, tipo, num, ano}
         The keys and values of this dictionaries are strings."""
 
     # File contains propositions voted on by the chamber in 2011
@@ -68,9 +69,10 @@ def parse_html():
     return propositions
 
 def parse():
-    """Parse the recursos / proposicoes.htmll file
-     returns:
-     A list identifying the propositions found in htmll
+    """Parse the recursos / proposicoes.html file
+
+     Returns:
+     A list identifying the propositions found in html
      Each position on the list is a dictionary with keys \ in {id, type in a year}
      The keys and values ​​are strings of these dictionaries."""
 
@@ -101,7 +103,7 @@ def parse():
 
     return propositions
 
-def with_vote(proposicoes):
+def check_votes_in_chamberWS(proposicoes):
     """Checks which propositions have votes in the chamber web service
      It is only on those propositions we will do our analyzes
      This check is done by invoking the web service camera
@@ -127,7 +129,7 @@ def with_vote(proposicoes):
             voted.append(proposition)
     return voted
 
-def propositions_with_vote():
+def list_propositions_with_vote():
     """Returns the list of propositions for which it is possible to get the xml
     of the vote
      This list is taken from the results / votadas.txt file
@@ -141,10 +143,10 @@ def propositions_with_vote():
 if __name__ == "__main__":
 
     # Receives the parse_html() method
-    propositions = parse_html()
+    propositions = do_parse_html()
 
     # Receives the com_votacao() method that pass the propositions as parameter
-    voted = with_vote(propositions)
+    voted = check_votes_in_chamberWS(propositions)
 
     print("# Documento entregue pela câmara continha %d proposições votadas em 2011" %
           len(propositions))
