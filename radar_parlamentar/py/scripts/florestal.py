@@ -30,7 +30,7 @@ import sys
 type = 'pl'
 number = '1876'
 year = '1999'
-proposition = camaraws.obter_votacao(type, number, year)
+proposition = camaraws.get_votings(type, number, year)
 
 txt = str(proposition)
 print type(txt)
