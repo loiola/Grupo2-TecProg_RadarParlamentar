@@ -27,24 +27,20 @@ Classes:
 from __future__ import unicode_literals
 from django.utils.dateparse import parse_datetime
 from models import models
-#last_refresh => date of last refresh on data
 
+# Date of last refresh on data.
 LAST_REFRESH = parse_datetime('2012-06-01 0:0:0')
 
-#begin_period => date on begin of period of votation
-
+# Date on begin of period of voting.
 BEGIN_PERIOD = parse_datetime('1989-01-01 0:0:0')
 
-#end_period => date on end of period of votation
-
+# Date on end of period of voting.
 END_PERIOD = parse_datetime('1989-12-30 0:0:0')
 
-#begin_first_semester => date on begin the first semester
-
+# Date on begin the first semester.
 BEGIN_FIRST_SEMESTER = parse_datetime('1989-02-02 0:0:0')
 
-#begin_second_semester => date on begin the second semester
-
+# Date on begin the second semester.
 BEGIN_SECOND_SEMESTER = parse_datetime('1989-10-10 0:0:0')
 
 PARLAMENTS_PER_PARTY = 3
@@ -53,313 +49,326 @@ GIRONDINES = 'Girondinos'
 JACOBINES = 'Jacobinos'
 MONARQUIST = 'Monarquistas'
 
-
-class ImportadorConvencao:
-
-    #new_legislative_hause => get instance the new legislative house
-
-    def _new_legislative_house(self):
-
-        conv = models.CasaLegislativa()
-        conv.nome = 'Convenção Nacional Francesa'
-        conv.short_name = 'conv'
-        conv.esfera = models.FEDERAL
-        conv.local = 'Paris (FR)'
-        conv.atualizacao = LAST_REFRESH
-        conv.save()
-        return conv
-
-    # new_party => get instance the new party
-
-    def _new_party(self):
-
-        girondinos = models.Partido()
-        girondinos.nome = GIRONDINES
-        girondinos.numero = 27
-        girondinos.cor = '#008000'
-        girondinos.save()
-        jacobinos = models.Partido()
-        jacobinos.nome = JACOBINES
-        jacobinos.numero = 42
-        jacobinos.cor = '#FF0000'
-        jacobinos.save()
-        monarquistas = models.Partido()
-        monarquistas.nome = MONARQUIST
-        monarquistas.numero = 79
-        monarquistas.cor = '#800080'
-        monarquistas.save()
-        self.partidos = {girondinos, jacobinos, monarquistas}
-
-    #new_legislature => get instance the new legislature
-
-    def _new_legislature(self):
-
-        # Name search_political_party => list of party legislaturas
-        self.legs = {}  
-        for p in self.partidos:
-            self.legs[p.nome] = []
-            for i in range(0, PARLAMENTS_PER_PARTY):
-
-                parlamentar = models.Parlamentar()
-                parlamentar.id_parlamentar = '%s%s' % (p.nome[0], str(i))
-                parlamentar.nome = 'Pierre'
-                parlamentar.save()
-
-                leg = models.Legislatura()
-                leg.casa_legislativa = self.casa
-                leg.inicio = BEGIN_PERIOD
-                leg.fim = END_PERIOD
-                leg.partido = p
-                leg.parlamentar = parlamentar
-                leg.save()
-                self.legs[p.nome].append(leg)
-
-    #new_proposition => get instance the new proposition
-
-    def _new_proposition(self, number, descripcion):
-
-        prop = models.Proposicao()
-        prop.id_prop = number
-        prop.sigla = 'PL'
-        prop.numero = number
-        prop.ementa = descripcion
-        prop.descricao = descripcion
-        prop.casa_legislativa = self.casa
-        prop.save()
-        return prop
-
-    #new_votation => get instance the new votation
-
-    def _new_votation(self, number, description, data, proposition):
-
-        votacao = models.Votacao()
-        votacao.id_vot = number
-        votacao.descricao = description
-        votacao.data = data
-        votacao.proposicao = proposition
-        votacao.save()
-        return votacao
-
-    #new_vote => get instance the new vote
-
-    def _new_votes(self, votation, name_party, options):
-
-        # options is an options list (YES, NO...)
-        for i in range(0, PARLAMENTS_PER_PARTY):
-            voto = models.Voto()
-            voto.legislatura = self.legs[name_party][i]
-            voto.opcao = options[i]
-            voto.votacao = votation
-            voto.save()
-
-    #new_votation1 => get instance the new votation
-
-    def girondine_votes(self, votacao):
-        votos_girondinos = [models.SIM, models.ABSTENCAO, models.NAO]
-        self._new_votes(votacao, GIRONDINES, votos_girondinos)
-
-    def jaconbine_votes(self, votacao):
-        votos_jacobinos = [models.SIM, models.SIM, models.SIM]
-        self._new_votes(votacao, JACOBINES, votos_jacobinos)
-
-    def monarquist_votes(self, votacao):
-        votos_monarquistas = [models.NAO, models.NAO, models.NAO]
-        self._new_votes(votacao, MONARQUIST, votos_monarquistas)
-
-    def _new_votation1(self):
-
-        NUM = '1'
-        DESCRICAO = 'Reforma agrária'
-        prop = self._new_proposition(NUM, DESCRICAO)
-        votacao = self._new_votation(
-            NUM, DESCRICAO, BEGIN_FIRST_SEMESTER, prop)
-
-        self.girondine_votes(votacao)
-
-        self.jaconbine_votes(votacao)
-
-        self.monarquist_votes(votacao)
-
-    #new_votation2 => get instance the new votation
-
-    def girondine_votes2(self, votacao):
-        votos_girondinos = [models.NAO, models.NAO, models.NAO]
-        self._new_votes(votacao, GIRONDINES, votos_girondinos)
-
-    def jaconbine_votes2(self, votacao):
-        votos_jacobinos = [models.NAO, models.NAO, models.NAO]
-        self._new_votes(votacao, JACOBINES, votos_jacobinos)
-
-    def monarquist_votes2(self, votacao):
-        votos_monarquistas = [models.SIM, models.SIM, models.SIM]
-        self._new_votes(votacao, MONARQUIST, votos_monarquistas)
-
-    def _new_votation2(self):
-
-        NUM = '2'
-        DESCRICAO = 'Aumento da pensão dos nobres'
-        prop = self._new_proposition(NUM, DESCRICAO)
-        votacao = self._new_votation(
-            NUM, DESCRICAO, BEGIN_FIRST_SEMESTER, prop)
-
-        self.girondine_votes2(votacao)
-
-        self.jaconbine_votes2(votacao)
-
-        self.monarquist_votes2(votacao)
-
-    #new_votation3 => get instance the new votation
-
-    def girondine_votes3(self, votacao):
-        votos_girondinos = [models.NAO, models.NAO, models.SIM]
-        self._new_votes(votacao, GIRONDINES, votos_girondinos)
-
-    def _new_votation3(self):
-
-        NUM = '3'
-        DESCRICAO = 'Institui o Dia de Carlos Magno'
-        prop = self._new_proposition(NUM, DESCRICAO)
-        votacao = self._new_votation(
-            NUM, DESCRICAO, BEGIN_FIRST_SEMESTER, prop)
-
-        self.girondine_votes3(votacao)
-
-        self.jaconbine_votes2(votacao)
-
-        self.monarquist_votes2(votacao)
-
-    #new_votation4 => get instance the new votation
-
-    def girondine_votes4(self, votacao):
-        votos_girondinos = [models.SIM, models.SIM, models.SIM]
-        self._new_votes(votacao, GIRONDINES, votos_girondinos)
-
-    def jacobine_votes4(self, votacao):
-        votos_jacobinos = [models.SIM, models.ABSTENCAO, models.NAO]
-        self._new_votes(votacao, JACOBINES, votos_jacobinos)
-
-    def monarquist_votes4(self, votacao):
-        votos_monarquistas = [models.SIM, models.NAO, models.AUSENTE]
-        self._new_votes(votacao, MONARQUIST, votos_monarquistas)
-
-    def _new_votation4(self):
-
-        NUM = '4'
-        DESCRICAO = 'Diminuição de impostos sobre a indústria'
-        prop = self._new_proposition(NUM, DESCRICAO)
-        votacao = self._new_votation(
-            NUM, DESCRICAO, BEGIN_FIRST_SEMESTER, prop)
-
-        self.girondine_votes4(votacao)
-
-        self.jacobine_votes4(votacao)
-
-        self.monarquist_votes4(votacao)
-
-    #new_votation5 => get instance the new votation
-
-    def girondine_votes5(self, votacao):
-        votos_girondinos = [models.SIM, models.SIM, models.ABSTENCAO]
-        self._new_votes(votacao, GIRONDINES, votos_girondinos)
-
-    def _new_votation5(self):
-
-        NUM = '5'
-        DESCRICAO = 'Guilhotinar o Conde Pierre'
-        prop = self._new_proposition(NUM, DESCRICAO)
-        votacao = self._new_votation(
-            NUM, DESCRICAO, BEGIN_SECOND_SEMESTER, prop)
-
-        self.girondine_votes5(votacao)
-
-        self.jaconbine_votes(votacao)
-
-        self.monarquist_votes(votacao)
-
-    #new_votation6 => get instance the new votation
-
-    def monarquist_votes6(self, votacao):
-        votos_monarquistas = [models.AUSENTE, models.SIM, models.SIM]
-        self._new_votes(votacao, MONARQUIST, votos_monarquistas)
-
-    def _new_votation6(self):
-
-        NUM = '6'
-        DESCRICAO = 'Criação de novas escolas'
-        prop = self._new_proposition(NUM, DESCRICAO)
-        votacao = self._new_votation(
-            NUM, DESCRICAO, BEGIN_SECOND_SEMESTER, prop)
-
-        self.girondine_votes4(votacao)
-
-        self.jaconbine_votes(votacao)
-
-        self.monarquist_votes6(votacao)
-
-    #new_votation7 => get instance the new votation
-
-    def monarquist_votes7(self, votacao):
-        votos_monarquistas = [models.SIM, models.AUSENTE, models.SIM]
-        self._new_votes(votacao, MONARQUIST, votos_monarquistas)
-
-    def _new_votation7(self):
-
-        NUM = '7'
-        DESCRICAO = 'Aumento do efetivo militar'
-        prop = self._new_proposition(NUM, DESCRICAO)
-        votacao = self._new_votation(
-            NUM, DESCRICAO, BEGIN_SECOND_SEMESTER, prop)
-
-        self.girondine_votes5(votacao)
-
-        self.jaconbine_votes(votacao)
-
-        self.monarquist_votes7(votacao)
-
-    # Voting with different attributes for test
-    def jacobine_votes8(self, votacao):
-        votos_jacobinos = [models.ABSTENCAO, models.NAO, models.NAO]
-        self._new_votes(votacao, JACOBINES, votos_jacobinos)
-
-    def _new_votation8(self):
-
-        NUM = '8'
-        DESCRICAO = 'Guerra contra a Inglaterra'
-        prop = models.Proposicao()
-        prop.id_prop = NUM
-        prop.sigla = 'PL'
-        prop.numero = NUM
-        prop.ementa = 'o uso proibido de armas químicas'
-        prop.descricao = 'descricao da guerra'
-        prop.casa_legislativa = self.casa
-        prop.indexacao = 'bombas, efeitos, destruições'
-        prop.save()
-        votacao = self._new_votation(
-            NUM, DESCRICAO, BEGIN_SECOND_SEMESTER, prop)
-
-        self.girondine_votes2(votacao)
-
-        self.jacobine_votes8(votacao)
-
-        self.monarquist_votes7(votacao)
-
-    def importar(self):
-        self.casa = self._new_legislative_house()
-        self._new_party()
-        self._new_legislature()
-        self._new_votation1()
-        self._new_votation2()
-        self._new_votation3()
-        self._new_votation4()
-        self._new_votation5()
-        self._new_votation6()
-        self._new_votation7()
-        self._new_votation8()
-        self._new_proposition('9', 'Legalizacao da maconha')
-
-
 def main():
 
     print 'IMPORTANDO DADOS DA CONVENÇÃO NACIONAL FRANCESA'
     importer = ImportadorConvencao()
-    importer.importar()
+    importer.import_data()
+
+
+
+class ImportadorConvencao:
+
+    # Get instance the new legislative house:
+
+    def create_new_legislative_house(self):
+
+        conv = models.CasaLegislativa()
+        conv.name = 'Convenção Nacional Francesa'
+        conv.short_name = 'conv'
+        conv.sphere = models.FEDERAL
+        conv.local = 'Paris (FR)'
+        conv.update = LAST_REFRESH
+        conv.save()
+        return conv
+
+    # Get instance the new party:
+
+    def create_new_political_party(self):
+
+        girondinos = models.Partido()
+        girondinos.name = GIRONDINES
+        girondinos.number = 27
+        girondinos.color = '#008000'
+        girondinos.save()
+        jacobinos = models.Partido()
+        jacobinos.name = JACOBINES
+        jacobinos.number = 42
+        jacobinos.color = '#FF0000'
+        jacobinos.save()
+        monarquistas = models.Partido()
+        monarquistas.name = MONARQUIST
+        monarquistas.number = 79
+        monarquistas.color = '#800080'
+        monarquistas.save()
+        self.political_parties = {girondinos, jacobinos, monarquistas}
+
+
+    # Get instance the new legislature:
+
+    def get_instance_new_legislature(self):
+
+        # Name search_political_party => list of party legislaturas
+        self.legislatures = {}
+        for p in self.political_parties:
+            self.legislatures[p.nome] = []
+            for i in range(0, PARLAMENTS_PER_PARTY):
+
+                parliamentary = models.Parlamentar()
+                parliamentary.id_parlamentar = '%s%s' % (p.nome[0], str(i))
+                parliamentary.name = 'Pierre'
+                parliamentary.save()
+
+                leg = models.Legislatura()
+                leg.legislative_house = self.casa
+                leg.begin = BEGIN_PERIOD
+                leg.end = END_PERIOD
+                leg.political_party = p
+                leg.parliamentary = parliamentary
+                leg.save()
+                self.legislatures[p.nome].append(leg)
+
+
+    # Get instance the new proposition:
+
+    def get_instance_new_proposition(self, number, descripcion):
+
+        proposition = models.Proposicao()
+        proposition.id_prop = number
+        proposition.sigla = 'PL'
+        proposition.numero = number
+        proposition.ementa = descripcion
+        proposition.descricao = descripcion
+        proposition.casa_legislativa = self.casa
+        proposition.save()
+        return proposition
+
+
+    # Get instance the new voting:
+
+    def get_instance_new_voting(self, number, description, data, proposition):
+
+        voting = models.Votacao()
+        voting.id_vot = number
+        voting.description = description
+        voting.date = data
+        voting.proposition = proposition
+        voting.save()
+        return voting
+
+
+    # Get instance the new vote:
+
+    def get_instance_new_vote(self, votation, name_party, options):
+
+        # Options is an options list (YES, NO...):
+        for i in range(0, PARLAMENTS_PER_PARTY):
+            vote = models.Voto()
+            vote.legislature = self.legislatures[name_party][i]
+            vote.option = options[i]
+            vote.voting = votation
+            vote.save()
+
+
+    # Get instance the new voting:
+
+    def get_instance_girondine_votes(self, votacao):
+        votes_girondinos = [models.SIM, models.ABSTENCAO, models.NAO]
+        self.get_instance_new_vote(votacao, GIRONDINES, votes_girondinos)
+
+    def get_instance_jaconbine_votes(self, votacao):
+        votes_jacobinos = [models.SIM, models.SIM, models.SIM]
+        self.get_instance_new_vote(votacao, JACOBINES, votes_jacobinos)
+
+    def get_instance_monarquist_votes(self, votacao):
+        votes_monarquistas = [models.NAO, models.NAO, models.NAO]
+        self.get_instance_new_vote(votacao, MONARQUIST, votes_monarquistas)
+
+    def create_new_voting_1(self):
+
+        NUMBER = '1'
+        DESCRIPTION = 'Reforma agrária'
+        proposition = self.get_instance_new_proposition(NUMBER, DESCRIPTION)
+        voting = self.get_instance_new_voting(
+            NUMBER, DESCRIPTION, BEGIN_FIRST_SEMESTER, proposition)
+
+        self.get_instance_girondine_votes(voting)
+
+        self.get_instance_jaconbine_votes(voting)
+
+        self.get_instance_monarquist_votes(voting)
+
+
+    # Get instance the new voting:
+
+    def get_instance_girondine_votes2(self, votacao):
+        votes_girondinos = [models.NAO, models.NAO, models.NAO]
+        self.get_instance_new_vote(votacao, GIRONDINES, votes_girondinos)
+
+    def get_instance_jaconbine_votes2(self, votacao):
+        votes_jacobinos = [models.NAO, models.NAO, models.NAO]
+        self.get_instance_new_vote(votacao, JACOBINES, votes_jacobinos)
+
+    def get_instance_monarquist_votes2(self, votacao):
+        votes_monarquistas = [models.SIM, models.SIM, models.SIM]
+        self.get_instance_new_vote(votacao, MONARQUIST, votes_monarquistas)
+
+    def create_new_voting2(self):
+
+        NUMBER = '2'
+        DESCRIPTION = 'Aumento da pensão dos nobres'
+        proposition = self.get_instance_new_proposition(NUMBER, DESCRIPTION)
+        voting = self.get_instance_new_voting(
+            NUMBER, DESCRIPTION, BEGIN_FIRST_SEMESTER, proposition)
+
+        self.get_instance_girondine_votes2(voting)
+
+        self.get_instance_jaconbine_votes2(voting)
+
+        self.get_instance_monarquist_votes2(voting)
+
+
+    # Get instance the new voting:
+
+    def get_instance_girondine_votes3(self, votacao):
+        votes_girondinos = [models.NAO, models.NAO, models.SIM]
+        self.get_instance_new_vote(votacao, GIRONDINES, votes_girondinos)
+
+    def _new_votation3(self):
+
+        NUMBER = '3'
+        DESCRIPTION = 'Institui o Dia de Carlos Magno'
+        proposition = self.get_instance_new_proposition(NUMBER, DESCRIPTION)
+        voting = self.get_instance_new_voting(
+            NUMBER, DESCRIPTION, BEGIN_FIRST_SEMESTER, proposition)
+
+        self.get_instance_girondine_votes3(voting)
+
+        self.get_instance_jaconbine_votes2(voting)
+
+        self.get_instance_monarquist_votes2(voting)
+
+
+    # Get instance the new voting:
+
+    def get_instance_girondine_votes4(self, votacao):
+        votos_girondinos = [models.SIM, models.SIM, models.SIM]
+        self.get_instance_new_vote(votacao, GIRONDINES, votos_girondinos)
+
+    def get_instance_jaconbine_votes4(self, votacao):
+        votos_jacobinos = [models.SIM, models.ABSTENCAO, models.NAO]
+        self.get_instance_new_vote(votacao, JACOBINES, votos_jacobinos)
+
+    def get_instance_monarquist_votes4(self, votacao):
+        votos_monarquistas = [models.SIM, models.NAO, models.AUSENTE]
+        self.get_instance_new_vote(votacao, MONARQUIST, votos_monarquistas)
+
+    def _new_votation4(self):
+
+        NUMBER = '4'
+        DESCRIPTION = 'Diminuição de impostos sobre a indústria'
+        proposition = self.get_instance_new_proposition(NUMBER, DESCRIPTION)
+        voting = self.get_instance_new_voting(
+            NUMBER, DESCRIPTION, BEGIN_FIRST_SEMESTER, proposition)
+
+        self.get_instance_girondine_votes4(voting)
+
+        self.get_instance_jaconbine_votes4(voting)
+
+        self.get_instance_monarquist_votes4(voting)
+
+
+    # Get instance the new voting:
+
+    def get_instance_girondine_votes5(self, votacao):
+        votes_girondinos = [models.SIM, models.SIM, models.ABSTENCAO]
+        self.get_instance_new_vote(votacao, GIRONDINES, votes_girondinos)
+
+    def create_new_voting5(self):
+
+        NUMBER = '5'
+        DESCRIPTION = 'Guilhotinar o Conde Pierre'
+        proposition = self.get_instance_new_proposition(NUMBER, DESCRIPTION)
+        voting = self.get_instance_new_voting(
+            NUMBER, DESCRIPTION, BEGIN_SECOND_SEMESTER, proposition)
+
+        self.get_instance_girondine_votes5(voting)
+
+        self.get_instance_jaconbine_votes(voting)
+
+        self.get_instance_monarquist_votes(voting)
+
+
+    # Get instance the new voting:
+
+    def get_instance_monarquist_votes6(self, votacao):
+        votes_monarquistas = [models.AUSENTE, models.SIM, models.SIM]
+        self.get_instance_new_vote(votacao, MONARQUIST, votes_monarquistas)
+
+    def create_new_voting6(self):
+
+        NUMBER = '6'
+        DESCRIPTION = 'Criação de novas escolas'
+        proposition = self.get_instance_new_proposition(NUMBER, DESCRIPTION)
+        voting = self.get_instance_new_voting(
+            NUMBER, DESCRIPTION, BEGIN_SECOND_SEMESTER, proposition)
+
+        self.get_instance_girondine_votes4(voting)
+
+        self.get_instance_jaconbine_votes(voting)
+
+        self.get_instance_monarquist_votes6(voting)
+
+
+    # Get instance the new voting:
+
+    def get_instance_monarquist_votes7(self, votacao):
+        votes_monarquistas = [models.SIM, models.AUSENTE, models.SIM]
+        self.get_instance_new_vote(votacao, MONARQUIST, votes_monarquistas)
+
+    def create_new_votation7(self):
+
+        NUMBER = '7'
+        DESCRIPTION = 'Aumento do efetivo militar'
+        proposition = self.get_instance_new_proposition(NUMBER, DESCRIPTION)
+        voting = self.get_instance_new_voting(
+            NUMBER, DESCRIPTION, BEGIN_SECOND_SEMESTER, proposition)
+
+        self.get_instance_girondine_votes5(voting)
+
+        self.get_instance_jaconbine_votes(voting)
+
+        self.get_instance_monarquist_votes7(voting)
+
+
+    # Voting with different attributes for test:
+
+    def get_instance_jacobine_votes8(self, votacao):
+        votes_jacobinos = [models.ABSTENCAO, models.NAO, models.NAO]
+        self.get_instance_new_vote(votacao, JACOBINES, votes_jacobinos)
+
+    def create_new_votation8(self):
+
+        NUMBER = '8'
+        DESCRIPTION = 'Guerra contra a Inglaterra'
+        proposition = models.Proposicao()
+        proposition.id_prop = NUMBER
+        proposition.acronym = 'PL'
+        proposition.number = NUMBER
+        proposition.menu = 'o uso proibido de armas químicas'
+        proposition.description = 'descricao da guerra'
+        proposition.legislative_house = self.casa
+        proposition.indexing = 'bombas, efeitos, destruições'
+        proposition.save()
+        voting = self.get_instance_new_voting(
+            NUMBER, DESCRIPTION, BEGIN_SECOND_SEMESTER, proposition)
+
+        self.get_instance_girondine_votes2(voting)
+
+        self.get_instance_jacobine_votes8(voting)
+
+        self.get_instance_monarquist_votes7(voting)
+
+    def import_data(self):
+        self.casa = self.create_new_legislative_house()
+        self.create_new_political_party()
+        self.get_instance_new_legislature()
+        self.create_new_voting_1()
+        self.create_new_voting2()
+        self._new_votation3()
+        self._new_votation4()
+        self.create_new_voting5()
+        self.create_new_voting6()
+        self.create_new_votation7()
+        self.create_new_votation8()
+        self.get_instance_new_proposition('9', 'Legalizacao da maconha')
