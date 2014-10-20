@@ -38,8 +38,8 @@ class Analise:
     listed in self.lista_partidos and the propositions of the  listed in self.
     tipos_proposicao.
 
-    == Constructor ==
-    ----------------
+    Constructor:
+
     To create a ANLS instance, which corresponds to an analysis by example of the
     first half of 2010, use:
 
@@ -59,8 +59,8 @@ class Analise:
 
     ANLS3 = analise.Analise('2010-01-01','2010-30-06',[],6)
 
-    == Attributes ==
-    ---------------
+    Attributes:
+
     Be ANLS an object of type analysis, then ANLS possesses the attributes below,
     where the letters in braces indicate the dimensions of objects (arrays) of
     numpy.array type:
@@ -104,8 +104,8 @@ class Analise:
         a.pca.eigen [C] :eigenvalues​​. To get variance explained by each cp, just
             do eigen[j]/eigen.sum()
 
-    == Methods (dynamics) ==
-    -------------------------
+    Methods (dynamics):
+
     Be ANLS one analysis object type, apply the methods:
 
         TODO: Add 'tamanho_sigla' and 'tamanho_estado' in a single method, passing as
@@ -130,8 +130,8 @@ class Analise:
                  'PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO']
     db = 'resultados/camara.db'
 
-    def __init__(self,data_inicial='2011-01-01',data_final='2011-12-31',tipos_proposicao=[],
-                 lista_partidos=[],partidos=[]):
+    def __init__(self,inicial_date='2011-01-01',final_date='2011-12-31',propositions_type=[],
+                 list_political_parties=[],political_parties=[]):
         """ Constructor objects of type analysis, asks as arguments:
         *The start and end dates between which should be considered votes;
         *A list of strings with the types of proposition analyze, leave empty to consider
@@ -141,44 +141,44 @@ class Analise:
         Size analyzes of partidos and UFs, principal component analysis (PCA) are made
         by party and by state, and percentage similarity analysis by two methods."""
 
-        self.data_inicial = data_inicial
-        self.data_final = data_final
-        self.tipos_proposicao = tipos_proposicao
-        self.lista_partidos = lista_partidos
-        self.partidos = partidos
-        self.num_votacoes = 0
-        self.lista_votacoes = []
-        self.vetores_votacao = []
+        self.inicial_date = inicial_date
+        self.final_date = final_date
+        self.propositions_type = propositions_type
+        self.list_political_parties = list_political_parties
+        self.political_parties = political_parties
+        self.number_of_votings = 0
+        self.list_of_votings = []
+        self.vectors_voting = []
         self.quadrivet_vot = []
-        self.vetores_tamanho = []
-        self.vetores_presenca = []
-        self.tamanho_partidos = []
-        self.vetores_votacao_uf = []
-        self.vetores_tamanho_uf = []
-        self.tamanho_uf = []
-        self.pca_partido = None
-        self.pca_uf = None
-        self.semelhancas_escalar = []
-        self.semelhancas_convolucao = []
+        self.vectors_size = []
+        self.vectors_presence = []
+        self.political_parties_size = []
+        self.vectors_votings_uf = []
+        self.vectors_size_uf = []
+        self.size_uf = []
+        self.principal_components_analysis_political_party = None
+        self.principal_components_analysis_uf = None
+        self.similarities_scalar = []
+        self.similarities_convolution = []
 
         # Check if dates were entered correctly:
-        if not (re.match('(19)|(20)\d\d-[01]\d-[0123]\d',data_inicial) and re.match(
-                '(19)|(20)\d\d-[01]\d-[0123]\d',data_final)):
+        if not (re.match('(19)|(20)\d\d-[01]\d-[0123]\d',inicial_date) and re.match(
+                '(19)|(20)\d\d-[01]\d-[0123]\d',final_date)):
             raise StandardError('Datas devem estar no formato "aaaa-mm-dd", mês e dia obrigatoriamente '
                                 'com dois dígitos.')
 
         # If the list 'tipos_proposicao' is empty, use all kinds of proposition:
-        if not self.tipos_proposicao:
+        if not self.propositions_type:
             connection = lite.connect(Analise.db)
             list_of_types = connection.execute('SELECT distinct tipo FROM PROPOSICOES')
             for tipo in list_of_types:
-                self.tipos_proposicao.append(tipo[0])
+                self.propositions_type.append(tipo[0])
             connection.close()
 
         # If the list is empty, use all political partidos:
-        if not self.lista_partidos:
+        if not self.list_political_parties:
             fill_parties = 0
-            if not self.partidos:
+            if not self.political_parties:
                 fill_parties = 1
             connection = lite.connect(Analise.db)
             list_of_types = connection.execute('SELECT * FROM PARTIDOS')
@@ -186,51 +186,51 @@ class Analise:
                                'PSC', 'PTB', 'PDT', 'PSB', 'PPS', 'PRB']
             for item in list_of_types:
                 if item[1] in improvisation_list:
-                    self.lista_partidos.append(item[1])
+                    self.list_political_parties.append(item[1])
                     if fill_parties:
                         party = model.Partido(item[1],item[0])
-                        self.partidos.append(party)
+                        self.political_parties.append(party)
             connection.close()
 
-        # If integer, use greater than or equal to this whole political partidos:
-        elif isinstance(self.lista_partidos,int):
-            N = self.lista_partidos
-            self.lista_partidos = partidos_expressivos(N,self.data_inicial,self.data_final,
-                                                       self.tipos_proposicao)
+        # If integer, use greater than or equal to this whole political parties:
+        elif isinstance(self.list_political_parties,int):
+            N = self.list_political_parties
+            self.list_political_parties = list_expressive_political_parties(N,self.inicial_date,self.final_date,
+                                                       self.propositions_type)
 
     # Print key information class 'analise'. Used to give 'print' of object 'ANA':
     def __str__(self):
         feedback = ''
-        feedback = feedback + 'Data inicial da análise : ' + self.data_inicial + '\n'
-        feedback = feedback + 'Data final da análise: ' + self.data_final + '\n'
-        feedback = feedback + 'Total de Votações analisadas: ' + str(self.num_votacoes) + '\n'
+        feedback = feedback + 'Data inicial da análise : ' + self.inicial_date + '\n'
+        feedback = feedback + 'Data final da análise: ' + self.final_date + '\n'
+        feedback = feedback + 'Total de Votações analisadas: ' + str(self.number_of_votings) + '\n'
         feedback = feedback + 'Tipos de matérias analisadas: ' + '\n'
-        for tipo in self.tipos_proposicao:
+        for tipo in self.propositions_type:
             feedback = feedback + '    ' + tipo + '\n'
         feedback = feedback + 'Partidos analisados: ' + '\n'
-        for partido in self.partidos:
+        for partido in self.political_parties:
             feedback = feedback + '    ' + partido.nome + '\n'
         return feedback
 
-    def _buscaVotacoes(self):
+    def search_votings(self):
         """Paste polls BD (sqlite) to a list (python), and returns."""
 
         filter_types='('
-        for type in self.tipos_proposicao:
+        for type in self.propositions_type:
             filter_types = filter_types + "'" + type + "',"
         filter_types = filter_types[0:len(filter_types)-1] + ")"
         connection = lite.connect(Analise.db)
         votings = connection.execute('SELECT votacoes.idProp,idVot,data,sim,nao,abstencao,obstrucao '
                                'FROM VOTACOES,PROPOSICOES WHERE votacoes.idProp=proposicoes.idProp '
                                'AND date(data)>date(?) AND date(data)<date(?) AND proposicoes.tipo IN %s'
-                               % filter_types,(self.data_inicial,self.data_final)).fetchall()
-        self.num_votacoes = len(votings)
+                               % filter_types,(self.inicial_date,self.final_date)).fetchall()
+        self.number_of_votings = len(votings)
         for i in range(len(votings)):
-            self.lista_votacoes.append(votings[:][i][0:2])
+            self.list_of_votings.append(votings[:][i][0:2])
         return votings
 
 
-    def _inicializa_vetores(self):
+    def inicialize_vectors(self):
         """Creates the 'vectors' and 'Four-Vectors' aggregate voting party. for leverages
         calculate the size of the partidos, presence of Members, etc.
         The 'vector' uses a number between -1 (no) and 1 (yes) to represent the global
@@ -241,23 +241,23 @@ class Analise:
         abstention obstruction. The quadrivetor itself is a vector of these N tuples."""
 
         # Pick up votes in the database:
-        votings = self._buscaVotacoes()
+        votings = self.search_votings()
 
         # Create dictionary with id of political partidos:
         connection = lite.connect(Analise.db)
         table_parties = connection.execute('select numero,nome from partidos').fetchall()
-        party_id = {}
+        political_party_id = {}
         for table in table_parties:
-            party_id[table[1]] = table[0]
+            political_party_id[table[1]] = table[0]
 
-        self.vetores_votacao = numpy.zeros((len(self.lista_partidos),self.num_votacoes))
-        self.quadrivet_vot = numpy.empty((len(self.lista_partidos),self.num_votacoes),dtype=object)
-        self.vetores_tamanho = numpy.zeros((len(self.lista_partidos),self.num_votacoes))
-        self.vetores_presenca = numpy.zeros((len(self.lista_partidos),self.num_votacoes))
-        self.tamanho_partidos = [0]*len(self.lista_partidos)
+        self.vectors_voting = numpy.zeros((len(self.list_political_parties),self.number_of_votings))
+        self.quadrivet_vot = numpy.empty((len(self.list_political_parties),self.number_of_votings),dtype=object)
+        self.vectors_size = numpy.zeros((len(self.list_political_parties),self.number_of_votings))
+        self.vectors_presence = numpy.zeros((len(self.list_political_parties),self.number_of_votings))
+        self.political_parties_size = [0]*len(self.list_political_parties)
         party_index =-1
 
-        for party in self.lista_partidos:
+        for party in self.list_political_parties:
             party_index += 1
 
             # Number of different members of a political party that appeared in at least one vote
@@ -268,74 +268,74 @@ class Analise:
             for vote in votings:
                 vote_index += 1
                 number_of_yes = numpy.where(
-                    (numpy.array(eval(vote[3]))/100000)==party_id[party])[0].size
+                    (numpy.array(eval(vote[3]))/100000)==political_party_id[party])[0].size
                 number_of_no = numpy.where(
-                    (numpy.array(eval(vote[4]))/100000)==party_id[party])[0].size
+                    (numpy.array(eval(vote[4]))/100000)==political_party_id[party])[0].size
                 number_of_abstain = numpy.where(
-                    (numpy.array(eval(vote[5]))/100000)==party_id[party])[0].size
+                    (numpy.array(eval(vote[5]))/100000)==political_party_id[party])[0].size
                 number_of_obstruction = numpy.where(
-                    (numpy.array(eval(vote[6]))/100000)==party_id[party])[0].size
+                    (numpy.array(eval(vote[6]))/100000)==political_party_id[party])[0].size
                 total_number = number_of_yes + number_of_no + number_of_abstain + number_of_obstruction
 
                 self.quadrivet_vot[party_index][vote_index] = (
                     number_of_yes,number_of_no,number_of_abstain,number_of_obstruction)
                 if total_number != 0:
-                    self.vetores_votacao[party_index][vote_index] = (float(
+                    self.vectors_voting[party_index][vote_index] = (float(
                         number_of_yes) - float(number_of_no)) / float(total_number)
                 else:
-                    self.vetores_votacao[party_index][vote_index] = 0
+                    self.vectors_voting[party_index][vote_index] = 0
 
                 # Tell deputies present:
                 list_of_present_deputies = [list(numpy.array(eval(vote[3]))[numpy.where(
-                    numpy.array(eval(vote[3]))/100000==party_id[party])]) + list(numpy.array(
-                    eval(vote[4]))[numpy.where(numpy.array(eval(vote[4]))/100000==party_id[party])]) +
+                    numpy.array(eval(vote[3]))/100000==political_party_id[party])]) + list(numpy.array(
+                    eval(vote[4]))[numpy.where(numpy.array(eval(vote[4]))/100000==political_party_id[party])]) +
                                        list(numpy.array(eval(vote[5]))[numpy.where(numpy.array(
-                                           eval(vote[5]))/100000==party_id[party])]) + list(
+                                           eval(vote[5]))/100000==political_party_id[party])]) + list(
                     numpy.array(eval(vote[6]))[numpy.where(numpy.array(eval(
-                        vote[6]))/100000==party_id[party])])]
+                        vote[6]))/100000==political_party_id[party])])]
 
-                self.vetores_tamanho[party_index][vote_index] = numpy.size(list_of_present_deputies)
+                self.vectors_size[party_index][vote_index] = numpy.size(list_of_present_deputies)
                 for deputy in list_of_present_deputies[0]:
 
                     # Not enter repeated twice on set, allowing calculate tamanho_partidos:
                     deputies_number.add(deputy)
 
-            self.tamanho_partidos[party_index] = len(deputies_number)
+            self.political_parties_size[party_index] = len(deputies_number)
 
             # Figure out:
             ivv = -1
             for vote in votings:
                 ivv += 1
-                self.vetores_presenca[party_index][ivv] = self.vetores_tamanho[party_index][ivv]/\
-                                                          self.tamanho_partidos[party_index]
+                self.vectors_presence[party_index][ivv] = self.vectors_size[party_index][ivv]/\
+                                                          self.political_parties_size[party_index]
         return
 
 
-    def _pca_partido(self):
-        """Run analysis of main components for partidos.
+    def political_party_pca(self):
+        """Run analysis of main components for political parties.
         Stores the result in self.pca
-        Returns a dictionary where the keys are the symbols of political partidos
-        and the value of each key is a vector with n dimensions of the pca analys"""
+        Returns a dictionary where the keys are the symbols of political political parties
+        and the value of each key is a vector with 'n' dimensions of the pca analysis"""
 
-        if not bool(self.pca_partido):
-            if self.vetores_votacao==[]:
-                self._inicializa_vetores()
-            matrix = self.vetores_votacao - self.vetores_votacao.mean(axis=0)
-            self.pca_partido = pca.PCA(matrix)
-        disctionary = {}
-        for party, vector in zip(self.partidos, self.pca_partido.U):
-            disctionary[party.nome] = vector
-        return disctionary
+        if not bool(self.principal_components_analysis_political_party):
+            if self.vectors_voting==[]:
+                self.inicialize_vectors()
+            matrix = self.vectors_voting - self.vectors_voting.mean(axis=0)
+            self.principal_components_analysis_political_party = pca.PCA(matrix)
+        dictionary = {}
+        for party, vector in zip(self.political_parties, self.principal_components_analysis_political_party.U):
+            dictionary[party.nome] = vector
+        return dictionary
 
-    def _inicializa_vetores_uf(self):
-        """Analogous to _inicializa_vetores(self), but aggregated by states and not by partidos."""
+    def inicialize_vectors_uf(self):
+        """Analogous to 'inicialize_vectors'(self), but aggregated by states and not by political parties."""
 
         # Pick up votes in the database:
-        votings = self._buscaVotacoes()
+        votings = self.search_votings()
 
-        self.vetores_votacao_uf = numpy.zeros((len(Analise.ufs_list),self.num_votacoes))
-        self.vetores_tamanho_uf = numpy.zeros((len(Analise.ufs_list),self.num_votacoes))
-        self.tamanho_uf = [0]*len(Analise.ufs_list)
+        self.vectors_votings_uf = numpy.zeros((len(Analise.ufs_list),self.number_of_votings))
+        self.vectors_size_uf = numpy.zeros((len(Analise.ufs_list),self.number_of_votings))
+        self.size_uf = [0]*len(Analise.ufs_list)
         ie =-1
         for e in Analise.ufs_list:
 
@@ -359,10 +359,10 @@ class Analise:
                 total_number = number_of_yes + number_of_no + number_of_abstain + number_of_obstruction
 
                 if total_number != 0:
-                    self.vetores_votacao_uf[ie][iv] = (float(
+                    self.vectors_votings_uf[ie][iv] = (float(
                         number_of_yes) - float(number_of_no)) / float(total_number)
                 else:
-                    self.vetores_votacao_uf[ie][iv] = 0
+                    self.vectors_votings_uf[ie][iv] = 0
 
                 # Tell deputies present::
                 list_of_present_deputies_uf = [ list(numpy.array(eval(v[3]))[numpy.where((numpy.array(
@@ -371,67 +371,67 @@ class Analise:
                 [numpy.where((numpy.array(eval(v[5]))/1000)%100==(ie+1))]) + list(numpy.array(eval(
                     v[6]))[numpy.where((numpy.array(eval(v[6]))/1000)%100==(ie+1))]) ]
 
-                self.vetores_tamanho_uf[ie][iv] = numpy.size(list_of_present_deputies_uf)
+                self.vectors_size_uf[ie][iv] = numpy.size(list_of_present_deputies_uf)
                 for deputy in list_of_present_deputies_uf[0]:
 
                     # Not enter repeated twice on set, allowing calculate tamanho_partidos:
                     number_of_deputies_uf.add(deputy)
 
-            self.tamanho_uf[ie] = len(number_of_deputies_uf)
+            self.size_uf[ie] = len(number_of_deputies_uf)
         return
 
-    def _pca_uf(self):
+    def pca_uf(self):
         """Run the principal components analysis by UF.
         Stores the result in self.pca
-        Returns a dictionary where the keys are the symbols of political partidos
+        Returns a dictionary where the keys are the symbols of political parties
         and the value of each key is a vector with n dimensions of the pca analysis."""
 
-        if not bool(self.pca_uf):
-            if self.vetores_votacao_uf==[]:
-                self._inicializa_vetores_uf()
-            matrix = self.vetores_votacao_uf - self.vetores_votacao_uf.mean(axis=0)
-            self.pca_uf = pca.PCA(matrix)
+        if not bool(self.principal_components_analysis_uf):
+            if self.vectors_votings_uf==[]:
+                self.inicialize_vectors_uf()
+            matrix = self.vectors_votings_uf - self.vectors_votings_uf.mean(axis=0)
+            self.principal_components_analysis_uf = pca.PCA(matrix)
         dictionary = {}
-        for uf, vector in zip(self.ufs_list, self.pca_uf.U):
+        for uf, vector in zip(self.ufs_list, self.principal_components_analysis_uf.U):
             dictionary[uf]=vector
         return dictionary
 
-    def _calcula_semelhancas(self):
-        """Calculates similarities between all partidos of the analysis, two by two, according to the
+    def calculate_similarities(self):
+        """Calculates similarities between all political parties of the analysis, two by two, according to the
          scalar product and the method of convolution, normalized between 0 and 100 [%].
          The result is stored in self.semelhancas attributes (scalar product) and
          self.semelhancas2 (convolution)."""
 
-        if self.vetores_votacao==[]:
-            self._inicializa_vetores()
-        self.semelhancas_escalar = numpy.zeros((len(self.lista_partidos),len(self.lista_partidos)))
-        self.semelhancas_convolucao = numpy.zeros((len(self.lista_partidos),len(self.lista_partidos)))
+        if self.vectors_voting==[]:
+            self.inicialize_vectors()
+        self.similarities_scalar = numpy.zeros((len(self.list_political_parties),len(self.list_political_parties)))
+        self.similarities_convolution = numpy.zeros((len(self.list_political_parties),len(self.list_political_parties)))
 
-        for i in range(0,len(self.lista_partidos)):
-            for j in range(0,len(self.lista_partidos)):
+        for i in range(0,len(self.list_political_parties)):
+            for j in range(0,len(self.list_political_parties)):
 
                 # Method 1:
-                self.semelhancas_escalar[i][j] = 100 *( ( numpy.dot(self.vetores_votacao[i],
-                                                                    self.vetores_votacao[j]) /
+                self.similarities_scalar[i][j] = 100 *( ( numpy.dot(self.vectors_voting[i],
+                                                                    self.vectors_voting[j]) /
                                                           (numpy.sqrt(numpy.dot(
-                                                              self.vetores_votacao[i],
-                                                              self.vetores_votacao[i])) *
+                                                              self.vectors_voting[i],
+                                                              self.vectors_voting[i])) *
                                                            numpy.sqrt(numpy.dot(
-                                                               self.vetores_votacao[j],
-                                                               self.vetores_votacao[j])))) + 1)/2
+                                                               self.vectors_voting[j],
+                                                               self.vectors_voting[j])))) + 1)/2
 
                 # Method 2:
                 x = 0
-                for k in range(self.num_votacoes) :
-                    x += Analise._convolui(self.quadrivet_vot[i][k],self.quadrivet_vot[j][k])
-                x = 100 * x / self.num_votacoes
-                self.semelhancas_convolucao[i][j] = x
+                for k in range(self.number_of_votings) :
+                    x += Analise.do_convolution(self.quadrivet_vot[i][k],self.quadrivet_vot[j][k])
+                x = 100 * x / self.number_of_votings
+                self.similarities_convolution[i][j] = x
         return
 
     @staticmethod
-    def _convolui(u,v):
-        """Receives two integers u and v 4 tuples, representing the votes of two
-        partidos in a vote. For example if u = (4,3,0,3) there were 4 yes, 3 no, 0
+    def do_convolution(u,v):
+        """Receives two integers 'u' and 'v' 4 tuples, representing the votes of two
+        political parties in a vote. For example if u = (4,3,0,3) there were 4 yes, 3 no, 0
         and 3 abstentions obstructions party vote.
         Each tuple is normalized by dividing by the sum of the squares of the elements, and
         the function returns the dot product of two normalized tuples."""
@@ -447,36 +447,36 @@ class Analise:
         return x
 
 
-    def tamanho_sigla(self,siglaPartido):
-        """Return the size of party giver your acronym."""
+    def check_acronym_size(self,siglaPartido):
+        """Return the size of political party giver your acronym."""
 
-        if self.tamanho_partidos==0:
-            self._inicializa_vetores()
+        if self.political_parties_size==0:
+            self.inicialize_vectors()
         try:
-            return self.tamanho_partidos[self.lista_partidos.index(siglaPartido)]
+            return self.political_parties_size[self.list_political_parties.index(siglaPartido)]
         except ValueError:
             print "WARNING: Partido %s não presente na análise. Dados da análise:\n%s" % \
                   (siglaPartido,self)
             return 0
 
-    def tamanho_estado(self,siglaEstado):
+    def check_state_size(self,siglaEstado):
         """Returns the size of the state (number of seats) given its acronym."""
 
-        if self.tamanho_uf==[]:
-            self._inicializa_vetores_uf()
+        if self.size_uf==[]:
+            self.inicialize_vectors_uf()
         try:
-            return self.tamanho_uf[Analise.ufs_list.index(siglaEstado.upper())]
+            return self.size_uf[Analise.ufs_list.index(siglaEstado.upper())]
         except ValueError:
             raise ValueError('Estado "%s" inválido.'%siglaEstado)
 
-    def partidos_2d(self,arquivo=''):
-        """Returns array with the coordinates of the partidos in the 2d plane formed by the two
+    def do_coordinates_2d_of_political_parties(self,arquivo=''):
+        """Returns array with the coordinates of the political parties in the 2d plane formed by the two
         first principal components.
 
         If passed as argument the name (not empty) of a file, the result of PCA
         is written to this file, otherwise it is written to stdout."""
 
-        coordinates = self._pca_partido()
+        coordinates = self.political_party_pca()
         for party in coordinates.keys():
             coordinates[party] = (coordinates[party])[0:2]
         close = False
@@ -487,31 +487,31 @@ class Analise:
             fo = sys.stdout
         ip = -1
         fo.write('Análise PCA - por search_political_party\n')
-        fo.write('de %s a %s (ano-mês-dia)\n\n' % (self.data_inicial,self.data_final))
+        fo.write('de %s a %s (ano-mês-dia)\n\n' % (self.inicial_date,self.final_date))
         fo.write('Fração da variância explicada pelas dimensões:\n')
-        fo.write('%f\n' % (self.pca_partido.eigen[0]/self.pca_partido.eigen.sum()))
-        fo.write('%f\n' % (self.pca_partido.eigen[1]/self.pca_partido.eigen.sum()))
-        fo.write('%f\n' % (self.pca_partido.eigen[2]/self.pca_partido.eigen.sum()))
-        fo.write('%f\n' % (self.pca_partido.eigen[3]/self.pca_partido.eigen.sum()))
+        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[0]/self.principal_components_analysis_political_party.eigen.sum()))
+        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[1]/self.principal_components_analysis_political_party.eigen.sum()))
+        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[2]/self.principal_components_analysis_political_party.eigen.sum()))
+        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[3]/self.principal_components_analysis_political_party.eigen.sum()))
         fo.write('\nCoordenadas:\n')
         for party in coordinates.keys():
             fo.write('%s: [%f, %f]\n' % (party,coordinates[party][0],coordinates[party][1]))
-        fo.write('Tamanhos=%s\n' % str(self.tamanho_partidos))
+        fo.write('Tamanhos=%s\n' % str(self.political_parties_size))
         if close:
             fo.close()
         return coordinates
 
 
-    def estados_2d(self,arquivo=''):
+    def do_coordinates_2d_of_states(self,arquivo=''):
         """Returns array with the coordinates of the states in the 2d plane formed by the two
         first principal components.
 
         If passed as argument the name (not empty) of a file, the result of
-        pca is written to this file, otherwise it is written to stdout."""
+        pca is written to this file, otherwise it is written to 'stdout'."""
 
-        if not bool(self.pca_uf):
-            self._pca_uf()
-        coordinates = self.pca_uf.U[:,0:2]
+        if not bool(self.principal_components_analysis_uf):
+            self.principal_components_analysis_uf()
+        coordinates = self.principal_components_analysis_uf.U[:,0:2]
         close = False
         if arquivo:
             fo = open(arquivo,'w')
@@ -520,28 +520,28 @@ class Analise:
             fo = sys.stdout
         ie = -1
         fo.write('Análise PCA - por estado\n')
-        fo.write('de %s a %s (ano-mês-dia)\n\n' % (self.data_inicial,self.data_final))
+        fo.write('de %s a %s (ano-mês-dia)\n\n' % (self.inicial_date,self.final_date))
         fo.write('Fração da variância explicada pelas dimensões:\n')
-        fo.write('%f\n' % (self.pca_uf.eigen[0]/self.pca_uf.eigen.sum()))
-        fo.write('%f\n' % (self.pca_uf.eigen[1]/self.pca_uf.eigen.sum()))
-        fo.write('%f\n' % (self.pca_uf.eigen[2]/self.pca_uf.eigen.sum()))
-        fo.write('%f\n' % (self.pca_uf.eigen[3]/self.pca_uf.eigen.sum()))
+        fo.write('%f\n' % (self.principal_components_analysis_uf.eigen[0]/self.principal_components_analysis_uf.eigen.sum()))
+        fo.write('%f\n' % (self.principal_components_analysis_uf.eigen[1]/self.principal_components_analysis_uf.eigen.sum()))
+        fo.write('%f\n' % (self.principal_components_analysis_uf.eigen[2]/self.principal_components_analysis_uf.eigen.sum()))
+        fo.write('%f\n' % (self.principal_components_analysis_uf.eigen[3]/self.principal_components_analysis_uf.eigen.sum()))
         fo.write('\nCoordenadas:\n')
         for e in Analise.ufs_list:
             ie += 1
             fo.write('%s: [%f, %f]\n' % (e,coordinates[ie,0],coordinates[ie,1]) )
-        fo.write('Tamanhos=%s\n' % str(self.tamanho_uf))
+        fo.write('Tamanhos=%s\n' % str(self.size_uf))
         if close:
             fo.close()
         return coordinates
 
-    def sem(self,siglaP1,siglaP2,tipo=2):
-        if self.semelhancas_escalar==[]:
-            self._calcula_semelhancas()
-        x = self.semelhancas_escalar[self.lista_partidos.index(siglaP1),
-                                     self.lista_partidos.index(siglaP2)]
-        x2 = self.semelhancas_convolucao[self.lista_partidos.index(siglaP1),
-                                         self.lista_partidos.index(siglaP2)]
+    def calculate_similarities_between_political_parties(self,siglaP1,siglaP2,tipo=2):
+        if self.similarities_scalar==[]:
+            self.calculate_similarities()
+        x = self.similarities_scalar[self.list_political_parties.index(siglaP1),
+                                     self.list_political_parties.index(siglaP2)]
+        x2 = self.similarities_convolution[self.list_political_parties.index(siglaP1),
+                                         self.list_political_parties.index(siglaP2)]
         print 'Semelhança entre %s e %s:' % (siglaP1,siglaP2)
         if tipo==1:
             print 'Método 1 (p. escalar): %5.1f%% <- valor retornado' % x
@@ -553,17 +553,17 @@ class Analise:
             return x2
 
 
-    def figura(self, escala=10):
-        """Presents a plot of bubbles (using matplotlib) with partidos of size
-        tamanho_min greater than or equal to the first principal component in the x axis
-        second y-axis."""
+    def plot_bubbles(self, escala=10):
+        """Presents a plot of bubbles (using matplotlib) with political parties of size
+        'tamanho_min' greater than or equal to the first principal component in the 'x-axis'
+        second 'y-axis'."""
 
-        data = self.partidos_2d()
+        data = self.do_coordinates_2d_of_political_parties()
 
         fig = figure(1)
         fig.clf()
 
-        parties_colors = {'PT'   :'#FF0000',
+        political_parties_colors = {'PT'   :'#FF0000',
                       'PSOL' :'#FFFF00',
                       'PV'   :'#00CC00',
                       'DEM'  :'#002664',
@@ -580,54 +580,54 @@ class Analise:
                       'PDT'  :'#6c85b1',
                       'PRB'  :'#67a91e'}
 
-        list_parties_colors = []
-        for party in self.partidos:
-            if party.nome in parties_colors:
-                list_parties_colors.append(parties_colors[party.nome])
+        list_political_parties_colors = []
+        for party in self.political_parties:
+            if party.nome in political_parties_colors:
+                list_political_parties_colors.append(political_parties_colors[party.nome])
             else:
-                list_parties_colors.append((1,1,1))
+                list_political_parties_colors.append((1,1,1))
 
-        parties_colormap = matplotlib.colors.ListedColormap(list_parties_colors,
+        political_parties_colormap = matplotlib.colors.ListedColormap(list_political_parties_colors,
                                                              name='partidos')
 
         ax = fig.add_subplot(111, autoscale_on=True)
         x = []
         y = []
-        for party in self.partidos:
+        for party in self.political_parties:
             x.append(data[party.nome][0])
             y.append(data[party.nome][1])
-        size = numpy.array(self.tamanho_partidos) * escala
-        scatter(x, y, size, range(len(x)), marker='o', cmap=parties_colormap)
-        for party in self.partidos:
+        size = numpy.array(self.political_parties_size) * escala
+        scatter(x, y, size, range(len(x)), marker='o', cmap=political_parties_colormap)
+        for party in self.political_parties:
             text(data[party.nome][0]+.005,data[party.nome][1],party.numero,
                  fontsize=12,stretch=100,alpha=1)
 
         show()
 
 
-def partidos_expressivos(N=1,data_inicial='2011-01-01',data_final='2011-12-31',tipos_proposicao=[]):
-    """Returns a list of partidos with at least N different deputies who
-    polls have come in between start_date and end_date dates. Consider themselves
-    propositions in tipos_proposição, or if all tipos_proposicao = []."""
+def list_expressive_political_parties (N=1,data_inicial='2011-01-01',data_final='2011-12-31',tipos_proposicao=[]):
+    """Returns a list of political parties with at least 'N' different deputies who
+    polls have come in between 'start_date' and 'end_date'. Consider themselves
+    propositions in 'proposition_type', or if all 'proposition_type = []'."""
 
-    # Create dictionary with id of political partidos:
+    # Create dictionary with id of political parties:
     connection = lite.connect(Analise.db)
-    parties_table = connection.execute('select numero,nome from partidos').fetchall()
-    party_id = {}
-    for table in parties_table:
-        party_id[table[1]] = table[0]
+    political_parties_table = connection.execute('select numero,nome from partidos').fetchall()
+    political_party_id = {}
+    for table in political_parties_table:
+        political_party_id[table[1]] = table[0]
 
     # Create list of all political partidos:
     lists_all_parties = connection.execute('SELECT nome FROM PARTIDOS').fetchall()
     connection.close()
 
     # Pick up votes in the database:
-    analisis = Analise(data_inicial,data_final,tipos_proposicao)
-    votings = analisis._buscaVotacoes()
+    analysis = Analise(data_inicial,data_final,tipos_proposicao)
+    votings = analysis.search_votings()
 
     # Initialize variables:
-    parties_size = [0]*len(lists_all_parties)
-    vectors_size = numpy.zeros((len(lists_all_parties),analisis.num_votacoes))
+    political_parties_size = [0]*len(lists_all_parties)
+    vectors_size = numpy.zeros((len(lists_all_parties),analysis.number_of_votings))
 
     # Transform list of tuples in list of strings:
     i = 0
@@ -651,28 +651,28 @@ def partidos_expressivos(N=1,data_inicial='2011-01-01',data_final='2011-12-31',t
 
             # Tell deputies present:
             list_of_present_deputies = [list(numpy.array(eval(vote[3]))[numpy.where(
-                numpy.array(eval(vote[3]))/100000==party_id[p])]) + list(
+                numpy.array(eval(vote[3]))/100000==political_party_id[p])]) + list(
                 numpy.array(eval(vote[4]))[numpy.where(numpy.array(
-                    eval(vote[4]))/100000==party_id[p])]) + list(
+                    eval(vote[4]))/100000==political_party_id[p])]) + list(
                 numpy.array(eval(vote[5]))[numpy.where(numpy.array(eval(vote[5]))
-                                                    /100000==party_id[p])]) + list(
-                numpy.array(eval(vote[6]))[numpy.where(numpy.array(eval(vote[6]))/100000==party_id[p])])]
+                                                    /100000==political_party_id[p])]) + list(
+                numpy.array(eval(vote[6]))[numpy.where(numpy.array(eval(vote[6]))/100000==political_party_id[p])])]
 
             vectors_size[ip][vote_index] = numpy.size(list_of_present_deputies)
             for deputy in list_of_present_deputies[0]:
 
         # Not enter repeated twice on set, allowing calculate tamanho_partidos:
                 deputies_number.add(deputy)
-        parties_size[ip] = len(deputies_number)
+        political_parties_size[ip] = len(deputies_number)
    
     # Make list of major political partidos than N:
     expressives = []
     ip = -1
     for p in lists_all_parties:
         ip += 1
-        if parties_size[ip] >= N:
+        if political_parties_size[ip] >= N:
             expressives.append(p)
     return expressives
 
 if __name__ == "__main__":
-    Analise().figura()
+    Analise().plot_bubbles()
