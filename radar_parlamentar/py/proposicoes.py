@@ -121,7 +121,7 @@ def with_vote(proposicoes):
         print "requisitando " + proposition['id']
 
         # Receives the votes containing the type, the number and the year of each vote
-        votes = camaraws.obter_votacao(proposition['tipo'], proposition['num'],
+        votes = camaraws.get_votings(proposition['tipo'], proposition['num'],
                                      proposition['ano'])
         if votes != None:
             voted.append(proposition)
