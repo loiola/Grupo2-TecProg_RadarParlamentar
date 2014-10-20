@@ -30,7 +30,7 @@ class ConvencaoTest(TestCase):
     @classmethod
     def setUpClass(cls):
         importer = conv.ImportadorConvencao()
-        importer.importar()
+        importer.import_data()
 
     @classmethod
     def tearDownClass(cls):

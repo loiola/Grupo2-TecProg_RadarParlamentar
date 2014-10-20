@@ -109,7 +109,7 @@ class PeriodosRetrieverTest(TestCase):
 
         # Importer of French Convention
         importer = conv.ImportadorConvencao()
-        importer.importar()
+        importer.import_data()
 
     @classmethod
     def tearDownClass(cls):
@@ -274,7 +274,7 @@ class ModelsTest(TestCase):
         # Importer of French Convention
         importer = conv.ImportadorConvencao()
 
-        importer.importar()
+        importer.import_data()
 
     @classmethod
     def tearDownClass(cls):
