@@ -161,7 +161,7 @@ def cria_bd_camara_deputados(arquivo_ids=IDS_VOTADAS):
         print 'AVALIANDO %s %s %s' % (iprop['tipo'],iprop['num'],iprop['ano'])
 
 	# Proposition and get their votes from the web service:
-        p = camaraws.obter_votacao(iprop['tipo'], iprop['num'],iprop['ano']) 
+        p = camaraws.get_votings(iprop['tipo'], iprop['num'],iprop['ano'])
         
 	if p != None:
             props.append(p)
