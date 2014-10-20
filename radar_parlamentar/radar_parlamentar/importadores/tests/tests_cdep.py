@@ -108,7 +108,7 @@ class CamaraTest(TestCase):
         camaraWebService.obter_proposicao_por_id = Mock(
             side_effect=mock_obter_proposicao)
         camaraWebService.obter_votacoes = Mock(side_effect=mock_obter_votacoes)
-        importer.importar(camaraWebService)
+        importer.import_data(camaraWebService)
 
     @classmethod
     def tearDownClass(cls):

@@ -605,7 +605,7 @@ class ImportadorCamaraThread(threading.Thread):
         self.importer = importer
 
     def run(self):
-        self.importer.importar()
+        self.importer.import_data()
 
 
 def wait_threads(threads):
