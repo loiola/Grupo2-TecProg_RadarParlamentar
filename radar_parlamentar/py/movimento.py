@@ -58,7 +58,7 @@ data = []
 print "Fazendo PCAs:"
 print '-'*(len(annual_list)-1)+'v'
 for annual in annual_list:
-    data.append(annual.partidos_2d('/dev/null'))
+    data.append(annual.do_coordinates_2d_of_political_parties('/dev/null'))
     sys.stdout.write('.')
     sys.stdout.flush()
 
