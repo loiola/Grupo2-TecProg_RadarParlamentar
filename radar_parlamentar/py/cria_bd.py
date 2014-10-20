@@ -19,13 +19,15 @@
 """Module cria_bd 
 
 Classes:
-GeradorBD -- Creates a sqlite3 database from propositions provided (list of objects of type Proposicao). 
+GeradorBD: Creates a 'sqlite3 database' from propositions provided (list of objects of type Proposicao).
 
 Functions:
-cria_bd_camara_deputados -- Creates the database in the chamber of deputies 'resultados/camara.db' from webservice requests to the chamber by the propositions listed 
-                            in the file 'resultados/ids_que_existem.txt' (the latter can be created with ids_que_existem module)
+cria_bd_camara_deputados: Creates the database in the chamber of deputies 'resultados/camara.db'
+                          from webservice requests to the chamber by the propositions listed
+                          in the file 'resultados/ids_que_existem.txt' (the latter can be created
+                          with ids_que_existem module)
 
-cria_bc_cmsp -- Creates the database of the Câmara Munincipal de São Paulo from XMLs on resultados/cmsp[ano].xml
+create_database_of_CMSP: Creates the database of the Câmara Munincipal de São Paulo from XMLs on resultados/cmsp[ano].xml
 """
 
 from __future__ import unicode_literals
@@ -43,32 +45,32 @@ import sqlite3 as lite
 class GeradorBD:
     """Creates a sqlite3 database from propositions provided (list of objects of type Proposicao)."""
 
-    def __init__(self, proposicoes = [], db = "resultados/votos.db"):
+    def __init__(self, propositions = [], db = "resultados/votos.db"):
         """ Arguments:
         proposicoes - list of objects of type Proposicao
         db - string with the location of the database to be generated (default = "resultados/votos.db")."""
 
-        self.proposicoes = proposicoes
+        self.propositions = propositions
         self.db = db
 
-    def arrumar_datas(self):
+    def order_dates(self):
         con = lite.connect(self.db)
         with con:
             #cur = con.cursor()
-            datas = con.execute("select idProp,idVot,data from VOTACOES;").fetchall()
-            for v in datas:
+            dates = con.execute("select idProp,idVot,data from VOTACOES;").fetchall()
+            for v in dates:
                 r = re.search('(\d*)/(\d*)/(\d*)',v[2])
-                formato_sql = r.group(3).zfill(4) + '-' + r.group(2).zfill(2) + '-' + r.group(1).zfill(2)
-                con.execute("update VOTACOES set data=? where idProp=?",(formato_sql,v[0]))
+                sql_format = r.group(3).zfill(4) + '-' + r.group(2).zfill(2) + '-' + r.group(1).zfill(2)
+                con.execute("update VOTACOES set data=? where idProp=?",(sql_format,v[0]))
         con.close()
         return
             
-    def _prepara_backup(self):
+    def prepare_backup(self):
 	
 	# Delete previous backup:
         os.system('rm %s.backup' % self.db) 
 
-	# Backup the previous database:
+    # Backup previous database:
         os.system('mv %s %s.backup' % (self.db, self.db)) 
 
 	# Delete the old database to a new:
@@ -77,9 +79,9 @@ class GeradorBD:
         print 'resultados/camara.db renomeado para resultados/camara.db.backup'
         print 'Backup anterior, se havia, foi apagado.'
 
-    def gera_bd(self):
+    def generate_database(self):
 
-        self._prepara_backup()
+        self.prepare_backup()
 
         print 'Entre parenteses, (id da proposicao,numero de votacoes).'
         print 'Proposicoes sem votacoes aparecem como um ponto.'
@@ -99,7 +101,7 @@ class GeradorBD:
             cur.execute("CREATE TABLE if not exists PARTIDOS(numero INT, nome TEXT)")
         con.close()
 
-        for prop in self.proposicoes:
+        for prop in self.propositions:
             votations_number.append(len(prop.votacoes))
             sys.stdout.write('(%s,%d),'%(prop.id, len(prop.votacoes)))
             sys.stdout.flush()
@@ -128,59 +130,58 @@ class GeradorBD:
                     if d.voto == model.OBSTRUCAO:
                         obstruction.append(idDep)
                 print ' '
-                pid = prop.id
-                votid = prop.votacoes.index(v) + 1
+                id_proposition = prop.id
+                id_voting = prop.votacoes.index(v) + 1
                 resum = v.resumo
-                data = v.data
-                hora = v.hora
-                ssim = str(yes)
-                snao = str(no)
-                sabs = str(abstention)
-                sobs = str(obstruction)
+                date = v.data
+                hour = v.hora
+                str_yes = str(yes)
+                str_no = str(no)
+                str_abstention = str(abstention)
+                str_obstruction = str(obstruction)
                 con = lite.connect(self.db)
-                con.execute("INSERT INTO VOTACOES VALUES(?,?,?,?,?,?,?,?,?)",(pid, votid, resum, data, hora, ssim, snao, sabs, sobs))
+                con.execute("INSERT INTO VOTACOES VALUES(?,?,?,?,?,?,?,?,?)",(id_proposition, id_voting, resum, date, hour, str_yes, str_no, str_abstention, str_obstruction))
                 con.commit()
                 con.close()
 
-        self.arrumar_datas()
+        self.order_dates()
 
-IDS_QUE_EXISTEM = 'resultados/ids_que_existem.txt'
-IDS_VOTADAS = 'resultados/votadas.txt'
-def cria_bd_camara_deputados(arquivo_ids=IDS_VOTADAS):
-    """Creates the Chamber od Deputies's database on 'resultados/camara.db'
-        Arguments:
-        arquivo_ids -- > File with the list of "id: tipo num/ano" (one entry per line, supporting comments with #).
-                       > The function will use these ids to make calls to the web service and get the camera polls.
-                       > The default value is the IDS_VOTADAS file.
-                       > Another useful file is IDS_QUE_EXISTEM (which can be created with ids_que_existem module).
-    """
+EXISTING_IDS = 'resultados/ids_que_existem.txt'
+VOTED_IDS = 'resultados/votadas.txt'
 
-    props = []
-    lista_proposicoes = ids_que_existem.parse_txt(arquivo_ids)
-    for iprop in lista_proposicoes:
+    def create_database_of_chamber_deputies(arquivo_ids=VOTED_IDS):
+         """Creates the Chamber of Deputies's database on 'resultados/camara.db'
+            Arguments:
+            arquivo_ids: File with the list of "id: tipo num/ano" (one entry per line, supporting comments with #).
+                         The function will use these ids to make calls to the web service and get the camera polls.
+                         The default value is the VOTED_IDS file.
+                         Another useful file is EXISTING_IDS (which can be created with ids_que_existem module).
+          """
+
+    propositions = []
+    list_of_propositions = ids_que_existem.parse_txt(arquivo_ids)
+    for iprop in list_of_propositions:
         print 'AVALIANDO %s %s %s' % (iprop['tipo'],iprop['num'],iprop['ano'])
 
 	# Proposition and get their votes from the web service:
-        p = camaraws.get_votings(iprop['tipo'], iprop['num'],iprop['ano'])
+        proposition = camaraws.get_votings(iprop['tipo'], iprop['num'],iprop['ano'])
         
-	if p != None:
-            props.append(p)
+	if proposition != None:
+            propositions.append(proposition)
 
     print 'Agora sim gerando o banco'
-    gerador = GeradorBD(props, 'resultados/camara.db')
-    gerador.gera_bd()
+    generator = GeradorBD(propositions, 'resultados/camara.db')
+    generator.generate_database()
 
-def cria_bd_cmsp():
-    """Creates the database of the Câmara Munincipal de São Paulo from XMLs on resultados/cmsp[ano].xml."""
+    def create_database_of_CMSP():
+        """Creates the database of the Câmara Munincipal de São Paulo from XMLs on resultados/cmsp[ano].xml."""
 
-    props = cmsp.from_xml(cmsp.XML2010)   
-    props += cmsp.from_xml(cmsp.XML2011)
-    props += cmsp.from_xml(cmsp.XML2012)
+    propositions = cmsp.from_xml(cmsp.XML2010)
+    propositions += cmsp.from_xml(cmsp.XML2011)
+    propositions += cmsp.from_xml(cmsp.XML2012)
 
-    gerador = GeradorBD(props, 'resultados/cmsp.db')
-    gerador.gera_bd()
+    generator_database = GeradorBD(propositions, 'resultados/cmsp.db')
+    generator_database.generate_database()
 
 if __name__ == "__main__":
-    cria_bd_cmsp()    
-
-estamos em 1994? A Dilma pegou inflação de 916% ao ano? Pegou desemprego de 8,3% ao ano sem confiança do investidor externo para poder reverter o quadro? Pegou um país sem reservas nacionais? Implantou uma moeda nova e lutou para estabiliza-la? Criou uma política macroeconomica basicamente do zero? Não? Então pare de fingir que as situações são comparáveis. A senhora Rousseff pegou o país em ótimas condições internas e com cenário externo favorável a expansão comercial e política do Brasil. Fudeu com tudo.
+    create_database_of_CMSP()
