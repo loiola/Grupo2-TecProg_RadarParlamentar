@@ -30,14 +30,14 @@ pecs = []
 type = 'pec'
 number = '98'
 year = '2007'
-pecs.append(camaraws.obter_votacao(type, number, year))
+pecs.append(camaraws.get_votings(type, number, year))
 
 # Extending the validity of DRU until December 31, 2015
 # http://www.camara.gov.br/proposicoesWeb/fichadetramitacao?idProposicao=513496
 type = 'pec'
 number = '61'
 year = '2011'
-pecs.append(camaraws.obter_votacao(type, number, year))
+pecs.append(camaraws.get_votings(type, number, year))
 
 # Print propositions
 for propositions in pecs:
