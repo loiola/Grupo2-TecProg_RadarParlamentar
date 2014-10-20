@@ -31,7 +31,7 @@ class FiltroVotacaoTest(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.importer = conv.ImportadorConvencao()
-        cls.importer.importar()
+        cls.importer.import_data()
 
     @classmethod
     def tearDownClass(cls):

@@ -33,7 +33,7 @@ class AnalisadorPeriodoTest(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.importer = conv.ImportadorConvencao()
-        cls.importer.importar()
+        cls.importer.import_data()
 
     @classmethod
     def tearDownClass(cls):
@@ -89,7 +89,7 @@ class MatrizesDeDadosBuilderTest(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.importer = conv.ImportadorConvencao()
-        cls.importer.importar()
+        cls.importer.import_data()
 
     @classmethod
     def tearDownClass(cls):
@@ -157,7 +157,7 @@ class AnalisadorTemporalTest(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.importer = conv.ImportadorConvencao()
-        cls.importer.importar()
+        cls.importer.import_data()
 
     @classmethod
     def tearDownClass(cls):
@@ -214,7 +214,7 @@ class RotacionadorTest(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.importer = conv.ImportadorConvencao()
-        cls.importer.importar()
+        cls.importer.import_data()
 
     @classmethod
     def tearDownClass(cls):

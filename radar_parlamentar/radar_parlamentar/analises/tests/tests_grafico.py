@@ -38,7 +38,7 @@ class JsonAnaliseGeneratorTest(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.importer = conv.ImportadorConvencao()
-        cls.importer.importar()
+        cls.importer.import_data()
 
     @classmethod
     def tearDownClass(cls):
@@ -158,7 +158,7 @@ class RaioPartidoCalculatorTest(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.importer = conv.ImportadorConvencao()
-        cls.importer.importar()
+        cls.importer.import_data()
 
     @classmethod
     def tearDownClass(cls):
