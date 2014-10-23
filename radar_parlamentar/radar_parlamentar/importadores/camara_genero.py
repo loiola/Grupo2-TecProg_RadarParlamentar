@@ -57,14 +57,41 @@ BASE_LIST_PARTIES = [
 
 matrix = {}
 
-def converte_csv_para_json(input_file_name):
+def main(font=None):
+    if not font:
+        font = 'pl'
+    propositions_list = convert_csv_to_json(font)
+    propositions_list = multiple_null_remove(propositions_list)
+    propositions_list = index_propositions(propositions_list)
+    get_political_parties_by_acronym(propositions_list)
+    propositions_list = propositions_index_parse(propositions_list)
+    account_terms(propositions_list)
+    get_more_words(DIC_TERMS)
+
+
+    generate_political_parties_with_jsonMatrix()
+    generate_more_terms_with_jsonMatrix()
+    print(matrix['termos'])
+    generate_political_parties_terms_links_with_jsonMatrix()
+    with open('matrix.json', 'w') as arqMatrix:
+        arqMatrix.write(json.dumps(matrix, indent=4))
+
+    returnVariable = {'partidos': PARTIES, 'dic_termos':
+               DIC_TERMS, 'lista_proposicoes': propositions_list}
+
+    export_json(DIC_TERMS, 'dic_termos.json')
+
+    return returnVariable
+
+
+def convert_csv_to_json(input_file_name):
     sep = b";"
     file = open(input_file_name + '.csv', 'r')
     reader = csv.DictReader(file, delimiter=sep, fieldnames=HEADERS)
     out = json.loads(json.dumps([row for row in reader], indent=4))
     return out
 
-def _null_to_none(proposition):
+def convert_null_to_none(proposition):
     for attribute in proposition.keys():
         if proposition[attribute] == "NULL":
             proposition[attribute] = None
@@ -73,10 +100,10 @@ def _null_to_none(proposition):
 def multiple_null_remove(proposition_list):
     new_list = []
     for proposition in proposition_list:
-        new_list.append(_null_to_none(proposition))
+        new_list.append(convert_null_to_none(proposition))
     return new_list
 
-def proposicoes_indexadas(proposition_list):
+def index_propositions(proposition_list):
     indexed = []
 
     for proposition in proposition_list:
@@ -85,7 +112,7 @@ def proposicoes_indexadas(proposition_list):
                 indexed.append(proposition)
     return indexed
 
-def parseia_indexacoes(indexing):
+def do_index_parse(indexing):
     indexing1 = [term.strip()
 
     for term in indexing.replace('\n', '').replace('.', '').replace('_', '').split(',')]
@@ -99,20 +126,20 @@ def parseia_indexacoes(indexing):
                 indexing2.append(term2.lower())
     return indexing2
 
-def parsear_indexacoes_de_proposicoes(propositions_list):
+def propositions_index_parse(propositions_list):
     new_proposition_list = []
 
     for proposition in propositions_list:
-        proposition['txtIndexacao'] = parseia_indexacoes(
+        proposition['txtIndexacao'] = do_index_parse(
             proposition['txtIndexacao'])
         new_proposition_list.append(proposition)
 
         if proposition['txtSiglaPartido']:
-            soma_palavras_no_partido(
+            sum_words_political_party(
                 proposition['txtSiglaPartido'], proposition['txtIndexacao'])
     return new_proposition_list
 
-def partidos_das_proposicoes(propositions_list):
+def get_political_parties_by_acronym(propositions_list):
 
     for proposition in propositions_list:
         if proposition['txtSiglaPartido']:
@@ -120,7 +147,7 @@ def partidos_das_proposicoes(propositions_list):
             if party not in PARTIES:
                 PARTIES[party] = {}
 
-def contabiliza_termos_geral(indexed_list):
+def account_terms(indexed_list):
 
     for proposition in indexed_list:
 
@@ -133,7 +160,7 @@ def contabiliza_termos_geral(indexed_list):
                 else:
                     DIC_TERMS[term] = increment_variable
 
-def pega_maiores_palavras(dic_words):
+def get_more_words(dic_words):
     words = sorted(dic_words, key=lambda k: -dic_words[k])
     export_json(words, "lista_50_mais")
     global WORDS_MORE_MORE
@@ -142,7 +169,7 @@ def pega_maiores_palavras(dic_words):
     for term in FILTERED:
         WORDS_MORE_MORE.remove(term)
 
-def ordena_palavras_partido():
+def arrange_words_political_party():
     for party in PARTIES:
         party_words = PARTIES[party]
         words = sorted(party_words, key=lambda k: -party_words[k])
@@ -151,7 +178,7 @@ def ordena_palavras_partido():
         for term in words:
             PARTIES[party][term] = party_words[term]
 
-def soma_palavras_no_partido(party, words_list):
+def sum_words_political_party(party, words_list):
     for word in words_list:
         if word not in PARTIES[party.strip()]:
             PARTIES[party.strip()][word] = 1
@@ -162,7 +189,7 @@ def export_json(data, filename):
     with open(filename, 'w') as outFile:
         outFile.write(json.dumps(data, indent=4))
 
-def jsonMatrix_gera_partidos():
+def generate_political_parties_with_jsonMatrix():
     i = 0
     parties_list = []
 
@@ -172,7 +199,7 @@ def jsonMatrix_gera_partidos():
     global matrix
     matrix['partidos'] = parties_list
 
-def jsonMatrix_gera_termos_mais_mais():
+def generate_more_terms_with_jsonMatrix():
     i = 0
     term_list = []
     global matrix
@@ -185,7 +212,7 @@ def jsonMatrix_gera_termos_mais_mais():
     matrix['termos'] = term_list
     print(matrix['termos'])
 
-def jsonMatrix_gera_links_partidos_termos():
+def generate_political_parties_terms_links_with_jsonMatrix():
     global matrix
     matrix['links'] = []
 
@@ -199,32 +226,3 @@ def jsonMatrix_gera_links_partidos_termos():
                 matrix['links'].append(
                     {'source': t, 'target': p, 'value': PARTIES[
                      partyName][termName]})
-
-
-def principal(font=None):
-    if not font:
-        font = 'pl'
-    propositions_list = converte_csv_para_json(font)
-    propositions_list = multiple_null_remove(propositions_list)
-    propositions_list = proposicoes_indexadas(propositions_list)
-    partidos_das_proposicoes(propositions_list)
-    propositions_list = parsear_indexacoes_de_proposicoes(propositions_list)
-    contabiliza_termos_geral(propositions_list)
-    pega_maiores_palavras(DIC_TERMS)
-
-    # ordena_palavras_partido()
-    jsonMatrix_gera_partidos()
-    jsonMatrix_gera_termos_mais_mais()
-    print(matrix['termos'])
-    jsonMatrix_gera_links_partidos_termos()
-    with open('matrix.json', 'w') as arqMatrix:
-        arqMatrix.write(json.dumps(matrix, indent=4))
-
-    returnVariable = {'partidos': PARTIES, 'dic_termos':
-               DIC_TERMS, 'lista_proposicoes': propositions_list}
-
-    #export_json(PARTIDOS, 'partidospropositores.json')
-    #export_json(lista_proposicoes, 'lista_proposicoes.json')
-    export_json(DIC_TERMS, 'dic_termos.json')
-
-    return returnVariable
