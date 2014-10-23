@@ -45,7 +45,7 @@ class FiltroVotacaoTest(TestCase):
         lista_palavras_chave = ['cotas', 'guerra', 'violência']
         filtro_votacao = filtro.FiltroVotacao(
             casa_legislativa, periodo_casa_legislativa, lista_palavras_chave)
-        votacoes_filtradas = filtro_votacao.filtra_votacoes()
+        votacoes_filtradas = filtro_votacao.filter_votings()
         self.assertEquals(2, len(votacoes_filtradas))
 
     def test_filtra_votacoes_com_periodo_invalido(self):
@@ -55,7 +55,7 @@ class FiltroVotacaoTest(TestCase):
         lista_palavras_chave = ['cotas', 'guerra', 'violência']
         filtro_votacao = filtro.FiltroVotacao(
             casa_legislativa, periodo_casa_legislativa, lista_palavras_chave)
-        votacoes_filtradas = filtro_votacao.filtra_votacoes()
+        votacoes_filtradas = filtro_votacao.filter_votings()
         self.assertEquals(0, len(votacoes_filtradas))
 
     def test_filtra_votacoes_sem_palavras_chave_relacionadas(self):
@@ -64,7 +64,7 @@ class FiltroVotacaoTest(TestCase):
         lista_palavras_chave = ['educacao', 'violência']
         filtro_votacao = filtro.FiltroVotacao(
             casa_legislativa, periodo_casa_legislativa, lista_palavras_chave)
-        votacoes_filtradas = filtro_votacao.filtra_votacoes()
+        votacoes_filtradas = filtro_votacao.filter_votings()
         self.assertEquals(0, len(votacoes_filtradas))
 
     def test_filtra_votacoes_com_varias_palavras_chave(self):
@@ -73,7 +73,7 @@ class FiltroVotacaoTest(TestCase):
         lista_palavras_chave = ['militar', 'guerra', 'escolas', 'nobres']
         filtro_votacao = filtro.FiltroVotacao(
             casa_legislativa, periodo_casa_legislativa, lista_palavras_chave)
-        votacoes_filtradas = filtro_votacao.filtra_votacoes()
+        votacoes_filtradas = filtro_votacao.filter_votings()
         self.assertEquals(4, len(votacoes_filtradas))
 
 
@@ -84,23 +84,23 @@ class TemasTest(TestCase):
 
     def setUp(self):
         self.temas = filtro.Temas()
-        self.temas.inserir_sinonimo("tecnologia", "software")
-        self.temas.inserir_sinonimo("tecnologia", "internet")
-        self.temas.inserir_sinonimo("tecnologia", "hacker")
-        self.temas.inserir_sinonimo("paleontologia", "sítio")
-        self.temas.inserir_sinonimo("paleontologia", "dinossauro")
-        self.temas.inserir_sinonimo("economia", "bolsa")
-        self.temas.inserir_sinonimo("economia", "mercado")
+        self.temas.insert_synonyms("tecnologia", "software")
+        self.temas.insert_synonyms("tecnologia", "internet")
+        self.temas.insert_synonyms("tecnologia", "hacker")
+        self.temas.insert_synonyms("paleontologia", "sítio")
+        self.temas.insert_synonyms("paleontologia", "dinossauro")
+        self.temas.insert_synonyms("economia", "bolsa")
+        self.temas.insert_synonyms("economia", "mercado")
 
     def test_insercao_erro(self):
         with self.assertRaises(ValueError):
-            self.temas.inserir_sinonimo("tecnologia", None)
+            self.temas.insert_synonyms("tecnologia", None)
 
         with self.assertRaises(ValueError):
-            self.temas.inserir_sinonimo(None, "software")
+            self.temas.insert_synonyms(None, "software")
 
     def test_recuperacao_por_sinonimo(self):
-        palavras = self.temas.recuperar_sinonimos("software")
+        palavras = self.temas.recover_synonyms("software")
         self.assertEquals(4, len(palavras))
         self.assertTrue("tecnologia" in palavras)
         self.assertTrue("software" in palavras)
@@ -108,7 +108,7 @@ class TemasTest(TestCase):
         self.assertTrue("hacker" in palavras)
 
     def test_recuperacao_por_tema(self):
-        palavras = self.temas.recuperar_sinonimos("tecnologia")
+        palavras = self.temas.recover_synonyms("tecnologia")
         self.assertEquals(4, len(palavras))
         self.assertTrue("tecnologia" in palavras)
         self.assertTrue("software" in palavras)
@@ -116,7 +116,7 @@ class TemasTest(TestCase):
         self.assertTrue("hacker" in palavras)
 
     def test_recuperacao_por_tema_abreviado(self):
-        palavras = self.temas.recuperar_sinonimos("tec")
+        palavras = self.temas.recover_synonyms("tec")
         self.assertEquals(4, len(palavras))
         self.assertTrue("tecnologia" in palavras)
         self.assertTrue("software" in palavras)
@@ -124,7 +124,7 @@ class TemasTest(TestCase):
         self.assertTrue("hacker" in palavras)
 
     def test_recuperacao_por_sinonimo_abreviado(self):
-        palavras = self.temas.recuperar_sinonimos("hack")
+        palavras = self.temas.recover_synonyms("hack")
         self.assertEquals(4, len(palavras))
         self.assertTrue("tecnologia" in palavras)
         self.assertTrue("software" in palavras)
@@ -133,7 +133,7 @@ class TemasTest(TestCase):
 
     def test_expandir_palavras_chaves(self):
         palavras_chaves = ["soft", "eco"]
-        palavras = self.temas.expandir_palavras_chaves(palavras_chaves)
+        palavras = self.temas.expand_keywords(palavras_chaves)
         self.assertEquals(7, len(palavras))
         self.assertTrue("tecnologia" in palavras)
         self.assertTrue("software" in palavras)
@@ -145,6 +145,6 @@ class TemasTest(TestCase):
 
     def test_palavra_nao_cadastrada(self):
         palavras_chaves = ["guerra"]
-        palavras = self.temas.expandir_palavras_chaves(palavras_chaves)
+        palavras = self.temas.expand_keywords(palavras_chaves)
         self.assertEquals(1, len(palavras))
         self.assertTrue("guerra" in palavras)

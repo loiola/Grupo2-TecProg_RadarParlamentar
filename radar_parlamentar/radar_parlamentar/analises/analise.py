@@ -178,7 +178,7 @@ class AnalisadorPeriodo:
 
         filtro_votacao = filtro.FiltroVotacao(
             self.casa_legislativa, self.periodo, self.palavras_chave)
-        self.votacoes = filtro_votacao.filtra_votacoes()
+        self.votacoes = filtro_votacao.filter_votings()
         return self.votacoes
 
     def analisa(self):

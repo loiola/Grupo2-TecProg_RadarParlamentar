@@ -26,85 +26,86 @@ import re
 class Temas():
 
     def __init__(self):
-        self.dicionario = {}
+        self.dictionary = {}
 
     @staticmethod
-    def get_temas_padrao():
+    def get_default_themes():
         """Get topics and insert topics synonymous"""
 
-        temas = Temas()
-        sinonimos = {}
-        sinonimos['educação'] = [
+        themes = Temas()
+        synonyms = {}
+        
+        synonyms['educação'] = [
             'escola', 'professor', 'aluno', 'EAD', 'universidade', 'cotas']
-        sinonimos['segurança'] = [
+        synonyms['segurança'] = [
             'policial', 'polícia', 'bandido', 'PM', 'violência', 'presídios']
-        sinonimos['economia'] = [
+        synonyms['economia'] = [
             'impostos', 'dívida', 'tributos', 'financeira']
-        sinonimos['saúde'] = [
+        synonyms['saúde'] = [
             'medicina', 'médicos', 'SUS', 'hospital', 'enfermeiro',
             'remédios', 'receita']
-        sinonimos['transporte'] = ['trânsito', 'pedágio',
+        synonyms['transporte'] = ['trânsito', 'pedágio',
                                    'congestionamento', 'ônibus',
                                    'metrô', 'avião']
-        sinonimos['violência'] = ['desarmamento', 'bullying']
-        sinonimos['esporte'] = [
+        synonyms['violência'] = ['desarmamento', 'bullying']
+        synonyms['esporte'] = [
             'futebol', 'inclusão', 'torcida', 'estádio', 'copa', 'jogo']
-        sinonimos['drogas'] = ['álcool', 'entorpecentes', 'maconha', 'cigarro']
-        sinonimos['turismo'] = ['hotel', 'turista']
-        sinonimos['meio ambiente'] = [
+        synonyms['drogas'] = ['álcool', 'entorpecentes', 'maconha', 'cigarro']
+        synonyms['turismo'] = ['hotel', 'turista']
+        synonyms['meio ambiente'] = [
             'poluição', 'mineração', 'desmatamento', 'energia', 'usina']
-        sinonimos['assistência social'] = ['bolsa', 'família', 'cidadania']
-        sinonimos['tecnologia'] = [
+        synonyms['assistência social'] = ['bolsa', 'família', 'cidadania']
+        synonyms['tecnologia'] = [
             'inovação', 'internet', 'rede', 'dados', 'hacker']
-        sinonimos['política'] = [
+        synonyms['política'] = [
             'eleição', 'search_political_party', 'mandato', 'eleitor', 'voto', 'reforma',
             'prefeito', 'deputado', 'vereador', 'senador', 'presidente',
             'sistema eleitoral']
-        sinonimos['família'] = [
+        synonyms['família'] = [
             'maternidade', 'mãe', 'pai', 'paternidade', 'adoção']
-        sinonimos['constituição'] = ['PEC', 'constituinte']
-        sinonimos['burocrática'] = [
+        synonyms['constituição'] = ['PEC', 'constituinte']
+        synonyms['burocrática'] = [
             'pauta', 'quorum', 'urgência', 'adiamento', 'sessão']
 
-        for i in sinonimos:
-            for j in sinonimos[i]:
-                temas.inserir_sinonimo(i, j)
-        return temas
+        for i in synonyms:
+            for j in synonyms[i]:
+                themes.insert_synonyms(i, j)
+        return themes
 
-    def inserir_sinonimo(self, tema, sinonimo):
+    def insert_synonyms(self, theme, sinonimo):
         """Verify if has topics or synonymous. If topics or synonymous, add. If not,
         show valueError"""
 
-        if tema is None or sinonimo is None:
+        if theme is None or sinonimo is None:
             raise ValueError('Impossivel adicionar sinonimo\n')
-        if tema.encode('utf-8') in self.dicionario:
+        if theme.encode('utf-8') in self.dictionary:
 
         # if self.dicionario.has_key(tema.encode('utf-8')):
-            self.dicionario[tema.encode('utf-8')].add(sinonimo.encode('utf-8'))
+            self.dictionary[theme.encode('utf-8')].add(sinonimo.encode('utf-8'))
         else:
-            self.dicionario[tema.encode('utf-8')] = set()
-            self.dicionario[tema.encode('utf-8')].add(sinonimo.encode('utf-8'))
+            self.dictionary[theme.encode('utf-8')] = set()
+            self.dictionary[theme.encode('utf-8')].add(sinonimo.encode('utf-8'))
 
-    def expandir_palavras_chaves(self, palavras_chaves):
-        expandido = []
-        for palavra in palavras_chaves:
-            expandido.extend(self.recuperar_sinonimos(palavra))
-        return expandido
+    def expand_keywords(self, keywords):
+        expanded = []
+        for word in keywords:
+            expanded.extend(self.recover_synonyms(word))
+        return expanded
 
-    def recuperar_sinonimos(self, palavra):
-        palavra = palavra.encode('utf-8')
-        palavras = []
-        for tema, sinonimos in self.dicionario.items():
-            if palavra in tema or self._palavra_in_sinonimos(palavra, sinonimos):
-                palavras.append(tema)
-                palavras.extend(sinonimos)
-        if not palavras:
-            palavras.append(palavra)
-        return palavras
+    def recover_synonyms(self, word):
+        word = word.encode('utf-8')
+        words = []
+        for theme, synonyms in self.dictionary.items():
+            if word in theme or self.word_in_synonyms(word, synonyms):
+                words.append(theme)
+                words.extend(synonyms)
+        if not words:
+            words.append(word)
+        return words
 
-    def _palavra_in_sinonimos(self, palavra, sinonimos):
-        for sinonimo in sinonimos:
-            if palavra in sinonimo:
+    def word_in_synonyms(self, palavra, synonyms):
+        for synonym in synonyms:
+            if palavra in synonym:
                 return True
         return False
 
@@ -116,55 +117,55 @@ class FiltroVotacao():
         * proposicao.descricao
         * proposicao.indexacao"""
 
-    def __init__(self, casa_legislativa, periodo_casa_legislativa,
-                 palavras_chave):
+    def __init__(self, legislative_house, period_legislative_house,
+                 keywords):
         """Arguments:
-            casa_legislativa -- object of type CasaLegislativa;
-            only voting from this house will be filtered.
-            periodo_casa_legislativa -- object of type PeriodoCasaLegislativa;
-            only voting from this period will be filtered.
-            palavras_chave -- strings list for be used in voting filtering."""
+            legislative_house: object of type CasaLegislativa;
+            Only voting from this house will be filtered.
+            period_legislative_house: object of type PeriodoCasaLegislativa;
+            Only voting from this period will be filtered.
+            keywords: strings list for be used in voting filtering."""
 
-        self.casa_legislativa = casa_legislativa
-        self.periodo_casa_legislativa = periodo_casa_legislativa
-        self.palavras_chaves = palavras_chave
-        self.temas = Temas.get_temas_padrao()
-        self.votacoes = []
+        self.legislative_house = legislative_house
+        self.period_legislative_house = period_legislative_house
+        self.keywords = keywords
+        self.themes = Temas.get_default_themes()
+        self.votings = []
 
-    def filtra_votacoes(self):
-        self.votacoes = models.Votacao.by_legislative_house(
-            self.casa_legislativa,
-            self.periodo_casa_legislativa.ini,
-            self.periodo_casa_legislativa.fim)
-        if self.palavras_chaves:
-            self.palavras_chaves = self.temas.expandir_palavras_chaves(
-                self.palavras_chaves)
-            self.votacoes = self._filtra_votacoes_por_palavras_chave()
-        return self.votacoes
+    def filter_votings(self):
+        self.votings = models.Votacao.by_legislative_house(
+            self.legislative_house,
+            self.period_legislative_house.ini,
+            self.period_legislative_house.fim)
+        if self.keywords:
+            self.keywords = self.themes.expand_keywords(
+                self.keywords)
+            self.votings = self.filter_votings_by_keywords()
+        return self.votings
 
-    def _filtra_votacoes_por_palavras_chave(self):
-        votacoes_com_palavras_chave = []
-        for votacao in self.votacoes:
-            if self._verifica_palavras_chave_em_votacao(votacao):
-                votacoes_com_palavras_chave.append(votacao)
-        return votacoes_com_palavras_chave
+    def filter_votings_by_keywords(self):
+        votings_with_keywords = []
+        for votacao in self.votings:
+            if self.verify_keywords_in_voting(votacao):
+                votings_with_keywords.append(votacao)
+        return votings_with_keywords
 
-    def _verifica_palavras_chave_em_votacao(self, votacao):
-        for palavra_chave in self.palavras_chaves:
-            if(self._palavra_existe_em_votacao(votacao, palavra_chave)):
+    def verify_keywords_in_voting(self, votacao):
+        for keyword in self.keywords:
+            if(self.verify_if_word_exist_in_voting(votacao, keyword)):
                 return True
         return False
 
-    def _palavra_existe_em_votacao(self, votacao, palavra_chave):
+    def verify_if_word_exist_in_voting(self, votacao, palavra_chave):
 
-        # Search a substring within a string
-        proposicao = votacao.proposicao
+        # Search a substring within a string.
+        proposition = votacao.proposicao
         if((re.search(palavra_chave.upper(),
-            proposicao.descricao.upper()) is not None) or
+            proposition.descricao.upper()) is not None) or
            (re.search(palavra_chave.upper(),
-            proposicao.ementa.upper()) is not None) or
+            proposition.ementa.upper()) is not None) or
            (re.search(palavra_chave.upper(),
-            proposicao.indexacao.upper()) is not None) or
+            proposition.indexacao.upper()) is not None) or
            (re.search(palavra_chave.upper(),
                       votacao.descricao.upper()) is not None)):
             return True
