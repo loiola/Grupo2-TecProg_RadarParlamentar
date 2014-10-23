@@ -84,6 +84,12 @@ class Camaraws:
     def __init__(self, url=Url()):
         self.url = url
 
+    def _convert_to_percentage(self, value){
+        percentage_conversion_factor = 100
+        percentage = percentage_conversion_factor*value
+        return percentage
+    }
+
     def _montar_url_consulta_camara(self, url_base, url_parameters, **kwargs):
         built_url = url_base
 
@@ -529,7 +535,7 @@ class ImportadorCamara:
         parliamentarian = self.parlamentares.get(key)
 
         if not parliamentarian:
-            parliamentarians = models.Parlamentar.objects.filter(nome=deputy_name)
+            parliamentarians = models.Parlamentar.objects.filter(name=deputy_name)
             if parliamentarians:
                 parliamentarian = parliamentarians[0]
                 self.parlamentares[key] = parliamentarian
@@ -543,8 +549,7 @@ class ImportadorCamara:
 
     def _progress(self):
         """Indicate progress on screen."""
-        percentage_conversion_factor = 100
-        percentage = (int)(1.0 * self.importadas / self.total * percentage_conversion_factor)
+        percentage = (int)(1.0 * self.importadas / _convert_to_percentage(self.total))
         logger.info('Progresso: %d / %d proposições (%d%%)' %
                     (self.importadas, self.total, percentage))
 
@@ -650,10 +655,8 @@ def lista_proposicoes_de_mulheres():
         count_propositions[year]['somatotal'] = len(
             propositions[year]['F']) + len(propositions[year]['M'])
 
-        percentage_conversion_factor = 100
-
-        female_percentage[year] = convert_in_percentage * float(
-            count_propositions[year]['F']) / float(count_propositions[
+        female_percentage[year] = _convert_to_percentage(float(
+            count_propositions[year]['F'])) / float(count_propositions[
                                                     year]['somatotal'])
 
     return {'proposicoes': propositions, 'contagem': count_propositions,

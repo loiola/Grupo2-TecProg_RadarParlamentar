@@ -61,6 +61,7 @@ def serialize_casa_legislativa(short_name):
             situacao=proposition_aux.situacao)
 
         voting = models.Votacao.objects.filter(proposicao_id=proposition_aux)
+
         for vote_aux in voting:
             voting_xml = Element('Votacao', id_vot=str(
                 vote_aux.id_vot), descricao = vote_aux.descricao, data = str(vote_aux.data),
