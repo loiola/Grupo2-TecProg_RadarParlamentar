@@ -40,100 +40,101 @@ class JsonAnaliseGenerator:
 
     def __init__(self, analise_temporal):
 
-        self.CONSTANTE_ESCALA_TAMANHO = 120
-        self.analise_temporal = analise_temporal
-        self.escala_periodo = None
+        self.CONSTANT_SIZE_SCALE = 120
+        self.temporal_analysis = analise_temporal
+        self.scale_period = None
         self.json = None
-        self.max_parlamentar_radius_calculator = MaxRadiusCalculator()
-        self.max_partido_radius_calculator = MaxRadiusCalculator()
-        self.parlamentaresScaler = GraphScaler()
-        self.partidosScaler = GraphScaler()
-        self._init_raio_calculator()
+        self.max_parliamentary_radius_calculator = MaxRadiusCalculator()
+        self.max_political_party_radius_calculator = MaxRadiusCalculator()
+        self.parliamentaries_scaler = GraphScaler()
+        self.political_parties_scaler = GraphScaler()
+        self.init_radius_calculator()
 
-    def _init_raio_calculator(self):
+    def init_radius_calculator(self):
 
-        tamanhos_dos_partidos_por_periodo = {}
-        for ap in self.analise_temporal.analises_periodo:
+        political_parties_size_by_period = {}
+        for ap in self.temporal_analysis.analises_periodo:
             label_periodo = str(ap.periodo)
-            tamanhos_dos_partidos_por_periodo[
+            political_parties_size_by_period[
                 label_periodo] = ap.tamanhos_partidos
         self.raio_partido_calculator = RaioPartidoCalculator(
-            tamanhos_dos_partidos_por_periodo)
+            political_parties_size_by_period)
 
     def get_json(self):
 
         if not self.json:
             logger.info('Gerando json...')
-            self._cria_json()
+            self.create_json()
             logger.info('json gerado')
         return self.json
 
-    def _cria_json(self):
+    def create_json(self):
 
-        dict_analise = {}
-        dict_analise['geral'] = self._dict_geral()
-        dict_analise['periodos'] = self._list_periodos()
-        dict_analise['partidos'] = self._list_partidos_instrumented()
-        dict_analise[
-            'max_raio'] = self.max_parlamentar_radius_calculator.max_r()
-        dict_analise[
-            'max_raio_partidos'] = self.max_partido_radius_calculator.max_r()
-        self.json = json.dumps(dict_analise)
+        dictionary_analysis = {}
+        dictionary_analysis['geral'] = self.create_general_dictionary()
+        dictionary_analysis['periodos'] = self.list_periods()
+        dictionary_analysis['partidos'] = self.list_political_parties_instrumented()
+        dictionary_analysis[
+            'max_raio'] = self.max_parliamentary_radius_calculator.max_r()
+        dictionary_analysis[
+            'max_raio_partidos'] = self.max_political_party_radius_calculator.max_r()
+        self.json = json.dumps(dictionary_analysis)
 
-    def _dict_geral(self):
+    def create_general_dictionary(self):
 
-        dict_geral = {}
-        dict_geral['escala_tamanho'] = None
-        dict_geral['filtro_votacoes'] = None
-        dict_geral['CasaLegislativa'] = self._dict_casa_legislativa()
-        dict_geral['total_votacoes'] = self.analise_temporal.total_votacoes
-        dict_geral['palavras_chaves'] = self.analise_temporal.palavras_chaves
-        return dict_geral
+        general_dictionary = {}
+        general_dictionary['escala_tamanho'] = None
+        general_dictionary['filtro_votacoes'] = None
+        general_dictionary['CasaLegislativa'] = self.create_legislative_house_dictionary()
+        general_dictionary['total_votacoes'] = self.temporal_analysis.total_votacoes
+        general_dictionary['palavras_chaves'] = self.temporal_analysis.palavras_chaves
+        return general_dictionary
 
-    def _dict_casa_legislativa(self):
+    def create_legislative_house_dictionary(self):
 
-        casa_legislativa = self.analise_temporal.casa_legislativa
-        dict_casa = {}
-        dict_casa['nome'] = casa_legislativa.nome
-        dict_casa['short_name'] = casa_legislativa.nome_curto
-        dict_casa['esfera'] = casa_legislativa.esfera
-        dict_casa['local'] = casa_legislativa.local
-        dict_casa['atualizacao'] = unicode(casa_legislativa.atualizacao)
-        return dict_casa
+        legislative_house = self.temporal_analysis.casa_legislativa
+        legislative_house_dictionary = {}
+        legislative_house_dictionary['nome'] = legislative_house.nome
+        legislative_house_dictionary['short_name'] = legislative_house.nome_curto
+        legislative_house_dictionary['esfera'] = legislative_house.esfera
+        legislative_house_dictionary['local'] = legislative_house.local
+        legislative_house_dictionary['atualizacao'] = unicode(legislative_house.atualizacao)
+        return legislative_house_dictionary
 
-    def _list_periodos(self):
+    def list_periods(self):
 
         list_aps = []
-        for ap in self.analise_temporal.analises_periodo:
-            dict_ap = {}
+        for ap in self.temporal_analysis.analises_periodo:
+            dictionary_political_party_analysis = {}
             eigen0 = ap.pca.eigen[0] if len(
                 ap.pca.eigen) > 0 is not None else 0
             eigen1 = ap.pca.eigen[1] if len(
                 ap.pca.eigen) > 1 is not None else 0
             var_explicada = round(
                 (eigen0 + eigen1) / ap.pca.eigen.sum() * 100, 1)
-            dict_ap['nvotacoes'] = ap.num_votacoes
-            dict_ap['nome'] = ap.periodo.string
-            dict_ap['var_explicada'] = var_explicada
-            dict_ap['cp1'] = self._dict_cp1(ap)
-            dict_ap['cp2'] = self._dict_cp2(ap)
-            dict_ap['votacoes'] = self._list_votacoes_do_periodo(ap)
-            list_aps.append(dict_ap)
+            dictionary_political_party_analysis['nvotacoes'] = ap.num_votacoes
+            dictionary_political_party_analysis['nome'] = ap.periodo.string
+            dictionary_political_party_analysis['var_explicada'] = var_explicada
+            dictionary_political_party_analysis['cp1'] = self.do_dictionary_composition_1(ap)
+            dictionary_political_party_analysis['cp2'] = self.do_dictionary_composition_2(ap)
+            dictionary_political_party_analysis['votacoes'] = self.list_votings_in_period(ap)
+            list_aps.append(dictionary_political_party_analysis)
         return list_aps
 
-    def _dict_cp1(self, ap):
+    def do_dictionary_composition_1(self, ap):
 
-        return self._dict_cp(ap, 0)
+        return self.compose_dictionary(ap, 0)
 
-    def _dict_cp2(self, ap):
+    def do_dictionary_composition_2(self, ap):
 
-        return self._dict_cp(ap, 1)
+        return self.compose_dictionary(ap, 1)
 
-    def _dict_cp(self, ap, idx):
+    def compose_dictionary(self, ap, idx):
 
-        """ap -- AnalisePeriodo; idx == 0 para cp1 and idx == 1 para cp2"""
+        """ap: AnalisePeriodo;
+           idx == 0 para cp1 and idx == 1 para cp2"""
 
-        dict_cp = {}
+        dictionary_composition = {}
         try:
             theta = round(ap.theta, 0) % 180 + 90 * idx
         except AttributeError, error:
@@ -145,125 +146,126 @@ class JsonAnaliseGenerator:
             if ap.pca.Vt is not None:
                 composicao = [round(el, 2)
                               for el in 100 * ap.pca.Vt[idx, :] ** 2]
-                dict_cp['composicao'] = composicao
+                dictionary_composition['composicao'] = composicao
         except IndexError:
             var_explicada = 0
-            dict_cp['composicao'] = 0
-        dict_cp['theta'] = theta
-        dict_cp['var_explicada'] = var_explicada
+            dictionary_composition['composicao'] = 0
+        dictionary_composition['theta'] = theta
+        dictionary_composition['var_explicada'] = var_explicada
 
         # ALL these complex accounts should gave been made by analysis
         # The JsonGenerator should not understand these things.
-        return dict_cp
+        return dictionary_composition
 
-    def _list_votacoes_do_periodo(self, ap):
+    def list_votings_in_period(self, ap):
 
-        list_votacoes = []
-        for votacao in ap.votacoes:
-            dict_votacao = {}
-            dict_votacao['id'] = unicode(votacao).replace('"', "'")
-            list_votacoes.append(dict_votacao)
-        return list_votacoes
+        list_of_votings = []
+        for voting in ap.votacoes:
+            dictionary_voting = {}
+            dictionary_voting['id'] = unicode(voting).replace('"', "'")
+            list_of_votings.append(dictionary_voting)
+        return list_of_votings
 
-    def _list_partidos_instrumented(self):
+    def list_political_parties_instrumented(self):
 
         db.reset_queries()
         print 'comecando lista de partidos'
         ttotal1 = time.time()
-        list_partidos = self._list_partidos()
+        list_political_parties = self.list_political_parties()
         print 'queries para fazer lista de partidos = '
         print str(len(db.connection.queries))
         print 'tempo na lista de partidos = '
         print str(time.time() - ttotal1) + ' s.'
-        return list_partidos
+        return list_political_parties
 
-    def _list_partidos(self):
+    def list_political_parties(self):
 
-        list_partidos = []
-        partidos = self.analise_temporal.casa_legislativa.parties(
+        list_political_parties = []
+        political_parties = self.temporal_analysis.casa_legislativa.parties(
         ).select_related('nome', 'numero', 'cor')
-        #  self.analise_temporal.analises_periodo[0].partidos:
-        for partido in partidos:
-            list_partidos.append(self._dict_partido(partido))
-        return list_partidos
 
-    def _dict_partido(self, partido):
+        for partido in political_parties:
+            list_political_parties.append(self.compose_political_party_dictionary(partido))
+        return list_political_parties
 
-        dict_partido = {
+    def compose_political_party_dictionary(self, partido):
+
+        political_party_dictionary = {
             "nome": partido.nome, "numero": partido.numero, "cor": partido.cor}
-        dict_partido["t"] = []
-        dict_partido["r"] = []
-        dict_partido["x"] = []
-        dict_partido["y"] = []
-        for ap in self.analise_temporal.analises_periodo:
-            label_periodo = str(ap.periodo)
-            cache_coords_key = label_periodo
-            coordenadas = self.partidosScaler.scale(
-                ap.coordenadas_partidos, cache_coords_key)
+        political_party_dictionary["t"] = []
+        political_party_dictionary["r"] = []
+        political_party_dictionary["x"] = []
+        political_party_dictionary["y"] = []
+
+        for period_analysis in self.temporal_analysis.analises_periodo:
+            label_period = str(period_analysis.periodo)
+            cache_coords_key = label_period
+            coordinates = self.political_parties_scaler.change_x_y_scales(
+                period_analysis.coordenadas_partidos, cache_coords_key)
             try:
-                x = round(coordenadas[partido][0], 2)
-                y = round(coordenadas[partido][1], 2)
-                self.max_partido_radius_calculator.add_point(x, y)
+                x = round(coordinates[partido][0], 2)
+                y = round(coordinates[partido][1], 2)
+                self.max_political_party_radius_calculator.add_point(x, y)
                 if not isnan(x):
-                    dict_partido["x"].append(round(x, 2))
-                    dict_partido["y"].append(round(y, 2))
+                    political_party_dictionary["x"].append(round(x, 2))
+                    political_party_dictionary["y"].append(round(y, 2))
                 else:
-                    dict_partido["x"].append(0.)
-                    dict_partido["y"].append(0.)
+                    political_party_dictionary["x"].append(0.)
+                    political_party_dictionary["y"].append(0.)
 
             except KeyError, error:
                 logger.error("KeyError: %s" % error)
-                dict_partido["x"].append(0.)
-                dict_partido["y"].append(0.)
+                political_party_dictionary["x"].append(0.)
+                political_party_dictionary["y"].append(0.)
 
-            tamanho = ap.tamanhos_partidos[partido]
-            dict_partido["t"].append(tamanho)
+            size = period_analysis.tamanhos_partidos[partido]
+            political_party_dictionary["t"].append(size)
 
-            raio = self.raio_partido_calculator.get_raio(
-                partido, label_periodo)
+            radius = self.raio_partido_calculator.get_radius(
+                partido, label_period)
 
-            dict_partido["r"].append(raio)
+            political_party_dictionary["r"].append(radius)
 
-        dict_partido["parlamentares"] = []
+        political_party_dictionary["parlamentares"] = []
 
-        # Legislatures = self.analise_temporal.analises_periodo[0].legislaturas_por_partido[search_political_party.nome]
-        legislaturas = self.analise_temporal.casa_legislativa.legislatures().filter(
+
+        legislatures = self.temporal_analysis.casa_legislativa.legislatures().filter(
             partido=partido).select_related('id', 'localidade', 'partido__nome', 'parlamentar__nome')
 
-        for leg in legislaturas:
-            dict_partido["parlamentares"].append(self._dict_parlamentar(leg))
-        return dict_partido
+        for leg in legislatures:
+            political_party_dictionary["parlamentares"].append(self.compose_parliamentary_dictionary(leg))
+        return political_party_dictionary
 
-    def _dict_parlamentar(self, legislatura):
+    def compose_parliamentary_dictionary(self, legislatura):
 
-        leg_id = legislatura.id
-        nome = legislatura.parlamentar.nome
-        localidade = legislatura.localidade
-        dict_parlamentar = {
-            "nome": nome, "id": leg_id, "localidade": localidade}
-        dict_parlamentar["x"] = []
-        dict_parlamentar["y"] = []
+        legislature_id = legislatura.id
+        name = legislatura.parlamentar.nome
+        location = legislatura.localidade
+        parliamentary_dictionary = {
+            "nome": name, "id": legislature_id, "localidade": location}
+        parliamentary_dictionary["x"] = []
+        parliamentary_dictionary["y"] = []
 
-        for ap in self.analise_temporal.analises_periodo:
-            cache_coords_key = str(ap.periodo)
-            coordenadas = self.parlamentaresScaler.scale(
-                ap.coordenadas_legislaturas, cache_coords_key)
-            if coordenadas.has_key(leg_id):
-                x = coordenadas[leg_id][0]
-                y = coordenadas[leg_id][1]
-                self.max_parlamentar_radius_calculator.add_point(x, y)
+        for period_analysis in self.temporal_analysis.analises_periodo:
+            cache_coords_key = str(period_analysis.periodo)
+            coordinates = self.parliamentaries_scaler.change_x_y_scales(
+                period_analysis.coordenadas_legislaturas, cache_coords_key)
+            if coordinates.has_key(legislature_id):
+                x = coordinates[legislature_id][0]
+                y = coordinates[legislature_id][1]
+                self.max_parliamentary_radius_calculator.add_point(x, y)
                 if not isnan(x):
                     x = round(x, 2)
                     y = round(y, 2)
                 else:
                     x = None
                     y = None
-                dict_parlamentar["x"].append(x)
-                dict_parlamentar["y"].append(y)
+                parliamentary_dictionary["x"].append(x)
+                parliamentary_dictionary["y"].append(y)
             else:
-                dict_parlamentar["x"].append(None)
-                dict_parlamentar["y"].append(None)
-        return dict_parlamentar
+                parliamentary_dictionary["x"].append(None)
+                parliamentary_dictionary["y"].append(None)
+        return parliamentary_dictionary
 
 
 class MaxRadiusCalculator:
@@ -289,18 +291,18 @@ class GraphScaler:
     def __init__(self):
         self.cache = {}
 
-    def scale(self, coords, cache_key):        
+    def change_x_y_scales(self, coords, cache_key):
         """Changes X,Y scale from [-1,1] to [-100,100]
         coords -- key => [x, y]"""
 
         if cache_key in self.cache.keys():
             return self.cache[cache_key]
-        scaled = self._scale(coords)
+        scaled = self.scalar_coordinates(coords)
         self.cache[cache_key] = scaled
 
         return scaled
 
-    def _scale(self, coords):
+    def scalar_coordinates(self, coords):
 
         scaled = {}
         for key, coord in coords.items():
@@ -325,24 +327,24 @@ class RaioPartidoCalculator():
         where string_periodo is a string that represents univocally a period
         generated with str(periodo), where period is from PeriodoCasaLegislativa type"""
 
-        self.CONSTANTE_ESCALA_TAMANHO = 120
-        self.tamanhos_dos_partidos_por_periodo = tamanhos_dos_partidos_por_periodo
-        self._init_area_total()
-        self.escala = self.CONSTANTE_ESCALA_TAMANHO ** 2. / \
-            max(1, self.area_total)
+        self.CONSTANT_SCALE_SIZE = 120
+        self.political_parties_size_by_period = tamanhos_dos_partidos_por_periodo
+        self.init_total_area()
+        self.scale = self.CONSTANT_SCALE_SIZE ** 2. / \
+            max(1, self.total_area)
 
-    def _init_area_total(self):
+    def init_total_area(self):
 
-        maior_soma = 0
-        for tamanhos_partidos in self.tamanhos_dos_partidos_por_periodo.values():
-            soma_dos_tamanhos_dos_partidos = sum(tamanhos_partidos.values())
-            if soma_dos_tamanhos_dos_partidos > maior_soma:
-                maior_soma = soma_dos_tamanhos_dos_partidos
-        self.area_total = maior_soma
+        larger_sum = 0
+        for political_parties_size in self.political_parties_size_by_period.values():
+            political_parties_size_sum = sum(political_parties_size.values())
+            if political_parties_size_sum > larger_sum:
+                larger_sum = political_parties_size_sum
+        self.total_area = larger_sum
 
-    def get_raio(self, partido, periodo_str):
+    def get_radius(self, partido, periodo_str):
 
-        tamanhos_partidos = self.tamanhos_dos_partidos_por_periodo[periodo_str]
-        tamanho = tamanhos_partidos[partido]
-        raio = sqrt(tamanho * self.escala)
-        return round(raio, 1)
+        political_parties_size = self.political_parties_size_by_period[periodo_str]
+        size = political_parties_size[partido]
+        radius = sqrt(size * self.scale)
+        return round(radius, 1)

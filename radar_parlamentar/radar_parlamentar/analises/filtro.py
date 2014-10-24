@@ -34,7 +34,7 @@ class Temas():
 
         themes = Temas()
         synonyms = {}
-        
+
         synonyms['educação'] = [
             'escola', 'professor', 'aluno', 'EAD', 'universidade', 'cotas']
         synonyms['segurança'] = [

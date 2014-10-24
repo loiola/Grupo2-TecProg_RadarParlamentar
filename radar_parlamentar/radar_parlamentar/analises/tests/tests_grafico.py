@@ -146,7 +146,7 @@ class GraphScalerTest(TestCase):
         partidos['Jacobinos'] = [0.1, -0.2]
         partidos['Girondinos'] = [0.5, 1]
         scaler = grafico.GraphScaler()
-        scaled = scaler.scale(partidos, "cach_key")
+        scaled = scaler.change_x_y_scales(partidos, "cach_key")
         self.assertEqual(10, scaled['Jacobinos'][0])
         self.assertEqual(-20, scaled['Jacobinos'][1])
         self.assertEqual(50, scaled['Girondinos'][0])
@@ -179,5 +179,5 @@ class RaioPartidoCalculatorTest(TestCase):
             tamanhos_dos_partidos_por_periodo)
         raio_esperado = 69.3
         for partido in self.partidos:
-            raio = raio_calculator.get_raio(partido, periodo_str)
+            raio = raio_calculator.get_radius(partido, periodo_str)
             self.assertAlmostEqual(raio, raio_esperado, 1)
