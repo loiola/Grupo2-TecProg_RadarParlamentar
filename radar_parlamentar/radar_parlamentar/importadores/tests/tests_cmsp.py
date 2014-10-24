@@ -141,13 +141,13 @@ class ModelCMSPCase(TestCase):
     @staticmethod
     def populate_database(casa):
         political_party = models.Partido(nome="PTest", numero="1")
-        political_party.save()
+        political_party.save_data_in_file()
         parliamentary = models.Parlamentar(
             id_parlamentar="1", nome="Teste_vereador")
-        parliamentary.save()
+        parliamentary.save_data_in_file()
         legislature = models.Legislatura(
             parlamentar=parliamentary, partido=political_party, casa_legislativa=casa)
-        legislature.save()
+        legislature.save_data_in_file()
 
     def test_councilman_without_political_party(self):
         councilman_in_xml = etree.fromstring(

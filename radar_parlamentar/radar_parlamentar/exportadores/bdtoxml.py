@@ -56,7 +56,7 @@ class XMLWriter:
         self.closeAll()
         fileOpen = open(filename, "w")
         fileOpen.write(self.output)
-        fileOpen.close()
+        fileOpen.close_tag()
 
 import django.db.models
 

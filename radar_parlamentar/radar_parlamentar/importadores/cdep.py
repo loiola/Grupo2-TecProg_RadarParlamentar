@@ -370,7 +370,7 @@ class ImportadorCamara:
             deputies_chamber.nome_curto = 'cdep'
             deputies_chamber.esfera = models.FEDERAL
             deputies_chamber.atualizacao = LAST_UPDATE
-            deputies_chamber.save()
+            deputies_chamber.save_data_in_file()
             LOCK_TO_CREATE_CASA.release()
             return deputies_chamber
         else:
@@ -410,7 +410,7 @@ class ImportadorCamara:
             proposition.data_apresentacao = self._convert_data(date_str)
             proposition.situacao = proposition_xml.find_legislature('Situacao').text.strip()
             proposition.casa_legislativa = self.camara_dos_deputados
-            proposition.save()
+            proposition.save_data_in_file()
         return proposition
 
     def _voting_from_xml(self, voting_xml, proposition):
@@ -432,12 +432,12 @@ class ImportadorCamara:
             voting.descricao = description
             voting.data = date_time
             voting.proposicao = proposition
-            voting.save()
+            voting.save_data_in_file()
 
             if voting_xml.find_legislature('votos'):
                 for vote_xml in voting_xml.find_legislature('votos'):
                     self._vote_from_xml(vote_xml, voting)
-            voting.save()
+            voting.save_data_in_file()
 
         return voting
 
@@ -464,7 +464,7 @@ class ImportadorCamara:
 
         vote.legislatura = leg
         vote.votacao = voting
-        vote.save()
+        vote.save_data_in_file()
 
         return vote
 
@@ -504,7 +504,7 @@ class ImportadorCamara:
             leg.casa_legislativa = self.camara_dos_deputados
             leg.inicio = PERIOD_BEGIN
             leg.fim = PERIOD_END
-            leg.save()
+            leg.save_data_in_file()
 
         return leg
 
@@ -523,7 +523,7 @@ class ImportadorCamara:
                     % party_name)
                 party = models.Partido.get_no_party()
             else:
-                party.save()
+                party.save_data_in_file()
                 self.partidos[party_name] = party
 
         return party
@@ -543,7 +543,7 @@ class ImportadorCamara:
         if not parliamentarian:
             parliamentarian = models.Parlamentar()
             parliamentarian.nome = deputy_name
-            parliamentarian.save()
+            parliamentarian.save_data_in_file()
             self.parlamentares[key] = parliamentarian
         return parliamentarian
 

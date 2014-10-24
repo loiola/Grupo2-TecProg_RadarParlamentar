@@ -62,7 +62,7 @@ class GeradorBD:
                 r = re.search('(\d*)/(\d*)/(\d*)',v[2])
                 sql_format = r.group(3).zfill(4) + '-' + r.group(2).zfill(2) + '-' + r.group(1).zfill(2)
                 con.execute("update VOTACOES set data=? where idProp=?",(sql_format,v[0]))
-        con.close()
+        con.close_tag()
         return
             
     def prepare_backup(self):
@@ -99,7 +99,7 @@ class GeradorBD:
             cur.execute("CREATE TABLE if not exists PARLAMENTARES(id INT, nome TEXT, search_political_party TEXT, uf TEXT)")
             cur.execute("CREATE TABLE if not exists VOTACOES(idProp INT, idVot INT, resumo TEXT, data TEXT, hora TEXT, sim TEXT, nao TEXT, abstencao TEXT, obstrucao TEXT)")
             cur.execute("CREATE TABLE if not exists PARTIDOS(numero INT, nome TEXT)")
-        con.close()
+        con.close_tag()
 
         for prop in self.propositions:
             votations_number.append(len(prop.votacoes))
@@ -110,7 +110,7 @@ class GeradorBD:
             con = lite.connect(self.db)
             con.execute("INSERT INTO PROPOSICOES VALUES(?,?,?,?,?,?,?,?)",(prop.id, prop.sigla, prop.numero, prop.ano, prop.ementa, prop.explicacao, prop.situacao, len(prop.votacoes)))
             con.commit()
-            con.close()
+            con.close_tag()
             for v in prop.votacoes:
                 print 'analisando votação %s' % v
                 yes = []
@@ -142,7 +142,7 @@ class GeradorBD:
                 con = lite.connect(self.db)
                 con.execute("INSERT INTO VOTACOES VALUES(?,?,?,?,?,?,?,?,?)",(id_proposition, id_voting, resum, date, hour, str_yes, str_no, str_abstention, str_obstruction))
                 con.commit()
-                con.close()
+                con.close_tag()
 
         self.order_dates()
 

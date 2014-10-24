@@ -116,7 +116,7 @@ class CasaLegislativaGerador:
             senator_lesgislative_house.nome_curto = NOME_CURTO
             senator_lesgislative_house.esfera = models.FEDERAL
             senator_lesgislative_house.atualizacao = ULTIMA_ATUALIZACAO
-            senator_lesgislative_house.save()
+            senator_lesgislative_house.save_data_in_file()
         else:
             senator_lesgislative_house = models.CasaLegislativa.objects.get(nome_curto=NOME_CURTO)
         return senator_lesgislative_house
@@ -205,7 +205,7 @@ class ImportadorVotacoesSenado:
             senator.id_parlamentar = code_parliamentary
             senator.nome = name_parliamentary
             senator.genero = gender_parliamentary
-            senator.save()
+            senator.save_data_in_file()
 
         # Receive 'Legislatura' from models.
         legislature = models.Legislatura()
@@ -218,7 +218,7 @@ class ImportadorVotacoesSenado:
         sigla_partido = voto_parlamentar_tree.find_legislature('SiglaPartido').text
         legislature.partido = self.find_political_party(sigla_partido)
         legislature.localidade = voto_parlamentar_tree.find_legislature('SiglaUF').text
-        legislature.save()
+        legislature.save_data_in_file()
         return legislature
 
     def parsing_votes_from_tree(self, votos_tree, votacao):
@@ -254,7 +254,7 @@ class ImportadorVotacoesSenado:
             vote.votacao = votacao
             vote.opcao = self.senate_vote_to_model(
                 vote_parliamentary_tree.find_legislature('Voto').text)
-            vote.save()
+            vote.save_data_in_file()
             votes.append(vote)
         return votes
 
@@ -299,7 +299,7 @@ class ImportadorVotacoesSenado:
             proposition.numero = votacao_tree.find_legislature('NumeroMateria').text
             proposition.ano = votacao_tree.find_legislature('AnoMateria').text
             proposition.casa_legislativa = self.senado
-            proposition.save()
+            proposition.save_data_in_file()
             self.proposicoes[proposition_name] = proposition
         return proposition
 
@@ -308,7 +308,7 @@ class ImportadorVotacoesSenado:
 
         f = open(xml_file, 'r')
         xml = f.read()
-        f.close()
+        f.close_tag()
         tree = etree.fromstring(xml)
 
         # Empty list to receive data.
@@ -347,7 +347,7 @@ class ImportadorVotacoesSenado:
                         votes.id_vot = code_section_voting
 
                         # To create the primary key and assign the votes.
-                        votes.save()
+                        votes.save_data_in_file()
 
                         # Receive search results of 'DescricaoVotacao'.
                         votes.descricao = votacao_tree.find_legislature(
@@ -371,7 +371,7 @@ class ImportadorVotacoesSenado:
                                     'Votação desconsiderada (sem votos)')
                                 votes.delete()
                             else:
-                                votes.save()
+                                votes.save_data_in_file()
                                 votings.append(votes)
                         else:
                             logger.warn(
@@ -494,7 +494,7 @@ class ImportadorSenadores:
                     senator = models.Parlamentar()
                     senator.id_parlamentar = parliamentary_code
                     senator.nome = parliamentary_name
-                    senator.save()
+                    senator.save_data_in_file()
 
                 legislature = models.Legislatura()
                 legislature.parlamentar = senator
@@ -503,7 +503,7 @@ class ImportadorSenadores:
                 legislature.fim = date_of_final_legislature
                 legislature.partido = political_party
                 legislature.localidade = parliamentary_uf
-                legislature.save()
+                legislature.save_data_in_file()
 
     def import_senators(self):
         """Create parliamentaries and legislatures in database"""

@@ -28,13 +28,19 @@ logger = logging.getLogger("radar")
 MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 RESOURCES_FOLDER = os.path.join(MODULE_DIR, '../exportadores/dados/')
 
+def main(short_name):
+    x = importador_interno()
+    x.load_xml(short_name)
+
 class importador_interno:
 
     def __init__(self):
         self.verifica_voto = False
         self.verifica_votacao = False
 
-    def carrega_xml(self, short_name):
+
+    # This method is too large. Need refactoring.
+    def load_xml(self, short_name):
         directory = RESOURCES_FOLDER + short_name + '.xml'
         try:
             tree = etree.parse(directory)
@@ -53,7 +59,7 @@ class importador_interno:
         legislativeHouse.esfera = root.attrib.get("esfera")
         legislativeHouse.local = root.attrib.get("local")
         legislativeHouse.atualizacao = root.attrib.get("atualizacao")
-        legislativeHouse.save()
+        legislativeHouse.save_data_in_file()
 
         for child_proposition in root.iter("Proposicao"):
 
@@ -71,11 +77,11 @@ class importador_interno:
 
                 # Default value if the date comes in white
                 proposition.data_apresentacao = "1900-01-01"
-                proposition.save()
+                proposition.save_data_in_file()
             else:
                 proposition.data_apresentacao = child_proposition.attrib.get(
                     "data_apresentacao")
-                proposition.save()
+                proposition.save_data_in_file()
 
             # Get the daughter of the subtree being traversed.
             for child_voting in child_proposition.findall("Votacao"):
@@ -87,7 +93,7 @@ class importador_interno:
                 voting.descricao = child_voting.attrib.get("descricao")
                 voting.data = child_voting.attrib.get("data")
                 voting.resultado = child_voting.attrib.get("resultado")
-                voting.save()
+                voting.save_data_in_file()
 
                 for child_vote in child_voting.findall("Voto"):
 
@@ -100,7 +106,7 @@ class importador_interno:
                     if len(partido_existente) > 0:
                         party = partido_existente[0]
                     else:
-                        party.save()
+                        party.save_data_in_file()
 
                     parliamentarian = models.Parlamentar()
                     parliamentarian.nome = child_vote.attrib.get("nome")
@@ -115,7 +121,7 @@ class importador_interno:
                     if len(existing_parliamentarian) > 0:
                         parliamentarian = existing_parliamentarian[0]
                     else:
-                        parliamentarian.save()
+                        parliamentarian.save_data_in_file()
 
                     legislature = models.Legislatura()
                     legislature.partido = party
@@ -139,15 +145,10 @@ class importador_interno:
                     if len(existing_legislature) > 0:
                         legislature = existing_legislature[0]
                     else:
-                        legislature.save()
+                        legislature.save_data_in_file()
 
                     vote = models.Voto()
                     vote.votacao = voting
                     vote.legislatura = legislature
                     vote.opcao = child_vote.attrib.get("opcao")
-                    vote.save()
-
-
-def main(short_name):
-    x = importador_interno()
-    x.carrega_xml(short_name)
+                    vote.save_data_in_file()

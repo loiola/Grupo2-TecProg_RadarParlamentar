@@ -228,12 +228,12 @@ class PeriodosRetrieverTest(TestCase):
             voting_list = votings[i]
             original_dates[voting_list.id] = voting_list.data
             voting_list.data = A_DATE
-            voting_list.save()
+            voting_list.save_data_in_file()
         for i in range(half_of_votings_amount, len(votings)):
             voting_list = votings[i]
             original_dates[voting_list.id] = voting_list.data
             voting_list.data = OTHER_DATE
-            voting_list.save()
+            voting_list.save_data_in_file()
 
         # Stores the objects of conv and the periodicity
         retriever = utils.PeriodosRetriever(self.conv, periodicidade)
@@ -246,10 +246,10 @@ class PeriodosRetrieverTest(TestCase):
 
     def _restore(self, esfera_original, votacoes, datas_originais):
         self.conv.esfera = esfera_original
-        self.conv.save()
+        self.conv.save_data_in_file()
         for voting_list in votacoes:
             voting_list.data = datas_originais[voting_list.id]
-            voting_list.save()
+            voting_list.save_data_in_file()
 
     def test_legislative_house_periods_with_no_votes_list(self):
 

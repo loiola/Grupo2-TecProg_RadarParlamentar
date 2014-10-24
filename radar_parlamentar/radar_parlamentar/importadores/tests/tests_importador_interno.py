@@ -18,9 +18,9 @@ class ImportadorInternoTest(TestCase):
         partidoTest1 = models.Partido(nome='PMDB', numero='40')
         partidoTest2 = models.Partido(nome='PT', numero='13')
         partidoTest3 = models.Partido(nome='PSDB', numero='23')
-        partidoTest1.save()
-        partidoTest2.save()
-        partidoTest3.save()
+        partidoTest1.save_data_in_file()
+        partidoTest2.save_data_in_file()
+        partidoTest3.save_data_in_file()
 
         parlamentarTest1 = models.Parlamentar(
             id_parlamentar='', nome='Ivandro Cunha Lima', genero='')
@@ -29,9 +29,9 @@ class ImportadorInternoTest(TestCase):
         parlamentarTest3 = models.Parlamentar(
             id_parlamentar='', nome='Humberto Costa', genero='')
 
-        parlamentarTest1.save()
-        parlamentarTest2.save()
-        parlamentarTest3.save()
+        parlamentarTest1.save_data_in_file()
+        parlamentarTest2.save_data_in_file()
+        parlamentarTest3.save_data_in_file()
 
         casa_legislativaTest1 = models.CasaLegislativa(
             nome='Camara dos Deputados', nome_curto='cdep', esfera='FEDERAL',
@@ -42,15 +42,15 @@ class ImportadorInternoTest(TestCase):
             esfera='MUNICIPAL', local='Sao Paulo - SP',
             atualizacao='2012-12-31')
 
-        casa_legislativaTest1.save()
-        casa_legislativaTest2.save()
+        casa_legislativaTest1.save_data_in_file()
+        casa_legislativaTest2.save_data_in_file()
 
         legislaturaTest1 = models.Legislatura(
             parlamentar=parlamentarTest1,
             casa_legislativa=casa_legislativaTest1,
             inicio='2004-01-01', fim='2012-07-01',
             partido=partidoTest1, localidade='PB')
-        legislaturaTest1.save()
+        legislaturaTest1.save_data_in_file()
 
         # Exporting data of mock to xml
         # exportar.serialize_partido()

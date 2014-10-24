@@ -173,7 +173,7 @@ class Analise:
             list_of_types = connection.execute('SELECT distinct tipo FROM PROPOSICOES')
             for tipo in list_of_types:
                 self.propositions_type.append(tipo[0])
-            connection.close()
+            connection.close_tag()
 
         # If the list is empty, use all political partidos:
         if not self.list_political_parties:
@@ -190,7 +190,7 @@ class Analise:
                     if fill_parties:
                         party = model.Partido(item[1],item[0])
                         self.political_parties.append(party)
-            connection.close()
+            connection.close_tag()
 
         # If integer, use greater than or equal to this whole political parties:
         elif isinstance(self.list_political_parties,int):
@@ -498,7 +498,7 @@ class Analise:
             fo.write('%s: [%f, %f]\n' % (party,coordinates[party][0],coordinates[party][1]))
         fo.write('Tamanhos=%s\n' % str(self.political_parties_size))
         if close:
-            fo.close()
+            fo.close_tag()
         return coordinates
 
 
@@ -532,7 +532,7 @@ class Analise:
             fo.write('%s: [%f, %f]\n' % (e,coordinates[ie,0],coordinates[ie,1]) )
         fo.write('Tamanhos=%s\n' % str(self.size_uf))
         if close:
-            fo.close()
+            fo.close_tag()
         return coordinates
 
     def calculate_similarities_between_political_parties(self,siglaP1,siglaP2,tipo=2):
@@ -619,7 +619,7 @@ def list_expressive_political_parties (N=1,data_inicial='2011-01-01',data_final=
 
     # Create list of all political partidos:
     lists_all_parties = connection.execute('SELECT nome FROM PARTIDOS').fetchall()
-    connection.close()
+    connection.close_tag()
 
     # Pick up votes in the database:
     analysis = Analise(data_inicial,data_final,tipos_proposicao)

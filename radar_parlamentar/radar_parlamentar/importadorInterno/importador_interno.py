@@ -54,7 +54,7 @@ def deserialize_partido():
     data = serializers.deserialize("xml", out)
 
     for deserialized_object in data:
-        deserialized_object.save()
+        deserialized_object.save_data_in_file()
 
 def deserialize_casa_legislativa():
     try:
@@ -70,7 +70,7 @@ def deserialize_casa_legislativa():
 
     # receiving variable object to be deserialized from the repeating structure
     for deserialized_object in data:
-        deserialized_object.save()
+        deserialized_object.save_data_in_file()
 
 def deserialize_parlamentar():
     try:
@@ -85,7 +85,7 @@ def deserialize_parlamentar():
     data = serializers.deserialize("xml", out)
 
     for deserialized_object in data:
-        deserialized_object.save()
+        deserialized_object.save_data_in_file()
 
 def _deserialize_legislatura():
     try:
@@ -100,7 +100,7 @@ def _deserialize_legislatura():
     data = serializers.deserialize("xml", out)
 
     for deserialized_object in data:
-        deserialized_object.save()
+        deserialized_object.save_data_in_file()
 
 def _deserialize_proposicao():
     try:
@@ -115,7 +115,7 @@ def _deserialize_proposicao():
     data = serializers.deserialize("xml", out)
 
     for deserialized_object in data:
-        deserialized_object.save()
+        deserialized_object.save_data_in_file()
 
 def _deserialize_votacao():
     try:
@@ -130,7 +130,7 @@ def _deserialize_votacao():
     data = serializers.deserialize("xml", out)
 
     for deserialized_object in data:
-        deserialized_object.save()
+        deserialized_object.save_data_in_file()
 
 def _deserialize_voto():
     try:
@@ -145,7 +145,7 @@ def _deserialize_voto():
     data = serializers.deserialize("xml", out)
 
     for deserialized_object in data:
-        deserialized_object.save()
+        deserialized_object.save_data_in_file()
 
 def _import_legislature(short_name_house):
     try:
@@ -161,7 +161,7 @@ def _import_legislature(short_name_house):
 
     for deserialized_object in data:
         if deserialized_object.object.casa_legislativa.nome_curto == short_name_house:
-            deserialized_object.save()
+            deserialized_object.save_data_in_file()
 
 def _import_proposition(short_name_house):
     try:
@@ -177,7 +177,7 @@ def _import_proposition(short_name_house):
 
     for deserialized_object in data:
         if deserialized_object.object.casa_legislativa.nome_curto == short_name_house:
-            deserialized_object.save()
+            deserialized_object.save_data_in_file()
 
 def _import_votings(short_name_house):
     try:
@@ -194,7 +194,7 @@ def _import_votings(short_name_house):
     for deserialized_object in data:
         if deserialized_object.object.proposicao.casa_legislativa.nome_curto == \
                 short_name_house:
-            deserialized_object.save()
+            deserialized_object.save_data_in_file()
 
 def _import_vote(short_name_house):
     try:
@@ -211,7 +211,7 @@ def _import_vote(short_name_house):
     for deserialized_object in data:
         if deserialized_object.object.votacao.proposicao.casa_legislativa.nome_curto == \
                 short_name_house:
-            deserialized_object.save()
+            deserialized_object.save_data_in_file()
 
 def import_legislative_house(short_name_house):
     try:
@@ -227,7 +227,7 @@ def import_legislative_house(short_name_house):
     for deserialized_object in data:
         if deserialized_object.object.nome_curto == short_name_house:
             models.CasaLegislativa.remove_house(short_name_house)
-        deserialized_object.save()
+        deserialized_object.save_data_in_file()
         deserialize_partido()
         deserialize_parlamentar()
         _import_legislature(short_name_house)

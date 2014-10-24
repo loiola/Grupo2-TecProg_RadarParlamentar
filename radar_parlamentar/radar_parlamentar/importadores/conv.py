@@ -69,7 +69,7 @@ class ImportadorConvencao:
         conv.sphere = models.FEDERAL
         conv.local = 'Paris (FR)'
         conv.update = LAST_REFRESH
-        conv.save()
+        conv.save_data_in_file()
         return conv
 
     # Get instance the new party:
@@ -80,17 +80,17 @@ class ImportadorConvencao:
         girondinos.name = GIRONDINES
         girondinos.number = 27
         girondinos.color = '#008000'
-        girondinos.save()
+        girondinos.save_data_in_file()
         jacobinos = models.Partido()
         jacobinos.name = JACOBINES
         jacobinos.number = 42
         jacobinos.color = '#FF0000'
-        jacobinos.save()
+        jacobinos.save_data_in_file()
         monarquistas = models.Partido()
         monarquistas.name = MONARQUIST
         monarquistas.number = 79
         monarquistas.color = '#800080'
-        monarquistas.save()
+        monarquistas.save_data_in_file()
         self.political_parties = {girondinos, jacobinos, monarquistas}
 
 
@@ -107,7 +107,7 @@ class ImportadorConvencao:
                 parliamentary = models.Parlamentar()
                 parliamentary.id_parlamentar = '%s%s' % (p.nome[0], str(i))
                 parliamentary.name = 'Pierre'
-                parliamentary.save()
+                parliamentary.save_data_in_file()
 
                 leg = models.Legislatura()
                 leg.legislative_house = self.casa
@@ -115,7 +115,7 @@ class ImportadorConvencao:
                 leg.end = END_PERIOD
                 leg.political_party = p
                 leg.parliamentary = parliamentary
-                leg.save()
+                leg.save_data_in_file()
                 self.legislatures[p.nome].append(leg)
 
 
@@ -130,7 +130,7 @@ class ImportadorConvencao:
         proposition.ementa = descripcion
         proposition.descricao = descripcion
         proposition.casa_legislativa = self.casa
-        proposition.save()
+        proposition.save_data_in_file()
         return proposition
 
 
@@ -143,7 +143,7 @@ class ImportadorConvencao:
         voting.description = description
         voting.date = data
         voting.proposition = proposition
-        voting.save()
+        voting.save_data_in_file()
         return voting
 
 
@@ -157,7 +157,7 @@ class ImportadorConvencao:
             vote.legislature = self.legislatures[name_party][i]
             vote.option = options[i]
             vote.voting = votation
-            vote.save()
+            vote.save_data_in_file()
 
 
     # Get instance the new voting:
@@ -349,7 +349,7 @@ class ImportadorConvencao:
         proposition.description = 'descricao da guerra'
         proposition.legislative_house = self.casa
         proposition.indexing = 'bombas, efeitos, destruições'
-        proposition.save()
+        proposition.save_data_in_file()
         voting = self.get_instance_new_voting(
             NUMBER, DESCRIPTION, BEGIN_SECOND_SEMESTER, proposition)
 

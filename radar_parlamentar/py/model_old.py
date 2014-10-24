@@ -320,7 +320,7 @@ describes the vote of a member
                     Deputado.dicpartidos[res.group(1)] = int(res.group(2))
                     con.execute("insert into PARTIDOS values(?,?)",(idwannabe,siglawannabe))
                     con.commit()
-        con.close()
+        con.close_tag()
         return 0
     
     @staticmethod
@@ -335,7 +335,7 @@ describes the vote of a member
         if len(con.execute("select * from sqlite_master where type='table' and name='PARLAMENTARES'").fetchall()) != 0: 
 	    # Se a tabela existe
             depsdb = con.execute('SELECT * FROM PARLAMENTARES').fetchall()
-            con.close()
+            con.close_tag()
             for d in depsdb:
                 iddep = d[0]
                 idpartuf = int(iddep/1000)
@@ -365,7 +365,7 @@ describes the vote of a member
             con = lite.connect(bd)
             con.execute('INSERT INTO PARTIDOS VALUES(?,?)',(idpartido,siglapartido))
             con.commit()
-            con.close()
+            con.close_tag()
         return idpartido
 
     @staticmethod
@@ -418,7 +418,7 @@ describes the vote of a member
         con = lite.connect(bd)
         con.execute('INSERT INTO PARLAMENTARES VALUES(?,?,?,?)',(iddep,nome,partido,uf))
         con.commit()
-        con.close()
+        con.close_tag()
         return iddep
 
 
@@ -774,7 +774,7 @@ class Deputado:
                     Deputado.dicpartidos[res.group(1)] = int(res.group(2))
                     con.execute("insert into PARTIDOS values(?,?)",(idwannabe,siglawannabe))
                     con.commit()
-        con.close()
+        con.close_tag()
         return 0
     
     @staticmethod
@@ -789,7 +789,7 @@ class Deputado:
         con = lite.connect('resultados/camara.db')
         if len(con.execute("select * from sqlite_master where type='table' and name='PARLAMENTARES'").fetchall()) != 0: # Se a tabela existe
             depsdb = con.execute('SELECT * FROM PARLAMENTARES').fetchall()
-            con.close()
+            con.close_tag()
             for d in depsdb:
                 iddep = d[0]
                 idpartuf = int(iddep/1000)
@@ -819,7 +819,7 @@ class Deputado:
             con = lite.connect(bd)
             con.execute('INSERT INTO PARTIDOS VALUES(?,?)',(idpartido,siglapartido))
             con.commit()
-            con.close()
+            con.close_tag()
         return idpartido
 
     @staticmethod
@@ -870,7 +870,7 @@ class Deputado:
         con = lite.connect(bd)
         con.execute('INSERT INTO PARLAMENTARES VALUES(?,?,?,?)',(iddep,nome,partido,uf))
         con.commit()
-        con.close()
+        con.close_tag()
         return iddep
 
 

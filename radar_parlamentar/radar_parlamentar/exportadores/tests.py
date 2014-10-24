@@ -37,9 +37,9 @@ class ExportadoresFileTest(TestCase):
         testParty1 = models.Partido(name='PMDB', number='40')
         testParty2 = models.Partido(name='PT', number='13')
         partyTest3 = models.Partido(name='PSDB', number='23')
-        testParty1.save()
-        testParty2.save()
-        partyTest3.save()
+        testParty1.save_data_in_file()
+        testParty2.save_data_in_file()
+        partyTest3.save_data_in_file()
 
         parliamentaryTest1 = models.Parlamentar(
             id_parliamentary='', name='Ivandro Cunha Lima', gender='')
@@ -48,9 +48,9 @@ class ExportadoresFileTest(TestCase):
         parliamentaryTest3 = models.Parlamentar(
             id_parliamentary='', name='Humberto Costa', gender='')
 
-        parliamentaryTest1.save()
-        parliamentaryTest2.save()
-        parliamentaryTest3.save()
+        parliamentaryTest1.save_data_in_file()
+        parliamentaryTest2.save_data_in_file()
+        parliamentaryTest3.save_data_in_file()
 
         legislative_houseTest1 = models.CasaLegislativa(
             name='Camara dos Deputados', short_name='cdep', sphere='FEDERAL',
@@ -61,30 +61,30 @@ class ExportadoresFileTest(TestCase):
             sphere='MUNICIPAL', local='Sao Paulo - SP',
             update='2012-12-31')
 
-        legislative_houseTest1.save()
-        legislative_houseTest2.save()
+        legislative_houseTest1.save_data_in_file()
+        legislative_houseTest2.save_data_in_file()
 
         legislatureTest1 = models.Legislatura(
             parliamentary=parliamentaryTest1,
             legislative_house=legislative_houseTest1, begin='2004-01-01',
             end='2012-07-01', party=testParty1, location='PB')
-        legislatureTest1.save()
+        legislatureTest1.save_data_in_file()
 
         propositionTest1 = models.Proposicao()
         propositionTest1.id_prop = '5555'
         propositionTest1.sigla = 'PL'
         propositionTest1.numero = '4520'
         propositionTest1.casa_legislativa = legislative_houseTest1
-        propositionTest1.save()
+        propositionTest1.save_data_in_file()
 
         votingTest1 = models.Votacao(
             id_votes=' 12345', description='Teste da votacao',
             date='1900-12-05', result='Teste', proposition=propositionTest1)
-        votingTest1.save()
+        votingTest1.save_data_in_file()
 
         voteTest1 = models.Voto(
             voting=votingTest1, legislature=legislatureTest1, option='TESTE')
-        voteTest1.save()
+        voteTest1.save_data_in_file()
 
         exportar.main()
 

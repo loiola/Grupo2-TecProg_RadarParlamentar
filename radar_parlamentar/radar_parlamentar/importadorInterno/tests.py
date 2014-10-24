@@ -35,9 +35,9 @@ class ImportadorInternoTest(TestCase):
         partyTest2 = models.Partido(name='PT', number='13')
         partyTest3 = models.Partido(name='PSDB', number='23')
 
-        partyTest1.save()
-        partyTest2.save()
-        partyTest3.save()
+        partyTest1.save_data_in_file()
+        partyTest2.save_data_in_file()
+        partyTest3.save_data_in_file()
 
         parliamentarianTest1 = models.Parlamentar(
             id_parliamentary='', name='Ivandro Cunha Lima', gender='')
@@ -46,9 +46,9 @@ class ImportadorInternoTest(TestCase):
         parliamentarianTest3 = models.Parlamentar(
             id_parliamentary='', name='Humberto Costa', gender='')
 
-        parliamentarianTest1.save()
-        parliamentarianTest2.save()
-        parliamentarianTest3.save()
+        parliamentarianTest1.save_data_in_file()
+        parliamentarianTest2.save_data_in_file()
+        parliamentarianTest3.save_data_in_file()
 
         legislative_houseTest1 = models.CasaLegislativa(
             name='Camara dos Deputados', short_name='cdep', sphere='FEDERAL',
@@ -59,30 +59,30 @@ class ImportadorInternoTest(TestCase):
             sphere='MUNICIPAL', local='Sao Paulo - SP',
             update='2012-12-31')
 
-        legislative_houseTest1.save()
-        legislative_houseTest2.save()
+        legislative_houseTest1.save_data_in_file()
+        legislative_houseTest2.save_data_in_file()
 
         legislatureTest1 = models.Legislatura(
             parliamentary=parliamentarianTest1,
             legislative_house=legislative_houseTest1, begin='2004-01-01',
             end='2012-07-01', party=partyTest1, location='PB')
-        legislatureTest1.save()
+        legislatureTest1.save_data_in_file()
 
         propositionTest1 = models.Proposicao()
         propositionTest1.id_prop = '5555'
         propositionTest1.sigla = 'PL'
         propositionTest1.numero = '4520'
         propositionTest1.casa_legislativa = legislative_houseTest1
-        propositionTest1.save()
+        propositionTest1.save_data_in_file()
 
         votingTest1 = models.Votacao(
             id_vote=' 12345', description='Teste da votacao',
             date='1900-12-05', result='Teste', proposition=propositionTest1)
-        votingTest1.save()
+        votingTest1.save_data_in_file()
 
         voteTest1 = models.Voto(
             votacao=votingTest1, legislature=legislatureTest1, option='TESTE')
-        voteTest1.save()
+        voteTest1.save_data_in_file()
 
         # Exporting the mocks's data to XMLs:
         exportar.serialize_partido()

@@ -84,7 +84,7 @@ class GeradorCasaLegislativa(object):
         cmsp.esfera = models.MUNICIPAL
         cmsp.local = 'São Paulo - SP'
         cmsp.atualizacao = ULTIMA_ATUALIZACAO
-        cmsp.save()
+        cmsp.save_data_in_file()
         return cmsp
 
 
@@ -171,10 +171,10 @@ class XmlCMSP:
 
         else:
             voter = models.Parlamentar()
-            voter.save()
+            voter.save_data_in_file()
             voter.id_parlamentar = parliamentary_id
             voter.nome = ver_tree.get('NomeParlamentar')
-            voter.save()
+            voter.save_data_in_file()
             if self.verbose:
                 print 'Vereador %s salvo' % voter
             self.parlamentares[parliamentary_id] = voter
@@ -207,7 +207,7 @@ class XmlCMSP:
             legislature.casa_legislativa = self.cmsp
             legislature.inicio = initial_period_parseCMSP
             legislature.fim = final_period_parseCMSP
-            legislature.save()
+            legislature.save_data_in_file()
 
         return legislature
 
@@ -225,7 +225,7 @@ class XmlCMSP:
                 vote.votacao = votacao
                 vote.opcao = self.interpret_vote(ver_tree.get('Voto'))
                 if vote.opcao is not None:
-                    vote.save()
+                    vote.save_data_in_file()
 
     def get_votings_from_tree(self, proposicoes, votacoes, vot_tree):
 
@@ -266,11 +266,11 @@ class XmlCMSP:
 
                     if self.verbose:
                         print 'Proposicao %s salva' % proposition
-                    proposition.save()
+                    proposition.save_data_in_file()
                     vot = models.Votacao()
 
                     # To create de primary key and assign the votes
-                    vot.save()
+                    vot.save_data_in_file()
                     vot.id_vot = id_vote
                     vot.descricao = abstract
                     vot.data = self.convert_data(vot_tree.get('DataDaSessao'))
@@ -281,7 +281,7 @@ class XmlCMSP:
                         print 'Votacao %s salva' % vot
                     else:
                         self.show_progress()
-                    vot.save()
+                    vot.save_data_in_file()
 
                 votacoes.append(vot)
 

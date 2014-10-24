@@ -230,5 +230,5 @@ open_file.write("""
 
 
 
-open_file.close()
+open_file.close_tag()
 

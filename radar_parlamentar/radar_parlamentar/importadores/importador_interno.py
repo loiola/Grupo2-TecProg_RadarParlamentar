@@ -30,7 +30,7 @@ def deserialize_political_party():
     xml_serializer_data = xml_serializer.getvalue()
 
     for political_party in serializers.deserialize("xml", xml_serializer_data):
-        political_party.save()
+        political_party.save_data_in_file()
 
 
 def deserialize_legislative_house():
@@ -41,7 +41,7 @@ def deserialize_legislative_house():
     out = open(filepath, "r")
 
     for legislative_house in serializers.deserialize("xml", out):
-        legislative_house.save()
+        legislative_house.save_data_in_file()
 
 
 def deserialize_parliamentary():
@@ -56,7 +56,7 @@ def deserialize_parliamentary():
     xml_serializer_data = xml_serializer.getvalue()
 
     for parliamentary in serializers.deserialize("xml", xml_serializer_data):
-        parliamentary.save()
+        parliamentary.save_data_in_file()
 
 
 def deserialize_legislature():
@@ -71,7 +71,7 @@ def deserialize_legislature():
     xml_serializer_data = xml_serializer.getvalue()
 
     for legislature in serializers.deserialize("xml", xml_serializer_data):
-        legislature.save()
+        legislature.save_data_in_file()
 
 
 def deserialize_proposition():
@@ -86,7 +86,7 @@ def deserialize_proposition():
     xml_serializer_data = xml_serializer.getvalue()
 
     for proposition in serializers.deserialize("xml", xml_serializer_data):
-        proposition.save()
+        proposition.save_data_in_file()
 
 
 def deserialize_voting():
@@ -101,7 +101,7 @@ def deserialize_voting():
     xml_serializer_data = xml_serializer.getvalue()
 
     for voting in serializers.deserialize("xml", xml_serializer_data):
-        voting.save()
+        voting.save_data_in_file()
 
 
 def deserialize_vote():
@@ -116,4 +116,4 @@ def deserialize_vote():
     xml_serializer_data = xml_serializer.getvalue()
 
     for vote in serializers.deserialize("xml", xml_serializer_data):
-        vote.save()
+        vote.save_data_in_file()
