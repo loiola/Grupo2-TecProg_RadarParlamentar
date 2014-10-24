@@ -19,7 +19,7 @@ class XMLWriter:
         self.stack = []
         self.pretty = pretty
 
-    def open(self, tag):
+    def add_and_open_tag(self, tag):
         """ Add an open tag."""
         self.stack.append(tag)
         if self.pretty:
@@ -29,7 +29,7 @@ class XMLWriter:
         if self.pretty:
             self.output += "\n"
 
-    def close(self):
+    def close_tag(self):
         """ Close the innermost tag."""
         if self.pretty:
             self.output += "\n" + "  " * (len(self.stack) - 1)
@@ -39,21 +39,21 @@ class XMLWriter:
         if self.pretty:
             self.output += "\n"
 
-    def closeAll(self):
+    def close_all_tags(self):
         """ Close all open tags."""
         while len(self.stack) > 0:
-            self.close()
+            self.close_tag()
 
-    def content(self, text):
+    def add_content(self, text):
         """ Add some content."""
         if self.pretty:
             self.output += "  " * len(self.stack)
         self.output += str(text)
 
-    def save(self, filename):
+    def save_data_in_file(self, filename):
         """ Save the data to a file."""
 
-        self.closeAll()
+        self.close_all_tags()
         fileOpen = open(filename, "w")
         fileOpen.write(self.output)
         fileOpen.close_tag()
@@ -61,18 +61,18 @@ class XMLWriter:
 import django.db.models
 
 writer = XMLWriter(pretty=False)
-writer.open("djangoexport")
+writer.add_and_open_tag("djangoexport")
 models = django.db.models.get_models()
 
 for model in models:
     # model._meta.object_name holds the name of the model
-    writer.open(model._meta.object_name + "s")
+    writer.add_and_open_tag(model._meta.object_name + "s")
 
     for item in model.objects.all():
-        writer.open(model._meta.object_name)
+        writer.add_and_open_tag(model._meta.object_name)
 
         for field in item._meta.fields:
-            writer.open(field.name)
+            writer.add_and_open_tag(field.name)
             value = getattr(item, field.name)
 
             if value is not None:
@@ -83,12 +83,12 @@ for model in models:
                     # of the referring object.
                     pk_name = value._meta.pk.name
                     pk_value = getattr(value, pk_name)
-                    writer.content(pk_value)
+                    writer.add_content(pk_value)
 
                 else:
-                    writer.content(value)
-            writer.close()
-        writer.close()
-    writer.close()
-writer.close()
-writer.save("export.xml")
+                    writer.add_content(value)
+            writer.close_tag()
+        writer.close_tag()
+    writer.close_tag()
+writer.close_tag()
+writer.save_data_in_file("export.xml")
