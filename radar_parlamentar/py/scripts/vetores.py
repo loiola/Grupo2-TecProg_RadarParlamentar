@@ -18,7 +18,7 @@
 
 """Script vetores -- imprime os vetores de votações"""
 
-import proposicoes
+import propositions
 import camaraws
 import partidos
 import sys
@@ -29,10 +29,10 @@ length = len(PARTIDOS)
 # recovery propositions
 
 # identification of propositions voted on 2011
-voted = proposicoes.parse()
+voted = propositions.parse()
 
 # list of propositions with their respective votes
-proposicoes = []
+propositions = []
 
 # Total analyzed votes
 n_votes = 0
@@ -43,8 +43,8 @@ for propositions in voted:
     votes_propositions = camaraws.get_votings(propositions['tipo'],
                                                 propositions['num'], propositions['ano'])
     n_votes += len(votes_propositions.votacoes)
-    proposicoes.append(votes_propositions)
+    propositions.append(votes_propositions)
 
 for party in PARTIDOS:
-    party_vector = partidos.vetor_votacoes(party, proposicoes)
+    party_vector = partidos.vetor_votacoes(party, propositions)
     print("%s\n%s" % (party, party_vector))
