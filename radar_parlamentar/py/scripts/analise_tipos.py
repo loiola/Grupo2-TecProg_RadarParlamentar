@@ -18,16 +18,16 @@
 
 """Script 'analise_tipos': makes an analysis of the types of propositions voted on 2011"""
 
-import proposicoes
+import propositions
 
-proposicoes = proposicoes.parse_html()
+propositions = propositions.parse_html()
 
 initial_quantity = 0
 ordinary_law_projects = complementary_law_projects = legislative_decree_projects \
     = provisional_measures = amendment_constitution = initial_quantity
 
 # Performs proposition count for each type
-for propositions in proposicoes:
+for propositions in propositions:
   if (propositions['tipo'] == 'PL'):
     ordinary_law_projects += 1
   elif (propositions['tipo'] == 'PLP'):
@@ -40,7 +40,7 @@ for propositions in proposicoes:
     amendment_constitution += 1
 
 # Performs total count of propositions and shows the result for each type
-total = len(proposicoes)
+total = len(propositions)
 print('Votações na câmara em 2011')
 print('%d proposições' % total)
 
