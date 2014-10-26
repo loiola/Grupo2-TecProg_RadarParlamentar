@@ -32,6 +32,7 @@ logger = logging.getLogger("radar")
 
 
 def analises(request):
+
     return render_to_response('analises.html', {}, context_instance=RequestContext(request))
 
 
