@@ -19,7 +19,7 @@
 """Script semelhanca -- verifies the difference between two partidos based on
 propositions voted on in 2011"""
 
-import proposicoes
+import propositions
 import camaraws
 import partidos
 import sys
@@ -28,10 +28,10 @@ party1 = sys.argv[1]
 party2 = sys.argv[2]
 
 # Identification of propositions voted on in 2011
-voted = proposicoes.parse()
+voted = propositions.parse()
 
 # List of propositions with their respective votes 
-proposicoes = []
+propositions = []
 
 # Total analyzed votes
 votes_number = 0
@@ -44,11 +44,23 @@ for propositions in voted:
   votes_propositions = camaraws.get_votings(propositions['tipo'],
                                               propositions['num'], propositions['ano'])
   votes_number += len(votes_propositions.votacoes)
-  proposicoes.append(votes_propositions)
+  propositions.append(votes_propositions)
 
-similarity = partidos.semelhanca(party1, party2, proposicoes)
+similarity = partidos.semelhanca(party1, party2, propositions)
 
 percentage_conversion_factor = 100
 print('Semelhança entre %s e %s = %.2f%s, baseado em %s votações de 2011' % (
     party1, party2, similarity*convert_to_percentage, '%', votes_number))
+
+
+
+
+
+
+
+
+
+
+
+
 
