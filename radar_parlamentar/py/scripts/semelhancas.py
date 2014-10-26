@@ -37,7 +37,7 @@ length = len(PARTIDOS)
 voted = proposicoes.parse()
 
 # list of propositions with their respective votes
-proposicoes = []
+propositions = []
 
 # total analyzed votes
 n_votes = 0
