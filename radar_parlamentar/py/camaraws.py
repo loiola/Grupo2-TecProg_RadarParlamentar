@@ -30,7 +30,7 @@ GET_VOTINGS_PROPOSITION = 'http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx
 GET_INFO_PROPOSITION = 'http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/ObterProposicao?tipo=%s&numero=%s&ano=%s'
 GET_INFOS_BY_ID = 'http://www.camara.gov.br/sitcamaraws/Proposicoes.asmx/ObterProposicaoPorID?idProp=%s'
 
-def get_votings(tipo, num, ano):
+def get_votings(type, num, year):
     """Get votings ande details of a propositions.
 
     Arguments:
@@ -40,7 +40,7 @@ def get_votings(tipo, num, ano):
     A propostion as an object class model.Proposicao.
     If the proposition doesn't be found or doesn't have votings, returns None."""
 
-    url = GET_VOTINGS_PROPOSITION % (tipo, num, ano)
+    url = GET_VOTINGS_PROPOSITION % (type, num, year)
     try:
         request = urllib2.Request(url)
         xml = urllib2.urlopen(request).read()
@@ -55,7 +55,7 @@ def get_votings(tipo, num, ano):
         return None
 
     # Here is the xml with more details about the proposition:
-    xml = get_proposition(tipo, num, ano)
+    xml = get_proposition(type, num, year)
 
     tree = etree.fromstring(xml)
     proposition.id = tree.find_legislature('idProposicao').text
@@ -64,7 +64,7 @@ def get_votings(tipo, num, ano):
     proposition.situacao = tree.find_legislature('Situacao').text
     return proposition
 
-def get_proposition(tipo, num, ano):
+def get_proposition(type, number, year):
     """Get details of the propositions by type, number and year
 
     Arguments:
@@ -73,7 +73,7 @@ def get_proposition(tipo, num, ano):
     Return:
     A xml representing a proposition as an object of bytes."""
 
-    url = GET_INFO_PROPOSITION % (tipo, num, ano)
+    url = GET_INFO_PROPOSITION % (type, number, year)
     request = urllib2.Request(url)
     xml = urllib2.urlopen(request).read()
     return xml

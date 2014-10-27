@@ -414,8 +414,10 @@ class Analise:
         for i in range(0,len(self.list_political_parties)):
             for j in range(0,len(self.list_political_parties)):
 
+                percentage_conversion_factor = 100
+
                 # Method 1:
-                self.similarities_scalar[i][j] = 100 *( ( numpy.dot(self.vectors_voting[i],
+                self.similarities_scalar[i][j] = percentage_conversion_factor *( ( numpy.dot(self.vectors_voting[i],
                                                                     self.vectors_voting[j]) /
                                                           (numpy.sqrt(numpy.dot(
                                                               self.vectors_voting[i],
@@ -428,22 +430,22 @@ class Analise:
                 x = 0
                 for k in range(self.number_of_votings) :
                     x += Analise.do_convolution(self.quadrivet_vot[i][k],self.quadrivet_vot[j][k])
-                x = 100 * x / self.number_of_votings
+                x = percentage_conversion_factor * x / self.number_of_votings
                 self.similarities_convolution[i][j] = x
         return
 
     @staticmethod
-    def do_convolution(u,v):
+    def do_convolution(quantity_per_type_vote, tuple_of_types_vote):
         """Receives two integers 'u' and 'v' 4 tuples, representing the votes of two
         political parties in a vote. For example if u = (4,3,0,3) there were 4 yes, 3 no, 0
         and 3 abstentions obstructions party vote.
         Each tuple is normalized by dividing by the sum of the squares of the elements, and
         the function returns the dot product of two normalized tuples."""
 
-        if sum(u)==0 or sum(v)==0:
+        if sum(quantity_per_type_vote)==0 or sum(tuple_of_types_vote)==0:
             return numpy.NaN
-        un= numpy.array(u,dtype=float)
-        vn= numpy.array(v,dtype=float)
+        un= numpy.array(quantity_per_type_vote,dtype=float)
+        vn= numpy.array(tuple_of_types_vote,dtype=float)
         x = numpy.dot(un,vn)
 
         # Normalize:
@@ -451,27 +453,27 @@ class Analise:
         return x
 
 
-    def check_acronym_size(self,siglaPartido):
+    def check_acronym_size(self,acronym_party):
         """Return the size of political party giver your acronym."""
 
         if self.political_parties_size==0:
             self.inicialize_vectors()
         try:
-            return self.political_parties_size[self.list_political_parties.index(siglaPartido)]
+            return self.political_parties_size[self.list_political_parties.index(acronym_party)]
         except ValueError:
             print "WARNING: Partido %s não presente na análise. Dados da análise:\n%s" % \
-                  (siglaPartido,self)
+                  (acronym_party,self)
             return 0
 
-    def check_state_size(self,siglaEstado):
+    def check_state_size(self,acronym_country):
         """Returns the size of the state (number of seats) given its acronym."""
 
         if self.size_uf==[]:
             self.inicialize_vectors_uf()
         try:
-            return self.size_uf[Analise.ufs_list.index(siglaEstado.upper())]
+            return self.size_uf[Analise.ufs_list.index(acronym_country.upper())]
         except ValueError:
-            raise ValueError('Estado "%s" inválido.'%siglaEstado)
+            raise ValueError('Estado "%s" inválido.'%acronym_country)
 
     def do_coordinates_2d_of_political_parties(self,file=''):
         """Returns array with the coordinates of the political parties in the 2d plane formed by the two
@@ -511,7 +513,7 @@ class Analise:
         return coordinates
 
 
-    def do_coordinates_2d_of_states(self,arquivo=''):
+    def do_coordinates_2d_of_states(self,archive=''):
         """Returns array with the coordinates of the states in the 2d plane formed by the two
         first principal components.
 
@@ -522,8 +524,8 @@ class Analise:
             self.principal_components_analysis_uf()
         coordinates = self.principal_components_analysis_uf.U[:,0:2]
         close = False
-        if arquivo:
-            fo = open(arquivo,'w')
+        if archive:
+            fo = open(archive,'w')
             close = True
         else:
             fo = sys.stdout
@@ -544,19 +546,19 @@ class Analise:
             fo.close_tag()
         return coordinates
 
-    def calculate_similarities_between_political_parties(self,siglaP1,siglaP2,tipo=2):
+    def calculate_similarities_between_political_parties(self,acronym_party_1,acronym_party_2,type=2):
         if self.similarities_scalar==[]:
             self.calculate_similarities()
-        x = self.similarities_scalar[self.list_political_parties.index(siglaP1),
-                                     self.list_political_parties.index(siglaP2)]
-        x2 = self.similarities_convolution[self.list_political_parties.index(siglaP1),
-                                         self.list_political_parties.index(siglaP2)]
-        print 'Semelhança entre %s e %s:' % (siglaP1,siglaP2)
-        if tipo==1:
+        x = self.similarities_scalar[self.list_political_parties.index(acronym_party_1),
+                                     self.list_political_parties.index(acronym_party_2)]
+        x2 = self.similarities_convolution[self.list_political_parties.index(acronym_party_1),
+                                         self.list_political_parties.index(acronym_party_2)]
+        print 'Semelhança entre %s e %s:' % (acronym_party_1,acronym_party_2)
+        if type==1:
             print 'Método 1 (p. escalar): %5.1f%% <- valor retornado' % x
             print 'Método 2 (convolução): %5.1f%%' % x2
             return x
-        elif tipo==2:
+        elif type==2:
             print 'Método 1 (p. escalar): %5.1f%%' % x
             print 'Método 2 (convolução): %5.1f%% <- valor retornado' % x2
             return x2
