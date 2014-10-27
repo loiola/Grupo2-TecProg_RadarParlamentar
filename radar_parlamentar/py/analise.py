@@ -231,6 +231,31 @@ class Analise:
             self.list_of_votings.append(votings[:][i][0:2])
         return votings
 
+    def get_total_votes(self):
+
+        number_of_yes = numpy.where(
+            (numpy.array(eval(vote[3]))/100000)==political_party_id[party])[0].size
+        number_of_no = numpy.where(
+            (numpy.array(eval(vote[4]))/100000)==political_party_id[party])[0].size
+        number_of_abstain = numpy.where(
+            (numpy.array(eval(vote[5]))/100000)==political_party_id[party])[0].size
+        number_of_obstruction = numpy.where(
+            (numpy.array(eval(vote[6]))/100000)==political_party_id[party])[0].size
+        total_number = number_of_yes + number_of_no + number_of_abstain + number_of_obstruction
+        return total_number
+
+
+    def get_list_of_duputies_presents(self):
+
+        list_of_present_deputies = [list(numpy.array(eval(vote[3]))[numpy.where(
+                    numpy.array(eval(vote[3]))/100000==political_party_id[party])]) + list(numpy.array(
+                    eval(vote[4]))[numpy.where(numpy.array(eval(vote[4]))/100000==political_party_id[party])]) +
+                                       list(numpy.array(eval(vote[5]))[numpy.where(numpy.array(
+                                           eval(vote[5]))/100000==political_party_id[party])]) + list(
+                    numpy.array(eval(vote[6]))[numpy.where(numpy.array(eval(
+                        vote[6]))/100000==political_party_id[party])])]
+        return list_of_present_deputies
+
 
     def inicialize_vectors(self):
         """Creates the 'vectors' and 'Four-Vectors' aggregate voting party. for leverages
@@ -273,15 +298,8 @@ class Analise:
 
             for vote in votings:
                 vote_index += 1
-                number_of_yes = numpy.where(
-                    (numpy.array(eval(vote[3]))/100000)==political_party_id[party])[0].size
-                number_of_no = numpy.where(
-                    (numpy.array(eval(vote[4]))/100000)==political_party_id[party])[0].size
-                number_of_abstain = numpy.where(
-                    (numpy.array(eval(vote[5]))/100000)==political_party_id[party])[0].size
-                number_of_obstruction = numpy.where(
-                    (numpy.array(eval(vote[6]))/100000)==political_party_id[party])[0].size
-                total_number = number_of_yes + number_of_no + number_of_abstain + number_of_obstruction
+
+                total_number = self.get_total_votes()             
 
                 self.quadrivet_vot[party_index][vote_index] = (
                     number_of_yes,number_of_no,number_of_abstain,number_of_obstruction)
@@ -292,13 +310,7 @@ class Analise:
                     self.vectors_voting[party_index][vote_index] = 0
 
                 # Tell deputies present:
-                list_of_present_deputies = [list(numpy.array(eval(vote[3]))[numpy.where(
-                    numpy.array(eval(vote[3]))/100000==political_party_id[party])]) + list(numpy.array(
-                    eval(vote[4]))[numpy.where(numpy.array(eval(vote[4]))/100000==political_party_id[party])]) +
-                                       list(numpy.array(eval(vote[5]))[numpy.where(numpy.array(
-                                           eval(vote[5]))/100000==political_party_id[party])]) + list(
-                    numpy.array(eval(vote[6]))[numpy.where(numpy.array(eval(
-                        vote[6]))/100000==political_party_id[party])])]
+                list_of_present_deputies = self.get_list_of_duputies_presents()
 
                 self.vectors_size[party_index][vote_index] = numpy.size(list_of_present_deputies)
                 for deputy in list_of_present_deputies[0]:
@@ -333,7 +345,8 @@ class Analise:
             dictionary[party.nome] = vector
         return dictionary
 
-    def get_total_votes(self):
+
+    def get_total_votes_uf(self):
 
          number_of_yes = numpy.where(
              ((numpy.array(eval(v[3]))/1000)%100)==(ie+1))[0].size
@@ -377,7 +390,7 @@ class Analise:
             for v in votings:
                 iv += 1
 
-                total_number = self.get_total_votes()
+                total_number = self.get_total_votes_uf()
 
                 if total_number != 0:
                     self.vectors_votings_uf[ie][iv] = (float(
