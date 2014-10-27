@@ -140,13 +140,13 @@ class ModelCMSPCase(TestCase):
 
     @staticmethod
     def populate_database(casa):
-        political_party = models.Partido(nome="PTest", numero="1")
+        political_party = models.Partido(name="PTest", number="1")
         political_party.save_data_in_file()
         parliamentary = models.Parlamentar(
-            id_parlamentar="1", nome="Teste_vereador")
+            parliamentary_id="1", name="Teste_vereador")
         parliamentary.save_data_in_file()
         legislature = models.Legislatura(
-            parlamentar=parliamentary, partido=political_party, casa_legislativa=casa)
+            parliamentary=parliamentary, partido=political_party, legislative_house=casa)
         legislature.save_data_in_file()
 
     def test_councilman_without_political_party(self):
@@ -159,21 +159,21 @@ class ModelCMSPCase(TestCase):
     def test_councilman_with_political_party(self):
         councilman_in_xml = etree.fromstring("<Vereador Partido=\"PTest\"/>")
         political_party = self.xmlCMSP.partido(councilman_in_xml)
-        self.assertEquals(political_party, models.Partido.objects.get(nome="PTest"))
+        self.assertEquals(political_party, models.Partido.objects.get(name="PTest"))
 
     def test_save_existing_councilman(self):
         councilman_in_xml = etree.fromstring(
             "<Vereador IDParlamentar=\"999\" NomeParlamentar=\"Nao_consta\"/>")
         parliamentary = self.xmlCMSP.list_parliamentary(councilman_in_xml)
         self.assertEquals(
-            parliamentary, models.Parlamentar.objects.get(id_parlamentar=999))
+            parliamentary, models.Parlamentar.objects.get(parliamentary_id=999))
 
     def test_save_inexisting_legislature(self):
         councilman_in_xml = etree.fromstring(
             "<Vereador IDParlamentar=\"999\" NomeParlamentar=\"Nao_consta\" Partido=\"PTest\"/>")
         legislature = self.xmlCMSP.legislatura(councilman_in_xml)
         self.assertEquals(legislature, models.Legislatura.objects.get(
-            parlamentar__id_parlamentar="999", partido__nome="PTest"))
+            parlamentar__id_parlamentar="999", party_name="PTest"))
 
 
 class IdempotenciaCMSPCase(TestCase):
@@ -190,22 +190,22 @@ class IdempotenciaCMSPCase(TestCase):
         self.votacao = votings[0]
 
         number_legislative_house_before = models.CasaLegislativa.objects.filter(
-            nome_curto='cmsp').count()
+            short_name='cmsp').count()
         number_votings_before = models.Votacao.objects.filter(
-            proposicao__casa_legislativa=legislative_house).count()
+            proposition_legislative_house=legislative_house).count()
         number_legislature_before = models.Legislatura.objects.filter(
-            casa_legislativa=legislative_house).count()
+            legislative_house=legislative_house).count()
         number_parliamentary_after = models.Parlamentar.objects.all().count()
 
         # Import again.
         self.votacao = importer.import_from(XML_TEST)[0]
 
         number_legislative_house_after = models.CasaLegislativa.objects.filter(
-            nome_curto='cmsp').count()
+            short_name='cmsp').count()
         number_votings_after = models.Votacao.objects.filter(
-            proposicao__casa_legislativa=legislative_house).count()
+            proposition_legislative_house=legislative_house).count()
         number_legislature_after = models.Legislatura.objects.filter(
-            casa_legislativa=legislative_house).count()
+            legislative_house=legislative_house).count()
         number_parliamentary_after = models.Parlamentar.objects.all().count()
 
         self.assertEqual(number_legislative_house_before, 1)

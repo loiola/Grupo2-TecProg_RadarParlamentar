@@ -20,7 +20,7 @@
 
 import math
 
-def calculate_vector_size(vetor):
+def calculate_vector_size(vector):
   """Calculates the norm of a vector (also called module or size).
 
   Arguments:
@@ -30,7 +30,7 @@ def calculate_vector_size(vetor):
   The vector's norm, which is the square root of the sum of the squares of each element of the vector.
   """
   sum = 0
-  for v_i in vetor:
+  for v_i in vector:
     sum += v_i*v_i
   return math.sqrt(sum)
 
@@ -49,7 +49,7 @@ def normalize_vector(vetor):
     normalized.append(v_i / n)
   return normalized
 
-def calculate_scalar_product(vetor1, vetor2):
+def calculate_scalar_product(vector1, vector2):
   """Calculates the dot product between two vectors.
 
   Arguments:
@@ -60,6 +60,6 @@ def calculate_scalar_product(vetor1, vetor2):
   Exemple: v1=[a,b,c], v2=[x,y,z] => v1.v2 = a*x + b*y +c*z
   """
   sum = 0
-  for v1, v2 in zip(vetor1, vetor2):
+  for v1, v2 in zip(vector1, vector2):
     sum += v1*v2
   return sum

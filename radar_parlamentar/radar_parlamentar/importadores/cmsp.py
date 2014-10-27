@@ -33,8 +33,8 @@ def main():
     """Imports all data from XML by importer"""
 
     print 'IMPORTANDO DADOS DA CAMARA MUNICIPAL DE SAO PAULO (CMSP)'
-    gerador_casa = GeradorCasaLegislativa()
-    cmsp = gerador_casa.generate_cmsp()
+    house_generator = GeradorCasaLegislativa()
+    cmsp = house_generator.generate_cmsp()
     importer = importerCMSP(cmsp)
     for xml in [XML2010, XML2011, XML2012, XML2013, XML2014]:
         importer.import_from(xml)
@@ -42,7 +42,7 @@ def main():
 
 
 # Date on which the XML files were updated
-ULTIMA_ATUALIZACAO = parse_datetime('2012-12-31 0:0:0')
+LAST_UPDATE = parse_datetime('2012-12-31 0:0:0')
 
 MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -56,7 +56,7 @@ XML2014 = os.path.join(MODULE_DIR, 'dados/cmsp/cmsp2014.xml')
 # Types of propositions found in the PBMC XMLs. Be list helps identify the votes 
 # that are propositions. Examples of votes that are not propositions: Postponement 
 # of prolongation Expedient; Other items postponement of the Tariff.
-TIPOS_PROPOSICOES = ['PL', 'PLO', 'PDL']
+PROPOSITIONS_TYPES = ['PL', 'PLO', 'PDL']
 
 # Regex that captures a proposition name (ex: PL 12/2010)
 PROP_REGEX = '([a-zA-Z]{1,3}) ([0-9]{1,4}) ?/([0-9]{4})'
@@ -83,7 +83,7 @@ class GeradorCasaLegislativa(object):
         cmsp.nome_curto = 'cmsp'
         cmsp.esfera = models.MUNICIPAL
         cmsp.local = 'São Paulo - SP'
-        cmsp.atualizacao = ULTIMA_ATUALIZACAO
+        cmsp.atualizacao = LAST_UPDATE
         cmsp.save_data_in_file()
         return cmsp
 
@@ -119,7 +119,7 @@ class XmlCMSP:
         return None
 
     def return_valid_propositions(self, name_proposition, text):
-        return name_proposition in TIPOS_PROPOSICOES and not 'Inversão' in text
+        return name_proposition in PROPOSITIONS_TYPES and not 'Inversão' in text
 
     def extract_year_from_num_and_year(self, proposition_name):
         """Extract year from "tipo num/ano" """
