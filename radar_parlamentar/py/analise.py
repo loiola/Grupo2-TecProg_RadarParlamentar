@@ -31,6 +31,8 @@ import model
 from matplotlib.pyplot import figure, show, scatter,text
 from matplotlib.patches import Ellipse
 import matplotlib.colors
+from radar_parlamentar.py.model_old import inicializar_diclistadeps
+
 
 class Analise:
     """Each instance custody analysis results in a period of time between
@@ -331,6 +333,28 @@ class Analise:
             dictionary[party.nome] = vector
         return dictionary
 
+    def get_total_votes(self):
+
+         number_of_yes = numpy.where(
+             ((numpy.array(eval(v[3]))/1000)%100)==(ie+1))[0].size
+         number_of_no = numpy.where(
+             ((numpy.array(eval(v[4]))/1000)%100)==(ie+1))[0].size
+         number_of_abstain =num_deputados_uf numpy.where(
+             ((numpy.array(eval(v[5]))/1000)%100)==(ie+1))[0].size
+         number_of_obstruction = numpy.where(
+              ((numpy.array(eval(v[6]))/1000)%100)==(ie+1))[0].size
+         total_number = number_of_yes + number_of_no + number_of_abstain + number_of_obstruction
+         return total_number
+
+    def get_list_of_duputies_presents_uf(self):
+
+        list_of_present_deputies = [ list(numpy.array(eval(v[3]))[numpy.where((numpy.array(
+                    eval(v[3]))/1000)%100==(ie+1))]) + list(numpy.array(eval(v[4]))[numpy.where(
+                    (numpy.array(eval(v[4]))/1000)%100==(ie+1))]) + list(numpy.array(eval(v[5]))
+                [numpy.where((numpy.array(eval(v[5]))/1000)%100==(ie+1))]) + list(numpy.array(eval(
+                    v[6]))[numpy.where((numpy.array(eval(v[6]))/1000)%100==(ie+1))]) ]
+        return list_of_present_deputies
+
     def inicialize_vectors_uf(self):
         """Analogous to 'inicialize_vectors'(self), but aggregated by states and not by political parties."""
 
@@ -352,15 +376,8 @@ class Analise:
 
             for v in votings:
                 iv += 1
-                number_of_yes = numpy.where(
-                    ((numpy.array(eval(v[3]))/1000)%100)==(ie+1))[0].size
-                number_of_no = numpy.where(
-                    ((numpy.array(eval(v[4]))/1000)%100)==(ie+1))[0].size
-                number_of_abstain =num_deputados_uf numpy.where(
-                    ((numpy.array(eval(v[5]))/1000)%100)==(ie+1))[0].size
-                number_of_obstruction = numpy.where(
-                    ((numpy.array(eval(v[6]))/1000)%100)==(ie+1))[0].size
-                total_number = number_of_yes + number_of_no + number_of_abstain + number_of_obstruction
+
+                total_number = self.get_total_votes()
 
                 if total_number != 0:
                     self.vectors_votings_uf[ie][iv] = (float(
@@ -369,11 +386,7 @@ class Analise:
                     self.vectors_votings_uf[ie][iv] = 0
 
                 # Tell deputies present::
-                list_of_present_deputies_uf = [ list(numpy.array(eval(v[3]))[numpy.where((numpy.array(
-                    eval(v[3]))/1000)%100==(ie+1))]) + list(numpy.array(eval(v[4]))[numpy.where(
-                    (numpy.array(eval(v[4]))/1000)%100==(ie+1))]) + list(numpy.array(eval(v[5]))
-                [numpy.where((numpy.array(eval(v[5]))/1000)%100==(ie+1))]) + list(numpy.array(eval(
-                    v[6]))[numpy.where((numpy.array(eval(v[6]))/1000)%100==(ie+1))]) ]
+                list_of_present_deputies_uf = self.get_list_of_duputies_presents_uf()
 
                 self.vectors_size_uf[ie][iv] = numpy.size(list_of_present_deputies_uf)
                 for deputy in list_of_present_deputies_uf[0]:
@@ -675,7 +688,7 @@ def list_expressive_political_parties (N=1,data_inicial='2011-01-01',data_final=
         # Not enter repeated twice on set, allowing calculate tamanho_partidos:
                 deputies_number.add(deputy)
         political_parties_size[ip] = len(deputies_number)
-   
+
     # Make list of major political partidos than N:
     expressives = []
     ip = -1
