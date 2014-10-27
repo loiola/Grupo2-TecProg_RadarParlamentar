@@ -31,36 +31,39 @@ import logging
 logger = logging.getLogger("radar")
 
 
-def analises(request):
+def party_analysis(request):
 
-    return render_to_response('analises.html', {}, context_instance=RequestContext(request))
-
+    return render_to_response('analises.html', {},
+                              context_instance = RequestContext(request))
 
 def analise(request, nome_curto_casa_legislativa):
     """Returns the party list to assemble the chart legends"""
 
-    partidos = models.Partido.objects.order_by('numero').all()
-    casa_legislativa = get_object_or_404(
-        models.CasaLegislativa, nome_curto=nome_curto_casa_legislativa)
-    try:
-        periodicidade = request.GET["periodicidade"]
-    except:
-        periodicidade = models.BIENIO
-    try:
-        palavras_chave = request.GET["palavras_chave"]
-    except:
-        palavras_chave = ""
+    parties = models.Partido.objects.order_by('numero').all()
 
-    num_votacao = casa_legislativa.voting_number()
+    casa_legislativa = get_object_or_404(
+        models.CasaLegislativa, nome_curto = nome_curto_casa_legislativa)
+
+    try:
+        periodicity = request.GET["periodicidade"]
+    except:
+        periodicity = models.BIENIO
+
+    try:
+        keywords = request.GET["palavras_chave"]
+    except:
+        keywords = ""
+
+    vote_number = casa_legislativa.voting_number()
 
     return render_to_response(
         'analise.html',
         {'casa_legislativa': casa_legislativa,
-         'partidos': partidos,
-         'num_votacao': num_votacao,
-         'periodicidade': periodicidade,
-         'palavras_chave': palavras_chave},
-        context_instance=RequestContext(request)
+         'partidos': parties,
+         'num_votacao': vote_number,
+         'periodicidade': periodicity,
+         'palavras_chave': keywords},
+        context_instance = RequestContext(request)
     )
 
 
@@ -69,33 +72,42 @@ def json_analise(request, nome_curto_casa_legislativa,
     """Returns the JSON with the coordinates of chart PCA"""
 
     casa_legislativa = get_object_or_404(
-        models.CasaLegislativa, nome_curto=nome_curto_casa_legislativa)
-    lista_de_palavras_chave = utils.StringUtils.transforms_text_in_string_list(
-        palavras_chave)
-    analisador = AnalisadorTemporal(
-        casa_legislativa, periodicidade, lista_de_palavras_chave)
-    analise_temporal = analisador.get_analise_temporal()
-    gen = JsonAnaliseGenerator(analise_temporal)
-    json = gen.get_json()
-    return HttpResponse(json, mimetype='application/json')
+        models.CasaLegislativa, nome_curto = nome_curto_casa_legislativa)
 
+    list_of_keywords = utils.StringUtils.transforms_text_in_string_list(
+        palavras_chave)
+
+    analyzer = AnalisadorTemporal(
+        casa_legislativa, periodicidade, list_of_keywords)
+
+    time_analyzer = analyzer.get_analise_temporal()
+
+    analysis_generator = JsonAnaliseGenerator(time_analyzer)
+
+    json = analysis_generator.get_json()
+
+    return HttpResponse(json, mimetype = 'application/json')
 
 def lista_de_votacoes_filtradas(request, nome_curto_casa_legislativa,
                 periodicidade=models.BIENIO, palavras_chave=""):
     """Returns the filtered voting list"""
 
     casa_legislativa = get_object_or_404(
-        models.CasaLegislativa,nome_curto=nome_curto_casa_legislativa)
-    lista_de_palavras_chave = utils.StringUtils.transforms_text_in_string_list(palavras_chave)
-    analisador = AnalisadorTemporal(casa_legislativa, periodicidade, 
-        lista_de_palavras_chave)
-    analise_temporal = analisador.votacoes_com_filtro()
+        models.CasaLegislativa, nome_curto = nome_curto_casa_legislativa)
+
+    list_of_keywords = utils.StringUtils.transforms_text_in_string_list(
+        palavras_chave)
+
+    analyzer = AnalisadorTemporal(casa_legislativa, periodicidade,
+        list_of_keywords)
+
+    time_anazyler = analyzer.votacoes_com_filtro()
 
     return render_to_response(
                 'lista_de_votacoes_filtradas.html',
                 {'casa_legislativa':casa_legislativa,
-                'lista_de_palavras_chave':lista_de_palavras_chave,
-                'analise_temporal': analise_temporal,
+                'lista_de_palavras_chave':list_of_keywords,
+                'analise_temporal': time_anazyler,
                 'periodicidade':periodicidade} 
                 )
 
