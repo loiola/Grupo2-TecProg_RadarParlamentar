@@ -250,10 +250,14 @@ class Analise:
         for table in table_parties:
             political_party_id[table[1]] = table[0]
 
-        self.vectors_voting = numpy.zeros((len(self.list_political_parties),self.number_of_votings))
-        self.quadrivet_vot = numpy.empty((len(self.list_political_parties),self.number_of_votings),dtype=object)
-        self.vectors_size = numpy.zeros((len(self.list_political_parties),self.number_of_votings))
-        self.vectors_presence = numpy.zeros((len(self.list_political_parties),self.number_of_votings))
+        self.vectors_voting = numpy.zeros((len(self.list_political_parties),
+                                           self.number_of_votings))
+        self.quadrivet_vot = numpy.empty((len(self.list_political_parties),
+                                          self.number_of_votings),dtype=object)
+        self.vectors_size = numpy.zeros((len(self.list_political_parties),
+                                         self.number_of_votings))
+        self.vectors_presence = numpy.zeros((len(self.list_political_parties),
+                                             self.number_of_votings))
         self.political_parties_size = [0]*len(self.list_political_parties)
         party_index =-1
 
@@ -469,7 +473,7 @@ class Analise:
         except ValueError:
             raise ValueError('Estado "%s" inválido.'%siglaEstado)
 
-    def do_coordinates_2d_of_political_parties(self,arquivo=''):
+    def do_coordinates_2d_of_political_parties(self,file=''):
         """Returns array with the coordinates of the political parties in the 2d plane formed by the two
         first principal components.
 
@@ -480,8 +484,8 @@ class Analise:
         for party in coordinates.keys():
             coordinates[party] = (coordinates[party])[0:2]
         close = False
-        if arquivo:
-            fo = open(arquivo,'w')
+        if file:
+            fo = open(file,'w')
             close = True
         else:
             fo = sys.stdout
@@ -489,11 +493,16 @@ class Analise:
         fo.write('Análise PCA - por search_political_party\n')
         fo.write('de %s a %s (ano-mês-dia)\n\n' % (self.inicial_date,self.final_date))
         fo.write('Fração da variância explicada pelas dimensões:\n')
-        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[0]/self.principal_components_analysis_political_party.eigen.sum()))
-        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[1]/self.principal_components_analysis_political_party.eigen.sum()))
-        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[2]/self.principal_components_analysis_political_party.eigen.sum()))
-        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[3]/self.principal_components_analysis_political_party.eigen.sum()))
+        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[0]/
+                           self.principal_components_analysis_political_party.eigen.sum()))
+        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[1]/
+                           self.principal_components_analysis_political_party.eigen.sum()))
+        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[2]/
+                           self.principal_components_analysis_political_party.eigen.sum()))
+        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[3]/
+                           self.principal_components_analysis_political_party.eigen.sum()))
         fo.write('\nCoordenadas:\n')
+
         for party in coordinates.keys():
             fo.write('%s: [%f, %f]\n' % (party,coordinates[party][0],coordinates[party][1]))
         fo.write('Tamanhos=%s\n' % str(self.political_parties_size))
@@ -553,7 +562,7 @@ class Analise:
             return x2
 
 
-    def plot_bubbles(self, escala=10):
+    def plot_bubbles(self, scale=10):
         """Presents a plot of bubbles (using matplotlib) with political parties of size
         'tamanho_min' greater than or equal to the first principal component in the 'x-axis'
         second 'y-axis'."""
@@ -596,7 +605,7 @@ class Analise:
         for party in self.political_parties:
             x.append(data[party.nome][0])
             y.append(data[party.nome][1])
-        size = numpy.array(self.political_parties_size) * escala
+        size = numpy.array(self.political_parties_size) * scale
         scatter(x, y, size, range(len(x)), marker='o', cmap=political_parties_colormap)
         for party in self.political_parties:
             text(data[party.nome][0]+.005,data[party.nome][1],party.numero,

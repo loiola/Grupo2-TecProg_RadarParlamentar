@@ -72,7 +72,7 @@ class GeradorCasaLegislativa(object):
 
     def generate_cmsp(self):
         try:
-            cmsp = models.CasaLegislativa.objects.get(nome_curto='cmsp')
+            cmsp = models.CasaLegislativa.objects.get(short_name='cmsp')
         except models.CasaLegislativa.DoesNotExist:
             cmsp = self.save_cmsp()
         return cmsp
@@ -108,41 +108,41 @@ class XmlCMSP:
         else:
             return None
 
-    def search_propostition_by_name(self, texto):
+    def search_propostition_by_name(self, text):
         """Search "type num/ano" in the text"""
 
-        res = re.search(PROP_REGEX, texto)
+        res = re.search(PROP_REGEX, text)
         if res:
             proposition_name = res.group(1).upper()
-            if self.return_valid_propositions(proposition_name, texto):
+            if self.return_valid_propositions(proposition_name, text):
                 return res.group(0).upper()
         return None
 
-    def return_valid_propositions(self, nome_prop, texto):
-        return nome_prop in TIPOS_PROPOSICOES and not 'Inversão' in texto
+    def return_valid_propositions(self, name_proposition, text):
+        return name_proposition in TIPOS_PROPOSICOES and not 'Inversão' in text
 
-    def extract_year_from_num_and_year(self, prop_nome):
+    def extract_year_from_num_and_year(self, proposition_name):
         """Extract year from "tipo num/ano" """
-        res = re.search(PROP_REGEX, prop_nome)
+        res = re.search(PROP_REGEX, proposition_name)
         if res:
             return res.group(1), res.group(2), res.group(3)
         else:
             return None, None, None
 
-    def interpret_vote(self, voto):
+    def interpret_vote(self, vote):
         """Interprets as voting is up in XML and responds suitability modeling 
         in models.py"""
 
-        if voto == 'Não':
+        if vote == 'Não':
             return models.NAO
-        elif voto == 'Sim':
+        elif vote == 'Sim':
             return models.SIM
-        elif voto == 'Não votou':
+        elif vote == 'Não votou':
             return models.AUSENTE
-        elif voto == 'Abstenção':
+        elif vote == 'Abstenção':
             return models.ABSTENCAO
         else:
-            print 'tipo de voto (%s) nao mapeado!' % voto
+            print 'tipo de voto (%s) nao mapeado!' % vote
             return models.ABSTENCAO
 
     # The 'partido' method can not be renamed or break the code.
@@ -193,7 +193,7 @@ class XmlCMSP:
 
         # Store filtered objects of class 'Legislatura'.
         legislatures = models.Legislatura.objects.filter(
-            parlamentar=voter, partido=political_party, casa_legislativa=self.cmsp)
+            parliamentary=voter, party=political_party, legislative_house=self.cmsp)
 
         if legislatures:
 
@@ -211,7 +211,7 @@ class XmlCMSP:
 
         return legislature
 
-    def get_votes_from_tree(self, vot_tree, votacao):
+    def get_votes_from_tree(self, vot_tree, voting):
         """Extract list of votes the vote of XML and saved in the database
         Arguments:
            vot_tree -- tree of votes
@@ -222,12 +222,12 @@ class XmlCMSP:
                 leg = self.legislatura(ver_tree)
                 vote = models.Voto()
                 vote.legislatura = leg
-                vote.votacao = votacao
+                vote.votacao = voting
                 vote.opcao = self.interpret_vote(ver_tree.get('Voto'))
                 if vote.opcao is not None:
                     vote.save_data_in_file()
 
-    def get_votings_from_tree(self, proposicoes, votacoes, vot_tree):
+    def get_votings_from_tree(self, propositions, votings, vot_tree):
 
         # If the votation is nominal, vot_tree gets the subject and the menu
         # Gets the type of voting from 'vot_tree'.
@@ -252,8 +252,8 @@ class XmlCMSP:
                 if voting_blank:
                     vot = voting_blank[0]
                 else:
-                    if proposition_name in proposicoes:
-                        proposition = proposicoes[proposition_name]
+                    if proposition_name in propositions:
+                        proposition = propositions[proposition_name]
 
                     # The propositon was not in dictionary yet, so we have to create and
                     # register it on dictionary
@@ -262,7 +262,7 @@ class XmlCMSP:
                         proposition.sigla, proposition.numero, proposition.ano = self.extract_year_from_num_and_year(
                             proposition_name)
                         proposition.casa_legislativa = self.cmsp
-                        proposicoes[proposition_name] = proposition
+                        propositions[proposition_name] = proposition
 
                     if self.verbose:
                         print 'Proposicao %s salva' % proposition
@@ -283,7 +283,7 @@ class XmlCMSP:
                         self.show_progress()
                     vot.save_data_in_file()
 
-                votacoes.append(vot)
+                votings.append(vot)
 
     def show_progress(self):
         """Show progress on screen"""
@@ -295,7 +295,7 @@ class importerCMSP:
     """Save the CMSP XML archives datas in database"""
 
     def __init__(self, cmsp, verbose=False):
-        """verbose (booleano) -- activate/desactivate prints on screen"""
+        """verbose (boolean) -- activate/desactivate prints on screen"""
 
         self.verbose = verbose
         self.xml_cmsp = XmlCMSP(cmsp, verbose)
@@ -314,9 +314,9 @@ class importerCMSP:
         self.analyze_xml(propositions, votings, tree)
         return votings
 
-    def analyze_xml(self, proposicoes, votacoes, tree):
+    def analyze_xml(self, propositions, votings, tree):
         for vot_tree in tree.getchildren():
-            self.xml_cmsp.get_votings_from_tree(proposicoes, votacoes, vot_tree)
+            self.xml_cmsp.get_votings_from_tree(propositions, votings, vot_tree)
 
     @staticmethod
     def open_xml(xml_file):

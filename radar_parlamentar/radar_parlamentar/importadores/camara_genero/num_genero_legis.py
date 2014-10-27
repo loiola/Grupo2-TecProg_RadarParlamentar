@@ -42,18 +42,18 @@ for arq in files:
 
             legislature_years_list = []
 
-            for ano in years:
-                if ano.find_legislature("e") == -1:
-                    legislature_years_list.append(ano)
+            for year in years:
+                if year.find_legislature("e") == -1:
+                    legislature_years_list.append(year)
                 else:
-                    ano1, e, ano2 = ano.partition("e")
-                    legislature_years_list.append(ano1.strip())
-                    legislature_years_list.append(ano2.strip()[:-1])
+                    year1, e, year2 = year.partition("e")
+                    legislature_years_list.append(year1.strip())
+                    legislature_years_list.append(year2.strip()[:-1])
 
-            for ano in legislature_years_list:
-                ano = ano.strip()
+            for year in legislature_years_list:
+                year = year.strip()
 
-                story[ano] = story.get(ano, []) + [name]
+                story[year] = story.get(year, []) + [name]
 
 print(counter)
 
@@ -72,8 +72,8 @@ for i in ordered:
     male = 0
     total = len(story[i])
 
-    for pessoa in story[i]:
-        gen = gender[pessoa]
+    for person in story[i]:
+        gen = gender[person]
         if gen == "F":
             female += 1
         else:
@@ -85,13 +85,13 @@ for i in ordered:
     except ValueError, error:
         logger.error("ValueError: %s" % error)
 
-    prox = next_date.partition("-")[0]
+    next = next_date.partition("-")[0]
 
-    ano1, e, ano2 = i.partition("-")
-    duration = int(ano2) - int(ano1) + 1
-    if ano2 == prox:
+    year1, e, year2 = i.partition("-")
+    duration = int(year2) - int(year1) + 1
+    if year2 == next:
         duration -= 1
 
     # Writes de values corresponding to the names previously written on 
     # spreadsheet
-    output.write("%s,%s,%s,%s,%s,%s\n" % (ano1, female, male, total, duration, i))
+    output.write("%s,%s,%s,%s,%s,%s\n" % (year1, female, male, total, duration, i))

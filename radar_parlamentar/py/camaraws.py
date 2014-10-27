@@ -79,7 +79,7 @@ def get_proposition(tipo, num, ano):
     return xml
 
 
-def get_proposition_name_by_id(idProp):
+def get_proposition_name_by_id(idProposition):
     """Giving the id, gets the name of proposition.
     For exemple: obter_nomeProp_porid(513512) retorns the string "MPV 540/2011"
 
@@ -90,7 +90,7 @@ def get_proposition_name_by_id(idProp):
     A string with type, number and year of proposition, for exemple "MPV 540/2011".
     If the proposition doesn't be found, returns None."""
 
-    url = GET_INFOS_BY_ID % (idProp)
+    url = GET_INFOS_BY_ID % (idProposition)
     try:
         request = urllib2.Request(url)
         xml = urllib2.urlopen(request).read()

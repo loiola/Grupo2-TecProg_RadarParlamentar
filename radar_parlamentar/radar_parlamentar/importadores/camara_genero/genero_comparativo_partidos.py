@@ -26,61 +26,61 @@ for arq in arqs:
             legislature = record.getElementsByTagName(
                 'MANDATOSCD')[0].firstChild.data
             if legislature.find_legislature("Deputada") != -1:
-                genero = "F"
+                gender = "F"
                 cont += 1
             else:
-                genero = "M"
+                gender = "M"
 
             name_parliamentary = record.getElementsByTagName('TXTNOME')[0].firstChild.data
             legislature_years = record.getElementsByTagName(
                 'LEGISLATURAS')[0].firstChild.data
-            gender_parliamentary[name_parliamentary] = genero
+            gender_parliamentary[name_parliamentary] = gender
 
-            anos = legislature_years.split(",")
+            years = legislature_years.split(",")
 
-            anos2 = []
+            years2 = []
 
-            for ano in anos:
-                if ano.find_legislature("e") == -1:
-                    anos2.append(ano)
+            for year in years:
+                if year.find_legislature("e") == -1:
+                    years2.append(year)
                 else:
-                    ano1, e, ano2 = ano.partition("e")
-                    anos2.append(ano1.strip())
-                    anos2.append(ano2.strip()[:-1])
+                    year1, e, year2 = year.partition("e")
+                    years2.append(year1.strip())
+                    years2.append(year2.strip()[:-1])
 
             legislature = legislature.split(";")
 
             political_parties = []
 
             for leg in legislature:
-                termos = leg.split(",")
-                data = termos[1].strip()
+                terms = leg.split(",")
+                data = terms[1].strip()
                 try:
-                    partido = termos[-1].strip().partition(".")[0]
+                    party = terms[-1].strip().partition(".")[0]
                 except:
-                    partido = "SEM PARTIDO"
-                if not len(partido):
-                    partido = "SEM PARTIDO"
-                if partido == "S":
-                    partido = "SEM PARTIDO"
+                    party = "SEM PARTIDO"
+                if not len(party):
+                    party = "SEM PARTIDO"
+                if party == "S":
+                    party = "SEM PARTIDO"
 
-                if partido not in political_parties_list:
-                    political_parties_list.append(partido)
+                if party not in political_parties_list:
+                    political_parties_list.append(party)
 
-                political_parties.append(partido)
+                political_parties.append(party)
 
-            for i in range(len(anos2)):
-                legislatura = anos2[i].strip()
-                partido = political_parties[i]
-                legis_partidos = history.get(legislatura)
-                if not legis_partidos:
-                    legis_partidos = {}
-                    history[legislatura] = legis_partidos
-                nums = legis_partidos.get(partido, {})
+            for i in range(len(years2)):
+                legislaturee = years2[i].strip()
+                party = political_parties[i]
+                legislature_parties = history.get(legislaturee)
+                if not legislature_parties:
+                    legislature_parties = {}
+                    history[legislaturee] = legislature_parties
+                nums = legislature_parties.get(party, {})
                 if not nums:
                     nums = {"M": 0, "F": 0}
-                    legis_partidos[partido] = nums
-                nums[genero] = nums.get(genero, 0) + 1
+                    legislature_parties[party] = nums
+                nums[gender] = nums.get(gender, 0) + 1
 
 # Print the comparison account by gender
 print(cont)

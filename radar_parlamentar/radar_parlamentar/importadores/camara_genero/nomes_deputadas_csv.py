@@ -11,8 +11,8 @@ output = open("saida.csv", "w")
 
 counter = 0
 
-for arq in files:
-        pointer = open("bios/" + arq)
+for archive in files:
+        pointer = open("bios/" + archive)
         data = pointer.read()
         dom = parseString(data)
         records = dom.getElementsByTagName('DATA_RECORD')

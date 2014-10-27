@@ -41,13 +41,13 @@ for arq in files:
             years = legislature_years.split(",")
             years_list = []
 
-            for ano in years:
-                if ano.find_legislature("e") == -1:
-                    years_list.append(ano)
+            for year in years:
+                if year.find_legislature("e") == -1:
+                    years_list.append(year)
                 else:
-                    ano1, e, ano2 = ano.partition("e")
-                    years_list.append(ano1.strip())
-                    years_list.append(ano2.strip()[:-1])
+                    year1, e, year2 = year.partition("e")
+                    years_list.append(year1.strip())
+                    years_list.append(year2.strip()[:-1])
 
             legislature = legislature.split(";")
 
@@ -84,8 +84,8 @@ for arq in files:
                     political_party_legislature[legislative] = nums
                 nums[gender_parliamentary] = nums.get(gender_parliamentary, 0) + 1
 
-                ano1, e, ano2 = legislative.partition("-")
-                nums["ano"] = int(ano1)
+                year1, e, year2 = legislative.partition("-")
+                nums["ano"] = int(year1)
                 nums["duracao"] = 4
                 nums["legis"] = legislative
 
