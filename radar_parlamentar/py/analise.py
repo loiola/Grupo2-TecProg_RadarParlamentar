@@ -233,15 +233,12 @@ class Analise:
 
     def get_total_votes(self):
 
-        number_of_yes = numpy.where(
-            (numpy.array(eval(vote[3]))/100000)==political_party_id[party])[0].size
-        number_of_no = numpy.where(
-            (numpy.array(eval(vote[4]))/100000)==political_party_id[party])[0].size
-        number_of_abstain = numpy.where(
-            (numpy.array(eval(vote[5]))/100000)==political_party_id[party])[0].size
-        number_of_obstruction = numpy.where(
-            (numpy.array(eval(vote[6]))/100000)==political_party_id[party])[0].size
-        total_number = number_of_yes + number_of_no + number_of_abstain + number_of_obstruction
+        total_number = 0
+
+        for e in range(3,6):
+            total_number = total_number + numpy.where(
+                (numpy.array(eval(vote[e]))/100000)==political_party_id[party])[0].size      
+
         return total_number
 
 
@@ -348,15 +345,12 @@ class Analise:
 
     def get_total_votes_uf(self):
 
-         number_of_yes = numpy.where(
-             ((numpy.array(eval(v[3]))/1000)%100)==(ie+1))[0].size
-         number_of_no = numpy.where(
-             ((numpy.array(eval(v[4]))/1000)%100)==(ie+1))[0].size
-         number_of_abstain =num_deputados_uf numpy.where(
-             ((numpy.array(eval(v[5]))/1000)%100)==(ie+1))[0].size
-         number_of_obstruction = numpy.where(
-              ((numpy.array(eval(v[6]))/1000)%100)==(ie+1))[0].size
-         total_number = number_of_yes + number_of_no + number_of_abstain + number_of_obstruction
+        total_number = 0
+
+        for e in range(3,6):
+            total_number = total_number + numpy.where(
+                ((numpy.array(eval(v[e]))/1000)%100)==(ie+1))[0].size
+         
          return total_number
 
     def get_list_of_duputies_presents_uf(self):
