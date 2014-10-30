@@ -244,13 +244,11 @@ class Analise:
 
     def get_list_of_duputies_presents(self):
 
-        list_of_present_deputies = [list(numpy.array(eval(vote[3]))[numpy.where(
-                    numpy.array(eval(vote[3]))/100000==political_party_id[party])]) + list(numpy.array(
-                    eval(vote[4]))[numpy.where(numpy.array(eval(vote[4]))/100000==political_party_id[party])]) +
-                                       list(numpy.array(eval(vote[5]))[numpy.where(numpy.array(
-                                           eval(vote[5]))/100000==political_party_id[party])]) + list(
-                    numpy.array(eval(vote[6]))[numpy.where(numpy.array(eval(
-                        vote[6]))/100000==political_party_id[party])])]
+        list_of_present_deputies = []
+
+        for e in range(3,6):        
+            list_of_present_deputies = list_of_present_deputies + list(numpy.array(eval(vote[e]))[numpy.where(
+                    numpy.array(eval(vote[e]))/100000==political_party_id[party])])
         return list_of_present_deputies
 
 
@@ -355,11 +353,11 @@ class Analise:
 
     def get_list_of_duputies_presents_uf(self):
 
-        list_of_present_deputies = [ list(numpy.array(eval(v[3]))[numpy.where((numpy.array(
-                    eval(v[3]))/1000)%100==(ie+1))]) + list(numpy.array(eval(v[4]))[numpy.where(
-                    (numpy.array(eval(v[4]))/1000)%100==(ie+1))]) + list(numpy.array(eval(v[5]))
-                [numpy.where((numpy.array(eval(v[5]))/1000)%100==(ie+1))]) + list(numpy.array(eval(
-                    v[6]))[numpy.where((numpy.array(eval(v[6]))/1000)%100==(ie+1))]) ]
+        list_of_present_deputies = []
+
+        for e in range(3,6):
+            list_of_present_deputies = list_of_present_deputies + list(numpy.array(eval(v[e]))[numpy.where((numpy.array(
+                        eval(v[e]))/1000)%100==(ie+1))])
         return list_of_present_deputies
 
     def inicialize_vectors_uf(self):
