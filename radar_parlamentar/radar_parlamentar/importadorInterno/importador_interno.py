@@ -29,15 +29,15 @@ MODULE_DIR = os.getcwd() + '/exportadores/'
 """Methods that deserialize objects for reading."""
 
 def main():
-    deserialize_partido()
-    deserialize_casa_legislativa()
-    deserialize_parlamentar()
-    _deserialize_legislatura()
-    _deserialize_proposicao()
-    _deserialize_votacao()
-    _deserialize_voto()
+    deserialize_party()
+    deserialize_legislative_home()
+    deserialize_parliamentary()
+    _deserialize_legislature()
+    _deserialize_proposition()
+    _deserialize_voting()
+    _deserialize_vote()
 
-def deserialize_partido():
+def deserialize_party():
     try:
         # receives a reference to the absolute path of the XML file to open.
         filepath = os.path.join(MODULE_DIR, 'dados/search_political_party.xml')
@@ -56,7 +56,8 @@ def deserialize_partido():
     for deserialized_object in data:
         deserialized_object.save_data_in_file()
 
-def deserialize_casa_legislativa():
+#import data for legislative home
+def deserialize_legislative_home():
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/casa_legislativa.xml')
         out = open(filepath, "r")
@@ -72,7 +73,8 @@ def deserialize_casa_legislativa():
     for deserialized_object in data:
         deserialized_object.save_data_in_file()
 
-def deserialize_parlamentar():
+#import data for parliamentary
+def deserialize_parliamentary():
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/parlamentar.xml')
         out = open(filepath, "r")
@@ -87,7 +89,8 @@ def deserialize_parlamentar():
     for deserialized_object in data:
         deserialized_object.save_data_in_file()
 
-def _deserialize_legislatura():
+#import data for legislature
+def _deserialize_legislature():
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/legislatura.xml')
         out = open(filepath, "r")
@@ -102,7 +105,8 @@ def _deserialize_legislatura():
     for deserialized_object in data:
         deserialized_object.save_data_in_file()
 
-def _deserialize_proposicao():
+#import data for proposition
+def _deserialize_proposition():
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/proposicao.xml')
         out = open(filepath, "r")
@@ -117,7 +121,8 @@ def _deserialize_proposicao():
     for deserialized_object in data:
         deserialized_object.save_data_in_file()
 
-def _deserialize_votacao():
+#import data for voting
+def _deserialize_voting():
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/votacao.xml')
         out = open(filepath, "r")
@@ -132,7 +137,8 @@ def _deserialize_votacao():
     for deserialized_object in data:
         deserialized_object.save_data_in_file()
 
-def _deserialize_voto():
+#import data for vote
+def _deserialize_vote():
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/voto.xml')
         out = open(filepath, "r")
@@ -147,6 +153,7 @@ def _deserialize_voto():
     for deserialized_object in data:
         deserialized_object.save_data_in_file()
 
+#import data of short name house for legislature
 def _import_legislature(short_name_house):
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/legislatura.xml')
@@ -163,6 +170,7 @@ def _import_legislature(short_name_house):
         if deserialized_object.object.casa_legislativa.nome_curto == short_name_house:
             deserialized_object.save_data_in_file()
 
+#import data of short name house for proposition
 def _import_proposition(short_name_house):
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/proposicao.xml')
@@ -179,7 +187,8 @@ def _import_proposition(short_name_house):
         if deserialized_object.object.casa_legislativa.nome_curto == short_name_house:
             deserialized_object.save_data_in_file()
 
-def _import_votings(short_name_house):
+#import data of short name house for pools
+def _import_pools(short_name_house):
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/votacao.xml')
         out = open(filepath, "r")
@@ -196,6 +205,7 @@ def _import_votings(short_name_house):
                 short_name_house:
             deserialized_object.save_data_in_file()
 
+#import data of short name house for vote
 def _import_vote(short_name_house):
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/voto.xml')
@@ -213,6 +223,7 @@ def _import_vote(short_name_house):
                 short_name_house:
             deserialized_object.save_data_in_file()
 
+#import data of short name house for legislative house
 def import_legislative_house(short_name_house):
     try:
         filepath = os.path.join(MODULE_DIR, 'dados/casa_legislativa.xml')
@@ -228,9 +239,9 @@ def import_legislative_house(short_name_house):
         if deserialized_object.object.nome_curto == short_name_house:
             models.CasaLegislativa.remove_house(short_name_house)
         deserialized_object.save_data_in_file()
-        deserialize_partido()
-        deserialize_parlamentar()
+        deserialize_party()
+        deserialize_parliamentary()
         _import_legislature(short_name_house)
         _import_proposition(short_name_house)
-        _import_votings(short_name_house)
+        _import_pools(short_name_house)
         _import_vote(short_name_house)
