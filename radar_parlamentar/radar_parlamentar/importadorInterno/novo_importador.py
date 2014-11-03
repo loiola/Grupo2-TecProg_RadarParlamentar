@@ -39,7 +39,70 @@ class importador_interno:
         self.verifica_votacao = False
 
 
-    # This method is too large. Need refactoring.
+    def new_legislativeHouse(self, root):
+        legislativeHouse = models.CasaLegislativa()
+        legislativeHouse.nome_curto = root.attrib.get("short_name")
+        legislativeHouse.nome = root.attrib.get("nome")
+        legislativeHouse.esfera = root.attrib.get("esfera")
+        legislativeHouse.local = root.attrib.get("local")
+        legislativeHouse.atualizacao = root.attrib.get("atualizacao")
+        legislativeHouse.save_data_in_file()
+        return legislativeHouse
+
+    def new_proposition(self, child_proposition, legislativeHouse):
+        proposition = models.Proposicao()
+        proposition.casa_legislativa = legislativeHouse
+        proposition.id_prop = child_proposition.attrib.get("id_prop")
+        proposition.sigla = child_proposition.attrib.get("sigla")
+        proposition.numero = child_proposition.attrib.get("numero")
+        proposition.ano = child_proposition.attrib.get("ano")
+        proposition.ementa = child_proposition.attrib.get("ementa")
+        proposition.descricao = child_proposition.attrib.get("descricao")
+        proposition.indexacao = child_proposition.attrib.get("indexacao")
+        return proposition
+
+    def new_voting(self, child_voting, proposition):
+        voting = models.Votacao()
+        voting.proposicao = proposition
+        voting.id_votacao = child_voting.attrib.get("id_votacao")
+        voting.id_vot = child_voting.attrib.get("id_vot")
+        voting.descricao = child_voting.attrib.get("descricao")
+        voting.data = child_voting.attrib.get("data")
+        voting.resultado = child_voting.attrib.get("resultado")
+        voting.save_data_in_file()
+        return voting
+
+    def new_party(self, child_vote):
+        party = models.Partido()
+        party.numero = child_vote.attrib.get("numero")
+        party.nome = child_vote.attrib.get("search_political_party")
+        partido_existente = models.Partido.objects.filter(
+            numero=party.numero, nome=party.nome)
+        return partido_existente, party
+
+    def new_parliamentary(self, child_vote):
+        parliamentarian = models.Parlamentar()
+        parliamentarian.nome = child_vote.attrib.get("nome")
+        parliamentarian.id_parliamentary = child_vote.attrib.get(
+            "id_parliamentary")
+        parliamentarian.genero = child_vote.attrib.get("genero")
+        existing_parliamentarian = models.Parlamentar.objects.filter(
+            nome=parliamentarian.nome,
+            id_parlamentar=parliamentarian.id_parliamentary,
+            genero=parliamentarian.genero)
+        return existing_parliamentarian, parliamentarian
+
+    def new_legislature(self, child_vote, legislativeHouse, parliamentarian, party):
+        legislature = models.Legislatura()
+        legislature.partido = party
+        legislature.parlamentar = parliamentarian
+        legislature.casa_legislativa = legislativeHouse
+        legislature.inicio = child_vote.attrib.get("inicio")
+        legislature.fim = child_vote.attrib.get("fim")
+        legislature.localidade = child_vote.attrib.get(
+            "localidade")
+        return legislature
+
     def load_xml(self, short_name):
         directory = RESOURCES_FOLDER + short_name + '.xml'
         try:
@@ -53,25 +116,11 @@ class importador_interno:
         models.CasaLegislativa.remove_house(short_name)
         print "Voltei"
 
-        legislativeHouse = models.CasaLegislativa()
-        legislativeHouse.nome_curto = root.attrib.get("short_name")
-        legislativeHouse.nome = root.attrib.get("nome")
-        legislativeHouse.esfera = root.attrib.get("esfera")
-        legislativeHouse.local = root.attrib.get("local")
-        legislativeHouse.atualizacao = root.attrib.get("atualizacao")
-        legislativeHouse.save_data_in_file()
+        legislativeHouse = self.new_legislativeHouse(root)
 
         for child_proposition in root.iter("Proposicao"):
 
-            proposition = models.Proposicao()
-            proposition.casa_legislativa = legislativeHouse
-            proposition.id_prop = child_proposition.attrib.get("id_prop")
-            proposition.sigla = child_proposition.attrib.get("sigla")
-            proposition.numero = child_proposition.attrib.get("numero")
-            proposition.ano = child_proposition.attrib.get("ano")
-            proposition.ementa = child_proposition.attrib.get("ementa")
-            proposition.descricao = child_proposition.attrib.get("descricao")
-            proposition.indexacao = child_proposition.attrib.get("indexacao")
+            proposition = self.new_proposition(child_proposition, legislativeHouse)
 
             if(child_proposition.attrib.get("data_apresentacao") == "None"):
 
@@ -86,51 +135,25 @@ class importador_interno:
             # Get the daughter of the subtree being traversed.
             for child_voting in child_proposition.findall("Votacao"):
 
-                voting = models.Votacao()
-                voting.proposicao = proposition
-                voting.id_votacao = child_voting.attrib.get("id_votacao")
-                voting.id_vot = child_voting.attrib.get("id_vot")
-                voting.descricao = child_voting.attrib.get("descricao")
-                voting.data = child_voting.attrib.get("data")
-                voting.resultado = child_voting.attrib.get("resultado")
-                voting.save_data_in_file()
+                voting = self.new_voting(child_voting, proposition)
 
                 for child_vote in child_voting.findall("Voto"):
 
-                    party = models.Partido()
-                    party.numero = child_vote.attrib.get("numero")
-                    party.nome = child_vote.attrib.get("search_political_party")
-                    partido_existente = models.Partido.objects.filter(
-                        numero=party.numero, nome=party.nome)
+                    existing_party, party = self.new_party(child_vote)
 
-                    if len(partido_existente) > 0:
-                        party = partido_existente[0]
+                    if len(existing_party) > 0:
+                        party = existing_party[0]
                     else:
                         party.save_data_in_file()
 
-                    parliamentarian = models.Parlamentar()
-                    parliamentarian.nome = child_vote.attrib.get("nome")
-                    parliamentarian.id_parlamentar = child_vote.attrib.get(
-                        "id_parlamentar")
-                    parliamentarian.genero = child_vote.attrib.get("genero")
-                    existing_parliamentarian = models.Parlamentar.objects.filter(
-                        nome=parliamentarian.nome,
-                        id_parlamentar=parliamentarian.id_parlamentar,
-                        genero=parliamentarian.genero)
+                    existing_parliamentarian, parliamentarian = self.new_parliamentary(child_vote)
 
                     if len(existing_parliamentarian) > 0:
                         parliamentarian = existing_parliamentarian[0]
                     else:
                         parliamentarian.save_data_in_file()
 
-                    legislature = models.Legislatura()
-                    legislature.partido = party
-                    legislature.parlamentar = parliamentarian
-                    legislature.casa_legislativa = legislativeHouse
-                    legislature.inicio = child_vote.attrib.get("inicio")
-                    legislature.fim = child_vote.attrib.get("fim")
-                    legislature.localidade = child_vote.attrib.get(
-                        "localidade")
+                    legislature = self.new_legislature(child_vote, legislativeHouse, parliamentarian, party)
 
                     if legislature.localidade is None:
                         legislature.localidade = ""

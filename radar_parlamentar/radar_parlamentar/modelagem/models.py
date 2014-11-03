@@ -348,11 +348,11 @@ class Parlamentar(models.Model):
     """Um parlamentar.
 
     Atributos:
-        id_parlamentar - string identificadora de acordo a fonte de dados
+        id_parliamentary - string identificadora de acordo a fonte de dados
         nome, genero -- strings"""
 
     # Parliamentary identifier
-    # Obs: id_parlamentar is not a  primary key!
+    # Obs: id_parliamentary is not a  primary key!
     id_parlamentar = models.CharField(max_length=100, blank=True)
 
     # Parliamentaru name
