@@ -105,10 +105,43 @@ class importador_interno:
         legislature.inicio = child_vote.attrib.get("inicio")
         legislature.fim = child_vote.attrib.get("fim")
         legislature.localidade = child_vote.attrib.get(
-            "localidade")
+            "location")
         return legislature
 
 #importing xml with data
+    def for_existing_party(self, child_vote, existing_party, party):
+        if len(existing_party) > 0:
+            party = existing_party[0]
+        else:
+            party.save_data_in_file()
+        existing_parliamentarian, parliamentarian = self.new_parliamentary(child_vote)
+        return existing_parliamentarian, parliamentarian, party
+
+#method for existing parliamentary
+    def for_existing_parliamentarian(self, child_vote, existing_parliamentarian, legislativeHouse, parliamentarian,
+                                     party):
+        if len(existing_parliamentarian) > 0:
+            parliamentarian = existing_parliamentarian[0]
+        else:
+            parliamentarian.save_data_in_file()
+        legislature = self.new_legislature(child_vote, legislativeHouse, parliamentarian, party)
+        return legislature
+
+#method for new legislature location
+    def new_legislature_location(self, legislature):
+        if legislature.location is None:
+            legislature.location = ""
+        else:
+            legislature.location = "" + legislature.location
+        existing_legislature = models.Legislatura.objects.filter(
+            party=legislature.partido,
+            parliamentarian=legislature.parlamentar,
+            legislative_house=legislature.casa_legislativa,
+            init=legislature.inicio, fim=legislature.fim)
+        return existing_legislature
+
+
+#importing new xml
     def load_xml(self, short_name):
         directory = RESOURCES_FOLDER + short_name + '.xml'
         try:
@@ -147,29 +180,13 @@ class importador_interno:
 
                     existing_party, party = self.new_party(child_vote)
 
-                    if len(existing_party) > 0:
-                        party = existing_party[0]
-                    else:
-                        party.save_data_in_file()
+                    existing_parliamentarian, parliamentarian, party = self.for_existing_party(child_vote,
+                                                                                               existing_party, party)
 
-                    existing_parliamentarian, parliamentarian = self.new_parliamentary(child_vote)
+                    legislature = self.for_existing_parliamentarian(child_vote, existing_parliamentarian,
+                                                                    legislativeHouse, parliamentarian, party)
 
-                    if len(existing_parliamentarian) > 0:
-                        parliamentarian = existing_parliamentarian[0]
-                    else:
-                        parliamentarian.save_data_in_file()
-
-                    legislature = self.new_legislature(child_vote, legislativeHouse, parliamentarian, party)
-
-                    if legislature.localidade is None:
-                        legislature.localidade = ""
-                    else:
-                        legislature.localidade = "" + legislature.localidade
-                    existing_legislature = models.Legislatura.objects.filter(
-                        party=legislature.partido,
-                        parliamentarian=legislature.parlamentar,
-                        legislative_house=legislature.casa_legislativa,
-                        init=legislature.inicio, fim=legislature.fim)
+                    existing_legislature = self.new_legislature_location(legislature)
 
                     if len(existing_legislature) > 0:
                         legislature = existing_legislature[0]
