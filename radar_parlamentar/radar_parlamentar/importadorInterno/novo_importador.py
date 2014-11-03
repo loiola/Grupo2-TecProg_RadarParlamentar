@@ -38,7 +38,7 @@ class importador_interno:
         self.verifica_voto = False
         self.verifica_votacao = False
 
-
+#parameters for new legislative hoouse
     def new_legislativeHouse(self, root):
         legislativeHouse = models.CasaLegislativa()
         legislativeHouse.nome_curto = root.attrib.get("short_name")
@@ -49,6 +49,7 @@ class importador_interno:
         legislativeHouse.save_data_in_file()
         return legislativeHouse
 
+#parameters for new proposition
     def new_proposition(self, child_proposition, legislativeHouse):
         proposition = models.Proposicao()
         proposition.casa_legislativa = legislativeHouse
@@ -61,6 +62,7 @@ class importador_interno:
         proposition.indexacao = child_proposition.attrib.get("indexacao")
         return proposition
 
+#parameters for new voting
     def new_voting(self, child_voting, proposition):
         voting = models.Votacao()
         voting.proposicao = proposition
@@ -72,6 +74,7 @@ class importador_interno:
         voting.save_data_in_file()
         return voting
 
+#parameters for new party
     def new_party(self, child_vote):
         party = models.Partido()
         party.numero = child_vote.attrib.get("numero")
@@ -80,6 +83,7 @@ class importador_interno:
             numero=party.numero, nome=party.nome)
         return partido_existente, party
 
+#parameters for new parliamentary
     def new_parliamentary(self, child_vote):
         parliamentarian = models.Parlamentar()
         parliamentarian.nome = child_vote.attrib.get("nome")
@@ -92,6 +96,7 @@ class importador_interno:
             genero=parliamentarian.genero)
         return existing_parliamentarian, parliamentarian
 
+#parameters for new legislature
     def new_legislature(self, child_vote, legislativeHouse, parliamentarian, party):
         legislature = models.Legislatura()
         legislature.partido = party
@@ -103,6 +108,7 @@ class importador_interno:
             "localidade")
         return legislature
 
+#importing xml with data
     def load_xml(self, short_name):
         directory = RESOURCES_FOLDER + short_name + '.xml'
         try:
