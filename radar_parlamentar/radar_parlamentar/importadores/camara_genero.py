@@ -57,6 +57,7 @@ BASE_LIST_PARTIES = [
 
 matrix = {}
 
+# main function
 def main(font=None):
     if not font:
         font = 'pl'
@@ -84,6 +85,7 @@ def main(font=None):
     return returnVariable
 
 
+#convert files
 def convert_csv_to_json(input_file_name):
     sep = b";"
     file = open(input_file_name + '.csv', 'r')
@@ -91,18 +93,22 @@ def convert_csv_to_json(input_file_name):
     out = json.loads(json.dumps([row for row in reader], indent=4))
     return out
 
+#convert files null to none
 def convert_null_to_none(proposition):
     for attribute in proposition.keys():
         if proposition[attribute] == "NULL":
             proposition[attribute] = None
     return proposition
 
+#create a new list os propositions
 def multiple_null_remove(proposition_list):
     new_list = []
     for proposition in proposition_list:
         new_list.append(convert_null_to_none(proposition))
     return new_list
 
+
+#index new propositions to list
 def index_propositions(proposition_list):
     indexed = []
 
@@ -112,6 +118,8 @@ def index_propositions(proposition_list):
                 indexed.append(proposition)
     return indexed
 
+
+#indes new parse
 def do_index_parse(indexing):
     indexing1 = [term.strip()
 
@@ -126,6 +134,7 @@ def do_index_parse(indexing):
                 indexing2.append(term2.lower())
     return indexing2
 
+# index new parse to proposition list
 def propositions_index_parse(propositions_list):
     new_proposition_list = []
 
@@ -139,6 +148,7 @@ def propositions_index_parse(propositions_list):
                 proposition['txtSiglaPartido'], proposition['txtIndexacao'])
     return new_proposition_list
 
+#index new parties
 def get_political_parties_by_acronym(propositions_list):
 
     for proposition in propositions_list:
@@ -147,6 +157,7 @@ def get_political_parties_by_acronym(propositions_list):
             if party not in PARTIES:
                 PARTIES[party] = {}
 
+#index new terms
 def account_terms(indexed_list):
 
     for proposition in indexed_list:
@@ -160,6 +171,7 @@ def account_terms(indexed_list):
                 else:
                     DIC_TERMS[term] = increment_variable
 
+#index words
 def get_more_words(dic_words):
     words = sorted(dic_words, key=lambda k: -dic_words[k])
     export_json(words, "lista_50_mais")
@@ -169,6 +181,7 @@ def get_more_words(dic_words):
     for term in FILTERED:
         WORDS_MORE_MORE.remove(term)
 
+# index political words
 def arrange_words_political_party():
     for party in PARTIES:
         party_words = PARTIES[party]
@@ -178,6 +191,7 @@ def arrange_words_political_party():
         for term in words:
             PARTIES[party][term] = party_words[term]
 
+#index political parties words
 def sum_words_political_party(party, words_list):
     for word in words_list:
         if word not in PARTIES[party.strip()]:
@@ -185,10 +199,12 @@ def sum_words_political_party(party, words_list):
         else:
             PARTIES[party.strip()][word] += 1
 
+#expor new format
 def export_json(data, filename):
     with open(filename, 'w') as outFile:
         outFile.write(json.dumps(data, indent=4))
 
+#create a political parties
 def generate_political_parties_with_jsonMatrix():
     i = 0
     parties_list = []
@@ -199,6 +215,7 @@ def generate_political_parties_with_jsonMatrix():
     global matrix
     matrix['partidos'] = parties_list
 
+#create new terms os political parties
 def generate_more_terms_with_jsonMatrix():
     i = 0
     term_list = []
@@ -212,6 +229,7 @@ def generate_more_terms_with_jsonMatrix():
     matrix['termos'] = term_list
     print(matrix['termos'])
 
+#create new political parties
 def generate_political_parties_terms_links_with_jsonMatrix():
     global matrix
     matrix['links'] = []
