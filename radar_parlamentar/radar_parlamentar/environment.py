@@ -23,7 +23,9 @@ class XMLWriter:
 
         if self.pretty:
             self.output += "  " * (len(self.stack) - 1)
-        self.output += "<" + tag + ">"
+
+        else:
+            self.output += "<" + tag + ">"
 
         if self.pretty:
             self.output += "\n"
@@ -51,7 +53,9 @@ class XMLWriter:
         """ Add some content"""
         if self.pretty:
             self.output += "  " * len(self.stack)
-        self.output += str(text)
+
+        else:
+            self.output += str(text)
 
     def save_data_in_file(self, filename):
 

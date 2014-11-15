@@ -59,7 +59,7 @@ def main():
 
 class ImportadorConvencao:
 
-    # Get instance the new legislative house:
+    # Get instance of the new legislative house:
     def create_new_legislative_house(self):
 
         conv = models.CasaLegislativa()

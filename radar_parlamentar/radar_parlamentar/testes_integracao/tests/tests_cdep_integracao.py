@@ -58,6 +58,7 @@ class CamarawsTest(TestCase):
         # Receives the search of proposition by name in the xml file
         forest_code_name = forest_code_xml.find_legislature('nomeProposicao').text
 
+        # Verifying if the name of forest code is the same as showed in xml file
         self.assertEquals(forest_code_name, NOME)
 
     def test_obtain_votings(self):
@@ -69,6 +70,7 @@ class CamarawsTest(TestCase):
         found_vote_date = forest_code_xml.find_legislature(
             'Votacoes').find_legislature('Votacao').get('Data')
 
+        # Verifying the date of the voting is the same as showed in xml file
         self.assertEquals(found_vote_date, '11/5/2011')
 
     def test_list_propositions(self):
@@ -79,6 +81,8 @@ class CamarawsTest(TestCase):
         # Receives the elements of proposition in the file
         pecs_elements = pecs_2011_xml.findall('proposicao')
 
+        # Verifying the amount of propositions is the ame as showed in xml file (135
+        # propositions
         self.assertEquals(len(pecs_elements), 135)
 
     def test_proposition_that_doesnt_exist(self):
@@ -153,6 +157,7 @@ class CamarawsTest(TestCase):
         # Receives the listar_siglas() method
         acronyms = self.camaraws.listar_siglas()
 
+        # Verifying if the acronyms of prepositions appear in listar_siglas() method
         self.assertTrue('PL' in acronyms)
         self.assertTrue('PEC' in acronyms)
         self.assertTrue('MPV' in acronyms)
