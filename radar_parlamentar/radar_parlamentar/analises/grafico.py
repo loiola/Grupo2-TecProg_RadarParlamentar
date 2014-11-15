@@ -181,7 +181,7 @@ class JsonAnaliseGenerator:
     def list_political_parties(self):
 
         list_political_parties = []
-        political_parties = self.temporal_analysis.casa_legislativa.parties(
+        political_parties = self.temporal_analysis.casa_legislativa.get_political_parties_from_legislative_house(
         ).select_related('nome', 'numero', 'cor')
 
         for partido in political_parties:
@@ -229,7 +229,7 @@ class JsonAnaliseGenerator:
         political_party_dictionary["parlamentares"] = []
 
 
-        legislatures = self.temporal_analysis.casa_legislativa.legislatures().filter(
+        legislatures = self.temporal_analysis.casa_legislativa.get_legislatures_from_legislative_house().filter(
             partido=partido).select_related('id', 'localidade', 'partido__nome', 'parlamentar__nome')
 
         for leg in legislatures:

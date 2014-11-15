@@ -48,7 +48,7 @@ class JsonAnaliseGeneratorTest(TestCase):
     def setUp(self):
 
         self.casa = models.CasaLegislativa.objects.get(nome_curto='conv')
-        for partido in JsonAnaliseGeneratorTest.importer.parties:
+        for partido in JsonAnaliseGeneratorTest.importer.get_political_parties_from_legislative_house:
             if partido.nome == conv.GIRONDINOS:
                 self.girondinos = partido
             if partido.nome == conv.JACOBINOS:
@@ -67,7 +67,7 @@ class JsonAnaliseGeneratorTest(TestCase):
         periodos = periodos_retriever.get_periods()
         ap1.casa_legislativa = None
         ap1.periodo = periodos[0]
-        ap1.parties = [self.girondinos, self.jacobinos, self.monarquistas]
+        ap1.get_political_parties_from_legislative_house = [self.girondinos, self.jacobinos, self.monarquistas]
         ap1.votacoes = []
         ap1.num_votacoes = 0
         ap1.tamanhos_partidos = {
@@ -166,7 +166,7 @@ class RaioPartidoCalculatorTest(TestCase):
         flush_db(cls)
 
     def setUp(self):
-        self.partidos = RaioPartidoCalculatorTest.importer.parties
+        self.partidos = RaioPartidoCalculatorTest.importer.get_political_parties_from_legislative_house
 
     def test_raio_partidos(self):
         periodo_str = '1o Semestre'

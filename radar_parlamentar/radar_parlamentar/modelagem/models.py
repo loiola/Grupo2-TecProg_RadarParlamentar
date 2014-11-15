@@ -109,13 +109,13 @@ class Partido(models.Model):
 
     LISTA_PARTIDOS = os.path.join(MODULE_DIR, 'recursos/partidos.txt')
 
-    # Partido name
+    # Political party's name
     nome = models.CharField(max_length=12)
 
-    # Partido number
+    # Political party's number
     numero = models.IntegerField()
 
-    # Partido color
+    # Political party's color
     cor = models.CharField(max_length=7)
 
     @classmethod
@@ -129,10 +129,10 @@ class Partido(models.Model):
         # Search first at database
         # Receives the object filter of party (in from_name method by name; in
         # from_number method, by number)
-        party = Partido.objects.filter(nome=nome)
+        political_party = Partido.objects.filter(nome=nome)
 
-        if party:
-            return party[0]
+        if political_party:
+            return political_party[0]
         else:
             # If is not on database, search in hardcoded file
             return cls._from_regex(1, nome.strip())
@@ -161,31 +161,31 @@ class Partido(models.Model):
         no_party_list = Partido.objects.filter(nome=SEM_PARTIDO)
 
         if not no_party_list:
-            partido = Partido()
-            partido.nome = SEM_PARTIDO
-            partido.numero = 0
-            partido.cor = COR_PRETA
-            partido.save()
+            political_party = Partido()
+            political_party.nome = SEM_PARTIDO
+            political_party.numero = 0
+            political_party.cor = COR_PRETA
+            political_party.save()
         else:
-            partido = no_party_list[0]
-        return partido
+            political_party = no_party_list[0]
+        return political_party
 
     @classmethod
     def _from_regex(cls, idx, key):
         PARTIDO_REGEX = '([a-zA-Z]*) *([0-9]{2}) *(#+[0-f]{6})'
 
-        # Receives list of partidos
-        party_list = open(cls.LISTA_PARTIDOS)
+        # Receives list of political parties
+        political_party_list = open(cls.LISTA_PARTIDOS)
 
-        for line in party_list:
+        for line in political_party_list:
             res = re.search(PARTIDO_REGEX, line)
             if res and res.group(idx) == key:
-                partido = Partido()
-                partido.nome = res.group(1)
-                partido.numero = int(res.group(2))
-                partido.cor = res.group(3)
-                partido.save()
-                return partido
+                political_party = Partido()
+                political_party.nome = res.group(1)
+                political_party.numero = int(res.group(2))
+                political_party.cor = res.group(3)
+                political_party.save()
+                return political_party
         return None
 
     def __unicode__(self):
@@ -223,24 +223,24 @@ class CasaLegislativa(models.Model):
     def __unicode__(self):
         return self.nome
 
-    def parties(self):
+    def get_political_parties_from_legislative_house(self):
 
-        #Returns the existing partidos this legislative house
+        #Returns the existing political parties this legislative house
         return Partido.objects.filter(
             legislatura__casa_legislativa=self).distinct()
 
-    def legislatures(self):
+    def get_legislatures_from_legislative_house(self):
 
         # Returns existing legislative legislaturas this house
         return Legislatura.objects.filter(casa_legislativa=self).distinct()
 
-    def voting_number(self, data_inicial=None, data_final=None):
+    def get_voting_number(self, data_inicial=None, data_final=None):
 
         # Returns the number of voting on a legislative house
         return Votacao.by_legislative_house(
             self, data_inicial, data_final).count()
 
-    def votes_number(self, data_inicio=None, data_fim=None):
+    def get_votes_number(self, data_inicio=None, data_fim=None):
 
         # Receives votes for legislative house, with start and end date
         votings = Votacao.by_legislative_house(self, data_inicio, data_fim)
