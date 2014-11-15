@@ -34,12 +34,14 @@ class CamaraWS_Test(unittest.TestCase):
 
     # First grade:
     vote = Votacao()
+
     for i in range(0,9):
       vote.deputados.append(deputy_vote_yes)
     votings.append(vote)
 
     # Second grade::
     vote = Votacao()
+
     for i in range(0,8):
       vote.deputados.append(deputy_vote_no)
     vote.deputados.append(depute_vote_abstention)
@@ -103,8 +105,10 @@ class CamaraWS_Test(unittest.TestCase):
 
     for e, v in zip(nv1, algebra.normalize_vector(vector_test1)):
       self.assertAlmostEqual(e, v, 5)
+
     for e, v in zip(nv2, algebra.normalize_vector(vector_test2)):
       self.assertAlmostEqual(e, v, 5)
+
     for e, v in zip(nv3, algebra.normalize_vector(vector_teste3)):
       self.assertAlmostEqual(e, v, 5)
 

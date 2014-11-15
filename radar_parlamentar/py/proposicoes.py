@@ -150,8 +150,10 @@ if __name__ == "__main__":
 
     print("# Documento entregue pela câmara continha %d proposições votadas em 2011" %
           len(propositions))
+
     print("# %d proposições retornaram informações sobre suas votações pelo web service" %
           len(voted))
+
     print("# Proposições que retornaram a votação:")
 
     for proposition in voted:
