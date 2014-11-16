@@ -362,11 +362,11 @@ class Analise:
                         eval(v[e]))/1000)%100==(ie+1))])
         return list_of_present_deputies
 
-    def write_principal_components_of_analysis(self, manipulated_file):
+    def write_principal_components_of_analysis(self, manipulated_file, desired_function):
 
         for e in range(0, 3)
-        manipulated_file.write('%f\n' % (self.principal_components_analysis_political_party.eigen[e]/
-                           self.principal_components_analysis_political_party.eigen.sum()))
+        manipulated_file.write('%f\n' % (self.desired_function.eigen[e]/
+                           self.desired_function.eigen.sum()))
 
     def inicialize_vectors_uf(self):
         """Analogous to 'inicialize_vectors'(self), but aggregated by states and not by political parties."""
@@ -521,7 +521,7 @@ class Analise:
         fo.write('Análise PCA - por search_political_party\n')
         fo.write('de %s a %s (ano-mês-dia)\n\n' % (self.inicial_date,self.final_date))
         fo.write('Fração da variância explicada pelas dimensões:\n')
-        write_principal_components_of_analysis(fo)
+        write_principal_components_of_analysis(fo, principal_components_analysis_political_party)
         fo.write('\nCoordenadas:\n')
 
         for party in coordinates.keys():
@@ -552,10 +552,8 @@ class Analise:
         fo.write('Análise PCA - por estado\n')
         fo.write('de %s a %s (ano-mês-dia)\n\n' % (self.inicial_date,self.final_date))
         fo.write('Fração da variância explicada pelas dimensões:\n')
-        fo.write('%f\n' % (self.principal_components_analysis_uf.eigen[0]/self.principal_components_analysis_uf.eigen.sum()))
-        fo.write('%f\n' % (self.principal_components_analysis_uf.eigen[1]/self.principal_components_analysis_uf.eigen.sum()))
-        fo.write('%f\n' % (self.principal_components_analysis_uf.eigen[2]/self.principal_components_analysis_uf.eigen.sum()))
-        fo.write('%f\n' % (self.principal_components_analysis_uf.eigen[3]/self.principal_components_analysis_uf.eigen.sum()))
+        write_principal_components_of_analysis(fo, principal_components_analysis_uf)
+    
         fo.write('\nCoordenadas:\n')
         for e in Analise.ufs_list:
             ie += 1
