@@ -1,4 +1,5 @@
-// Function responsible for plot the graph referent the number of men and women in each legislature in each year
+// Function responsible for plot the graph referent the number of men and women in each 
+//legislature in each year
 function desenhar(partido){
 	
 
@@ -23,7 +24,8 @@ function desenhar(partido){
 		    .rangeRound([height, 0]);
 
 		var color = d3.scale.ordinal()
-		    .range(["#850000", "#aaaaaa", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+		    .range(["#850000", "#aaaaaa", "#7b6888", "#6b486b", "#a05d56", "#d0743c", 
+				"#ff8c00"]);
 
         $("#loading").remove();
 		var xAxis = d3.svg.axis()
@@ -54,7 +56,8 @@ function desenhar(partido){
 	  for (key in legislaturas) {
 	    var y0 = 0;
 	    d = legislaturas[key];
-	    d.ages = color.domain().map(function(name) {return {name: name, y0: y0, y1: y0 += +d[name], dur: d["duracao"]}; });
+	    d.ages = color.domain().map(function(name) {return {
+			name: name, y0: y0, y1: y0 += +d[name], dur: d["duracao"]}; });
 	    d.ages.forEach(function(d) { d.y0 /= y0; d.y1 /= y0; });
 	    legislaturas[key].ages = d.ages;
 	    dados.push(d);
@@ -89,9 +92,12 @@ function desenhar(partido){
 		  feme = parseInt(d["F"]);
 		  porcenM = Math.round((masc / (masc + feme))*10000)/100;
 		  porcenF = Math.round((feme / (masc + feme))*10000)/100;
-	    r = "<strong>Legislatura:</strong> <span style='color:yellow'>"  + d["legis"] + "</span></br>";
-	    r += "<strong>Homens:</strong> <span style='color:yellow'>" + d["M"] + " ("+porcenM+"%)</span></br>";
-	    r += "<strong>Mulheres:</strong> <span style='color:yellow'>" + d["F"] + " ("+porcenF+"%)</span></br>";
+	    r = "<strong>Legislatura:</strong> <span style='color:yellow'>"  + 
+		d["legis"] + "</span></br>";
+	    r += "<strong>Homens:</strong> <span style='color:yellow'>" + 
+		d["M"] + " ("+porcenM+"%)</span></br>";
+	    r += "<strong>Mulheres:</strong> <span style='color:yellow'>" + 
+		d["F"] + " ("+porcenF+"%)</span></br>";
 	    return r;
 	  })
 
@@ -126,7 +132,8 @@ function desenhar(partido){
 	      .data(function(d) { return d.ages; })
 	    .enter().append("g")
 	      .attr("class", "legend")
-	      .attr("transform", function(d) { return "translate(" + x.range() / 2 + "," + y((d.y0 + d.y1) / 2) + ")"; });
+	      .attr("transform", function(d) { return "translate(" + x.range() / 2 + "," + 
+		y((d.y0 + d.y1) / 2) + ")"; });
 	
 	  legend.append("line")
 	      .attr("x2", 10);
@@ -142,7 +149,12 @@ function desenhar(partido){
 //Setting the politcal parties
 desenhar("PT");
 
-partidos = ['PCB', 'PSD', 'UDN', 'PP', 'PR', 'PTB', 'PRE', 'PRF', 'PST', 'UPF', 'AL', 'FUG', 'PSN', 'PSP', 'PRP', 'PTN', 'PDC', 'PNI', 'PL', 'PPR', 'ARENA', 'PTR', 'PSB', 'PRR', 'PSC', 'PRD', 'LASP', 'PRM', 'PRT', 'PPS', 'PSR', 'PS', 'PDS', 'MTR', 'MDB', 'PMDB', 'PSDB', 'PFL', 'PT', 'PTdoB', 'PDT', 'PJ', 'PCdoB', 'PC', 'PV', 'PRN', 'PPB', 'PSDC', 'PRONA', 'DEM', 'PSOL', 'PMN', 'PSL', 'PRS', 'PRB', 'PE', 'PRC', 'PRL', 'UDB', 'PLC', 'LEC', 'PD', 'ED', 'PRPa', 'PED', 'PNS', 'PPA', 'PNA', 'PSTU', 'PTC', 'PAN', 'PHS', 'PRTB'];
+partidos = ['PCB', 'PSD', 'UDN', 'PP', 'PR', 'PTB', 'PRE', 'PRF', 'PST', 'UPF', 'AL', 'FUG', 
+'PSN', 'PSP', 'PRP', 'PTN', 'PDC', 'PNI', 'PL', 'PPR', 'ARENA', 'PTR', 'PSB', 'PRR', 'PSC', 
+'PRD', 'LASP', 'PRM', 'PRT', 'PPS', 'PSR', 'PS', 'PDS', 'MTR', 'MDB', 'PMDB', 'PSDB', 'PFL', 
+'PT', 'PTdoB', 'PDT', 'PJ', 'PCdoB', 'PC', 'PV', 'PRN', 'PPB', 'PSDC', 'PRONA', 'DEM', 'PSOL', 
+'PMN', 'PSL', 'PRS', 'PRB', 'PE', 'PRC', 'PRL', 'UDB', 'PLC', 'LEC', 'PD', 'ED', 'PRPa', 'PED', 
+'PNS', 'PPA', 'PNA', 'PSTU', 'PTC', 'PAN', 'PHS', 'PRTB'];
 
 $('.typeahead').typeahead({
 	name: 'partidos',

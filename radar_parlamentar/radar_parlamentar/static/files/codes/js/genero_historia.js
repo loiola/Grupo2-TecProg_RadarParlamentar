@@ -20,7 +20,8 @@ d3.csv("/static/files/codes/js/genero_historia_base.csv", function(error, data) 
 	    .rangeRound([height, 0]);
 
 	var color = d3.scale.ordinal()
-	    .range(["#850000", "#aaaaaa", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+	    .range(["#850000", "#aaaaaa", "#7b6888", "#6b486b", "#a05d56", "#d0743c", 
+			"#ff8c00"]);
 
     $("#loading").remove();
     
@@ -51,7 +52,8 @@ d3.csv("/static/files/codes/js/genero_historia_base.csv", function(error, data) 
 
   data.forEach(function(d) {
     var y0 = 0;
-    d.ages = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name], dur: d["Duracao"]}; });
+    d.ages = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name], 
+		dur: d["Duracao"]}; });
     d.ages.forEach(function(d) { d.y0 /= y0; d.y1 /= y0; });
   });
 
@@ -80,13 +82,16 @@ var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function(d) {
-	  masc = parseInt(d.Masculino);
-	  feme = parseInt(d.Feminino);
-	  porcenM = Math.round((masc / (masc + feme))*10000)/100;
-	  porcenF = Math.round((feme / (masc + feme))*10000)/100;
-    r = "<strong>Legislatura:</strong> <span style='color:yellow'>"  + d.Legislatura + "</span></br>";
-    r += "<strong>Homens:</strong> <span style='color:yellow'>" + d.Masculino + " ("+porcenM+"%)</span></br>";
-    r += "<strong>Mulheres:</strong> <span style='color:yellow'>" + d.Feminino + " ("+porcenF+"%)</span></br>";
+	  masculine = parseInt(d.Masculino);
+	  feminine = parseInt(d.Feminino);
+	  porcenM = Math.round((masculine / (masculine + feminine))*10000)/100;
+	  porcenF = Math.round((feminine / (masculine + feminine))*10000)/100;
+    r = "<strong>Legislatura:</strong> <span style='color:yellow'>"  + d.Legislatura + 
+	"</span></br>";
+    r += "<strong>Homens:</strong> <span style='color:yellow'>" + d.Masculino + 
+	" ("+porcenM+"%)</span></br>";
+    r += "<strong>Mulheres:</strong> <span style='color:yellow'>" + d.Feminino + 
+	" ("+porcenF+"%)</span></br>";
     return r;
   })
 

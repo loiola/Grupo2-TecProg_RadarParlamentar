@@ -30,7 +30,8 @@ var svg = d3.select("#animacao").append("svg")
 
   // Computes each node in index
   termos.forEach(function(termo, i) {
-	    matrix[i] = d3.range(n_partidos).map(function(j) { return {x: j, y: i, z: 0}; });
+	    matrix[i] = d3.range(n_partidos).map(function(j) { return {
+			x: j, y: i, z: 0}; });
   });
 
   // Stacks political parties names
@@ -72,7 +73,8 @@ var svg = d3.select("#animacao").append("svg")
       .data(partidos)
     .enter().append("g")
       .attr("class", "column")
-      .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
+      .attr("transform", function(d, i) { return "translate(" + x(i) + 
+		")rotate(-90)"; });
 
   column.append("line")
       .attr("x1", -width);
@@ -99,8 +101,10 @@ var svg = d3.select("#animacao").append("svg")
   }
 
   function mouseover(p) {
-    d3.selectAll(".row text").classed("active", function(d, i) { return i == p.y; });
-    d3.selectAll(".column text").classed("active", function(d, i) { return i == p.x; });
+    d3.selectAll(".row text").classed("active", function(d, i) { 
+	return i == p.y; });
+    d3.selectAll(".column text").classed("active", function(d, i) { 
+	return i == p.x; });
   }
 
   function mouseout() {

@@ -223,13 +223,15 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
                         //if mail.php/mini-mail.php returned 1/true (send mail success)
                         if(html == 1){
                             $('.success', form.parent()).fadeTo('slow', 1);
-                            setTimeout(function(){$('.success', form.parent()).fadeTo('slow', 0, function(){hideAll();
+                            setTimeout(function(){$('.success', form.parent()).fadeTo('slow', 0, 
+					function(){hideAll();
                                 });disable(false);}, 6000);
                         //if mail.php/mini-mail.php returned 0/false (send mail failed)
                         }
                         else{
                             $('.error', form.parent()).fadeTo('slow', 1);
-                            setTimeout(function(){$('.error', form.parent()).fadeTo('slow', 0, function(){hideAll();});
+                            setTimeout(function(){$('.error', form.parent()).fadeTo('slow', 0, 
+					function(){hideAll();});
                                 disable(false);}, 6000);
                         }
                     }
@@ -279,12 +281,14 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
                     .end()
                     .filter('.url')
                     .blur(function(){
-                        if((this.value == '' || /^\s+$/.test(this.value)) && jQuery(this).hasClass('optional')){
+                        if((this.value == '' || /^\s+$/.test(this.value)) && 
+				jQuery(this).hasClass('optional')){
                             jQuery(this).val('');
                             opts.canError(jQuery(this));
                             return;
                         }
-                        else if(this.value == '' || !/^(http|https):\/\/.+\.\w{2,4}$/.test(this.value)){
+                        else if(this.value == '' || 
+				!/^(http|https):\/\/.+\.\w{2,4}$/.test(this.value)){
                             opts.genError(jQuery(this), opts.urlMsg);
                         }
                         else{
@@ -370,7 +374,8 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
         var opts = $.extend(defaults, options);
 
             var o = $(this);
-            var btns = $('<a href="#" class="prevSBtn inactive">Previous</a> <a href="#" class="nextSBtn">Next</a>');
+            var btns = $(
+		'<a href="#" class="prevSBtn inactive">Previous</a> <a href="#" class="nextSBtn">Next</a>');
 
             o.append(btns);
 
@@ -471,11 +476,11 @@ jQuery.extend(jQuery.easing,{def: 'easeOutQuad',swing: function(x,t,b,c,d){retur
         return this.each(function(){
 
             //replacing defaults with user provided options through jQuery.extend method
-            var opts = $.extend(defaults, options);
+            var options = $.extend(defaults, options);
             //retrieving active tabs id
             //hiding all but active tabs content
-            var val = $('#'+ opts.tabs).find('.' + opts.active +' a').attr('href');
-            $('>li', '#'+ opts.content).fadeOut().filter(val).fadeIn(opts.speed);
+            var values = $('#'+ options.tabs).find('.' + options.active +' a').attr('href');
+            $('>li', '#'+ options.content).fadeOut().filter(values).fadeIn(options.speed);
 
             var $obj = $(this);
             //Checking this is the vary same tab which is already active/showing
@@ -797,7 +802,8 @@ return this}})(window,jQuery);
 
     /*
     *   prettyPhoto startup function declarations using 'prettyPhoto.js' jquery plugin
-    *   These short codes'll add a little dark effect on hover and also an appropriate icon for that particular content.
+    *   These short codes'll add a little dark effect on hover and also an appropriate icon 
+    *   for that particular content.
     *   You don't need to do anything here, just leave it as it is.
     */
     $(document).ready(function(){
