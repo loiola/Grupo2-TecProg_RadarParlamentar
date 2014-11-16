@@ -4,6 +4,7 @@ from south.v2 import SchemaMigration
 
 
 class Migration(SchemaMigration):
+    """Model the data migration to schema of database"""
 
     def forwards(self, orm):
 
@@ -18,7 +19,9 @@ class Migration(SchemaMigration):
             'django.db.models.fields.CharField')(max_length=12))
 
     models = {
+
         'modelagem.casalegislativa': {
+
             'Meta': {'object_name': 'CasaLegislativa'},
             'atualizacao': ('django.db.models.fields.DateField', [],
              {'null': 'True', 'blank': 'True'}),
@@ -33,7 +36,9 @@ class Migration(SchemaMigration):
             'short_name': ('django.db.models.fields.CharField', [],
                            {'unique': 'True', 'max_length': '50'})
         },
+
         'modelagem.indexadores': {
+
             'Meta': {'object_name': 'Indexers'},
             'id': ('django.db.models.fields.AutoField', [],
                    {'primary_key': 'True'}),
@@ -42,7 +47,9 @@ class Migration(SchemaMigration):
             'termo': ('django.db.models.fields.CharField', [],
                       {'max_length': '120'})
         },
+
         'modelagem.legislatura': {
+
             'Meta': {'object_name': 'Legislatura'},
             'casa_legislativa': (
                 'django.db.models.fields.related.ForeignKey',
@@ -60,7 +67,9 @@ class Migration(SchemaMigration):
             'search_political_party': ('django.db.models.fields.related.ForeignKey', [],
                 {'to': "orm['modelagem.Partido']"})
         },
+
         'modelagem.parlamentar': {
+
             'Meta': {'object_name': 'Parlamentar'},
             'genero': ('django.db.models.fields.CharField', [],
                        {'max_length': '10', 'blank': 'True'}),
@@ -71,7 +80,9 @@ class Migration(SchemaMigration):
             'nome': ('django.db.models.fields.CharField', [],
                      {'max_length': '100'})
         },
+
         'modelagem.search_political_party': {
+
             'Meta': {'object_name': 'Partido'},
             'cor': ('django.db.models.fields.CharField', [],
                     {'max_length': '7'}),
@@ -81,7 +92,9 @@ class Migration(SchemaMigration):
                      {'max_length': '13'}),
             'numero': ('django.db.models.fields.IntegerField', [], {})
         },
+
         'modelagem.proposicao': {
+
             'Meta': {'object_name': 'Proposicao'},
             'ano': ('django.db.models.fields.CharField', [],
                     {'max_length': '4'}),
@@ -114,7 +127,9 @@ class Migration(SchemaMigration):
             'situacao': ('django.db.models.fields.TextField', [],
                          {'blank': 'True'})
         },
+
         'modelagem.votacao': {
+
             'Meta': {'object_name': 'Votacao'},
             'data': ('django.db.models.fields.DateField', [],
                      {'null': 'True', 'blank': 'True'}),
@@ -130,7 +145,9 @@ class Migration(SchemaMigration):
             'resultado': ('django.db.models.fields.TextField', [],
                           {'blank': 'True'})
         },
+
         'modelagem.voto': {
+
             'Meta': {'object_name': 'Voto'},
             'id': ('django.db.models.fields.AutoField', [],
                    {'primary_key': 'True'}),
