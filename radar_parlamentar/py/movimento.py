@@ -89,7 +89,8 @@ def movement_amount(i,graus=0,espelho=0):
 
     if espelho:
         before = numpy.dot( before,numpy.array( [[-1.,0.],[0.,1.]] ) )
-    if degrees != 0:
+
+    elif degrees != 0:
         before = numpy.dot( before,matrot(degrees) )
 
     # j: temporary variable of the quantidade_movimento() method loop
@@ -140,6 +141,7 @@ for index in range(len(years)-2,-1,-1):
 
     # Mirror, degrees:
     champion = (0,0)
+
     for espelhar in [0,1]:
         for degrees in [0,45,90,135,180,225,270,315]:
             current_moviment_amount = quantidade_movimento(index,degrees,espelhar)
@@ -148,6 +150,7 @@ for index in range(len(years)-2,-1,-1):
             if current_moviment_amount < minimum_quantity_amount:
                 champion = (espelhar, degrees)
                 minimum_quantity_amount = current_moviment_amount
+
     print champion
 
     if champion[0] == 1:
@@ -194,7 +197,8 @@ for annual_index in range(len(annual_list)):
     date_day = int(annual.data_final[8:10])
 
     for party_index in range(len(parties)):
-        line = "  ['%s',new Date(%d,%d,%d), %f,%f,%d],\n" % (parties[party_index],date_year,date_month,date_day,
+        line = "  ['%s',new Date(%d,%d,%d), %f,%f,%d],\n" % (parties[party_index],date_year,
+                                                             date_month,date_day,
                                                               data[annual_index][party_index,0],
                                                               data[annual_index][party_index,1],
                                                               annual.tamanho_partido[party_index])
@@ -207,6 +211,7 @@ open_file.write("""
       var motionchart = new google.visualization.MotionChart(
           document.getElementById('visualization'));
 
+
       var options = {};
       options['state'] = '{"yAxisOption":"3","xLambda":1,"colorOption":"_UNIQUE_COLOR",
       "playDuration":40000,"showTrails":false,"iconKeySettings":[],"xAxisOption":"2",
@@ -218,12 +223,14 @@ open_file.write("""
       options['width'] = 800;
       options['height'] = 500;
 
+
       motionchart.draw(data, options);
 
     }
 
     google.setOnLoadCallback(drawVisualization);
   </script>
+
 
 <div id="visualization" style="width: 800px; height: 400px;"></div> """)
 
