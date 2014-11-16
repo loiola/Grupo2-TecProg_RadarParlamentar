@@ -42,13 +42,16 @@ class MandatoLists:
 
     def _get_mandates(self, ini_date, end_date, ano_inicio_de_algum_mandato):
 
+        mandate_duration_in_years = 4
+        a_lot_of_years = 500
+
         # Receives a reference year sufficiently in the past
         past_reference_year = ano_inicio_de_algum_mandato - \
-            4 * 500
+            mandate_duration_in_years * a_lot_of_years
 
         # Receives the absolute value of the subtraction of the ini_date.year by
         # ANO_DE_REFERENCIA
-        lag = (abs(past_reference_year - ini_date.year)) % 4
+        lag = (abs(past_reference_year - ini_date.year)) % mandate_duration_in_years
 
         # Receives the value of the subtraction of delay by ini_date.year
         y = ini_date.year - lag
@@ -59,7 +62,7 @@ class MandatoLists:
         while y <= end_date.year:
             date_ini_mandato = datetime.date(y, 1, 1)
             mandates_list.append(date_ini_mandato)
-            y += 4
+            y += mandate_duration_in_years
         return mandates_list
 
 
@@ -173,6 +176,9 @@ class PeriodosRetriever:
         # Default is 1
         initial_day = 1
 
+        month_one = 1
+        month_seven = 7
+
         # Month
         if self.periodicidade == MES:
 
@@ -180,18 +186,18 @@ class PeriodosRetriever:
             initial_month = self.data_da_primeira_votacao.month
 
         elif self.periodicidade in [ANO, BIENIO, QUADRIENIO]:
-            initial_month = 1
+            initial_month = month_one
         elif self.periodicidade == SEMESTRE:
 
             # Receives a date (the year of the date of the first vote with the first
             # day of the month 7)
             july_day_one = datetime.date(
-                self.data_da_primeira_votacao.year, 7, 1)
+                self.data_da_primeira_votacao.year, month_seven, month_one)
 
             if (self.data_da_primeira_votacao < july_day_one):
-                initial_month = 1
+                initial_month = month_one
             else:
-                initial_month = 7
+                initial_month = month_seven
 
         # receives mandadoLists() method, which lists the mandates
         mandates_lists = MandatoLists()
@@ -220,35 +226,42 @@ class PeriodosRetriever:
         # Day
         initial_day = 1
 
+        month_one = 1
+        month_seven = 7
+        january_month = 13
+        year_complete_in_months = 12
+        two_months = 2
+        four_months = 4
+
         # Month
         if self.periodicidade == MES:
-            initial_month = data_inicio_periodo.month + 1
-            if initial_month == 13:
-                initial_month = 1
+            initial_month = data_inicio_periodo.month + month_one
+            if initial_month == january_month:
+                initial_month = month_one
         elif self.periodicidade in [ANO, BIENIO, QUADRIENIO]:
-            initial_month = 1
+            initial_month = month_one
         elif self.periodicidade == SEMESTRE:
-            if data_inicio_periodo.month == 1:
-                initial_month = 7
-            elif data_inicio_periodo.month == 7:
-                initial_month = 1
+            if data_inicio_periodo.month == month_one:
+                initial_month = month_seven
+            elif data_inicio_periodo.month == month_seven:
+                initial_month = month_one
         # Year
         if self.periodicidade == MES:
-            if data_inicio_periodo.month < 12:
+            if data_inicio_periodo.month < year_complete_in_months:
                 initial_year = data_inicio_periodo.year
             else:
-                initial_year = data_inicio_periodo.year + 1
+                initial_year = data_inicio_periodo.year + month_one
         elif self.periodicidade == SEMESTRE:
-            if data_inicio_periodo.month < 7:
+            if data_inicio_periodo.month < month_seven:
                 initial_year = data_inicio_periodo.year
             else:
-                initial_year = data_inicio_periodo.year + 1
+                initial_year = data_inicio_periodo.year + month_one
         elif self.periodicidade == ANO:
-            initial_year = data_inicio_periodo.year + 1
+            initial_year = data_inicio_periodo.year + month_one
         elif self.periodicidade == BIENIO:
-            initial_year = data_inicio_periodo.year + 2
+            initial_year = data_inicio_periodo.year + two_months
         elif self.periodicidade == QUADRIENIO:
-            initial_year = data_inicio_periodo.year + 4
+            initial_year = data_inicio_periodo.year + four_months
 
         # Receives the date of the next period with initial_year the initial_month and
         # initial_day
