@@ -55,7 +55,7 @@ def main():
     importer = ImportadorConvencao()
     importer.import_data()
 
-
+    return None
 
 class ImportadorConvencao:
 
@@ -69,6 +69,7 @@ class ImportadorConvencao:
         conv.local = 'Paris (FR)'
         conv.update = LAST_REFRESH
         conv.save_data_in_file()
+
         return conv
 
     # Get instance the new party:
@@ -90,6 +91,8 @@ class ImportadorConvencao:
         monarquistas.color = '#800080'
         monarquistas.save_data_in_file()
         self.political_parties = {girondinos, jacobinos, monarquistas}
+
+        return None
 
 
     # Get instance the new legislature:
@@ -115,6 +118,8 @@ class ImportadorConvencao:
                 leg.save_data_in_file()
                 self.legislatures[p.nome].append(leg)
 
+        return None
+
 
     # Get instance the new proposition:
     def get_instance_new_proposition(self, number, descripcion):
@@ -127,6 +132,7 @@ class ImportadorConvencao:
         proposition.descricao = descripcion
         proposition.casa_legislativa = self.casa
         proposition.save_data_in_file()
+
         return proposition
 
 
@@ -139,6 +145,7 @@ class ImportadorConvencao:
         voting.date = data
         voting.proposition = proposition
         voting.save_data_in_file()
+
         return voting
 
 
@@ -153,6 +160,8 @@ class ImportadorConvencao:
             vote.voting = votation
             vote.save_data_in_file()
 
+        return None
+
 
     # Get instance the new voting:
     def get_instance_girondine_votes(self, votacao):
@@ -160,15 +169,23 @@ class ImportadorConvencao:
         votes_girondinos = [models.SIM, models.ABSTENCAO, models.NAO]
         self.get_instance_new_vote(votacao, GIRONDINES, votes_girondinos)
 
+        return None
+
     def get_instance_jaconbine_votes(self, votacao):
 
         votes_jacobinos = [models.SIM, models.SIM, models.SIM]
         self.get_instance_new_vote(votacao, JACOBINES, votes_jacobinos)
 
+        return None
+
+
     def get_instance_monarquist_votes(self, votacao):
 
         votes_monarquistas = [models.NAO, models.NAO, models.NAO]
         self.get_instance_new_vote(votacao, MONARQUIST, votes_monarquistas)
+
+        return None
+
 
     def create_new_voting_1(self):
 
@@ -184,6 +201,8 @@ class ImportadorConvencao:
 
         self.get_instance_monarquist_votes(voting)
 
+        return None
+
 
     # Get instance the new voting:
     def get_instance_girondine_votes2(self, votacao):
@@ -191,15 +210,21 @@ class ImportadorConvencao:
         votes_girondinos = [models.NAO, models.NAO, models.NAO]
         self.get_instance_new_vote(votacao, GIRONDINES, votes_girondinos)
 
+        return None
+
     def get_instance_jaconbine_votes2(self, votacao):
 
         votes_jacobinos = [models.NAO, models.NAO, models.NAO]
         self.get_instance_new_vote(votacao, JACOBINES, votes_jacobinos)
 
+        return None
+
     def get_instance_monarquist_votes2(self, votacao):
 
         votes_monarquistas = [models.SIM, models.SIM, models.SIM]
         self.get_instance_new_vote(votacao, MONARQUIST, votes_monarquistas)
+
+        return None
 
     def create_new_voting2(self):
 
@@ -215,12 +240,16 @@ class ImportadorConvencao:
 
         self.get_instance_monarquist_votes2(voting)
 
+        return None
+
 
     # Get instance the new voting:
     def get_instance_girondine_votes3(self, votacao):
 
         votes_girondinos = [models.NAO, models.NAO, models.SIM]
         self.get_instance_new_vote(votacao, GIRONDINES, votes_girondinos)
+
+        return None
 
     def _new_votation3(self):
 
@@ -236,6 +265,8 @@ class ImportadorConvencao:
 
         self.get_instance_monarquist_votes2(voting)
 
+        return None
+
 
     # Get instance the new voting:
     def get_instance_girondine_votes4(self, votacao):
@@ -243,15 +274,21 @@ class ImportadorConvencao:
         votos_girondinos = [models.SIM, models.SIM, models.SIM]
         self.get_instance_new_vote(votacao, GIRONDINES, votos_girondinos)
 
+        return None
+
     def get_instance_jaconbine_votes4(self, votacao):
 
         votos_jacobinos = [models.SIM, models.ABSTENCAO, models.NAO]
         self.get_instance_new_vote(votacao, JACOBINES, votos_jacobinos)
 
+        return None
+
     def get_instance_monarquist_votes4(self, votacao):
 
         votos_monarquistas = [models.SIM, models.NAO, models.AUSENTE]
         self.get_instance_new_vote(votacao, MONARQUIST, votos_monarquistas)
+
+        return None
 
     def _new_votation4(self):
 
@@ -267,12 +304,16 @@ class ImportadorConvencao:
 
         self.get_instance_monarquist_votes4(voting)
 
+        return None
+
 
     # Get instance the new voting:
     def get_instance_girondine_votes5(self, votacao):
 
         votes_girondinos = [models.SIM, models.SIM, models.ABSTENCAO]
         self.get_instance_new_vote(votacao, GIRONDINES, votes_girondinos)
+
+        return None
 
     def create_new_voting5(self):
 
@@ -288,12 +329,16 @@ class ImportadorConvencao:
 
         self.get_instance_monarquist_votes(voting)
 
+        return None
+
 
     # Get instance the new voting:
     def get_instance_monarquist_votes6(self, votacao):
 
         votes_monarquistas = [models.AUSENTE, models.SIM, models.SIM]
         self.get_instance_new_vote(votacao, MONARQUIST, votes_monarquistas)
+
+        return None
 
     def create_new_voting6(self):
 
@@ -309,12 +354,16 @@ class ImportadorConvencao:
 
         self.get_instance_monarquist_votes6(voting)
 
+        return None
+
 
     # Get instance the new voting:
     def get_instance_monarquist_votes7(self, votacao):
 
         votes_monarquistas = [models.SIM, models.AUSENTE, models.SIM]
         self.get_instance_new_vote(votacao, MONARQUIST, votes_monarquistas)
+
+        return None
 
     def create_new_votation7(self):
 
@@ -330,12 +379,16 @@ class ImportadorConvencao:
 
         self.get_instance_monarquist_votes7(voting)
 
+        return None
+
 
     # Voting with different attributes for test:
     def get_instance_jacobine_votes8(self, votacao):
 
         votes_jacobinos = [models.ABSTENCAO, models.NAO, models.NAO]
         self.get_instance_new_vote(votacao, JACOBINES, votes_jacobinos)
+
+        return None
 
     def create_new_votation8(self):
 
@@ -359,6 +412,8 @@ class ImportadorConvencao:
 
         self.get_instance_monarquist_votes7(voting)
 
+        return None
+
     def import_data(self):
 
         self.casa = self.create_new_legislative_house()
@@ -373,3 +428,5 @@ class ImportadorConvencao:
         self.create_new_votation7()
         self.create_new_votation8()
         self.get_instance_new_proposition('9', 'Legalizacao da maconha')
+
+        return None
