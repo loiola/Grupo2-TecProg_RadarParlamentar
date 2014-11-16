@@ -138,8 +138,8 @@ class AnalisadorPeriodo:
         self.periodo = periodo
         self.ini = periodo.ini if periodo is not None else None
         self.fim = periodo.fim if periodo is not None else None
-        self.partidos = self.casa_legislativa.parties()
-        self.legislaturas = self.casa_legislativa.legislatures()
+        self.partidos = self.casa_legislativa.get_political_parties_from_legislative_house()
+        self.legislaturas = self.casa_legislativa.get_legislatures_from_legislative_house()
         self.votacoes = votacoes
         self.palavras_chave = palavras_chave
         if not self.votacoes:

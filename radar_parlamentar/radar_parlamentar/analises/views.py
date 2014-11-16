@@ -54,7 +54,7 @@ def analise(request, nome_curto_casa_legislativa):
     except:
         keywords = ""
 
-    vote_number = casa_legislativa.voting_number()
+    vote_number = casa_legislativa.get_voting_number()
 
     return render_to_response(
         'analise.html',

@@ -203,15 +203,17 @@ class Analise:
     # Print key information class 'analise'. Used to give 'print' of object 'ANA':
     def __str__(self):
         feedback = ''
-        feedback = feedback + 'Data inicial da análise : ' + self.inicial_date + '\n'
-        feedback = feedback + 'Data final da análise: ' + self.final_date + '\n'
-        feedback = feedback + 'Total de Votações analisadas: ' + str(self.number_of_votings) + '\n'
-        feedback = feedback + 'Tipos de matérias analisadas: ' + '\n'
+        feedback = feedback + 'Data inicial da análise : ' + self.inicial_date + '\n' + 
+        'Data final da análise: ' + self.final_date + '\n' + 
+        'Total de Votações analisadas: ' + str(self.number_of_votings) + '\n' + 
+        'Tipos de matérias analisadas: ' + '\n'
+
         for tipo in self.propositions_type:
-            feedback = feedback + '    ' + tipo + '\n'
-        feedback = feedback + 'Partidos analisados: ' + '\n'
+            feedback = feedback + '    ' + tipo + '\n' + 'Partidos analisados: ' + '\n'
+     
         for partido in self.political_parties:
             feedback = feedback + '    ' + partido.nome + '\n'
+
         return feedback
 
     def search_votings(self):
@@ -360,6 +362,12 @@ class Analise:
                         eval(v[e]))/1000)%100==(ie+1))])
         return list_of_present_deputies
 
+    def write_principal_components_of_analysis(self, manipulated_file, desired_function):
+
+        for e in range(0, 3)
+        manipulated_file.write('%f\n' % (self.desired_function.eigen[e]/
+                           self.desired_function.eigen.sum()))
+
     def inicialize_vectors_uf(self):
         """Analogous to 'inicialize_vectors'(self), but aggregated by states and not by political parties."""
 
@@ -367,7 +375,7 @@ class Analise:
         votings = self.search_votings()
 
         self.vectors_votings_uf = numpy.zeros((len(Analise.ufs_list),self.number_of_votings))
-        self.vectors_size_uf = numpy.zeros((len(Analise.ufs_list),self.number_of_votings))
+        self.vectors_size_uf = self.vectors_votings_uf
         self.size_uf = [0]*len(Analise.ufs_list)
         ie =-1
         for e in Analise.ufs_list:
@@ -495,7 +503,7 @@ class Analise:
 
     def do_coordinates_2d_of_political_parties(self,file=''):
         """Returns array with the coordinates of the political parties in the 2d plane formed by the two
-        first principal components.
+        first principal componentonents.
 
         If passed as argument the name (not empty) of a file, the result of PCA
         is written to this file, otherwise it is written to stdout."""
@@ -513,14 +521,7 @@ class Analise:
         fo.write('Análise PCA - por search_political_party\n')
         fo.write('de %s a %s (ano-mês-dia)\n\n' % (self.inicial_date,self.final_date))
         fo.write('Fração da variância explicada pelas dimensões:\n')
-        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[0]/
-                           self.principal_components_analysis_political_party.eigen.sum()))
-        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[1]/
-                           self.principal_components_analysis_political_party.eigen.sum()))
-        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[2]/
-                           self.principal_components_analysis_political_party.eigen.sum()))
-        fo.write('%f\n' % (self.principal_components_analysis_political_party.eigen[3]/
-                           self.principal_components_analysis_political_party.eigen.sum()))
+        write_principal_components_of_analysis(fo, principal_components_analysis_political_party)
         fo.write('\nCoordenadas:\n')
 
         for party in coordinates.keys():
@@ -551,10 +552,8 @@ class Analise:
         fo.write('Análise PCA - por estado\n')
         fo.write('de %s a %s (ano-mês-dia)\n\n' % (self.inicial_date,self.final_date))
         fo.write('Fração da variância explicada pelas dimensões:\n')
-        fo.write('%f\n' % (self.principal_components_analysis_uf.eigen[0]/self.principal_components_analysis_uf.eigen.sum()))
-        fo.write('%f\n' % (self.principal_components_analysis_uf.eigen[1]/self.principal_components_analysis_uf.eigen.sum()))
-        fo.write('%f\n' % (self.principal_components_analysis_uf.eigen[2]/self.principal_components_analysis_uf.eigen.sum()))
-        fo.write('%f\n' % (self.principal_components_analysis_uf.eigen[3]/self.principal_components_analysis_uf.eigen.sum()))
+        write_principal_components_of_analysis(fo, principal_components_analysis_uf)
+    
         fo.write('\nCoordenadas:\n')
         for e in Analise.ufs_list:
             ie += 1

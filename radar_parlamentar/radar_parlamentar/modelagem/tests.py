@@ -319,7 +319,7 @@ class ModelsTest(TestCase):
         conv_legislative_house = models.CasaLegislativa.objects.get(nome_curto='conv')
 
         # Receives the partidos of conv legislative house
-        partidos = conv_legislative_house.parties()
+        partidos = conv_legislative_house.get_political_parties_from_legislative_house()
 
         self.assertEquals(len(partidos), 3)
 

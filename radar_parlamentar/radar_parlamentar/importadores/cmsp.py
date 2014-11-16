@@ -259,8 +259,8 @@ class XmlCMSP:
                     # register it on dictionary
                     else:
                         proposition = models.Proposicao()
-                        proposition.sigla, proposition.numero, proposition.ano = self.extract_year_from_num_and_year(
-                            proposition_name)
+                        proposition.sigla, proposition.numero, proposition.ano = 
+                            self.extract_year_from_num_and_year(proposition_name)
                         proposition.casa_legislativa = self.cmsp
                         propositions[proposition_name] = proposition
 

@@ -43,7 +43,7 @@ class AnalisadorPeriodoTest(TestCase):
     def setUp(self):
         self.casa_legislativa = models.CasaLegislativa.objects.get(
             nome_curto='conv')
-        self.partidos = AnalisadorPeriodoTest.importer.parties
+        self.partidos = AnalisadorPeriodoTest.importer.get_political_parties_from_legislative_house
         self.votacoes = models.Votacao.objects.filter(
             proposicao__casa_legislativa__nome_curto='conv')
         self.legislaturas = models.Legislatura.objects.filter(
@@ -78,7 +78,7 @@ class AnalisadorPeriodoTest(TestCase):
         analise_periodo = analisador.analisa()
         tamanhos = analise_periodo.tamanhos_partidos
         tamanho_esperado = conv.PARLAMENTARES_POR_PARTIDO
-        partidos = AnalisadorPeriodoTest.importer.parties
+        partidos = AnalisadorPeriodoTest.importer.get_political_parties_from_legislative_house
         self.assertEquals(3, len(partidos))
         for p in partidos:
             self.assertEqual(tamanhos[p], tamanho_esperado)
@@ -99,7 +99,7 @@ class MatrizesDeDadosBuilderTest(TestCase):
     def setUp(self):
         self.casa_legislativa = models.CasaLegislativa.objects.get(
             nome_curto='conv')
-        self.partidos = MatrizesDeDadosBuilderTest.importer.parties
+        self.partidos = MatrizesDeDadosBuilderTest.importer.get_political_parties_from_legislative_house
         self.votacoes = models.Votacao.objects.filter(
             proposicao__casa_legislativa__nome_curto='conv')
         self.legislaturas = models.Legislatura.objects.filter(
@@ -167,7 +167,7 @@ class AnalisadorTemporalTest(TestCase):
     def setUp(self):
         self.casa_legislativa = models.CasaLegislativa.objects.get(
             nome_curto='conv')
-        self.partidos = AnalisadorTemporalTest.importer.parties
+        self.partidos = AnalisadorTemporalTest.importer.get_political_parties_from_legislative_house
         self.votacoes = models.Votacao.objects.filter(
             proposicao__casa_legislativa__nome_curto='conv')
         self.legislaturas = models.Legislatura.objects.filter(
