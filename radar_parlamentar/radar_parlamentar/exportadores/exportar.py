@@ -49,7 +49,8 @@ def serialize_partido():
     filepath = os.path.join(MODULE_DIR, 'dados/search_political_party.xml')
     
     """receives a reference to the objects of the type file concerning xmls 
-    (casa_legislativa.xml, legislatura.xml, proposicao.xml, votacao.xml e voto.xml)"""
+    (casa_legislativa.xml, legislatura.xml, proposicao.xml, votacao.xml e
+    voto.xml)"""
     out = open(filepath, "w")
     xml_serializer.serialize(models.Partido.objects.all(), stream=out)
 

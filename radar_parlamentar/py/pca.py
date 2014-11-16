@@ -68,7 +68,10 @@ class PCA:
         assert 0 <= fraction <= 1
             # A = U . diag(d) . Vt, O( m n^2 ), lapack_lite --
         self.U, self.d, self.Vt = np.linalg.svd( A, full_matrices=False )
-        assert np.all( self.d[:-1] >= self.d[1:] )  # sorted
+
+        # Sorted
+        assert np.all( self.d[:-1] >= self.d[1:] )
+
         self.eigen = self.d**2
         self.sumvariance = np.cumsum(self.eigen)
         self.sumvariance /= self.sumvariance[-1]
@@ -115,12 +118,17 @@ class PCA:
 class Center:
     """A -= A.mean() /= A.std(), inplace -- use A.copy() if need be
         uncenter(x) == original A . x"""
+
         # Mttiw:
     def __init__( self, A, axis=0, scale=True, verbose=1 ):
+        """Initializing variables"""
+
         self.mean = A.mean(axis=axis)
+
         if verbose:
             print "Center -= A.mean:", self.mean
         A -= self.mean
+
         if scale:
             std = A.std(axis=axis)
             self.std = np.where( std, std, 1. )
@@ -146,9 +154,11 @@ if __name__ == "__main__":
     K = 20
     fraction = .90
     seed = 1
+
     exec "\n".join( sys.argv[1:] )  # N= ...
     np.random.seed(seed)
     np.set_printoptions( 1, threshold=100, suppress=True )  # .1f
+
     try:
         A = np.genfromtxt( csv, delimiter="," )
         N, K = A.shape

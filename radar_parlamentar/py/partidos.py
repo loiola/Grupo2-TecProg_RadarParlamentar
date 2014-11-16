@@ -96,7 +96,9 @@ def similarity(partido1, partido2, proposicoes):
     # Receives similarity between vectors 1 and 2
     sem = vectors_similarity(v1, v2)
 
-    return (sem+1)/2.0
+    similarity_between_parties = (sem+1)/2.0
+
+    return similarity_between_parties
 
 def similarity_pca(vetores):
     """Calculates similarities party generating a two-dimensional graph

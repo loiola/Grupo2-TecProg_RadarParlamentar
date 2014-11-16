@@ -10,15 +10,16 @@ class XMLWriter:
     """ Helper class to write out an xml file"""
 
     def __init__(self, pretty = True):
-        
-        """ Set pretty to True if you want an indented XML file"""
+        """ Set pretty to True if you want an indented XML file.
+        Initializing variables"""
+
         self.output = ""
         self.stack = []
         self.pretty = pretty
 
     def open_tag(self, tag):
-
         """ Add an open tag"""
+
         self.stack.append(tag)
 
         if self.pretty:
@@ -31,8 +32,8 @@ class XMLWriter:
             self.output += "\n"
 
     def close_tag(self):
-
         """ Close the innermost tag"""
+
         if self.pretty:
             self.output += "\n" + "  " * (len(self.stack) - 1)
         tag = self.stack.pop()
@@ -43,14 +44,14 @@ class XMLWriter:
             self.output += "\n"
 
     def closeAll(self):
-
         """ Close all open tags"""
+
         while len(self.stack) > 0:
             self.close_tag()
 
     def add_content(self, text):
-
         """ Add some content"""
+
         if self.pretty:
             self.output += "  " * len(self.stack)
 
@@ -58,8 +59,8 @@ class XMLWriter:
             self.output += str(text)
 
     def save_data_in_file(self, filename):
-
         """ Save the data to a file"""
+
         self.closeAll()
         file = open(filename, "w")
         file.write(self.output)

@@ -127,6 +127,7 @@ def check_votes_in_chamberWS(proposicoes):
                                      proposition['ano'])
         if votes != None:
             voted.append(proposition)
+
     return voted
 
 def list_propositions_with_vote():
