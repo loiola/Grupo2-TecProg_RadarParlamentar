@@ -65,8 +65,8 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '&amp;bt*nmd1d(+8*rm^nm9#0ge$iepd8!vw(2#v9+z3!e9iel^ls8' # [TOOO] Remover daqui, colocar em um arquivo de config local.
-
+SECRET_KEY = '&amp;bt*nmd1d(+8*rm^nm9#0ge$iepd8!vw(2#v9+z3!e9iel^ls8'
+# [TOOO] Remover daqui, colocar em um arquivo de config local.
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',

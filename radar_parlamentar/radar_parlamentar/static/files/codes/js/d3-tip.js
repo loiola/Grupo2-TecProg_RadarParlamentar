@@ -114,14 +114,14 @@ d3.tip = function() {
   function d3_tip_html() { return ' ' }
 
   var direction_callbacks = d3.map({
-    n:  direction_n,
-    s:  direction_s,
-    e:  direction_e,
-    w:  direction_w,
-    nw: direction_nw,
-    ne: direction_ne,
-    sw: direction_sw,
-    se: direction_se
+    north:  direction_n,
+    south:  direction_s,
+    east:  direction_e,
+    west:  direction_w,
+    northwest: direction_nw,
+    northeast: direction_ne,
+    southwest: direction_sw,
+    southeast: direction_se
   }),
 
   directions = direction_callbacks.keys()
