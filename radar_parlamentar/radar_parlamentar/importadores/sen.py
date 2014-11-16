@@ -439,57 +439,57 @@ class ImportadorSenadores:
             political_party = models.Partido.get_no_party()
         return political_party
 
-    def find_political_party_by_name(self, partidos_tree):
+    def find_political_party_by_name(self, parties_tree):
         """By hour, returns the last party in the list"""
 
-        for political_party_tree in partidos_tree:
-            last_partido_tree = political_party_tree
-        return last_partido_tree.find_legislature('SiglaPartido').text
+        for political_party_tree in parties_tree:
+            last_party_tree = political_party_tree
+        return last_party_tree.find_legislature('SiglaPartido').text
 
     def process_legislature(self, leg_tree):
 
         parliamentaries_tree = leg_tree.find_legislature('Parlamentar').find_legislature('Parlamentares')
-        for parlamentar_tree in parliamentaries_tree:
+        for parliamentary_tree in parliamentaries_tree:
 
             # Receive parliamentary's code.
-            parliamentary_code = parlamentar_tree.find_legislature('CodigoParlamentar').text
+            parliamentary_code = parliamentary_tree.find_legislature('CodigoParlamentar').text
 
             # Receive parliamentary's name.
-            parliamentary_name = parlamentar_tree.find_legislature('NomeParlamentar').text
+            parliamentary_name = parliamentary_tree.find_legislature('NomeParlamentar').text
 
             # Receive parliamentary's UF.
-            parliamentary_uf = parlamentar_tree.find_legislature('SiglaUF').text
+            parliamentary_uf = parliamentary_tree.find_legislature('SiglaUF').text
 
             # Receive 'Partidos' from 'parlamentar_tree'.
-            political_parties_tree = parlamentar_tree.find_legislature('Partidos')
+            political_parties_tree = parliamentary_tree.find_legislature('Partidos')
 
             if political_parties_tree is not None:
                 political_party_name = self.find_political_party_by_name(political_parties_tree)
             else:
                 logger.warn('Senador %s não possui lista de partidos!' % parliamentary_name)
                 political_party_name = None
-            initial_year_of_legislature = parlamentar_tree.find_legislature('AnoInicio').text
-            final_year_of_legislature = parlamentar_tree.find_legislature('AnoFim').text
+            initial_year_of_legislature = parliamentary_tree.find_legislature('AnoInicio').text
+            final_year_of_legislature = parliamentary_tree.find_legislature('AnoFim').text
 
             if political_party_name == 'PC DO B':
                 political_party_name = 'PCdoB'
-            date_of_inicial_legislature = self.convert_string_to_object('01/01/%s' % initial_year_of_legislature)
+            date_of_initial_legislature = self.convert_string_to_object('01/01/%s' % initial_year_of_legislature)
             date_of_final_legislature = self.convert_string_to_object('31/12/%s' % final_year_of_legislature)
             political_party = self.find_political_party(political_party_name)
 
-            if not models.Legislatura.objects.filter(inicio=date_of_inicial_legislature,
-                                                     fim=date_of_final_legislature,
-                                                     parlamentar__nome=parliamentary_name,
-                                                     partido__nome=political_party_name
+            if not models.Legislatura.objects.filter(begin=date_of_initial_legislature,
+                                                     end=date_of_final_legislature,
+                                                     parliamentary__name=parliamentary_name,
+                                                     party_name=political_party_name
                                                      ).exists():
                 logger.info('Importando senador %s (%s-%s)' %
                             (parliamentary_name, political_party_name, parliamentary_uf))
 
-                if models.Parlamentar.objects.filter(nome=parliamentary_name,
-                                                     id_parlamentar=parliamentary_code
+                if models.Parlamentar.objects.filter(name=parliamentary_name,
+                                                     id_parliamentary=parliamentary_code
                                                      ).exists():
                     senator = models.Parlamentar.objects.get(
-                        nome=parliamentary_name, id_parlamentar=parliamentary_code)
+                        name=parliamentary_name, id_parliamentary=parliamentary_code)
                 else:
                     senator = models.Parlamentar()
                     senator.id_parlamentar = parliamentary_code
@@ -499,7 +499,7 @@ class ImportadorSenadores:
                 legislature = models.Legislatura()
                 legislature.parlamentar = senator
                 legislature.casa_legislativa = self.senado
-                legislature.inicio = date_of_inicial_legislature
+                legislature.inicio = date_of_initial_legislature
                 legislature.fim = date_of_final_legislature
                 legislature.partido = political_party
                 legislature.localidade = parliamentary_uf
