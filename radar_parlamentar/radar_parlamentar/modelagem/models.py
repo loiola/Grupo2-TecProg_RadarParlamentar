@@ -185,7 +185,9 @@ class Partido(models.Model):
                 political_party.numero = int(res.group(2))
                 political_party.cor = res.group(3)
                 political_party.save()
+
                 return political_party
+
         return None
 
     def __unicode__(self):
@@ -262,13 +264,13 @@ class CasaLegislativa(models.Model):
                  nome_casa - Name of the house to be deleted"""
 
         try:
-            try:
-                CasaLegislativa.objects.get(
+            CasaLegislativa.objects.get(
                     nome_curto=nome_casa_curto).delete()
 
-            except CasaLegislativa.DoesNotExist:
-                print 'Casa legislativa ' + nome_casa_curto + ' não existe'
-        except:
+        except CasaLegislativa.DoesNotExist:
+            print 'Casa legislativa ' + nome_casa_curto + ' não existe'
+
+        else:
             print('Possivelmente a operacao extrapolou o limite de '
                   'operacoes do SQLite, tente utilizar o MySQL')
 
@@ -296,11 +298,13 @@ class PeriodoCasaLegislativa(object):
         self.string = unicode(self)
 
     def __str__(self):
+
         return self.__unicode__()
 
     def __unicode__(self):
         if not self.string:
             self._build_string()
+
         return self.string
 
     def _build_string(self):
@@ -311,7 +315,15 @@ class PeriodoCasaLegislativa(object):
         # Stores the time (number of days) for the description of period be built
         delta = self.fim - self.ini
 
-        if delta.days < 35:  # período é de um mês
+        amount_of_days_in_a_month = 35
+        amount_of_days_in_a_semester = 200
+        month_june = 6
+        amount_of_days_in_a_year = 370
+        amount_of_days_in_a_biennium = 750
+        amount_of_days_in_a_quadriennium = 1500
+
+        # A month period
+        if delta.days < amount_of_days_in_a_month:
             meses = ['',
                      'Jan',
                      'Fev',
@@ -327,18 +339,26 @@ class PeriodoCasaLegislativa(object):
                      'Dez']
             data_string += str(self.ini.year)
             data_string += " " + str(meses[self.ini.month])
-        elif delta.days < 200:  # periodo é de um semestre
+
+        # A semester period
+        elif delta.days < amount_of_days_in_a_semester:
             data_string += str(self.ini.year)
-            if self.ini.month < 6:
+            if self.ini.month < month_june:
                 data_string += " 1o Semestre"
             else:
                 data_string += " 2o Semestre"
-        elif delta.days < 370:  # periodo é de um ano
+
+        # A year period
+        elif delta.days < amount_of_days_in_a_year:
             data_string += str(self.ini.year)
-        elif delta.days < 750:  # periodo é um biênio
+
+        # Period is a biennium
+        elif delta.days < amount_of_days_in_a_biennium:
             data_string += str(self.ini.year) + " e "
             data_string += str(self.fim.year)
-        elif delta.days < 1500:  # periodo é um quadriênio
+
+        # Period is a quadriennium
+        elif delta.days < amount_of_days_in_a_quadriennium:
             data_string += str(self.ini.year) + " a "
             data_string += str(self.fim.year)
         self.string = data_string
@@ -362,6 +382,7 @@ class Parlamentar(models.Model):
     genero = models.CharField(max_length=10, choices=GENEROS, blank=True)
 
     def __unicode__(self):
+
         return self.nome
 
 
@@ -414,13 +435,18 @@ class Legislatura(models.Model):
         # name of the parliamentary
         search_by_parliamentary_name = Legislatura.objects.filter(
             parlamentar__nome=nome_parlamentar)
-        for leg in search_by_parliamentary_name:
-            if data >= leg.inicio and data <= leg.fim:
-                return leg
-        raise ValueError('Não achei legislatura para %s em %s' %
-                         (nome_parlamentar, data))
+
+        try:
+            for leg in search_by_parliamentary_name:
+                if data >= leg.inicio and data <= leg.fim:
+                    return leg
+            raise ValueError(nome_parlamentar, data)
+
+        except ValueError, x:
+            print 'Não achei legislatura para %s em %s' %(x.nome_parlamentar, x.data)
 
     def __unicode__(self):
+
         return "%s - %s@%s [%s, %s]" % (
             self.parlamentar,
             self.partido,
@@ -492,9 +518,11 @@ class Proposicao(models.Model):
         related_name='demais_autores')
 
     def nome(self):
+
         return "%s %s/%s" % (self.sigla, self.numero, self.ano)
 
     def __unicode__(self):
+
         return "[%s] %s" % (self.nome(), self.ementa)
 
 
@@ -529,6 +557,7 @@ class Votacao(models.Model):
     proposicao = models.ForeignKey(Proposicao, null=True)
 
     def votes(self):
+
         #Returns the votes vote (depends on database)
         return self.voto_set.all()
 
@@ -549,6 +578,7 @@ class Votacao(models.Model):
                 dictionary_party_votes[part] = VotoPartido(part)
             voto_partido = dictionary_party_votes[part]
             voto_partido.add(voto.opcao)
+
         return dictionary_party_votes
 
     @staticmethod
@@ -560,17 +590,21 @@ class Votacao(models.Model):
             proposicao__casa_legislativa=casa_legislativa)
 
         from django.utils.dateparse import parse_datetime
+
         if data_inicial is not None:
             ini = parse_datetime('%s 0:0:0' % data_inicial)
             votacoes = votacoes.filter(data__gte=ini)
+
         if data_final is not None:
             fim = parse_datetime('%s 0:0:0' % data_final)
             votacoes = votacoes.filter(data__lte=fim)
+
         return votacoes
 
     def __unicode__(self):
         if self.data:
             return "[%s] %s" % (self.data, self.descricao)
+
         else:
             return self.descricao
 
@@ -594,6 +628,7 @@ class Voto(models.Model):
     opcao = models.CharField(max_length=10, choices=OPCOES)
 
     def __unicode__(self):
+
         return "%s votou %s" % (self.legislatura, self.opcao)
 
 
@@ -610,6 +645,7 @@ class VotosAgregados:
          voto_medio"""
 
     def __init__(self):
+        """Initializing variables"""
 
         # Represents the number of votes to "yes" option
         self.sim = 0
@@ -628,33 +664,38 @@ class VotosAgregados:
              OBSTRUCTION counts as a vote abstention
              MISSING does not count as a vote"""
 
+        increment_by_one = 1
+
         if (voto == SIM):
-            self.sim += 1
+            self.sim += increment_by_one
         if (voto == NAO):
-            self.nao += 1
+            self.nao += increment_by_one
         if (voto == ABSTENCAO):
-            self.abstencao += 1
+            self.abstencao += increment_by_one
         if (voto == OBSTRUCAO):
-            self.abstencao += 1
+            self.abstencao += increment_by_one
 
     def total_of_votes(self):
         return self.sim + self.nao + self.abstencao
 
     def medium_vote(self):
         """Real value representing the 'average opnion' of
-             aggregate votes; 1 is yes and no is -1."""
+        aggregate votes; 1 is yes and no is -1."""
 
         # Total of added votes
         total = self.total_of_votes()
+
         if total > 0:
             return 1.0 * (self.sim - self.nao) / self.total_of_votes()
         else:
             return 0
 
     def __unicode__(self):
+
         return '(%s, %s, %s)' % (self.sim, self.nao, self.abstencao)
 
     def __str__(self):
+
         return unicode(self).encode('utf-8')
 
 
@@ -667,6 +708,8 @@ class VotoPartido(VotosAgregados):
              integers representing the number of votes in the set"""
 
     def __init__(self, partido):
+        """Initializing variables"""
+
         VotosAgregados.__init__(self)
         self.partido = partido
 
