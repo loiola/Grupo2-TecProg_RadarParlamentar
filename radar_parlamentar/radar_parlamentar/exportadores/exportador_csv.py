@@ -61,6 +61,8 @@ CSV_FILE = 'votes.csv'
 class ExportadorCSV:
 
     def __init__(self, short_name_legislative_house, initial_date, finish_date):
+        """Initializing variables"""
+
         self.nome_curto = short_name_legislative_house
         self.ini = initial_date
         self.fim = finish_date
@@ -79,15 +81,18 @@ class ExportadorCSV:
         if self.ini is None and self.fim is None:
             self.votacoes = models.Votacao.objects.filter(
                 proposicao__casa_legislativa = legislative_house).order_by('data')
-        if self.ini is None and self.fim is not None:
+
+        elif self.ini is None and self.fim is not None:
             self.votacoes = models.Votacao.objects.filter(
                 proposicao__casa_legislativa = legislative_house
             ).filter(data__lte = self.fim).order_by('data')
-        if self.ini is not None and self.fim is None:
+
+        elif self.ini is not None and self.fim is None:
             self.votacoes = models.Votacao.objects.filter(
                 proposicao__casa_legislativa = legislative_house
             ).filter(data__gte=self.ini).order_by('data')
-        if self.ini is not None and self.fim is not None:
+
+        elif self.ini is not None and self.fim is not None:
             self.votacoes = models.Votacao.objects.filter(
                 proposicao__casa_legislativa=legislative_house
             ).filter(data__gte=self.ini, data__lte=self.fim).order_by('data')
@@ -123,18 +128,24 @@ class ExportadorCSV:
     # Positive vote equals 1, negatives votes equals -1, abstentions, absences
     # and obstructions equals 0
     def voto(self, option):
-        if option == models.SIM:
-            return 1
-        elif option == models.NAO:
-            return -1
-        elif option == models.ABSTENCAO:
-            return 0
-        elif option == models.OBSTRUCAO:
-            return 0
-        elif option == models.AUSENTE:
-            return 0
-        else:
-            raise ValueError()
+
+        increment_by_one = 1
+        decrement_by_one = -1
+        try:
+            if option == models.SIM:
+                return increment_by_one
+            elif option == models.NAO:
+                return decrement_by_one
+            elif option == models.ABSTENCAO:
+                return 0
+            elif option == models.OBSTRUCAO:
+                return 0
+            elif option == models.AUSENTE:
+                return 0
+            else:
+                raise ValueError()
+        except Valuerror():
+            print 'An error has ocurred.'
 
     # Writing CSV:
     def write_csv(self):

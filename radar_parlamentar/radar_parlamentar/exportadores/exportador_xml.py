@@ -32,8 +32,13 @@ def serialize_casa_legislativa(short_name):
     # Identifying house:
     legislative_house = models.CasaLegislativa.objects.filter(nome_curto=short_name)
     without_legislative_houses = 0
-    if len(legislative_house) <= without_legislative_houses:
-        raise ValueError('Casa Legislativa não encontrada\n')
+
+    try:
+        if len(legislative_house) <= without_legislative_houses:
+            raise ValueError()
+
+    except ValueError:
+        print 'Casa Legislativa não encontrada\n'
 
     reload(sys)
     sys.setdefaultencoding("utf-8")
@@ -82,6 +87,7 @@ def serialize_casa_legislativa(short_name):
 
             # Vote:
             votes = models.Voto.objects.filter(votacao_id=vote_aux)
+
             for vote in votes:
 
                 legislature = vote.legislatura
