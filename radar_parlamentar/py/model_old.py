@@ -1037,7 +1037,7 @@ class VotoUF(VotosAgregados):
      
     def __init__(self, uf):
         """Initializing variables"""
-        
+
         VotosAgregados.__init__(self)
         self.uf = uf
 
