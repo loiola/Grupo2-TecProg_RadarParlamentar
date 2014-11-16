@@ -55,6 +55,8 @@ class Partido:
 # and cited.
 
     def __init__(self, nome='', numero=''):
+        """Initializing variables"""
+
         self.nome = nome
         self.numero = numero
 
@@ -66,6 +68,8 @@ class Proposicao:
 
 
     def __init__(self):
+        """Initializing variables"""
+
         self.id = ''
         self.sigla = ''
         self.numero = ''
@@ -90,9 +94,11 @@ class Proposicao:
         prop.sigla = tree.find_legislature('Sigla').text
         prop.numero = tree.find_legislature('Numero').text
         prop.ano = tree.find_legislature('Ano').text
+
         for child in tree.find_legislature('Votacoes'):
           vot = Votacao.fromtree(child)
           prop.votacoes.append(vot)
+
         return prop
 
     @staticmethod
@@ -108,17 +114,21 @@ class Proposicao:
 
         tree = etree.fromstring(xml)
         nome = tree.find_legislature('nomeProposicao').text
+
         return nome
 
 
     def __unicode__(self):
+
         return "[%s %s/%s]: %s \nEmenta: %s \nSituação: %s" % (self.sigla, self.numero, 
 		self.ano, self.explicacao, self.ementa, self.situacao) 
 
     def __str__(self):
+
         return unicode(self).encode('utf-8')
 
     def nome(self):
+
         return "%s %s/%s" % (self.sigla, self.numero, self.ano)
 
 class Votacao:
@@ -127,7 +137,9 @@ class Votacao:
      summary, date, time - strings
      Members - list of objects of type Member."""
 
-    def __init__(self): 
+    def __init__(self):
+        """Initializing variables"""
+
         self.resumo = ''
         self.data = ''
         self.hora = ''
@@ -151,24 +163,25 @@ class Votacao:
         for child in tree:
           dep = Deputado.fromtree(child)
           vot.deputados.append(dep)
+
         return vot
 
     def por_partido(self):
         """Returns aggregate votes by party
          returns:
          A dictionary whose key is the party name (string) and the value is a 
-		VotoPartido.
-	"""
+		VotoPartido."""
 
-        dic = {}
+        votes_by_party = {}
         for dep in self.deputados:
           part = dep.partido
 
-          if not part in dic:
-            dic[part] = VotoPartido(part)
-          voto = dic[part]
+          if not part in votes_by_party:
+            votes_by_party[part] = VotoPartido(part)
+          voto = votes_by_party[part]
           voto.add(dep.voto)
-        return dic  
+
+        return votes_by_party
   
     def por_uf(self):
         """Returns votes aggregated by UF
@@ -176,20 +189,23 @@ class Votacao:
          A dictionary whose key is the name of the UF (string) and the value is a VotoUF.
 	"""
 
-        dic = {}
+        votes_by_uf = {}
         for dep in self.deputados:
           uf = dep.uf
 
-          if not uf in dic:
-            dic[uf] = VotoUF(uf)
-          voto = dic[uf]
+          if not uf in votes_by_uf:
+            votes_by_uf[uf] = VotoUF(uf)
+          voto = votes_by_uf[uf]
           voto.add(dep.voto)
-        return dic  
+
+        return votes_by_uf
 
     def __unicode__(self):
+
         return "[%s, %s] %s" % (self.data, self.hora, self.resumo)
 
     def __str__(self):
+
         return unicode(self).encode('utf-8')
 
 class Deputado:
@@ -223,6 +239,8 @@ class Deputado:
     diclistadeps_inicializado = False
 
     def __init__(self):
+        """Initializing variables"""
+
         self.nome = ''
         self.partido = ''
         self.uf = ''
@@ -233,7 +251,7 @@ class Deputado:
         """Transforms an XML in the vote of a deputy
          arguments:
          tree - xml.etree.ElementTree type object representing the XML that 
-describes the vote of a member
+        describes the vote of a member
 
          returns:
          An object of type deputy."""
@@ -243,15 +261,19 @@ describes the vote of a member
         dep.partido = tree.attrib['Partido']
         dep.uf = tree.attrib['UF']
         dep.voto = tree.attrib['Voto']
+
         return dep
 
     def __unicode__(self):
         ufstr = ''
+
         if self.uf:
             ufstr = '-%s' % self.uf
+
         return "%s (%s%s) votou %s" % (self.nome, self.partido, ufstr, self.voto)
 
     def __str__(self):
+
         return unicode(self).encode('utf-8')
 
     @staticmethod
@@ -280,24 +302,29 @@ describes the vote of a member
 	listapartidos.txt file does not exist (or do not have permission to read)."""
 
         con = lite.connect(bd)
-        if len(con.execute("select * from sqlite_master where type='table' and name='PARTIDOS'").fetchall()) != 0: 
-	    # se tabela existe
+        if len(con.execute("select * from sqlite_master where type='table' "
+                           "and name='PARTIDOS'").fetchall()) != 0:
+	    # If table exists
             partsdb = con.execute('SELECT * FROM PARTIDOS').fetchall()
              
 	        # Print partsdb:
             for p in partsdb:
                 Deputado.dicpartidos[p[1]] = p[0]
         file_listapartidos = 'listapartidos.txt'
+
         try:
             prop_file = open(file_listapartidos,'r')
+
         except IOError:
             return 1
         
         regexp = '([A-z_-]*)\s*(\d*)'
+
         for line in prop_file:
 
 	        # Print line:
             res = re.search(regexp,line)
+
             if res:
                 siglawannabe = res.group(1)
                 idwannabe = res.group(2)
@@ -306,21 +333,27 @@ describes the vote of a member
                 if idwannabe in Deputado.dicpartidos.values():
 
                     if not Deputado.dicpartidos[siglawannabe] == idwannabe:
-                        print "WARNING: listapartidos.txt associa o %s ao idPartido %s" % (siglawannabe,idwannabe)
-                        print "mas no banco de dados este id ja esta associado ao %s." % (Deputado.dicpartidos[idwannabe])
+                        print "WARNING: listapartidos.txt associa o %s ao idPartido %s" % \
+                              (siglawannabe,idwannabe)
+                        print "mas no banco de dados este id ja esta associado ao %s." % \
+                              (Deputado.dicpartidos[idwannabe])
                         print "Foi mantido o valor do banco de dados, e ignorado o de listapartidos.txt."
 
                 elif siglawannabe in Deputado.dicpartidos:
                     if not Deputado.dicpartidos[siglawannabe] == idwannabe:
-                        print "WARNING: listapartidos.txt associa o %s ao idPartido %s" % (siglawannabe,idwannabe)
-                        print "mas no banco de dados o %s ja esta associado ao id %s." % (siglawannabe,Deputado.dicpartidos[siglawannabe])
+                        print "WARNING: listapartidos.txt associa o %s ao idPartido %s" % \
+                              (siglawannabe,idwannabe)
+                        print "mas no banco de dados o %s ja esta associado ao id %s." % \
+                              (siglawannabe,Deputado.dicpartidos[siglawannabe])
                         print "Foi mantido o valor do banco de dados, e ignorado o de listapartidos.txt."
 
                 else:
                     Deputado.dicpartidos[res.group(1)] = int(res.group(2))
                     con.execute("insert into PARTIDOS values(?,?)",(idwannabe,siglawannabe))
                     con.commit()
+
         con.close_tag()
+
         return 0
     
     @staticmethod
@@ -332,14 +365,17 @@ describes the vote of a member
         and value as a list of members who belong to this party-UF."""
 
         con = lite.connect('resultados/camara.db')
-        if len(con.execute("select * from sqlite_master where type='table' and name='PARLAMENTARES'").fetchall()) != 0: 
-	    # Se a tabela existe
+        if len(con.execute("select * from sqlite_master where type='table' and "
+                           "name='PARLAMENTARES'").fetchall()) != 0:
+	    # If table exists
             depsdb = con.execute('SELECT * FROM PARLAMENTARES').fetchall()
             con.close_tag()
+
             for d in depsdb:
                 iddep = d[0]
                 idpartuf = int(iddep/1000)
                 Deputado.diclistadeps[idpartuf] = [d[1]]
+
         return
 
     @staticmethod
@@ -359,13 +395,15 @@ describes the vote of a member
             # If it is here, found new political party.
             idpartido = max(Deputado.dicpartidos.values()+[0]) + 1
             Deputado.dicpartidos[siglapartido] = idpartido
-            print "Novo search_political_party '%s' encontrado. Atribuido idPartido %d" % (siglapartido,idpartido)
+            print "Novo search_political_party '%s' encontrado. Atribuido idPartido %d" % \
+                  (siglapartido,idpartido)
 
             # Put on database:
             con = lite.connect(bd)
             con.execute('INSERT INTO PARTIDOS VALUES(?,?)',(idpartido,siglapartido))
             con.commit()
             con.close_tag()
+
         return idpartido
 
     @staticmethod
@@ -401,24 +439,29 @@ describes the vote of a member
 
 	    # This is used when UF makes no sense (ex: câmara municipal):
         iduf = '99'
+
         if uf:
             iduf = Deputado.idUF(uf)
         idPartUF = '%s%s' % (Deputado.idPartido(partido, bd), iduf)
         idPartUF = int(idPartUF)
+
         if idPartUF in Deputado.diclistadeps:
             if nome in Deputado.diclistadeps[idPartUF]:
                 iddep = idPartUF*1000 + Deputado.diclistadeps[idPartUF].index(nome) + 1
                 return iddep
+
             else:
                 Deputado.diclistadeps[idPartUF].append(nome)
                 iddep = idPartUF*1000 + Deputado.diclistadeps[idPartUF].index(nome) + 1
         else:
             Deputado.diclistadeps[idPartUF] = [nome]
             iddep = idPartUF*1000 + 1
+
         con = lite.connect(bd)
         con.execute('INSERT INTO PARLAMENTARES VALUES(?,?,?,?)',(iddep,nome,partido,uf))
         con.commit()
         con.close_tag()
+
         return iddep
 
 
@@ -435,24 +478,30 @@ class VotosAgregados:
         voto -- string \in {SIM, NAO, ABSTENCAO, OBSTRUCAO}
         OBSTRUCAO conta como um voto NAO."""
 
+        increment_by_one = 1
+
         if (voto == SIM):
-          self.sim += 1
+          self.sim += increment_by_one
         if (voto == NAO):
-          self.nao += 1
+          self.nao += increment_by_one
         if (voto == OBSTRUCAO):
-          self.nao += 1
+          self.nao += increment_by_one
         if (voto == ABSTENCAO):
-          self.abstencao += 1
+          self.abstencao += increment_by_one
 
     def __init__(self):
+        """Initializing variables"""
+
         self.sim = 0
         self.nao = 0
         self.abstencao = 0
 
     def __unicode__(self):
+
         return '(%s, %s, %s)' % (self.sim, self.nao, self.abstencao)
 
     def __str__(self):
+
         return unicode(self).encode('utf-8')
 
 class VotoPartido(VotosAgregados):
@@ -462,6 +511,8 @@ class VotoPartido(VotosAgregados):
     party - string."""
 
     def __init__(self, partido):
+
+        """Initializing variables"""
         VotosAgregados.__init__(self)
         self.partido = partido
 
@@ -472,6 +523,8 @@ class VotoUF(VotosAgregados):
     uf - string."""
      
     def __init__(self, uf):
+        """Initializing variables"""
+
         VotosAgregados.__init__(self)
         self.uf = uf
 
@@ -532,6 +585,8 @@ class Partido:
 # and cited.
 
     def __init__(self, nome='', numero=''):
+        """Initializing variables"""
+
         self.nome = nome
         self.numero = numero
 
@@ -543,6 +598,8 @@ class Proposicao:
 
 
     def __init__(self):
+        """Initializing variables"""
+
         self.id = ''
         self.sigla = ''
         self.numero = ''
@@ -570,6 +627,7 @@ class Proposicao:
         for child in tree.find_legislature('Votacoes'):
           vot = Votacao.fromtree(child)
           prop.votacoes.append(vot)
+
         return prop
 
     @staticmethod
@@ -583,16 +641,20 @@ class Proposicao:
 
         tree = etree.fromstring(xml)
         nome = tree.find_legislature('nomeProposicao').text
+
         return nome
 
 
     def __unicode__(self):
+
         return "[%s %s/%s]: %s \nEmenta: %s \nSituação: %s" % (self.sigla, self.numero, self.ano, self.explicacao, self.ementa, self.situacao) 
 
     def __str__(self):
+
         return unicode(self).encode('utf-8')
 
     def nome(self):
+
         return "%s %s/%s" % (self.sigla, self.numero, self.ano)
 
 class Votacao:
@@ -601,7 +663,9 @@ class Votacao:
     summary, date, time - strings
     Members - list of objects of type Member."""
 
-    def __init__(self): 
+    def __init__(self):
+        """Initializing variables"""
+
         self.resumo = ''
         self.data = ''
         self.hora = ''
@@ -624,6 +688,7 @@ class Votacao:
         for child in tree:
           dep = Deputado.fromtree(child)
           vot.deputados.append(dep)
+
         return vot
 
     def por_partido(self):
@@ -631,33 +696,35 @@ class Votacao:
         returns:
         A dictionary whose key is the party name (string) and the value is a VotoPartido."""
 
-        dic = {}
+        votes_by_party = {}
         for dep in self.deputados:
           part = dep.partido
-          if not part in dic:
-            dic[part] = VotoPartido(part)
-          voto = dic[part]
+          if not part in votes_by_party:
+            votes_by_party[part] = VotoPartido(part)
+          voto = votes_by_party[part]
           voto.add(dep.voto)
-        return dic  
+        return votes_by_party
   
     def por_uf(self):
         """Returns votes aggregated by UF
         returns:
         A dictionary whose key is the name of the UF (string) and the value is a VotoUF."""
 
-        dic = {}
+        votes_by_uf = {}
         for dep in self.deputados:
           uf = dep.uf
-          if not uf in dic:
-            dic[uf] = VotoUF(uf)
-          voto = dic[uf]
+          if not uf in votes_by_uf:
+            votes_by_uf[uf] = VotoUF(uf)
+          voto = votes_by_uf[uf]
           voto.add(dep.voto)
-        return dic  
+        return votes_by_uf
 
     def __unicode__(self):
+
         return "[%s, %s] %s" % (self.data, self.hora, self.resumo)
 
     def __str__(self):
+
         return unicode(self).encode('utf-8')
 
 class Deputado:
@@ -684,6 +751,8 @@ class Deputado:
     diclistadeps_inicializado = False
 
     def __init__(self):
+        """Initializing variables"""
+
         self.nome = ''
         self.partido = ''
         self.uf = ''
@@ -703,15 +772,19 @@ class Deputado:
         dep.partido = tree.attrib['Partido']
         dep.uf = tree.attrib['UF']
         dep.voto = tree.attrib['Voto']
+
         return dep
 
     def __unicode__(self):
         ufstr = ''
+
         if self.uf:
             ufstr = '-%s' % self.uf
+
         return "%s (%s%s) votou %s" % (self.nome, self.partido, ufstr, self.voto)
 
     def __str__(self):
+
         return unicode(self).encode('utf-8')
 
     @staticmethod
@@ -738,43 +811,59 @@ class Deputado:
         file does not exist (or do not have permission to read)."""
 
         con = lite.connect(bd)
-        if len(con.execute("select * from sqlite_master where type='table' and name='PARTIDOS'").fetchall()) != 0: # se tabela existe
+
+        if len(con.execute("select * from sqlite_master where type='table' and "
+                           "name='PARTIDOS'").fetchall()) != 0: # se tabela existe
             partsdb = con.execute('SELECT * FROM PARTIDOS').fetchall()
              
 	        # Print partsdb:
             for p in partsdb:
                 Deputado.dicpartidos[p[1]] = p[0]
+
         file_listapartidos = 'listapartidos.txt'
+
         try:
             prop_file = open(file_listapartidos,'r')
+
         except IOError:
             return 1
         
         regexp = '([A-z_-]*)\s*(\d*)'
+
         for line in prop_file:
 
 	        # Print line:
             res = re.search(regexp,line)
+
             if res:
                 siglawannabe = res.group(1)
                 idwannabe = res.group(2)
 
-                # Check if already have: if yes, warning. If not, it adds to the database and dicpartidos:
+                # Check if already have: if yes, warning. If not, it adds to the database
+                # and dicpartidos:
                 if idwannabe in Deputado.dicpartidos.values():
                     if not Deputado.dicpartidos[siglawannabe] == idwannabe:
-                        print "WARNING: listapartidos.txt associa o %s ao idPartido %s" % (siglawannabe,idwannabe)
-                        print "mas no banco de dados este id ja esta associado ao %s." % (Deputado.dicpartidos[idwannabe])
+                        print "WARNING: listapartidos.txt associa o %s ao idPartido %s" % \
+                              (siglawannabe,idwannabe)
+                        print "mas no banco de dados este id ja esta associado ao %s." % \
+                              (Deputado.dicpartidos[idwannabe])
                         print "Foi mantido o valor do banco de dados, e ignorado o de listapartidos.txt."
+
                 elif siglawannabe in Deputado.dicpartidos:
                     if not Deputado.dicpartidos[siglawannabe] == idwannabe:
-                        print "WARNING: listapartidos.txt associa o %s ao idPartido %s" % (siglawannabe,idwannabe)
-                        print "mas no banco de dados o %s ja esta associado ao id %s." % (siglawannabe,Deputado.dicpartidos[siglawannabe])
+                        print "WARNING: listapartidos.txt associa o %s ao idPartido %s" % \
+                              (siglawannabe,idwannabe)
+                        print "mas no banco de dados o %s ja esta associado ao id %s." % \
+                              (siglawannabe,Deputado.dicpartidos[siglawannabe])
                         print "Foi mantido o valor do banco de dados, e ignorado o de listapartidos.txt."
+
                 else:
                     Deputado.dicpartidos[res.group(1)] = int(res.group(2))
                     con.execute("insert into PARTIDOS values(?,?)",(idwannabe,siglawannabe))
                     con.commit()
+
         con.close_tag()
+
         return 0
     
     @staticmethod
@@ -787,13 +876,17 @@ class Deputado:
         and value as a list of members who belong to this party-UF."""
 
         con = lite.connect('resultados/camara.db')
-        if len(con.execute("select * from sqlite_master where type='table' and name='PARLAMENTARES'").fetchall()) != 0: # Se a tabela existe
+
+        if len(con.execute("select * from sqlite_master where type='table' and "
+                           "name='PARLAMENTARES'").fetchall()) != 0: # Se a tabela existe
             depsdb = con.execute('SELECT * FROM PARLAMENTARES').fetchall()
             con.close_tag()
+
             for d in depsdb:
                 iddep = d[0]
                 idpartuf = int(iddep/1000)
                 Deputado.diclistadeps[idpartuf] = [d[1]]
+
         return
 
     @staticmethod
@@ -803,6 +896,7 @@ class Deputado:
 
         if siglapartido in Deputado.dicpartidos:
             return Deputado.dicpartidos[siglapartido]
+
         else:
             if not Deputado.dicpartidos_inicializado:
                 Deputado.inicializar_dicpartidos(bd)
@@ -813,13 +907,16 @@ class Deputado:
             # If it is here, found new political party.
             idpartido = max(Deputado.dicpartidos.values()+[0]) + 1
             Deputado.dicpartidos[siglapartido] = idpartido
-            print "Novo search_political_party '%s' encontrado. Atribuido idPartido %d" % (siglapartido,idpartido)
+
+            print "Novo search_political_party '%s' encontrado. Atribuido idPartido %d" % \
+                  (siglapartido,idpartido)
 
             # Put on database:
             con = lite.connect(bd)
             con.execute('INSERT INTO PARTIDOS VALUES(?,?)',(idpartido,siglapartido))
             con.commit()
             con.close_tag()
+
         return idpartido
 
     @staticmethod
@@ -844,7 +941,8 @@ class Deputado:
         The idDep is constructed so as to be sufficient to determine uf party and just
         looking at the numbers, it has the syntax: PPPEENNN where PPP is the idPartido,
         EE is the idUF and NNN is a unique number for each name deputy within a party-uf.
-        If the Member is not in MPS table bd, he gains a new idDep, is inserted into the table, and returns the newly assigned idDep."""
+        If the Member is not in MPS table bd, he gains a new idDep, is inserted into the table,
+        and returns the newly assigned idDep."""
 
 	    # Print Deputado.dicpartidos_inicializado:
         if not Deputado.diclistadeps_inicializado:
@@ -855,22 +953,28 @@ class Deputado:
         iduf = '99'
         if uf:
             iduf = Deputado.idUF(uf)
+
         idPartUF = '%s%s' % (Deputado.idPartido(partido, bd), iduf)
         idPartUF = int(idPartUF)
+
         if idPartUF in Deputado.diclistadeps:
             if nome in Deputado.diclistadeps[idPartUF]:
                 iddep = idPartUF*1000 + Deputado.diclistadeps[idPartUF].index(nome) + 1
                 return iddep
+
             else:
                 Deputado.diclistadeps[idPartUF].append(nome)
                 iddep = idPartUF*1000 + Deputado.diclistadeps[idPartUF].index(nome) + 1
+
         else:
             Deputado.diclistadeps[idPartUF] = [nome]
             iddep = idPartUF*1000 + 1
+
         con = lite.connect(bd)
         con.execute('INSERT INTO PARLAMENTARES VALUES(?,?,?,?)',(iddep,nome,partido,uf))
         con.commit()
         con.close_tag()
+
         return iddep
 
 
@@ -887,24 +991,30 @@ class VotosAgregados:
         voto -- string \in {SIM, NAO, ABSTENCAO, OBSTRUCAO}
         OBSTRUCAO conta como um voto NAO."""
 
+        increment_by_one = 1
+
         if (voto == SIM):
-          self.sim += 1
+          self.sim += increment_by_one
         if (voto == NAO):
-          self.nao += 1
+          self.nao += increment_by_one
         if (voto == OBSTRUCAO):
-          self.nao += 1
+          self.nao += increment_by_one
         if (voto == ABSTENCAO):
-          self.abstencao += 1
+          self.abstencao += increment_by_one
 
     def __init__(self):
+        """Initializing variables"""
+
         self.sim = 0
         self.nao = 0
         self.abstencao = 0
 
     def __unicode__(self):
+
         return '(%s, %s, %s)' % (self.sim, self.nao, self.abstencao)
 
     def __str__(self):
+
         return unicode(self).encode('utf-8')
 
 class VotoPartido(VotosAgregados):
@@ -914,6 +1024,8 @@ class VotoPartido(VotosAgregados):
     party - string."""
 
     def __init__(self, partido):
+        """Initializing variables"""
+
         VotosAgregados.__init__(self)
         self.partido = partido
 
@@ -924,6 +1036,8 @@ class VotoUF(VotosAgregados):
     uf - string."""
      
     def __init__(self, uf):
+        """Initializing variables"""
+        
         VotosAgregados.__init__(self)
         self.uf = uf
 
