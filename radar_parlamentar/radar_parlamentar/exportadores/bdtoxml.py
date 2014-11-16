@@ -21,19 +21,25 @@ class XMLWriter:
 
     def add_and_open_tag(self, tag):
         """ Add an open tag."""
+
         self.stack.append(tag)
+
         if self.pretty:
             self.output += "  " * (len(self.stack) - 1)
-        self.output += "<" + tag + ">"
+        else:
+            self.output += "<" + tag + ">"
 
         if self.pretty:
             self.output += "\n"
 
     def close_tag(self):
         """ Close the innermost tag."""
+
         if self.pretty:
             self.output += "\n" + "  " * (len(self.stack) - 1)
+
         tag = self.stack.pop()
+
         self.output += "</" + tag + ">"
 
         if self.pretty:
@@ -41,14 +47,17 @@ class XMLWriter:
 
     def close_all_tags(self):
         """ Close all open tags."""
+
         while len(self.stack) > 0:
             self.close_tag()
 
     def add_content(self, text):
         """ Add some content."""
+
         if self.pretty:
             self.output += "  " * len(self.stack)
-        self.output += str(text)
+        else:
+            self.output += str(text)
 
     def save_data_in_file(self, filename):
         """ Save the data to a file."""
