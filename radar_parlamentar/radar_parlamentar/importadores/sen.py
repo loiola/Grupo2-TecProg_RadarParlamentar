@@ -50,13 +50,13 @@ def main():
     importer.import_votings()
 
 # Date the XML files were updated
-ULTIMA_ATUALIZACAO = parse_datetime('2013-02-14 0:0:0')
+LAST_UPDATE = parse_datetime('2013-02-14 0:0:0')
 
 MODULE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # Folder with the files with data provided by senate
 DATA_FOLDER = os.path.join(MODULE_DIR, 'dados/senado')
-VOTACOES_FOLDER = os.path.join(DATA_FOLDER, 'votacoes')
+VOTINGS_FOLDER = os.path.join(DATA_FOLDER, 'votacoes')
 
 # This variable may not have another name because the database has a field called NOME_CURTO.
 # Assigns short 'sen' (senate) to NOME_CURTO.
@@ -115,10 +115,10 @@ class CasaLegislativaGerador:
             senator_lesgislative_house.nome = 'Senado'
             senator_lesgislative_house.nome_curto = SHORT_NAME
             senator_lesgislative_house.esfera = models.FEDERAL
-            senator_lesgislative_house.atualizacao = ULTIMA_ATUALIZACAO
+            senator_lesgislative_house.atualizacao = LAST_UPDATE
             senator_lesgislative_house.save_data_in_file()
         else:
-            senator_lesgislative_house = models.CasaLegislativa.objects.get(nome_curto=SHORT_NAME)
+            senator_lesgislative_house = models.CasaLegislativa.objects.get(short_name=SHORT_NAME)
         return senator_lesgislative_house
 
 
@@ -389,13 +389,13 @@ class ImportadorVotacoesSenado:
         VOTACOES_FOLDER"""
 
         # Get files from 'VOTACOES_FOLDER'.
-        files_from_votacoes_folder = os.listdir(VOTACOES_FOLDER)
+        files_from_votings_folder = os.listdir(VOTINGS_FOLDER)
 
         # Filtering files with '.xlm' extension.
-        filtering_xmls = filter(lambda name: name.endswith('.xml'), files_from_votacoes_folder)
+        filtering_xmls = filter(lambda name: name.endswith('.xml'), files_from_votings_folder)
 
         # Mapping names into '.xml' files.
-        mapping_xmls = map(lambda name: os.path.join(VOTACOES_FOLDER, name), filtering_xmls)
+        mapping_xmls = map(lambda name: os.path.join(VOTINGS_FOLDER, name), filtering_xmls)
         return mapping_xmls
 
     def import_votings(self):
