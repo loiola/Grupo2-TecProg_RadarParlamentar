@@ -33,10 +33,13 @@ def main():
     """Imports all data from XML by importer"""
 
     print 'IMPORTANDO DADOS DA CAMARA MUNICIPAL DE SAO PAULO (CMSP)'
+
     house_generator = GeradorCasaLegislativa()
     cmsp = house_generator.generate_cmsp()
     importer = importerCMSP(cmsp)
-    for xml in [XML2010, XML2011, XML2012, XML2013, XML2014]:
+    xmls_per_years = [XML2010, XML2011, XML2012, XML2013, XML2014]
+
+    for xml in xmls_per_years
         importer.import_from(xml)
     print 'Importacao dos dados da Camara Municipal de Sao Paulo (CMSP) terminada'
 
@@ -66,7 +69,6 @@ initial_period_parseCMSP = parse_datetime('2010-01-01 0:0:0')
 
 #Receives the end date of the period of data
 final_period_parseCMSP = parse_datetime('2012-12-31 0:0:0')
-
 
 class GeradorCasaLegislativa(object):
 
@@ -146,7 +148,7 @@ class XmlCMSP:
             return models.ABSTENCAO
 
     # The 'partido' method can not be renamed or break the code.
-    def partido(self, ver_tree):
+    def party(self, ver_tree):
 
         # Political parties stores coming to ver_tree.
         political_party_name = ver_tree.get('Partido').strip()
@@ -182,11 +184,11 @@ class XmlCMSP:
         return voter
 
     # The 'legislatura' method can not be renamed or break the code.
-    def legislatura(self, ver_tree):
+    def legislature(self, ver_tree):
         """Creates and returns legislatura for the given political party"""
 
         #Initializing the variable, passing as parameter 'ver_tree'.
-        political_party = self.partido(ver_tree)
+        political_party = self.party(ver_tree)
 
         # Initializing the variable, passing as parameter 'ver_tree'.
         voter = self.list_parliamentary(ver_tree)
@@ -203,7 +205,7 @@ class XmlCMSP:
         else:
             legislature = models.Legislatura()
             legislature.parlamentar = voter
-            legislature.partido = political_party
+            legislature.party = political_party
             legislature.casa_legislativa = self.cmsp
             legislature.inicio = initial_period_parseCMSP
             legislature.fim = final_period_parseCMSP
@@ -211,17 +213,17 @@ class XmlCMSP:
 
         return legislature
 
-    def get_votes_from_tree(self, vot_tree, voting):
+    def get_votes_from_tree(self, vote_tree, voting):
         """Extract list of votes the vote of XML and saved in the database
         Arguments:
            vot_tree -- tree of votes
            votacao -- object of 'Votacao' type"""
 
-        for ver_tree in vot_tree.getchildren():
+        for ver_tree in vote_tree.getchildren():
             if ver_tree.tag == 'Vereador':
-                leg = self.legislatura(ver_tree)
+                leg = self.legislature(ver_tree)
                 vote = models.Voto()
-                vote.legislatura = leg
+                vote.legislature = leg
                 vote.votacao = voting
                 vote.opcao = self.interpret_vote(ver_tree.get('Voto'))
                 if vote.opcao is not None:
@@ -250,7 +252,7 @@ class XmlCMSP:
                 voting_blank = models.Votacao.objects.filter(
                     id_vot=id_vote)
                 if voting_blank:
-                    vot = voting_blank[0]
+                    vote = voting_blank[0]
                 else:
                     if proposition_name in propositions:
                         proposition = propositions[proposition_name]
@@ -267,23 +269,23 @@ class XmlCMSP:
                     if self.verbose:
                         print 'Proposicao %s salva' % proposition
                     proposition.save_data_in_file()
-                    vot = models.Votacao()
+                    vote = models.Votacao()
 
                     # To create de primary key and assign the votes
-                    vot.save_data_in_file()
-                    vot.id_vot = id_vote
-                    vot.descricao = abstract
-                    vot.data = self.convert_data(vot_tree.get('DataDaSessao'))
-                    vot.resultado = vot_tree.get('Resultado')
-                    self.get_votes_from_tree(vot_tree, vot)
-                    vot.proposicao = proposition
+                    vote.save_data_in_file()
+                    vote.id_vot = id_vote
+                    vote.descricao = abstract
+                    vote.data = self.convert_data(vot_tree.get('DataDaSessao'))
+                    vote.resultado = vot_tree.get('Resultado')
+                    self.get_votes_from_tree(vot_tree, vote)
+                    vote.proposicao = proposition
                     if self.verbose:
-                        print 'Votacao %s salva' % vot
+                        print 'Votacao %s salva' % vote
                     else:
                         self.show_progress()
-                    vot.save_data_in_file()
+                    vote.save_data_in_file()
 
-                votings.append(vot)
+                votings.append(vote)
 
     def show_progress(self):
         """Show progress on screen"""
@@ -315,8 +317,8 @@ class importerCMSP:
         return votings
 
     def analyze_xml(self, propositions, votings, tree):
-        for vot_tree in tree.getchildren():
-            self.xml_cmsp.get_votings_from_tree(propositions, votings, vot_tree)
+        for vote_tree in tree.getchildren():
+            self.xml_cmsp.get_votings_from_tree(propositions, votings, vote_tree)
 
     @staticmethod
     def open_xml(xml_file):
