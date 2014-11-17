@@ -30,11 +30,11 @@ def calculate_vector_size(vector):
   The vector's norm, which is the square root of the sum of the squares of each element of the vector.
   """
   sum = 0
-  for v_i in vector:
-    sum += v_i*v_i
+  for index_value in vector:
+    sum += index_value*index_value
   return math.sqrt(sum)
 
-def normalize_vector(vetor):
+def normalize_vector(vector):
   """Calculates a normalized vector in the same direction and the direction vector supplied.
 
   Arguments:
@@ -44,9 +44,9 @@ def normalize_vector(vetor):
   A list representing normalized vector (vn), calculated as 'vn_i = vector_i / norm(vector)'
   """
   normalized = []
-  n = calculate_vector_size(vetor)
-  for v_i in vetor:
-    normalized.append(v_i / n)
+  vector_size = calculate_vector_size(vector)
+  for index_value in vector:
+    normalized.append(index_value / vector_size)
   return normalized
 
 def calculate_scalar_product(vector1, vector2):
@@ -60,6 +60,6 @@ def calculate_scalar_product(vector1, vector2):
   Exemple: v1=[a,b,c], v2=[x,y,z] => v1.v2 = a*x + b*y +c*z
   """
   sum = 0
-  for v1, v2 in zip(vector1, vector2):
-    sum += v1*v2
+  for vector1, vector2 in zip(vector1, vector2):
+    sum += vector1*vector2
   return sum
