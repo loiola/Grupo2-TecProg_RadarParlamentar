@@ -328,7 +328,7 @@ class MatrizesDeDadosBuilder:
         # Array of search_political_party.nome's, one by legislature
         self.partido_do_parlamentar = []
 
-        # Key is the name of party, and value is VotoPartido
+        # Key is the name of party, and value is PoliticalPartyVote
         self._dic_partido_votos = {}
 
         # legislatura.id => voto.opcao

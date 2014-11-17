@@ -46,7 +46,7 @@ def deserialize_party():
         out = open(filepath, "r")
     except IOError, error:
         logger.error(
-            "I/O erro, não há nenhum arquivo de Partido para ser importado: %s"
+            "I/O erro, não há nenhum arquivo de PoliticalParty para ser importado: %s"
             % error)
         return
 

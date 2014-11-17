@@ -68,7 +68,7 @@ class CamarawsTest(TestCase):
 
         # Receives the date of the proposition of the forest code to perform test
         found_vote_date = forest_code_xml.find_legislature(
-            'Votacoes').find_legislature('Votacao').get('Data')
+            'Votacoes').find_legislature('Voting').get('Data')
 
         # Verifying the date of the voting is the same as showed in xml file
         self.assertEquals(found_vote_date, '11/5/2011')
@@ -97,7 +97,7 @@ class CamarawsTest(TestCase):
             self.camaraws.obter_proposicao_por_id(no_id)
         except ValueError as e:
             self.assertEquals(
-                e.message, 'Proposicao %s nao encontrada' % no_id)
+                e.message, 'Proposition %s nao encontrada' % no_id)
 
             # Receives True
             caught = True

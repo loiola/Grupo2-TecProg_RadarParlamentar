@@ -305,7 +305,7 @@ class ModelsTest(TestCase):
 
     def test_get_no_party(self):
 
-        # Receives the objects from Partido whre tha party name is equals
+        # Receives the objects from PoliticalParty whre tha party name is equals
         # SEM_PARTIDO
         no_party = models.Partido.get_no_party()
 
@@ -354,7 +354,7 @@ class ModelsTest(TestCase):
 
     def test_remove_house(self):
 
-        # Receives objects of Partido for inserting data to removal house test
+        # Receives objects of PoliticalParty for inserting data to removal house test
         partyTest1 = models.Partido()
 
         partyTest1.nome = 'PA'
@@ -363,7 +363,7 @@ class ModelsTest(TestCase):
         partyTest1.save()
 
 
-        # Receives objects of Partido for inserting data to removal house test
+        # Receives objects of PoliticalParty for inserting data to removal house test
         partyTest2 = models.Partido()
 
         partyTest2.nome = 'PB'
@@ -434,7 +434,7 @@ class ModelsTest(TestCase):
         legislatureTest2.save()
 
 
-        # Receives objects of Proposicao for inserting data to removal house test
+        # Receives objects of Proposition for inserting data to removal house test
         propositionTest1 = models.Proposicao()
 
         propositionTest1.id_prop = '0001'
@@ -445,7 +445,7 @@ class ModelsTest(TestCase):
         propositionTest1.casa_legislativa = lesgilativeHouseTest1
         propositionTest1.save()
 
-        # Receives objects of Proposicao for inserting data to removal house test
+        # Receives objects of Proposition for inserting data to removal house test
         propositionTest2 = models.Proposicao()
 
         propositionTest2.id_prop = '0002'
@@ -469,7 +469,7 @@ class ModelsTest(TestCase):
 
         voteTest1.save()
 
-        # Receives all objects of Partido from models before removal
+        # Receives all objects of PoliticalParty from models before removal
         before_party_objects = models.Partido.objects.all()
 
         # Receives all objects of Parlamentar from models before removal
@@ -481,13 +481,13 @@ class ModelsTest(TestCase):
         # Receives all objects of Legislatura from models before removal
         before_legislature_objects = models.Legislatura.objects.all()
 
-        # Receives all objects of Proposicao from models before removal
+        # Receives all objects of Proposition from models before removal
         before_proposition_objects = models.Proposicao.objects.all()
 
         # Receives all objects of Voto from models before removal
         before_vote_objects = models.Voto.objects.all()
 
-        # Receives all objects of Votacao from models before removal
+        # Receives all objects of Voting from models before removal
         before_voting_objects = models.Votacao.objects.all()
 
         # Receives the names of partidos before removal
@@ -536,7 +536,7 @@ class ModelsTest(TestCase):
         models.CasaLegislativa.remove_house('casa_qualquer')
         models.CasaLegislativa.remove_house('cs1')
 
-        # Receives all objects of Partido from models after removal
+        # Receives all objects of PoliticalParty from models after removal
         after_party_objects = models.Partido.objects.all()
 
         # Receives all objects of Parlamentar from models after removal
@@ -554,7 +554,7 @@ class ModelsTest(TestCase):
         # Receives all objects of Voto from models after removal
         after_vote_objects = models.Voto.objects.all()
 
-        # Receives all objects of Votacao from models after removal
+        # Receives all objects of Voting from models after removal
         after_voting_objects = models.Votacao.objects.all()
 
         # Receives the names of partidos after removal

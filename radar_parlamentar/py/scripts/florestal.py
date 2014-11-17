@@ -41,7 +41,7 @@ for votations in proposition.votacoes:
   print(votations)
 
   if (len(sys.argv) > 1 and sys.argv[1] == '-uf'):
-    dic = votations.por_uf()
+    dic = votations.aggregate_votes_by_UF()
   else:
     dic = votations.by_party()
 

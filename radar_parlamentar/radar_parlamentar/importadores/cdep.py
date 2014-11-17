@@ -127,7 +127,7 @@ class Camaraws:
             Camaraws.PROPOSITION_URL, consult_parameters, **args)
         tree = self.url.toXml(url)
         if tree is None:
-            raise ValueError('Proposicao %s nao encontrada' % id_propositions)
+            raise ValueError('Proposition %s nao encontrada' % id_propositions)
         return tree
 
     def obter_votacoes(self, acronym, number, year, **kwargs):
@@ -330,7 +330,7 @@ class ImportadorCamara:
         self.importadas = 0  
         self.partidos = {}
 
-            # Political parties cache (key is name, and value is object Partido)
+            # Political parties cache (key is name, and value is object PoliticalParty)
         self.parlamentares = {}
 
     # Parliamentary cache (key is 'nome-search_political_party', and value is object Parlamentar
@@ -379,7 +379,7 @@ class ImportadorCamara:
 
     def _propostion_from_xml(self, proposition_xml, id_proposition):
         """Receive XML representing proposition (object etree)
-        and returns objects like Proposicao, which is saved in database.
+        and returns objects like Proposition, which is saved in database.
         If proposition already exists in the database, it returned the proposition
         that was already in the bank."""
 
@@ -446,7 +446,7 @@ class ImportadorCamara:
 
         Attributes:
             voto_xml -- XML representing voting (object etree)
-            votacao -- object of type Votacao
+            votacao -- object of type Voting
 
         Returns:
             object of type Voting."""
@@ -487,7 +487,7 @@ class ImportadorCamara:
 
     def _legislature(self, vote_xml):
     
-        party = self._party(vote_xml.get('Partido'))
+        party = self._party(vote_xml.get('PoliticalParty'))
         voter = self._voter(vote_xml.get('Nome'), party.nome)
 
         legs = models.Legislatura.objects.filter(

@@ -157,7 +157,7 @@ class importador_interno:
 
         legislativeHouse = self.new_legislativeHouse(root)
 
-        for child_proposition in root.iter("Proposicao"):
+        for child_proposition in root.iter("Proposition"):
 
             proposition = self.new_proposition(child_proposition, legislativeHouse)
 
@@ -172,7 +172,7 @@ class importador_interno:
                 proposition.save_data_in_file()
 
             # Get the daughter of the subtree being traversed.
-            for child_voting in child_proposition.findall("Votacao"):
+            for child_voting in child_proposition.findall("Voting"):
 
                 voting = self.new_voting(child_voting, proposition)
 

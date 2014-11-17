@@ -37,7 +37,7 @@ def get_votings(type, num, year):
     tipo, num, ano: strings that caracterize a proposition
 
     Returns:
-    A propostion as an object class model.Proposicao.
+    A propostion as an object class model.Proposition.
     If the proposition doesn't be found or doesn't have votings, returns None."""
 
     url = GET_VOTINGS_PROPOSITION % (type, num, year)
@@ -48,7 +48,7 @@ def get_votings(type, num, year):
         return None
 
     try:
-        proposition = Proposicao.fromxml(xml)
+        proposition = Proposicao.from_xml(xml)
     except:
         return None
     if not isinstance(proposition, Proposicao):
@@ -98,7 +98,7 @@ def get_proposition_name_by_id(idProposition):
         return None
 
     try:
-        propositionName = Proposicao.fromxmlid(xml)
+        propositionName = Proposicao.from_xml_id(xml)
     except:
         return None
 

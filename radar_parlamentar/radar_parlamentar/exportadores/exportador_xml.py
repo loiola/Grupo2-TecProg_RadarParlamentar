@@ -61,10 +61,10 @@ def serialize_casa_legislativa(short_name):
         id_proposition = str(proposition_aux.id_prop);
         number_proposition = str(proposition_aux.numero);
 
-        print "Exportando todas as votações e votos da Proposicao com id: "
+        print "Exportando todas as votações e votos da Proposition com id: "
         print id_proposition + ", numero: " + number_proposition
         proposition_xml = Element(
-            'Proposicao',
+            'Proposition',
             id_prop = str(proposition_aux.id_prop),
             sigla=proposition_aux.sigla,
             numero = str(proposition_aux.numero),
@@ -79,7 +79,7 @@ def serialize_casa_legislativa(short_name):
             proposicao_id=proposition_aux)
 
         for vote_aux in voting:
-            voting_xml = Element('Votacao',
+            voting_xml = Element('Voting',
                 id_vot=str(vote_aux.id_vot),
                 descricao = vote_aux.descricao,
                 data = str(vote_aux.data),

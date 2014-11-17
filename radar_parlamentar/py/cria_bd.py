@@ -20,7 +20,7 @@
 
 Classes:
 GeradorBD: Creates a 'sqlite3 database' from propositions provided (list of objects of
-type Proposicao).
+type Proposition).
 
 Functions:
 cria_bd_camara_deputados: Creates the database in the chamber of deputies 'resultados/camara.db'
@@ -46,13 +46,13 @@ import sqlite3 as lite
 
 class GeradorBD:
     """Creates a sqlite3 database from propositions provided (list of objects of type
-    Proposicao)."""
+    Proposition)."""
 
     def __init__(self, propositions = [], db = "resultados/votos.db"):
         """Initializing variables"""
 
         """ Arguments:
-        proposicoes - list of objects of type Proposicao
+        proposicoes - list of objects of type Proposition
         db - string with the location of the database to be generated (default =
         "resultados/votos.db")."""
 

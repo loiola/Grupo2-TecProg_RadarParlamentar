@@ -293,7 +293,7 @@ class ImportadorVotacoesSenado:
             proposition = self.proposicoes[proposition_name]
         else:
 
-            # Get 'Proposicao' from 'models'.
+            # Get 'Proposition' from 'models'.
             proposition = models.Proposicao()
             proposition.sigla = voting_tree.find_legislature('SiglaMateria').text
             proposition.numero = voting_tree.find_legislature('NumeroMateria').text
@@ -322,7 +322,7 @@ class ImportadorVotacoesSenado:
                 secret_voting = votings_tree.find_legislature('Secreta').text
 
                 # If voting is not secret:
-                if votings_tree.tag == 'Votacao' and secret_voting == 'N':
+                if votings_tree.tag == 'Voting' and secret_voting == 'N':
 
                     # Receive 'CodigoSessaoVotacao' from 'votacao_tree'.
                     code_section_voting = votings_tree.find_legislature('CodigoSessaoVotacao').text

@@ -151,7 +151,7 @@ class XmlCMSP:
     def party(self, ver_tree):
 
         # Political parties stores coming to ver_tree.
-        political_party_name = ver_tree.get('Partido').strip()
+        political_party_name = ver_tree.get('PoliticalParty').strip()
 
         # Stores political party name coming from 'partido' method (in models)
         political_party = models.Partido.from_name(political_party_name)
@@ -217,7 +217,7 @@ class XmlCMSP:
         """Extract list of votes the vote of XML and saved in the database
         Arguments:
            vot_tree -- tree of votes
-           votacao -- object of 'Votacao' type"""
+           votacao -- object of 'Voting' type"""
 
         for ver_tree in vote_tree.getchildren():
             if ver_tree.tag == 'Vereador':
@@ -235,7 +235,7 @@ class XmlCMSP:
         # Gets the type of voting from 'vot_tree'.
         type_of_votating = vot_tree.get('TipoVotacao')
 
-        if vot_tree.tag == 'Votacao' and type_of_votating == 'Nominal':
+        if vot_tree.tag == 'Voting' and type_of_votating == 'Nominal':
 
             # Receive 'Materia' and 'Ementa' from 'vot_tree'.
             abstract = '%s -- %s' % (
@@ -267,7 +267,7 @@ class XmlCMSP:
                         propositions[proposition_name] = proposition
 
                     if self.verbose:
-                        print 'Proposicao %s salva' % proposition
+                        print 'Proposition %s salva' % proposition
                     proposition.save_data_in_file()
                     vote = models.Votacao()
 
@@ -280,7 +280,7 @@ class XmlCMSP:
                     self.get_votes_from_tree(vot_tree, vote)
                     vote.proposicao = proposition
                     if self.verbose:
-                        print 'Votacao %s salva' % vote
+                        print 'Voting %s salva' % vote
                     else:
                         self.show_progress()
                     vote.save_data_in_file()

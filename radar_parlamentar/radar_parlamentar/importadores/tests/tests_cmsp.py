@@ -35,9 +35,9 @@ class AprendizadoEtreeCase(TestCase):
 
     def setUp(self):
         xml = """<CMSP>
-                    <Votacao VotacaoID="1">
+                    <Voting VotacaoID="1">
                         <Vereador NomeParlamentar="Teste_vereador"/>
-                    </Votacao>
+                    </Voting>
                 </CMSP>
                 """
         self.no_xml = etree.fromstring(xml)
@@ -47,7 +47,7 @@ class AprendizadoEtreeCase(TestCase):
 
     def test_go_through_node(self):
         for no_filho in self.no_xml.getchildren():
-            self.assertEquals(no_filho.tag, "Votacao")
+            self.assertEquals(no_filho.tag, "Voting")
             for no_neto in no_filho:
                 self.assertEquals(no_neto.tag, "Vereador")
 
@@ -151,13 +151,13 @@ class ModelCMSPCase(TestCase):
 
     def test_councilman_without_political_party(self):
         councilman_in_xml = etree.fromstring(
-            "<Vereador Partido=\"nao tem partido\"/>")
+            "<Vereador PoliticalParty=\"nao tem partido\"/>")
         political_party = self.xmlCMSP.partido(councilman_in_xml)
         self.assertEquals(
             political_party, models.Partido.objects.get(nome=models.SEM_PARTIDO))
 
     def test_councilman_with_political_party(self):
-        councilman_in_xml = etree.fromstring("<Vereador Partido=\"PTest\"/>")
+        councilman_in_xml = etree.fromstring("<Vereador PoliticalParty=\"PTest\"/>")
         political_party = self.xmlCMSP.partido(councilman_in_xml)
         self.assertEquals(political_party, models.Partido.objects.get(name="PTest"))
 
@@ -170,7 +170,7 @@ class ModelCMSPCase(TestCase):
 
     def test_save_inexisting_legislature(self):
         councilman_in_xml = etree.fromstring(
-            "<Vereador IDParlamentar=\"999\" NomeParlamentar=\"Nao_consta\" Partido=\"PTest\"/>")
+            "<Vereador IDParlamentar=\"999\" NomeParlamentar=\"Nao_consta\" PoliticalParty=\"PTest\"/>")
         legislature = self.xmlCMSP.legislatura(councilman_in_xml)
         self.assertEquals(legislature, models.Legislatura.objects.get(
             parlamentar__id_parlamentar="999", party_name="PTest"))

@@ -19,7 +19,7 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('modelagem', ['Indexers'])
 
-        # Adding model 'Partido'
+        # Adding model 'PoliticalParty'
         db.create_table('modelagem_partido', (
             ('id', self.gf('django.db.models.fields.AutoField')(
                 primary_key=True)),
@@ -29,7 +29,7 @@ class Migration(SchemaMigration):
             ('cor', self.gf('django.db.models.fields.CharField')(
                 max_length=7)),
         ))
-        db.send_create_signal('modelagem', ['Partido'])
+        db.send_create_signal('modelagem', ['PoliticalParty'])
 
         # Adding model 'CasaLegislativa'
         db.create_table('modelagem_casalegislativa', (
@@ -75,13 +75,13 @@ class Migration(SchemaMigration):
                 (null=True)),
             ('fim', self.gf('django.db.models.fields.DateField')(null=True)),
             ('search_political_party', self.gf('django.db.models.fields.related.ForeignKey')
-             (to=orm['modelagem.Partido'])),
+             (to=orm['modelagem.PoliticalParty'])),
             ('localidade', self.gf('django.db.models.fields.CharField')
              (max_length=100, blank=True)),
         ))
         db.send_create_signal('modelagem', ['Legislatura'])
 
-        # Adding model 'Proposicao'
+        # Adding model 'Proposition'
         db.create_table('modelagem_proposicao', (
             ('id', self.gf('django.db.models.fields.AutoField')
                 (primary_key=True)),
@@ -109,9 +109,9 @@ class Migration(SchemaMigration):
             ('autor_principal', self.gf(
                 'django.db.models.fields.TextField')(blank=True)),
         ))
-        db.send_create_signal('modelagem', ['Proposicao'])
+        db.send_create_signal('modelagem', ['Proposition'])
 
-        # Adding M2M table for field autores on 'Proposicao'
+        # Adding M2M table for field autores on 'Proposition'
         m2m_table_name = db.shorten_name('modelagem_proposicao_autores')
         db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True,
@@ -123,7 +123,7 @@ class Migration(SchemaMigration):
         ))
         db.create_unique(m2m_table_name, ['proposicao_id', 'parlamentar_id'])
 
-        # Adding model 'Votacao'
+        # Adding model 'Voting'
         db.create_table('modelagem_votacao', (
             ('id', self.gf('django.db.models.fields.AutoField')
                 (primary_key=True)),
@@ -137,16 +137,16 @@ class Migration(SchemaMigration):
                 (blank=True)),
             ('proposicao', self.gf(
                 'django.db.models.fields.related.ForeignKey')
-             (to=orm['modelagem.Proposicao'], null=True)),
+             (to=orm['modelagem.Proposition'], null=True)),
         ))
-        db.send_create_signal('modelagem', ['Votacao'])
+        db.send_create_signal('modelagem', ['Voting'])
 
         # Adding model 'Voto'
         db.create_table('modelagem_voto', (
             ('id', self.gf('django.db.models.fields.AutoField')
                 (primary_key=True)),
             ('votacao', self.gf('django.db.models.fields.related.ForeignKey')
-             (to=orm['modelagem.Votacao'])),
+             (to=orm['modelagem.Voting'])),
             ('legislatura', self.gf(
                 'django.db.models.fields.related.ForeignKey')
              (to=orm['modelagem.Legislatura'])),
@@ -159,7 +159,7 @@ class Migration(SchemaMigration):
         # Deleting model 'Indexers'
         db.delete_table('modelagem_indexadores')
 
-        # Deleting model 'Partido'
+        # Deleting model 'PoliticalParty'
         db.delete_table('modelagem_partido')
 
         # Deleting model 'CasaLegislativa'
@@ -171,13 +171,13 @@ class Migration(SchemaMigration):
         # Deleting model 'Legislatura'
         db.delete_table('modelagem_legislatura')
 
-        # Deleting model 'Proposicao'
+        # Deleting model 'Proposition'
         db.delete_table('modelagem_proposicao')
 
-        # Removing M2M table for field autores on 'Proposicao'
+        # Removing M2M table for field autores on 'Proposition'
         db.delete_table(db.shorten_name('modelagem_proposicao_autores'))
 
-        # Deleting model 'Votacao'
+        # Deleting model 'Voting'
         db.delete_table('modelagem_votacao')
 
         # Deleting model 'Voto'
@@ -224,7 +224,7 @@ class Migration(SchemaMigration):
             'parlamentar': ('django.db.models.fields.related.ForeignKey', [],
                             {'to': "orm['modelagem.Parlamentar']"}),
             'search_political_party': ('django.db.models.fields.related.ForeignKey', [],
-                        {'to': "orm['modelagem.Partido']"})
+                        {'to': "orm['modelagem.PoliticalParty']"})
         },
         'modelagem.parlamentar': {
             'Meta': {'object_name': 'Parlamentar'},
@@ -238,7 +238,7 @@ class Migration(SchemaMigration):
                      {'max_length': '100'})
         },
         'modelagem.search_political_party': {
-            'Meta': {'object_name': 'Partido'},
+            'Meta': {'object_name': 'PoliticalParty'},
             'cor': ('django.db.models.fields.CharField', [],
                     {'max_length': '7'}),
             'id': ('django.db.models.fields.AutoField', [],
@@ -248,7 +248,7 @@ class Migration(SchemaMigration):
             'numero': ('django.db.models.fields.IntegerField', [], {})
         },
         'modelagem.proposicao': {
-            'Meta': {'object_name': 'Proposicao'},
+            'Meta': {'object_name': 'Proposition'},
             'ano': ('django.db.models.fields.CharField', [],
                     {'max_length': '4'}),
             'autor_principal': ('django.db.models.fields.TextField', [],
@@ -281,7 +281,7 @@ class Migration(SchemaMigration):
                          {'blank': 'True'})
         },
         'modelagem.votacao': {
-            'Meta': {'object_name': 'Votacao'},
+            'Meta': {'object_name': 'Voting'},
             'data': ('django.db.models.fields.DateField', [],
                      {'null': 'True', 'blank': 'True'}),
             'descricao': ('django.db.models.fields.TextField', [],
@@ -291,7 +291,7 @@ class Migration(SchemaMigration):
             'id_vot': ('django.db.models.fields.CharField', [],
                        {'max_length': '100', 'blank': 'True'}),
             'proposicao': ('django.db.models.fields.related.ForeignKey', [],
-                           {'to': "orm['modelagem.Proposicao']",
+                           {'to': "orm['modelagem.Proposition']",
                             'null': 'True'}),
             'resultado': ('django.db.models.fields.TextField', [],
                           {'blank': 'True'})
@@ -305,7 +305,7 @@ class Migration(SchemaMigration):
             'opcao': ('django.db.models.fields.CharField', [],
                       {'max_length': '10'}),
             'votacao': ('django.db.models.fields.related.ForeignKey', [],
-                        {'to': "orm['modelagem.Votacao']"})
+                        {'to': "orm['modelagem.Voting']"})
         }
     }
 

@@ -9,13 +9,13 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
 
-        # Changing field 'Partido.nome'
+        # Changing field 'PoliticalParty.nome'
         db.alter_column('modelagem_partido', 'nome',
                         self.gf('django.db.models.fields.CharField')(max_length=12))
 
     def backwards(self, orm):
 
-        # Changing field 'Partido.nome'
+        # Changing field 'PoliticalParty.nome'
         db.alter_column('modelagem_partido', 'nome',
                         self.gf('django.db.models.fields.CharField')(max_length=13))
 
@@ -55,7 +55,7 @@ class Migration(SchemaMigration):
             'parlamentar': ('django.db.models.fields.related.ForeignKey', [], {
                 'to': "orm['modelagem.Parlamentar']"}),
             'partido': ('django.db.models.fields.related.ForeignKey', [], {
-                'to': "orm['modelagem.Partido']"})
+                'to': "orm['modelagem.PoliticalParty']"})
         },
 
         'modelagem.parlamentar': {
@@ -71,7 +71,7 @@ class Migration(SchemaMigration):
 
         'modelagem.partido': {
 
-            'Meta': {'object_name': 'Partido'},
+            'Meta': {'object_name': 'PoliticalParty'},
             'cor': ('django.db.models.fields.CharField', [], {'max_length': '7'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'nome': ('django.db.models.fields.CharField', [], {'max_length': '12'}),
@@ -80,7 +80,7 @@ class Migration(SchemaMigration):
 
         'modelagem.proposicao': {
 
-            'Meta': {'object_name': 'Proposicao'},
+            'Meta': {'object_name': 'Proposition'},
             'ano': ('django.db.models.fields.CharField', [], {'max_length': '4'}),
             'autor_principal': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'autores': ('django.db.models.fields.related.ManyToManyField', [], {
@@ -115,7 +115,7 @@ class Migration(SchemaMigration):
             'parlamentar': ('django.db.models.fields.related.ForeignKey', [], {
                 'to': u"orm['modelagem.Parlamentar']"}),
             'partido': ('django.db.models.fields.related.ForeignKey', [], {
-                'to': u"orm['modelagem.Partido']"})
+                'to': u"orm['modelagem.PoliticalParty']"})
         },
 
         u'modelagem.parlamentar': {
@@ -131,7 +131,7 @@ class Migration(SchemaMigration):
 
         u'modelagem.partido': {
 
-            'Meta': {'object_name': 'Partido'},
+            'Meta': {'object_name': 'PoliticalParty'},
             'cor': ('django.db.models.fields.CharField', [], {'max_length': '7'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'nome': ('django.db.models.fields.CharField', [], {'max_length': '12'}),
@@ -140,7 +140,7 @@ class Migration(SchemaMigration):
 
         u'modelagem.proposicao': {
 
-            'Meta': {'object_name': 'Proposicao'},
+            'Meta': {'object_name': 'Proposition'},
             'ano': ('django.db.models.fields.CharField', [], {'max_length': '4'}),
             'autor_principal': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'autores': ('django.db.models.fields.related.ManyToManyField', [], {
@@ -167,7 +167,7 @@ class Migration(SchemaMigration):
 
         'modelagem.votacao': {
 
-            'Meta': {'object_name': 'Votacao'},
+            'Meta': {'object_name': 'Voting'},
             'data': ('django.db.models.fields.DateField', [], {'null': 'True',
                                                                'blank': 'True'}),
             'descricao': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
@@ -175,7 +175,7 @@ class Migration(SchemaMigration):
             'id_vot': ('django.db.models.fields.CharField', [], {'max_length': '100',
                                                                  'blank': 'True'}),
             'proposicao': ('django.db.models.fields.related.ForeignKey', [], {
-                'to': "orm['modelagem.Proposicao']", 'null': 'True'}),
+                'to': "orm['modelagem.Proposition']", 'null': 'True'}),
             'resultado': ('django.db.models.fields.TextField', [], {'blank': 'True'})
         },
 
@@ -187,7 +187,7 @@ class Migration(SchemaMigration):
                 'to': "orm['modelagem.Legislatura']"}),
             'opcao': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'votacao': ('django.db.models.fields.related.ForeignKey', [], {
-                'to': "orm['modelagem.Votacao']"})
+                'to': "orm['modelagem.Voting']"})
         }
 
     }

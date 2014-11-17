@@ -103,8 +103,8 @@ class Partido(models.Model):
          color - string; eg #FFFFFF
 
      Class methods:
-         from_name (name): returns object of type Partido
-         from_number (number): returns object of type Partido
+         from_name (name): returns object of type PoliticalParty
+         from_number (number): returns object of type PoliticalParty
          get_no_party (): returns a party called 'NO PARTY'"""
 
     LISTA_PARTIDOS = os.path.join(MODULE_DIR, 'recursos/partidos.txt')
@@ -120,7 +120,7 @@ class Partido(models.Model):
 
     @classmethod
     def from_name(cls, nome):
-        """Given a name and return an object of type Partido
+        """Given a name and return an object of type PoliticalParty
              or None if name is invalid"""
 
         if nome is None:
@@ -139,7 +139,7 @@ class Partido(models.Model):
 
     @classmethod
     def from_number(cls, numero):
-        """Receives a number (int) and returns an object of type Partido
+        """Receives a number (int) and returns an object of type PoliticalParty
              or None if name is invalid"""
 
         if numero is None:
@@ -396,7 +396,7 @@ class Legislatura(models.Model):
                          object of type Parliamentary
          casa_legislativa - object type CasaLegislativa
          inicio, fim - dates indicating the period
-         search_political_party - object of type Partido
+         search_political_party - object of type PoliticalParty
          localidade - string; eg 'SP', 'RJ' if the Senate or
                                      Chamber of Deputies
 
@@ -415,7 +415,7 @@ class Legislatura(models.Model):
     # End date of the parliamentary legislatur
     fim = models.DateField(null=True)
 
-    # Partido to which the member belongs
+    # PoliticalParty to which the member belongs
     partido = models.ForeignKey(Partido)
 
     # Where parliamentary exerts its legislature (eg .: SP, RJ)
@@ -566,7 +566,7 @@ class Votacao(models.Model):
 
          Return: a dictionary whose key is the name of the party
          (string)
-         and the value is a VotoPartido"""
+         and the value is a PoliticalPartyVote"""
 
         # Dictionary where the key is the name of the party and the value are the
         # votes that are added to the party
@@ -703,7 +703,7 @@ class VotoPartido(VotosAgregados):
     """A set of votes a party.
 
      attributes:
-         party - object of type Partido
+         party - object of type PoliticalParty
          yes, no, abstention -
              integers representing the number of votes in the set"""
 
@@ -713,4 +713,4 @@ class VotoPartido(VotosAgregados):
         VotosAgregados.__init__(self)
         self.partido = partido
 
-# TODO class VotoUF(VotosAgregados):
+# TODO class UFVote(AggregateVotes):

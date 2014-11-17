@@ -34,7 +34,7 @@ import matplotlib.colors
 from radar_parlamentar.py.model_old import inicializar_diclistadeps
 
 
-class Analise:
+class Analysis:
     """Each instance custody analysis results in a period of time between
     self.data_inicial and self.data_final, where the partidos are considered
     listed in self.lista_partidos and the propositions of the  listed in self.
@@ -46,20 +46,20 @@ class Analise:
     first half of 2010, use:
 
     import analise
-    ANLS = analise.Analise('2010-01-01','2010-30-06')
+    ANLS = analise.Analysis('2010-01-01','2010-30-06')
 
     If it is desired to include only a few types of proposition, using the third
     argument, and if it is desired to include only a few partidos use the room, for
     example:
 
-    ANLS2 = analise.Analise('2010-01-01','2010-30-06',['MPV','PEC'],['PT','PMDB',
+    ANLS2 = analise.Analysis('2010-01-01','2010-30-06',['MPV','PEC'],['PT','PMDB',
     'PSDB','DEM','PSOL'])
 
     Instead of a list of partidos, the fourth argument can be an integer N to include
     only partidos with N or more deputies. For example, to use all types of
     proposition but only partidos with six or more Members:
 
-    ANLS3 = analise.Analise('2010-01-01','2010-30-06',[],6)
+    ANLS3 = analise.Analysis('2010-01-01','2010-30-06',[],6)
 
     Attributes:
 
@@ -171,7 +171,7 @@ class Analise:
 
         # If the list 'tipos_proposicao' is empty, use all kinds of proposition:
         if not self.propositions_type:
-            connection = lite.connect(Analise.database)
+            connection = lite.connect(Analysis.database)
             list_of_types = connection.execute('SELECT distinct tipo FROM PROPOSICOES')
             for type in list_of_types:
                 self.propositions_type.append(type[0])
@@ -183,7 +183,7 @@ class Analise:
 
             if not self.political_parties:
                 fill_parties = 1
-            connection = lite.connect(Analise.database)
+            connection = lite.connect(Analysis.database)
             list_of_types = connection.execute('SELECT * FROM PARTIDOS')
             parties_list = ['PT', 'PSDB', 'PV', 'PSOL', 'PCdoB', 'PP', 'PR', 'DEM', 'PMDB',
                                'PSC', 'PTB', 'PDT', 'PSB', 'PPS', 'PRB']
@@ -224,7 +224,7 @@ class Analise:
         for type in self.propositions_type:
             filter_types = filter_types + "'" + type + "',"
         filter_types = filter_types[0:len(filter_types)-1] + ")"
-        connection = lite.connect(Analise.database)
+        connection = lite.connect(Analysis.database)
         votings = connection.execute('SELECT votacoes.idProp,idVot,data,sim,nao,abstencao,obstrucao '
                                'FROM VOTACOES,PROPOSICOES WHERE votacoes.idProp=proposicoes.idProp '
                                'AND date(data)>date(?) AND date(data)<date(?) AND proposicoes.tipo IN %s'
@@ -245,7 +245,7 @@ class Analise:
         return total_number
 
 
-    def get_list_of_duputies_presents(self):
+    def get_list_of_deputies_presents(self):
 
         list_of_present_deputies = []
 
@@ -269,7 +269,7 @@ class Analise:
         votings = self.search_votings()
 
         # Create dictionary with id of political partidos:
-        connection = lite.connect(Analise.database)
+        connection = lite.connect(Analysis.database)
         table_parties = connection.execute('select numero,nome from partidos').fetchall()
         political_party_id = {}
         for table in table_parties:
@@ -308,7 +308,7 @@ class Analise:
                     self.vectors_voting[party_index][vote_index] = 0
 
                 # Tell deputies present:
-                list_of_present_deputies = self.get_list_of_duputies_presents()
+                list_of_present_deputies = self.get_list_of_deputies_presents()
 
                 self.vectors_size[party_index][vote_index] = numpy.size(list_of_present_deputies)
                 for deputy in list_of_present_deputies[0]:
@@ -375,11 +375,11 @@ class Analise:
         # Pick up votes in the database:
         votings = self.search_votings()
 
-        self.vectors_votings_uf = numpy.zeros((len(Analise.ufs_list),self.number_of_votings))
+        self.vectors_votings_uf = numpy.zeros((len(Analysis.ufs_list),self.number_of_votings))
         self.vectors_size_uf = self.vectors_votings_uf
-        self.size_uf = [0]*len(Analise.ufs_list)
+        self.size_uf = [0]*len(Analysis.ufs_list)
         ie =-1
-        for e in Analise.ufs_list:
+        for e in Analysis.ufs_list:
 
             ie += 1
 
@@ -456,7 +456,7 @@ class Analise:
                 # Method 2:
                 x = 0
                 for k in range(self.number_of_votings) :
-                    x += Analise.do_convolution(self.quadrivet_vot[i][k],self.quadrivet_vot[j][k])
+                    x += Analysis.do_convolution(self.quadrivet_vot[i][k],self.quadrivet_vot[j][k])
                 x = percentage_conversion_factor * x / self.number_of_votings
                 self.similarities_convolution[i][j] = x
         return
@@ -488,7 +488,7 @@ class Analise:
         try:
             return self.political_parties_size[self.list_political_parties.index(acronym_party)]
         except ValueError:
-            print "WARNING: Partido %s não presente na análise. Dados da análise:\n%s" % \
+            print "WARNING: PoliticalParty %s não presente na análise. Dados da análise:\n%s" % \
                   (acronym_party,self)
             return 0
 
@@ -498,7 +498,7 @@ class Analise:
         if self.size_uf==[]:
             self.inicialize_vectors_uf()
         try:
-            return self.size_uf[Analise.ufs_list.index(acronym_country.upper())]
+            return self.size_uf[Analysis.ufs_list.index(acronym_country.upper())]
         except ValueError:
             raise ValueError('Estado "%s" inválido.'%acronym_country)
 
@@ -556,7 +556,7 @@ class Analise:
         write_principal_components_of_analysis(fo, principal_components_analysis_uf)
     
         fo.write('\nCoordenadas:\n')
-        for e in Analise.ufs_list:
+        for e in Analysis.ufs_list:
             ie += 1
             fo.write('%s: [%f, %f]\n' % (e,coordinates[ie,0],coordinates[ie,1]) )
         fo.write('Tamanhos=%s\n' % str(self.size_uf))
@@ -640,7 +640,7 @@ def list_expressive_political_parties (N=1,data_inicial='2011-01-01',data_final=
     propositions in 'proposition_type', or if all 'proposition_type = []'."""
 
     # Create dictionary with id of political parties:
-    connection = lite.connect(Analise.database)
+    connection = lite.connect(Analysis.database)
     political_parties_table = connection.execute('select numero,nome from partidos').fetchall()
     political_party_id = {}
     for table in political_parties_table:
@@ -651,7 +651,7 @@ def list_expressive_political_parties (N=1,data_inicial='2011-01-01',data_final=
     connection.close_tag()
 
     # Pick up votes in the database:
-    analysis = Analise(data_inicial,data_final,tipos_proposicao)
+    analysis = Analysis(data_inicial,data_final,tipos_proposicao)
     votings = analysis.search_votings()
 
     # Initialize variables:
@@ -704,4 +704,4 @@ def list_expressive_political_parties (N=1,data_inicial='2011-01-01',data_final=
     return expressives
 
 if __name__ == "__main__":
-    Analise().plot_bubbles()
+    Analysis().plot_bubbles()

@@ -40,7 +40,7 @@ final_year = 2011
 output_file = 'colar_num_html.txt'
  
 # Algorithm:  
-# List of objects like Analise (that will be analisis anunual):
+# List of objects like Analysis (that will be analisis anunual):
 annual_list = []
 
 # Receives list of years of analysis (2012-2011)
@@ -48,7 +48,7 @@ years = range(initial_year,final_year+1)
 
 # Make PCAs:
 for year in years:
-    annual_list.append(analise.Analise(str(year)+'-01-01', str(year)+'-12-31', [],
+    annual_list.append(analise.Analysis(str(year)+'-01-01', str(year)+'-12-31', [],
                                   parties))
 
 # Receives the PCA list of data
@@ -175,7 +175,7 @@ open_file.write("""<script type="text/javascript" src="http://www.google.com/jsa
     function drawVisualization() { """)
 
 open_file.write('var data = new google.visualization.DataTable();\n')
-open_file.write("data.addColumn('string', 'Partido');\n")
+open_file.write("data.addColumn('string', 'PoliticalParty');\n")
 open_file.write("data.addColumn('date', 'Data');\n")
 open_file.write("data.addColumn('number', 'Eixo1');\n")
 open_file.write("data.addColumn('number', 'Eixo2');\n")
