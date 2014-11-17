@@ -73,8 +73,8 @@ class Analise:
         ANLS.lista_partidos : string list with P partidos
         ANLS.partidos : objects list type Parties
         ANLS.lista_votacoes : tuple list (idProp,idVot) with V voting
-        ANLS.vetores_votacao [P]x[V]: elemento ij é o voto médio do search_political_party i na votação
-            j, entre -1(não) e 1(sim)
+        ANLS.vetores_votacao [P]x[V]: elemento ij é o voto médio do search_political_party
+            i na votação j, entre -1(não) e 1(sim)
         ANLS.quadrivet_vot [P]x[V]: ij element is a tuple of four elements representing
             the number of votes yes, no, abst. and obstr. of party i in voting j
         ANLS.vetores_tamanho [P]x[V]: ij elements is a number of deputies of party i
@@ -130,7 +130,7 @@ class Analise:
     # Constant:
     ufs_list = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB',
                  'PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO']
-    db = 'resultados/camara.db'
+    database = 'resultados/camara.db'
 
     def __init__(self,inicial_date='2011-01-01',final_date='2011-12-31',propositions_type=[],
                  list_political_parties=[],political_parties=[]):
@@ -171,23 +171,24 @@ class Analise:
 
         # If the list 'tipos_proposicao' is empty, use all kinds of proposition:
         if not self.propositions_type:
-            connection = lite.connect(Analise.db)
+            connection = lite.connect(Analise.database)
             list_of_types = connection.execute('SELECT distinct tipo FROM PROPOSICOES')
-            for tipo in list_of_types:
-                self.propositions_type.append(tipo[0])
+            for type in list_of_types:
+                self.propositions_type.append(type[0])
             connection.close_tag()
 
         # If the list is empty, use all political partidos:
         if not self.list_political_parties:
             fill_parties = 0
+
             if not self.political_parties:
                 fill_parties = 1
-            connection = lite.connect(Analise.db)
+            connection = lite.connect(Analise.database)
             list_of_types = connection.execute('SELECT * FROM PARTIDOS')
-            improvisation_list = ['PT', 'PSDB', 'PV', 'PSOL', 'PCdoB', 'PP', 'PR', 'DEM', 'PMDB',
+            parties_list = ['PT', 'PSDB', 'PV', 'PSOL', 'PCdoB', 'PP', 'PR', 'DEM', 'PMDB',
                                'PSC', 'PTB', 'PDT', 'PSB', 'PPS', 'PRB']
             for item in list_of_types:
-                if item[1] in improvisation_list:
+                if item[1] in parties_list:
                     self.list_political_parties.append(item[1])
                     if fill_parties:
                         party = model.Partido(item[1],item[0])
@@ -208,11 +209,11 @@ class Analise:
         'Total de Votações analisadas: ' + str(self.number_of_votings) + '\n' + 
         'Tipos de matérias analisadas: ' + '\n'
 
-        for tipo in self.propositions_type:
-            feedback = feedback + '    ' + tipo + '\n' + 'Partidos analisados: ' + '\n'
+        for type in self.propositions_type:
+            feedback = feedback + '    ' + type + '\n' + 'Partidos analisados: ' + '\n'
      
-        for partido in self.political_parties:
-            feedback = feedback + '    ' + partido.nome + '\n'
+        for party in self.political_parties:
+            feedback = feedback + '    ' + party.nome + '\n'
 
         return feedback
 
@@ -223,7 +224,7 @@ class Analise:
         for type in self.propositions_type:
             filter_types = filter_types + "'" + type + "',"
         filter_types = filter_types[0:len(filter_types)-1] + ")"
-        connection = lite.connect(Analise.db)
+        connection = lite.connect(Analise.database)
         votings = connection.execute('SELECT votacoes.idProp,idVot,data,sim,nao,abstencao,obstrucao '
                                'FROM VOTACOES,PROPOSICOES WHERE votacoes.idProp=proposicoes.idProp '
                                'AND date(data)>date(?) AND date(data)<date(?) AND proposicoes.tipo IN %s'
@@ -268,7 +269,7 @@ class Analise:
         votings = self.search_votings()
 
         # Create dictionary with id of political partidos:
-        connection = lite.connect(Analise.db)
+        connection = lite.connect(Analise.database)
         table_parties = connection.execute('select numero,nome from partidos').fetchall()
         political_party_id = {}
         for table in table_parties:
@@ -639,7 +640,7 @@ def list_expressive_political_parties (N=1,data_inicial='2011-01-01',data_final=
     propositions in 'proposition_type', or if all 'proposition_type = []'."""
 
     # Create dictionary with id of political parties:
-    connection = lite.connect(Analise.db)
+    connection = lite.connect(Analise.database)
     political_parties_table = connection.execute('select numero,nome from partidos').fetchall()
     political_party_id = {}
     for table in political_parties_table:
