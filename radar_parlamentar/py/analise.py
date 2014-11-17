@@ -24,7 +24,7 @@ partidos to consider."""
 
 import re
 import numpy
-import pca
+import principalcomponentanalysis
 import sys
 import sqlite3 as lite
 import model
@@ -87,9 +87,9 @@ class Analysis:
         ANLS.vetores_tamanho_uf [E]x[V]: Deputies present by state by voting
         ANLS.tamanho_uf [E]: Total number of deputies, with minimal presence of 1 voting in
             period, of state i
-        ANLS.pca : Object of class pca.PCA
-        ANLS.pca_partido : Object of class pca.PCA analyzed by party
-        ANLS.pca_uf : Object of class pca.PCA analyzed by UF
+        ANLS.pca : Object of class pca.PrincipalComponentAnalysis
+        ANLS.pca_partido : Object of class pca.PrincipalComponentAnalysis analyzed by party
+        ANLS.pca_uf : Object of class pca.PrincipalComponentAnalysis analyzed by UF
         ANLS.semelhancas_escalar [P]x[P] : symmetric matrix of values ​​between 0 and 100
             representing the percentage of similarity between the partidos i and j (calculated
             by scalar product)
@@ -97,7 +97,7 @@ class Analysis:
             representing the similarity between partidos i and j, calculated by the
             convolution method
 
-       Objects of class pca.PCA has among other attributes:
+       Objects of class pca.PrincipalComponentAnalysis has among other attributes:
         a.pca.U [P][C] : cHowever vectors containing the vote identified as the main
         components
             (C V = number), not more of the voting
@@ -119,7 +119,7 @@ class Analysis:
         ANLS.partidos_2d(), a.partidos_2d(arquivo) : returns array with the coordinates of
             partidos in the first two principal components, and provided the name of a file
             write them upon the same
-        ANLS.estados_2d(), a.estados_2d(arquivo) : analogously to PCA by states
+        ANLS.estados_2d(), a.estados_2d(arquivo) : analogously to PrincipalComponentAnalysis by states
         ANLS.sem(siglaP1,siglaP2,tipo=2) : prints and returns the similarity between
             the two partidos data by acronyms, calculated by the scalar product (type = 1) or
             by the method method convolution (type = 2) (default)
@@ -140,7 +140,7 @@ class Analysis:
         all types;
         *A list of strings with the partidos to include in the analysis (leave blank to include all
         partidos), or an integer N to use partidos that have N or more Members in the period
-        Size analyzes of partidos and UFs, principal component analysis (PCA) are made
+        Size analyzes of partidos and UFs, principal component analysis (PrincipalComponentAnalysis) are made
         by party and by state, and percentage similarity analysis by two methods."""
 
         self.inicial_date = inicial_date
@@ -337,7 +337,7 @@ class Analysis:
             if self.vectors_voting==[]:
                 self.inicialize_vectors()
             matrix = self.vectors_voting - self.vectors_voting.mean(axis=0)
-            self.principal_components_analysis_political_party = pca.PCA(matrix)
+            self.principal_components_analysis_political_party = principalcomponentanalysis.PrincipalComponentAnalysis(matrix)
         dictionary = {}
         for party, vector in zip(self.political_parties, self.principal_components_analysis_political_party.U):
             dictionary[party.nome] = vector
@@ -421,7 +421,7 @@ class Analysis:
             if self.vectors_votings_uf==[]:
                 self.inicialize_vectors_uf()
             matrix = self.vectors_votings_uf - self.vectors_votings_uf.mean(axis=0)
-            self.principal_components_analysis_uf = pca.PCA(matrix)
+            self.principal_components_analysis_uf = principalcomponentanalysis.PrincipalComponentAnalysis(matrix)
         dictionary = {}
         for uf, vector in zip(self.ufs_list, self.principal_components_analysis_uf.U):
             dictionary[uf]=vector
@@ -506,7 +506,7 @@ class Analysis:
         """Returns array with the coordinates of the political parties in the 2d plane formed by the two
         first principal componentonents.
 
-        If passed as argument the name (not empty) of a file, the result of PCA
+        If passed as argument the name (not empty) of a file, the result of PrincipalComponentAnalysis
         is written to this file, otherwise it is written to stdout."""
 
         coordinates = self.political_party_pca()
@@ -519,7 +519,7 @@ class Analysis:
         else:
             fo = sys.stdout
         ip = -1
-        fo.write('Análise PCA - por search_political_party\n')
+        fo.write('Análise PrincipalComponentAnalysis - por search_political_party\n')
         fo.write('de %s a %s (ano-mês-dia)\n\n' % (self.inicial_date,self.final_date))
         fo.write('Fração da variância explicada pelas dimensões:\n')
         write_principal_components_of_analysis(fo, principal_components_analysis_political_party)
@@ -550,7 +550,7 @@ class Analysis:
         else:
             fo = sys.stdout
         ie = -1
-        fo.write('Análise PCA - por estado\n')
+        fo.write('Análise PrincipalComponentAnalysis - por estado\n')
         fo.write('de %s a %s (ano-mês-dia)\n\n' % (self.inicial_date,self.final_date))
         fo.write('Fração da variância explicada pelas dimensões:\n')
         write_principal_components_of_analysis(fo, principal_components_analysis_uf)

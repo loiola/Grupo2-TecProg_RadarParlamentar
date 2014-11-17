@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 """ a small class for Principal Component Analysis
 Usage:
-    p = PCA( A, fraction=0.90 )
+    p = PrincipalComponentAnalysis( A, fraction=0.90 )
 In:
     A:an array of e.g. 1000 observations x 20 variables, 1000 rows x 20 columns
     fraction: use principal components that account for e.g.
@@ -18,7 +18,7 @@ Out:
         It's ok to change this; methods use the current value.
 
 Methods:
-    The methods of class PCA transform vectors or arrays of e.g.
+    The methods of class PrincipalComponentAnalysis transform vectors or arrays of e.g.
     20 variables, 2 principal components and 1000 observations,
     using partial matrices U' d' Vt', parts of the full U d Vt:
     A ~ U' . d' . Vt' where e.g.
@@ -38,7 +38,7 @@ Methods:
 
 
 Notes:
-    PCA does not center or scale A; you usually want to first
+    PrincipalComponentAnalysis does not center or scale A; you usually want to first
         A -= A.mean(A, axis=0)
         A /= A.std(A, axis=0)
     with the little class Center or the like, below.
@@ -47,7 +47,7 @@ See also:
     http://en.wikipedia.org/wiki/Principal_component_analysis
     http://en.wikipedia.org/wiki/Singular_value_decomposition
     Press et al., Numerical Recipes (2 or 3 ed), SVD
-    PCA micro-tutorial
+    PrincipalComponentAnalysis micro-tutorial
     iris-pca .py .png
 
 Source: http://stackoverflow.com/questions/1730600/principal-component-analysis-in-python
@@ -180,7 +180,7 @@ if __name__ == "__main__":
     Center(A)
     print "A:", A
 
-    print "PCA ...",
+    print "PrincipalComponentAnalysis ...",
     p = PCA(A, fraction=fraction)
     print "npc:", p.npc
     print "% variance:", p.sumvariance * 100

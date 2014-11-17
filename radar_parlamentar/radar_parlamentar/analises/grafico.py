@@ -19,8 +19,8 @@
 # along with Radar Parlamentar.  If not, see <http://www.gnu.org/licenses/>.
 
 """Chart Module
-Responsible for taking care of things related to the presentation of the PCA 
-to the end user, since the PCA calculations have been performed"""
+Responsible for taking care of things related to the presentation of the PrincipalComponentAnalysis
+to the end user, since the PrincipalComponentAnalysis calculations have been performed"""
 
 from __future__ import unicode_literals
 import json

@@ -53,7 +53,7 @@ class CamarawsTest(TestCase):
     def test_obtain_proposition(self):
 
         # Receives obter_proposicao_por_id() method
-        forest_code_xml = self.camaraws.obter_proposicao_por_id(ID)
+        forest_code_xml = self.camaraws.get_propositions_by_id(ID)
 
         # Receives the search of proposition by name in the xml file
         forest_code_name = forest_code_xml.find_legislature('nomeProposicao').text
@@ -64,7 +64,7 @@ class CamarawsTest(TestCase):
     def test_obtain_votings(self):
 
         # Receives  the votes by acronym, number and year
-        forest_code_xml = self.camaraws.obter_votacoes(SIGLA, NUM, ANO)
+        forest_code_xml = self.camaraws.get_votings_of_proposition(SIGLA, NUM, ANO)
 
         # Receives the date of the proposition of the forest code to perform test
         found_vote_date = forest_code_xml.find_legislature(
@@ -76,7 +76,7 @@ class CamarawsTest(TestCase):
     def test_list_propositions(self):
 
         # Receives pecs propositions for the year 2011
-        pecs_2011_xml = self.camaraws.listar_proposicoes('PEC', '2011')
+        pecs_2011_xml = self.camaraws.list_propositions('PEC', '2011')
 
         # Receives the elements of proposition in the file
         pecs_elements = pecs_2011_xml.findall('proposicao')
@@ -94,7 +94,7 @@ class CamarawsTest(TestCase):
         caught = False
 
         try:
-            self.camaraws.obter_proposicao_por_id(no_id)
+            self.camaraws.get_propositions_by_id(no_id)
         except ValueError as e:
             self.assertEquals(
                 e.message, 'Proposition %s nao encontrada' % no_id)
@@ -119,7 +119,7 @@ class CamarawsTest(TestCase):
         caught = False
 
         try:
-            self.camaraws.obter_votacoes(acronym, number_of_proposition,
+            self.camaraws.get_votings_of_proposition(acronym, number_of_proposition,
                                          year_of_voting)
         except ValueError as e:
             self.assertEquals(
@@ -140,7 +140,7 @@ class CamarawsTest(TestCase):
         year_of_proposition = '3013'
 
         try:
-            self.camaraws.listar_proposicoes(acronym, year_of_proposition)
+            self.camaraws.list_propositions(acronym, year_of_proposition)
         except ValueError as e:
             self.assertEquals(
                 e.message, 'Proposicoes nao encontradas para sigla=%s&ano=%s'
@@ -155,7 +155,7 @@ class CamarawsTest(TestCase):
         """Test to list the acronyms of propositions"""
 
         # Receives the listar_siglas() method
-        acronyms = self.camaraws.listar_siglas()
+        acronyms = self.camaraws.list_acronyms()
 
         # Verifying if the acronyms of prepositions appear in listar_siglas() method
         self.assertTrue('PL' in acronyms)
@@ -174,7 +174,7 @@ class CamarawsTest(TestCase):
         no_plenary_name = 'DAVID 1309/1992'
 
         # Receives obter_proposicoes_votadas_plenario() method
-        plenary_etree = self.camaraws.obter_proposicoes_votadas_plenario(
+        plenary_etree = self.camaraws.get_propositions_votes_plenary(
             plenary_year)
 
         # Receives the list of propositions

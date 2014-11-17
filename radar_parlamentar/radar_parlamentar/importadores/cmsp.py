@@ -34,7 +34,7 @@ def main():
 
     print 'IMPORTANDO DADOS DA CAMARA MUNICIPAL DE SAO PAULO (CMSP)'
 
-    house_generator = GeradorCasaLegislativa()
+    house_generator = GenerateLegislativeHouse()
     cmsp = house_generator.generate_cmsp()
     importer = importerCMSP(cmsp)
     xmls_per_years = [XML2010, XML2011, XML2012, XML2013, XML2014]
@@ -70,7 +70,7 @@ initial_period_parseCMSP = parse_datetime('2010-01-01 0:0:0')
 #Receives the end date of the period of data
 final_period_parseCMSP = parse_datetime('2012-12-31 0:0:0')
 
-class GeradorCasaLegislativa(object):
+class GenerateLegislativeHouse(object):
 
     def generate_cmsp(self):
         try:

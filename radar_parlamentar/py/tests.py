@@ -11,7 +11,7 @@ import unittest
 
 class CamaraWS_Test(unittest.TestCase):
 
-  def test_vetor_votacoes(self): 
+  def test_vector_votings(self):
     """Tests the generation of an array of polls."""
 
     # Tested polls (s,n,a):
@@ -78,7 +78,7 @@ class CamaraWS_Test(unittest.TestCase):
     for e, v in zip(expected, vector):
       self.assertAlmostEqual(e, v, 5)
 
-  def test_norma(self):
+  def test_norm_of_vector(self):
     """ Tests the function that returns the norm of the vector."""
     
     # Input:
@@ -91,7 +91,7 @@ class CamaraWS_Test(unittest.TestCase):
     self.assertAlmostEqual(1.36381817 , algebra.calculate_vector_size(vector_test2), 5)
     self.assertAlmostEqual(0.848528137 , algebra.calculate_vector_size(vector_test3), 5)
 
-  def test_normalizacao(self):
+  def test_normalization(self):
 
     # Input:
     vector_test1 = [1, 0.8, 0.2, 0.5]
@@ -112,7 +112,7 @@ class CamaraWS_Test(unittest.TestCase):
     for e, v in zip(nv3, algebra.normalize_vector(vector_teste3)):
       self.assertAlmostEqual(e, v, 5)
 
-  def test_prod_escalar(self):
+  def test_scalar_product(self):
 
     # Input:
     nv1 = [0.719815751, 0.575852601, 0.14396315, 0.359907875]
@@ -123,7 +123,7 @@ class CamaraWS_Test(unittest.TestCase):
     self.assertAlmostEqual(0.356290619 , algebra.calculate_scalar_product(nv1,nv3), 5)
     self.assertAlmostEqual(0.29380298 , algebra.calculate_scalar_product(nv2,nv3), 5)
 
-  def test_semelhanca_vetores(self):
+  def test_similarity_vectors(self):
     """ Testing the similarity between feature vectors."""
 
     # Input:
@@ -154,7 +154,7 @@ class CamaraWS_Test(unittest.TestCase):
     self.assertAlmostEqual(similarity_vector_1_and_3, similarity_vector_3_and_1, 5)
     self.assertAlmostEqual(similarity_vector_2_and_3, similarity_vector_3_and_2, 5)
 
-  def test_semelhanca_partidos(self):
+  def test_similarity_political_parties(self):
     """ Tests the function of similarity for political partidos."""
 
     party1 = 'girondinos'

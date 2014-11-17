@@ -51,10 +51,10 @@ for year in years:
     annual_list.append(analise.Analysis(str(year)+'-01-01', str(year)+'-12-31', [],
                                   parties))
 
-# Receives the PCA list of data
+# Receives the PrincipalComponentAnalysis list of data
 data = []
 
-# annual: Temporary loop variable in the list which includes data PCA
+# annual: Temporary loop variable in the list which includes data PrincipalComponentAnalysis
 print "Fazendo PCAs:"
 print '-'*(len(annual_list)-1)+'v'
 for annual in annual_list:

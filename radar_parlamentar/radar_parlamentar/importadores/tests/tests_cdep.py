@@ -64,18 +64,18 @@ class SeparadorDeListaTest(TestCase):
         list = [1, 2, 3, 4, 5, 6]
 
         tab = cdep.SeparadorDeLista(1)
-        lists = tab.separa_lista_em_varias_listas(list)
+        lists = tab.lists_of_lists(list)
         self.assertEquals(len(lists), 1)
         self.assertEquals(lists[0], list)
 
         tab = cdep.SeparadorDeLista(2)
-        lists = tab.separa_lista_em_varias_listas(list)
+        lists = tab.lists_of_lists(list)
         self.assertEquals(len(lists), 2)
         self.assertEquals(lists[0], [1, 2, 3])
         self.assertEquals(lists[1], [4, 5, 6])
 
         tab = cdep.SeparadorDeLista(3)
-        lists = tab.separa_lista_em_varias_listas(list)
+        lists = tab.lists_of_lists(list)
         self.assertEquals(len(lists), 3)
         self.assertEquals(lists[0], [1, 2])
         self.assertEquals(lists[1], [3, 4])
@@ -86,7 +86,7 @@ class SeparadorDeListaTest(TestCase):
         list = [1, 2, 3, 4, 5, 6, 7]
 
         tab = cdep.SeparadorDeLista(3)
-        lists = tab.separa_lista_em_varias_listas(list)
+        lists = tab.lists_of_lists(list)
         self.assertEquals(len(lists), 3)
         self.assertEquals(lists[0], [1, 2, 3])
         self.assertEquals(lists[1], [4, 5, 6])
@@ -104,10 +104,10 @@ class CamaraTest(TestCase):
         importer = cdep.ImportadorCamara(votings)
 
         camaraWebService = cdep.Camaraws()
-        camaraWebService.listar_proposicoes = Mock(side_effect=mock_listar_proposicoes)
-        camaraWebService.obter_proposicao_por_id = Mock(
+        camaraWebService.list_propositions = Mock(side_effect=mock_listar_proposicoes)
+        camaraWebService.get_propositions_by_id = Mock(
             side_effect=mock_obter_proposicao)
-        camaraWebService.obter_votacoes = Mock(side_effect=mock_obter_votacoes)
+        camaraWebService.get_votings_of_proposition = Mock(side_effect=mock_obter_votacoes)
         importer.import_data(camaraWebService)
 
     @classmethod
@@ -180,10 +180,10 @@ class WsPlenarioTest(TestCase):
         minimal_year = 2013
         maximal_year = 2013
         chamberWebService = cdep.Camaraws()
-        chamberWebService.obter_proposicoes_votadas_plenario = Mock(
+        chamberWebService.get_propositions_votes_plenary = Mock(
             side_effect=mock_obter_proposicoes_votadas_plenario)
         proposition_finder = cdep.ProposicoesFinder()
-        zip_votadas = proposition_finder.find_props_disponiveis(
+        zip_votadas = proposition_finder.find_available_propositions(
             minimal_year, maximal_year, chamberWebService)
         prop_test = ('14245', 'PEC 3/1999')
         for x in range(0, len(zip_votadas)):
@@ -196,10 +196,10 @@ class WsPlenarioTest(TestCase):
         minimal_year = 2013
         maximal_year = 2013
         chamberWebService = cdep.Camaraws()
-        chamberWebService.obter_proposicoes_votadas_plenario = Mock(
+        chamberWebService.get_propositions_votes_plenary = Mock(
             side_effect=mock_obter_proposicoes_votadas_plenario)
         proposition_finder = cdep.ProposicoesFinder()
-        zip_votadas = proposition_finder.find_props_disponiveis(
+        zip_votadas = proposition_finder.find_available_propositions(
             minimal_year, maximal_year, chamberWebService)
         proposition_parser = cdep.ProposicoesParser(zip_votadas)
         dict_votadas = proposition_parser.parse()

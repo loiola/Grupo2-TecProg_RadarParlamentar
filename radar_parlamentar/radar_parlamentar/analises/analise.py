@@ -257,7 +257,7 @@ class AnalisadorPeriodo:
             # DO the pca  
             self.pca = pca.PCA(matriz, fraction=1)  
             self._preenche_pca_de_legislaturas_nulas(ilnn)
-            logger.info("PCA terminada com sucesso. ini=%s, fim=%s" %
+            logger.info("PrincipalComponentAnalysis terminada com sucesso. ini=%s, fim=%s" %
                         (str(self.ini), str(self.fim)))
 
         # Create dictionary to be returned:

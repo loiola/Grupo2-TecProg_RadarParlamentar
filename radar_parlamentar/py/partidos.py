@@ -28,7 +28,7 @@ constants:
 
 import algebralinha
 import numpy
-import pca
+import principalcomponentanalysis
 
 # Constant that gets list of existing partidos
 PARTIDOS = ['PT', 'PSDB', 'PV', 'PSOL', 'PCdoB', 'PP', 'PR', 'DEM', 'PMDB', 'PSC', 
@@ -102,14 +102,14 @@ def similarity(partido1, partido2, proposicoes):
 
 def similarity_pca(vetores):
     """Calculates similarities party generating a two-dimensional graph
-    This is done with the Principal Component Analysis (PCA)
+    This is done with the Principal Component Analysis (PrincipalComponentAnalysis)
     arguments:
     vectors - a list of lists, where each list is a vector of voting for a party
     returns:
     A list where the ith position represents the two-dimensional coordinate of the party
     whose vector voting was the i-th argument list of vectors."""
 
-    # PCA: lines are samples. Columns are variable 
+    # PrincipalComponentAnalysis: lines are samples. Columns are variable
     # We do: linhas = partidos and colunas = votações
     # Should centralize values.
     # As all values ​​\ in [0,1], we need not to scale.
@@ -120,8 +120,8 @@ def similarity_pca(vetores):
     # Centralization:
     matriz -= matriz.mean(axis=0)
 
-    # Receives centering matrix with PCA
-    p = pca.PCA(matriz)
+    # Receives centering matrix with PrincipalComponentAnalysis
+    p = principalcomponentanalysis.PrincipalComponentAnalysis(matriz)
 
     return p
 

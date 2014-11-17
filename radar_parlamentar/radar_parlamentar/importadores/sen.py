@@ -21,9 +21,9 @@
 """Senate Module
 
 Classes:
-    CasaLegislativaGerador
-    ImportadorVotacoesSenado
-    ImportadorSenadores"""
+    LegislativeHouseGenerator
+    SenatesVotingImporter
+    SenatesImporter"""
 
 from __future__ import unicode_literals
 from django.utils.dateparse import parse_datetime
@@ -40,13 +40,13 @@ def main():
     """Imports Senate datas"""
 
     logger.info('IMPORTANDO DADOS DO SENADO')
-    geradorCasaLeg = CasaLegislativaGerador()
+    geradorCasaLeg = LegislativeHouseGenerator()
     geradorCasaLeg.generate_senate()
     logger.info('IMPORTANDO SENADORES')
-    importer = ImportadorSenadores()
+    importer = SenatesImporter()
     importer.import_senators()
     logger.info('IMPORTANDO VOTAÇÕES DO SENADO')
-    importer = ImportadorVotacoesSenado()
+    importer = SenatesVotingImporter()
     importer.import_votings()
 
 # Date the XML files were updated
@@ -66,7 +66,7 @@ SHORT_NAME = 'sen'
 logger = logging.getLogger("radar")
 
 
-class SenadoWS:
+class SenateWS:
     """Access to senate web services"""
 
     URL_LEGISLATURE = 'http://legis.senado.gov.br/dadosabertos/senador/lista/legislatura/%s'
@@ -85,7 +85,7 @@ class SenadoWS:
         Exceptions:
             ValueError -- when legislature does not exist"""
 
-        url = SenadoWS.URL_LEGISLATURE % id_legislature
+        url = SenateWS.URL_LEGISLATURE % id_legislature
         try:
             request_url = urllib2.Request(url)
             xml_open_and_read = urllib2.urlopen(request_url).read()
@@ -102,7 +102,7 @@ class SenadoWS:
         return tree
 
 
-class CasaLegislativaGerador:
+class LegislativeHouseGenerator:
 
     def generate_senate(self):
         """Generate object by CasaLegislativa type representing the Senate"""
@@ -122,7 +122,7 @@ class CasaLegislativaGerador:
         return senator_lesgislative_house
 
 
-class ImportadorVotacoesSenado:
+class SenatesVotingImporter:
     """Save the XML Senate datas in the database"""
 
     def __init__(self):
@@ -406,7 +406,7 @@ class ImportadorVotacoesSenado:
             self.save_in_database(xml_file)
 
 
-class ImportadorSenadores:
+class SenatesImporter:
 
     # This list needs to be updated year by year
     # 52 is the minimum legislature because we just have voting from 2005 to now
@@ -509,9 +509,9 @@ class ImportadorSenadores:
         """Create parliamentaries and legislatures in database"""
 
         # Receive Web Service from Senate.
-        senws = SenadoWS()
+        senws = SenateWS()
 
-        for id_leg in ImportadorSenadores.LEGISLATURES:
+        for id_leg in SenatesImporter.LEGISLATURES:
             logger.info("Importando senadores da legislatura %s" % id_leg)
             legislature_tree = senws.get_senators_from_legislature(id_leg)
             self.process_legislature(legislature_tree)

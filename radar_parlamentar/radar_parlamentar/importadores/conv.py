@@ -21,7 +21,7 @@
 """Convention Module (French Convention)
 
 Classes:
-    ImportadorConvencao generate datas for fictitious legislative house called 
+    ImporterFrenchConvention generate datas for fictitious legislative house called
     Convenção Nacional Francesa"""
 
 from __future__ import unicode_literals
@@ -52,12 +52,12 @@ ROYALISTS = 'Monarquistas'
 def main():
 
     print 'IMPORTANDO DADOS DA CONVENÇÃO NACIONAL FRANCESA'
-    importer = ImportadorConvencao()
+    importer = ImporterFrenchConvention()
     importer.import_data()
 
     return None
 
-class ImportadorConvencao:
+class ImporterFrenchConvention:
 
     # Get instance of the new legislative house:
     def create_new_legislative_house(self):

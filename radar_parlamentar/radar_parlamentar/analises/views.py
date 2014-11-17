@@ -69,7 +69,7 @@ def analise(request, nome_curto_casa_legislativa):
 
 def json_analise(request, nome_curto_casa_legislativa,
                  periodicidade, palavras_chave=""):
-    """Returns the JSON with the coordinates of chart PCA"""
+    """Returns the JSON with the coordinates of chart PrincipalComponentAnalysis"""
 
     casa_legislativa = get_object_or_404(
         models.CasaLegislativa, nome_curto = nome_curto_casa_legislativa)

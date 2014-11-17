@@ -19,7 +19,7 @@
 """Script semelhanca_pca
 Checks the difference between the partidos
 based on the propositions voted on in 2011
-using PCA (analysis of primary components)"""
+using PrincipalComponentAnalysis (analysis of primary components)"""
 
 import partidos
 import sys
@@ -39,7 +39,7 @@ for line in vfile:
   flag += 1
 
 # Analyzing similarities
-print('Análise PCA')
+print('Análise PrincipalComponentAnalysis')
 p = partidos.semelhanca_pca(vectors)
 pc = p.pc()
 

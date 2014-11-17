@@ -31,7 +31,7 @@ class SenadoWSTest(TestCase):
         # Receives a legislature by id (52)
         legislature_id = '52'
 
-        # Receives SenadoWS() method
+        # Receives SenateWS() method
         senws = sen.SenadoWS()
 
         # Receives the senators of the legislature whose identifier is number 52

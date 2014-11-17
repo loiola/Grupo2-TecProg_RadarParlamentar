@@ -45,7 +45,26 @@ NUMBER_THREADS = 16
 
 logger = logging.getLogger("radar")
 
-class Url(object):
+def main():
+
+    logger.info('IMPORTANDO DADOS DA CAMARA DOS DEPUTADOS')
+    propFinder = PropositionsFinder()
+    zip_voted = propFinder.find_available_propositions()
+    propParser = PropositionsParser(zip_voted)
+    dic_voted = propParser.parse()
+    tab = ListSeparator(NUMBER_THREADS)
+    voted_lists = tab.lists_of_lists(dic_voted)
+    threads = []
+
+    for voted_list in voted_lists:
+        importer = ImporterChamber(voted_list)
+        thread = ImporterThreadChamber(importer)
+        threads.append(thread)
+        thread.start()
+    wait_threads(threads)
+    logger.info('IMPORTACAO DE DADOS DA CAMARA DOS DEPUTADOS FINALIZADA')
+
+class OpenURL(object):
 
     """Class that open urls."""
 
@@ -69,7 +88,7 @@ class Url(object):
             logger.error("urllib2.HTTPError: %s" % error)
         return text
 
-class Camaraws:
+class ChamberWS:
 
     """Acess to Chamber of Deputies's Web Services."""
     PROPOSITION_URL = \
@@ -81,7 +100,7 @@ class Camaraws:
     PLENARY_URL = \
         'http://www.camara.gov.br/SitCamaraWS/Proposicoes.asmx/ListarProposicoesVotadasEmPlenario?'
 
-    def __init__(self, url=Url()):
+    def __init__(self, url=OpenURL()):
         self.url = url
 
     def _convert_to_percentage(self, value){
@@ -90,7 +109,7 @@ class Camaraws:
         return percentage
     }
 
-    def _montar_url_consulta_camara(self, url_base, url_parameters, **kwargs):
+    def assemble_url_query(self, url_base, url_parameters, **kwargs):
         built_url = url_base
 
         for pair in kwargs.keys():
@@ -106,7 +125,7 @@ class Camaraws:
         built_url = built_url.rstrip("&")
         return built_url
 
-    def obter_proposicao_por_id(self, id_propositions):
+    def get_propositions_by_id(self, id_propositions):
 
         """Get details of a proposition
 
@@ -123,14 +142,14 @@ class Camaraws:
 
         consult_parameters = ["idprop"]
         args = {'idprop': id_propositions}
-        url = self._montar_url_consulta_camara(
-            Camaraws.PROPOSITION_URL, consult_parameters, **args)
+        url = self.assemble_url_query(
+            ChamberWS.PROPOSITION_URL, consult_parameters, **args)
         tree = self.url.toXml(url)
         if tree is None:
             raise ValueError('Proposition %s nao encontrada' % id_propositions)
         return tree
 
-    def obter_votacoes(self, acronym, number, year, **kwargs):
+    def get_votings_of_proposition(self, acronym, number, year, **kwargs):
         """Get votings of a proposition
 
         Arguments:
@@ -148,8 +167,8 @@ class Camaraws:
         args = {'tipo': acronym, 'numero': number, 'ano': year}
         if kwargs:
             args.update(kwargs)
-        url = self._montar_url_consulta_camara(
-            Camaraws.VOTINGS_URL, consult_parameters, **args)
+        url = self.assemble_url_query(
+            ChamberWS.VOTINGS_URL, consult_parameters, **args)
         tree = self.url.toXml(url)
         if tree is None:
             raise ValueError(
@@ -157,7 +176,7 @@ class Camaraws:
                 % (acronym, number, year))
         return tree
 
-    def obter_proposicoes_votadas_plenario(self, year):
+    def get_propositions_votes_plenary(self, year):
         """Voting gets made ​​in plenary
 
         Arguments:
@@ -171,15 +190,15 @@ class Camaraws:
 
         consult_parameters = ["ano", "tipo"]
         args = {'ano': year, 'tipo': ' '}
-        url = self._montar_url_consulta_camara(
-            Camaraws.PLENARY_URL, consult_parameters, **args)
+        url = self.assemble_url_query(
+            ChamberWS.PLENARY_URL, consult_parameters, **args)
         tree = self.url.toXml(url)
 
         if tree is None:
             raise ValueError('O ano %s nao possui votacoes ainda' % year)
         return tree
 
-    def listar_proposicoes(self, acronym, year, **kwargs):
+    def list_propositions(self, acronym, year, **kwargs):
         """seek propositions according to year and acronym desired.
 
         Mandatory arguments:
@@ -209,8 +228,8 @@ class Camaraws:
         if kwargs:
             args.update(kwargs)
         print(args)
-        url_camara_consult = self._montar_url_consulta_camara(
-            Camaraws.LIST_PROPOSITIONS_URL, consult_parameters, **args)
+        url_camara_consult = self.assemble_url_query(
+            ChamberWS.LIST_PROPOSITIONS_URL, consult_parameters, **args)
         tree = self.url.toXml(url_camara_consult)
 
         if tree is None:
@@ -218,7 +237,7 @@ class Camaraws:
                 'Proposicoes nao encontradas para sigla=%s&ano=%s' % (acronym, year))
         return tree
 
-    def listar_siglas(self):
+    def list_acronyms(self):
         """List of acronyms existing propositions; example: "PL", "PEC" etc. 
            The return is a list of strings."""
 
@@ -230,12 +249,12 @@ class Camaraws:
                 'PLC', 'PLN', 'PLOA', 'PLS', 'PLV']
 
 
-class ProposicoesFinder:
+class PropositionsFinder:
 
     def __init__(self, verbose=True):
         self.verbose = verbose
 
-    def _parse_nomes_lista_proposicoes(self, xml_propositions):
+    def do_parse_propositions_list(self, xml_propositions):
         """Receive XML (etree object) from web service
         ListarProposicoesVotadasPlenario and returns a list of tuples.
         The first tuple's item is the propositions id, and the second item
@@ -251,8 +270,8 @@ class ProposicoesFinder:
             name_list.append(name_propositions)
         return zip(id_propositions_list, name_list)
 
-    def find_props_disponiveis(self, minimal_year=1991, maximum_year=2013,
-                               camaraws=Camaraws()):
+    def find_available_propositions(self, minimal_year=1991, maximum_year=2013,
+                               camaraws=ChamberWS()):
         """Return a list with two ids and names of propositions available
         by feature ListarProposicoesVotadasPlenario.
 
@@ -263,7 +282,7 @@ class ProposicoesFinder:
 
         if (maximum_year is None):
             maximum_year = today.year
-        acronyms = camaraws.listar_siglas()
+        acronyms = camaraws.list_acronyms()
         voted = []
 
         for year in range(minimal_year, maximum_year + 1):
@@ -271,8 +290,8 @@ class ProposicoesFinder:
 
             for acronym in acronyms:
                 try:
-                    xml_propositions = camaraws.obter_proposicoes_votadas_plenario(year)
-                    zip_list_prop = self._parse_nomes_lista_proposicoes(xml_propositions)
+                    xml_propositions = camaraws.get_propositions_votes_plenary(year)
+                    zip_list_prop = self.do_parse_propositions_list(xml_propositions)
                     voted.append(zip_list_prop)
                     logger.info('%d %ss encontrados' %
                                 (len(zip_list_prop), acronym))
@@ -283,7 +302,7 @@ class ProposicoesFinder:
         return voted
 
 
-class ProposicoesParser:
+class PropositionsParser:
 
     def __init__(self, zip_voted):
         self.votadas = zip_voted
@@ -314,7 +333,7 @@ class ProposicoesParser:
 
 LOCK_TO_CREATE_CASA = threading.Lock()
 
-class ImportadorCamara:
+class ImporterChamber:
 
     """Saves the data of the web services of the Chamber of Deputies in the database."""
 
@@ -553,7 +572,7 @@ class ImportadorCamara:
         logger.info('Progresso: %d / %d proposições (%d%%)' %
                     (self.importadas, self.total, percentage))
 
-    def importar(self, camaraws=Camaraws()):
+    def importar(self, camaraws=ChamberWS()):
 
         self.camara_dos_deputados = self._generate_legislative_house()
 
@@ -566,9 +585,9 @@ class ImportadorCamara:
                         (id_proposition, acronym, number, year))
 
             try:
-                proposition_xml = camaraws.obter_proposicao_por_id(id_proposition)
+                proposition_xml = camaraws.get_propositions_by_id(id_proposition)
                 proposition = self._propostion_from_xml(proposition_xml, id_proposition)
-                votes_xml = camaraws.obter_votacoes(acronym, number, year)
+                votes_xml = camaraws.get_votings_of_proposition(acronym, number, year)
 
                 for child in votes_xml.find('Votacoes'):
                     self._voting_from_xml(child, proposition)
@@ -582,12 +601,12 @@ class ImportadorCamara:
             ' Fim da Importação das Votações das Proposições da Câmara dos Deputados.')
 
 
-class SeparadorDeLista:
+class ListSeparator:
 
     def __init__(self, lists_number):
         self.numero_de_listas = lists_number
 
-    def separa_lista_em_varias_listas(self, list):
+    def lists_of_lists(self, list):
         list_lists = []
         start = 0
         chunk_size = (int)(
@@ -603,7 +622,7 @@ class SeparadorDeLista:
         return list_lists
 
 
-class ImportadorCamaraThread(threading.Thread):
+class ImporterThreadChamber(threading.Thread):
 
     def __init__(self, importer):
         threading.Thread.__init__(self)
@@ -618,10 +637,10 @@ def wait_threads(threads):
         t.join()
 
 
-def lista_proposicoes_de_mulheres():
-    camaraws = Camaraws()
-    propFinder = ProposicoesFinder()
-    importer = ImportadorCamara([''])
+def list_women_propositions():
+    camaraws = ChamberWS()
+    propFinder = PropositionsFinder()
+    importer = ImporterChamber([''])
     importer.camara_dos_deputados = importer._generate_legislative_house()
     minimal_year = 2012
     maximum_year = 2013
@@ -641,12 +660,12 @@ def lista_proposicoes_de_mulheres():
         count_propositions[year]['somatotal'] = []
 
         for gender in ['F', 'M']:
-            proposition_year_gender = propFinder._parse_nomes_lista_proposicoes(
-                camaraws.listar_proposicoes('PL', str(year), **{
+            proposition_year_gender = propFinder.do_parse_propositions_list(
+                camaraws.list_propositions('PL', str(year), **{
                     'generoautor': gender}))
 
             for proposition in proposition_year_gender:
-                proposition_xml = camaraws.obter_proposicao_por_id(proposition[0])
+                proposition_xml = camaraws.get_propositions_by_id(proposition[0])
                 propositions[year][gender].append(
                     importer._propostion_from_xml(proposition_xml, proposition[0]))
 
@@ -661,23 +680,3 @@ def lista_proposicoes_de_mulheres():
 
     return {'proposicoes': propositions, 'contagem': count_propositions,
             'percentuais_fem': female_percentage}
-
-
-def main():
-
-    logger.info('IMPORTANDO DADOS DA CAMARA DOS DEPUTADOS')
-    propFinder = ProposicoesFinder()
-    zip_voted = propFinder.find_props_disponiveis()
-    propParser = ProposicoesParser(zip_voted)
-    dic_voted = propParser.parse()
-    tab = SeparadorDeLista(NUMBER_THREADS)
-    voted_lists = tab.separa_lista_em_varias_listas(dic_voted)
-    threads = []
-
-    for voted_list in voted_lists:
-        importer = ImportadorCamara(voted_list)
-        thread = ImportadorCamaraThread(importer)
-        threads.append(thread)
-        thread.start()
-    wait_threads(threads)
-    logger.info('IMPORTACAO DE DADOS DA CAMARA DOS DEPUTADOS FINALIZADA')
