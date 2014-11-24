@@ -126,7 +126,8 @@ class XmlCMSP:
     def extract_year_from_num_and_year(self, proposition_name):
         """Extract year from "tipo num/ano" """
         res = re.search(PROP_REGEX, proposition_name)
-        if res:
+        
+	if res:
             return res.group(1), res.group(2), res.group(3)
         else:
             return None, None, None
@@ -183,9 +184,9 @@ class XmlCMSP:
             # TODO gender
         return voter
 
-    # The 'legislatura' method can not be renamed or break the code.
+    # The legislature method can not be renamed or break the code.
     def legislature(self, ver_tree):
-        """Creates and returns legislatura for the given political party"""
+        """Creates and returns legislature for the given political party"""
 
         #Initializing the variable, passing as parameter 'ver_tree'.
         political_party = self.party(ver_tree)
@@ -216,8 +217,8 @@ class XmlCMSP:
     def get_votes_from_tree(self, vote_tree, voting):
         """Extract list of votes the vote of XML and saved in the database
         Arguments:
-           vot_tree -- tree of votes
-           votacao -- object of 'Voting' type"""
+        vot_tree -- tree of votes
+        votacao -- object of 'Voting' type"""
 
         for ver_tree in vote_tree.getchildren():
             if ver_tree.tag == 'Vereador':
@@ -226,6 +227,7 @@ class XmlCMSP:
                 vote.legislature = leg
                 vote.votacao = voting
                 vote.opcao = self.interpret_vote(ver_tree.get('Voto'))
+
                 if vote.opcao is not None:
                     vote.save_data_in_file()
 
@@ -249,9 +251,9 @@ class XmlCMSP:
             # If the voting was associable to a proposition, so..
             if (proposition_name):
                 id_vote = vot_tree.get('VotacaoID')
-                voting_blank = models.Votacao.objects.filter(
-                    id_vot=id_vote)
-                if voting_blank:
+                voting_blank = models.Votacao.objects.filter(id_vot=id_vote)
+                
+		if voting_blank:
                     vote = voting_blank[0]
                 else:
                     if proposition_name in propositions:
@@ -268,7 +270,8 @@ class XmlCMSP:
 
                     if self.verbose:
                         print 'Proposition %s salva' % proposition
-                    proposition.save_data_in_file()
+                   
+		    proposition.save_data_in_file()
                     vote = models.Votacao()
 
                     # To create de primary key and assign the votes
@@ -279,11 +282,13 @@ class XmlCMSP:
                     vote.resultado = vot_tree.get('Resultado')
                     self.get_votes_from_tree(vot_tree, vote)
                     vote.proposicao = proposition
-                    if self.verbose:
+                   
+		    if self.verbose:
                         print 'Voting %s salva' % vote
                     else:
                         self.show_progress()
-                    vote.save_data_in_file()
+                   
+		    vote.save_data_in_file()
 
                 votings.append(vote)
 
@@ -310,8 +315,9 @@ class importerCMSP:
 
         tree = importerCMSP.open_xml(xml_file)
         propositions = {}
-            # The ley is a string (ex: 'pl 127/2004'); value ix object from
-            # Proposiction type
+
+        # The ley is a string (ex: 'pl 127/2004'); value ix object from
+        # Proposiction type
         votings = []
         self.analyze_xml(propositions, votings, tree)
         return votings
