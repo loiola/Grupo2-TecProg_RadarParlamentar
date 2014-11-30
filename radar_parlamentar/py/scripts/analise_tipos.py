@@ -28,36 +28,43 @@ ordinary_law_projects = complementary_law_projects = legislative_decree_projects
 
 # Performs proposition count for each type
 for propositions in propositions:
-  if (propositions['tipo'] == 'PL'):
+  if propositions['tipo'] == 'PL':
     ordinary_law_projects += 1
-  elif (propositions['tipo'] == 'PLP'):
+
+  elif propositions['tipo'] == 'PLP':
     complementary_law_projects += 1
-  elif (propositions['tipo'] == 'PDC'):
+
+  elif propositions['tipo'] == 'PDC':
     legislative_decree_projects += 1
-  elif (propositions['tipo'] == 'MPV'):
+
+  elif propositions['tipo'] == 'MPV':
     provisional_measures += 1
-  elif (propositions['tipo'] == 'PEC'):
+
+  elif propositions['tipo'] == 'PEC':
     amendment_constitution += 1
 
 # Performs total count of propositions and shows the result for each type
 total = len(propositions)
 print('Votações na câmara em 2011')
+
 print('%d proposições' % total)
 
 percentage_conversion_factor = 100
 
+denominator = total*percentage_conversion_factor
+
 print('%d PLs (%d%s)' % (ordinary_law_projects,
-                         ordinary_law_projects/total*percentage_conversion_factor, '%'))
+                         ordinary_law_projects/denominator, '%'))
 
 print('%d PLPs (%d%s)' % (complementary_law_projects,
-                          complementary_law_projects/total*percentage_conversion_factor, '%'))
+                          complementary_law_projects/denominator, '%'))
 
 print('%d PDCs (%d%s)' % (legislative_decree_projects,
-                          legislative_decree_projects/total*percentage_conversion_factor, '%'))
+                          legislative_decree_projects/denominator, '%'))
 
 print('%d MPVs (%d%s)' % (provisional_measures,
-                          provisional_measures/total*percentage_conversion_factor, '%'))
+                          provisional_measures/denominator, '%'))
 
 print('%d PECs (%d%s)' % (amendment_constitution,
-                          amendment_constitution/total*percentage_conversion_factor, '%'))
-#print('Checksum: %d' % (pl+plp+pdc+mpv+pec))
+                          amendment_constitution/denominator, '%'))
+
