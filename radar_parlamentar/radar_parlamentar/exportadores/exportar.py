@@ -54,36 +54,42 @@ def serialize_partido():
     out = open(filepath, "w")
     xml_serializer.serialize(models.Partido.objects.all(), stream=out)
 
+#exporting data of legislative house
 def serialize_casa_legislativa():
     XMLSerializer = serializers.get_serializer("xml")
     xml_serializer = XMLSerializer()
     out = open(os.path.join(MODULE_DIR, 'dados/casa_legislativa.xml'), "w")
     xml_serializer.serialize(models.CasaLegislativa.objects.all(), stream=out)
 
+#exporting data of parlamentary
 def serialize_parlamentar():
     XMLSerializer = serializers.get_serializer("xml")
     xml_serializer = XMLSerializer()
     out = open(os.path.join(MODULE_DIR, 'dados/parlamentar.xml'), "w")
     xml_serializer.serialize(models.Parlamentar.objects.all(), stream=out)
 
+#exporting data of legislature
 def serialize_legislatura():
     XMLSerializer = serializers.get_serializer("xml")
     xml_serializer = XMLSerializer()
     out = open(os.path.join(MODULE_DIR, 'dados/legislatura.xml'), "w")
     xml_serializer.serialize(models.Legislatura.objects.all(), stream=out)
 
+#exporting data of proposition
 def serialize_proposicao():
     XMLSerializer = serializers.get_serializer("xml")
     xml_serializer = XMLSerializer()
     out = open(os.path.join(MODULE_DIR, 'dados/proposicao.xml'), "w")
     xml_serializer.serialize(models.Proposicao.objects.all(), stream=out)
 
+#exporting data os votation
 def serialize_votacao():
     XMLSerializer = serializers.get_serializer("xml")
     xml_serializer = XMLSerializer()
     out = open(os.path.join(MODULE_DIR, 'dados/votacao.xml'), "w")
     xml_serializer.serialize(models.Votacao.objects.all(), stream=out)
 
+#exporting data of vote
 def serialize_voto():
     XMLSerializer = serializers.get_serializer("xml")
     xml_serializer = XMLSerializer()
