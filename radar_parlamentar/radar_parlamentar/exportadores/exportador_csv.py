@@ -117,6 +117,7 @@ class ExportadorCSV:
                 try:
                     csv_row.append(self.voto(vote.opcao))
                     self.csv_rows.append(csv_row)
+
                 except:
                     print 'Ignorando voto ', vote.opcao
                     logger.info("Ignorando voto: %s" % vote.opcao)
@@ -134,16 +135,22 @@ class ExportadorCSV:
         try:
             if option == models.SIM:
                 return increment_by_one
+
             elif option == models.NAO:
                 return decrement_by_one
+
             elif option == models.ABSTENCAO:
                 return 0
+
             elif option == models.OBSTRUCAO:
                 return 0
+
             elif option == models.AUSENTE:
                 return 0
+
             else:
                 raise ValueError()
+
         except Valuerror():
             print 'An error has ocurred.'
 
