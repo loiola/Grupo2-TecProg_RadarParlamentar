@@ -7,18 +7,18 @@ os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
 
 class XMLWriter:
 
-    """ Helper class to write out an xml file"""
+    #Helper class to write out an xml file
 
     def __init__(self, pretty = True):
-        """ Set pretty to True if you want an indented XML file.
-        Initializing variables"""
+        #Set pretty to True if you want an indented XML file.
+        #Initializing variables
 
         self.output = ""
         self.stack = []
         self.pretty = pretty
 
     def open_tag(self, tag):
-        """ Add an open tag"""
+        #Add an open tag
 
         self.stack.append(tag)
 
@@ -32,7 +32,7 @@ class XMLWriter:
             self.output += "\n"
 
     def close_tag(self):
-        """ Close the innermost tag"""
+        #Close the innermost tag
 
         if self.pretty:
             self.output += "\n" + "  " * (len(self.stack) - 1)
@@ -44,13 +44,13 @@ class XMLWriter:
             self.output += "\n"
 
     def closeAll(self):
-        """ Close all open tags"""
+        #Close all open tags
 
         while len(self.stack) > 0:
             self.close_tag()
 
     def add_content(self, text):
-        """ Add some content"""
+        #Add some content
 
         if self.pretty:
             self.output += "  " * len(self.stack)
@@ -59,7 +59,7 @@ class XMLWriter:
             self.output += str(text)
 
     def save_data_in_file(self, filename):
-        """ Save the data to a file"""
+        #Save the data to a file
 
         self.closeAll()
         file = open(filename, "w")
@@ -99,3 +99,5 @@ for model in models:
     writer.close_tag()
 writer.close_tag()
 writer.save_data_in_file("export.xml")
+
+
