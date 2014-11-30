@@ -55,7 +55,7 @@ class ImportadorInternoTest(TestCase):
         # Exporting data of mock to xml
         # exportar.serialize_partido()
         # exportar.serialize_parlamentar()
-        # exportar.serialize_casa_legislativa()
+        # exportar.serialize_legislative_house()
         # exportar.serialize_legislatura()
 
         # Deleting the registers of mock
