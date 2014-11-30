@@ -142,6 +142,40 @@ class importador_interno:
 
 
 #importing new xml
+    def new_child_proposition(self, child_proposition, legislativeHouse):
+        proposition = self.new_proposition(child_proposition, legislativeHouse)
+        if (child_proposition.attrib.get("data_apresentacao") == "None"):
+
+            # Default value if the date comes in white
+            proposition.data_apresentacao = "1900-01-01"
+            proposition.save_data_in_file()
+        else:
+            proposition.data_apresentacao = child_proposition.attrib.get(
+                "data_apresentacao")
+            proposition.save_data_in_file()
+
+        return proposition
+
+    def existing_party_child(self, child_vote, legislativeHouse):
+        existing_party, party = self.new_party(child_vote)
+        existing_parliamentarian, parliamentarian, party = self.for_existing_party(child_vote,
+                                                                                   existing_party, party)
+        legislature = self.for_existing_parliamentarian(child_vote, existing_parliamentarian,
+                                                        legislativeHouse, parliamentarian, party)
+        existing_legislature = self.new_legislature_location(legislature)
+        return existing_legislature, legislature
+
+    def existing_legislature_child(self, child_vote, existing_legislature, legislature, voting):
+        if len(existing_legislature) > 0:
+            legislature = existing_legislature[0]
+        else:
+            legislature.save_data_in_file()
+        vote = models.Voto()
+        vote.votacao = voting
+        vote.legislatura = legislature
+        vote.opcao = child_vote.attrib.get("opcao")
+        vote.save_data_in_file()
+
     def load_xml(self, short_name):
         directory = RESOURCES_FOLDER + short_name + '.xml'
         try:
@@ -159,17 +193,7 @@ class importador_interno:
 
         for child_proposition in root.iter("Proposition"):
 
-            proposition = self.new_proposition(child_proposition, legislativeHouse)
-
-            if(child_proposition.attrib.get("data_apresentacao") == "None"):
-
-                # Default value if the date comes in white
-                proposition.data_apresentacao = "1900-01-01"
-                proposition.save_data_in_file()
-            else:
-                proposition.data_apresentacao = child_proposition.attrib.get(
-                    "data_apresentacao")
-                proposition.save_data_in_file()
+            proposition = self.new_child_proposition(child_proposition, legislativeHouse)
 
             # Get the daughter of the subtree being traversed.
             for child_voting in child_proposition.findall("Voting"):
@@ -178,23 +202,6 @@ class importador_interno:
 
                 for child_vote in child_voting.findall("Voto"):
 
-                    existing_party, party = self.new_party(child_vote)
+                    existing_legislature, legislature = self.existing_party_child(child_vote, legislativeHouse)
 
-                    existing_parliamentarian, parliamentarian, party = self.for_existing_party(child_vote,
-                                                                                               existing_party, party)
-
-                    legislature = self.for_existing_parliamentarian(child_vote, existing_parliamentarian,
-                                                                    legislativeHouse, parliamentarian, party)
-
-                    existing_legislature = self.new_legislature_location(legislature)
-
-                    if len(existing_legislature) > 0:
-                        legislature = existing_legislature[0]
-                    else:
-                        legislature.save_data_in_file()
-
-                    vote = models.Voto()
-                    vote.votacao = voting
-                    vote.legislatura = legislature
-                    vote.opcao = child_vote.attrib.get("opcao")
-                    vote.save_data_in_file()
+                    self.existing_legislature_child(child_vote, existing_legislature, legislature, voting)
