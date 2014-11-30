@@ -60,6 +60,12 @@ for i in range(0,length):
   for j in range(i+1,length):
     similarity = partidos.semelhanca(PARTIDOS[i], PARTIDOS[j], propositions)
 
+    percentage_conversion_factor = 100
+
+    calculate_similarity = similarity*percentage_conversion_factor
+
     print('Semelhança entre %s e %s = %.2f%s' % (PARTIDOS[i], PARTIDOS[j],
-                                                 similarity*convert_to_percentage, '%'))
+                                                 calculate_similarity, '%'))
+
+
 
